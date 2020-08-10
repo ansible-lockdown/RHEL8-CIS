@@ -1,0 +1,505 @@
+---
+# defaults file for rhel8-CIS
+# If you would like a report at the end accordin to OpenSCAP as to the report results
+# then you should set rhel7cis_oscap_scan to true/yes.
+# NOTE: This requires the python_xmltojson package on the control host.
+rhel8cis_oscap_scan: true
+rhel8cis_report_dir: /tmp
+
+rhel8cis_skip_for_travis: false
+rhel8cis_system_is_container: false
+
+rhel8cis_notauto: false
+rhel8cis_section1: true
+rhel8cis_section2: true
+rhel8cis_section3: true
+rhel8cis_section4: true
+rhel8cis_section5: true
+rhel8cis_section6: true
+
+rhel8cis_selinux_disable: false
+
+# These variables correspond with the CIS rule IDs or paragraph numbers defined in
+# the CIS benchmark documents.
+# PLEASE NOTE: These work in coordination with the section # group variables and tags.
+# You must enable an entire section in order for the variables below to take effect.
+# Section 1 rules
+rhel8cis_rule_1_1_1_1: true
+rhel8cis_rule_1_1_1_2: true
+rhel8cis_rule_1_1_1_3: true
+rhel8cis_rule_1_1_1_4: true
+rhel8cis_rule_1_1_1_5: true
+rhel8cis_rule_1_1_2: true
+rhel8cis_rule_1_1_3: true
+rhel8cis_rule_1_1_4: true
+rhel8cis_rule_1_1_5: true
+rhel8cis_rule_1_1_6: true
+rhel8cis_rule_1_1_7: true
+rhel8cis_rule_1_1_8: true
+rhel8cis_rule_1_1_9: true
+rhel8cis_rule_1_1_10: true
+rhel8cis_rule_1_1_11: true
+rhel8cis_rule_1_1_12: true
+rhel8cis_rule_1_1_13: true
+rhel8cis_rule_1_1_14: true
+rhel8cis_rule_1_1_15: true
+rhel8cis_rule_1_1_16: true
+rhel8cis_rule_1_1_17: true
+rhel8cis_rule_1_1_18: true
+rhel8cis_rule_1_1_19: true
+rhel8cis_rule_1_1_20: true
+rhel8cis_rule_1_1_21: true
+rhel8cis_rule_1_1_22: true
+rhel8cis_rule_1_1_23: true
+rhel8cis_rule_1_2_1: true
+rhel8cis_rule_1_2_2: true
+rhel8cis_rule_1_2_3: true
+rhel8cis_rule_1_2_4: true
+rhel8cis_rule_1_2_5: true
+rhel8cis_rule_1_3_1: true
+rhel8cis_rule_1_3_2: true
+rhel8cis_rule_1_3_3: true
+rhel8cis_rule_1_4_1: true
+rhel8cis_rule_1_4_2: true
+rhel8cis_rule_1_5_1: true
+rhel8cis_rule_1_5_2: true
+rhel8cis_rule_1_5_3: true
+rhel8cis_rule_1_6_1: true
+rhel8cis_rule_1_6_2: true
+rhel8cis_rule_1_7_1_1: true
+rhel8cis_rule_1_7_1_2: true
+rhel8cis_rule_1_7_1_3: true
+rhel8cis_rule_1_7_1_4: true
+rhel8cis_rule_1_7_1_5: true
+rhel8cis_rule_1_7_1_6: true
+rhel8cis_rule_1_7_1_7: true
+rhel8cis_rule_1_8_1_1: true
+rhel8cis_rule_1_8_1_2: true
+rhel8cis_rule_1_8_1_3: true
+rhel8cis_rule_1_8_1_4: true
+rhel8cis_rule_1_8_1_5: true
+rhel8cis_rule_1_8_1_6: true
+rhel8cis_rule_1_8_2: true
+rhel8cis_rule_1_9: true
+rhel8cis_rule_1_10: true
+rhel8cis_rule_1_11: true
+
+# Section 2 rules
+rhel8cis_rule_2_1_1: true
+rhel8cis_rule_2_1_2: true
+rhel8cis_rule_2_1_3: true
+rhel8cis_rule_2_1_4: true
+rhel8cis_rule_2_1_5: true
+rhel8cis_rule_2_1_6: true
+rhel8cis_rule_2_1_7: true
+rhel8cis_rule_2_2_1_1: true
+rhel8cis_rule_2_2_1_2: true
+rhel8cis_rule_2_2_1_3: true
+rhel8cis_rule_2_2_2: true
+rhel8cis_rule_2_2_3: true
+rhel8cis_rule_2_2_4: true
+rhel8cis_rule_2_2_5: true
+rhel8cis_rule_2_2_6: true
+rhel8cis_rule_2_2_7: true
+rhel8cis_rule_2_2_8: true
+rhel8cis_rule_2_2_9: true
+rhel8cis_rule_2_2_10: true
+rhel8cis_rule_2_2_11: true
+rhel8cis_rule_2_2_12: true
+rhel8cis_rule_2_2_13: true
+rhel8cis_rule_2_2_14: true
+rhel8cis_rule_2_2_15: true
+rhel8cis_rule_2_2_16: true
+rhel8cis_rule_2_2_17: true
+rhel8cis_rule_2_2_18: true
+rhel8cis_rule_2_3_1: true
+rhel8cis_rule_2_3_2: true
+rhel8cis_rule_2_3_3: true
+
+# Section 3 rules
+rhel8cis_rule_3_1_1: true
+rhel8cis_rule_3_1_2: true
+rhel8cis_rule_3_2_1: true
+rhel8cis_rule_3_2_2: true
+rhel8cis_rule_3_2_3: true
+rhel8cis_rule_3_2_4: true
+rhel8cis_rule_3_2_5: true
+rhel8cis_rule_3_2_6: true
+rhel8cis_rule_3_2_7: true
+rhel8cis_rule_3_2_8: true
+rhel8cis_rule_3_2_9: true
+rhel8cis_rule_3_3_1: true
+rhel8cis_rule_3_3_2: true
+rhel8cis_rule_3_3_3: true
+rhel8cis_rule_3_3_4: true
+rhel8cis_rule_3_4_1_1: true
+rhel8cis_rule_3_4_2_1: true
+rhel8cis_rule_3_4_2_2: true
+rhel8cis_rule_3_4_2_3: true
+rhel8cis_rule_3_4_2_4: true
+rhel8cis_rule_3_4_2_5: true
+rhel8cis_rule_3_4_2_6: true
+rhel8cis_rule_3_4_3_1: true
+rhel8cis_rule_3_4_3_2: true
+rhel8cis_rule_3_4_3_3: true
+rhel8cis_rule_3_4_3_4: true
+rhel8cis_rule_3_4_3_5: true
+rhel8cis_rule_3_4_3_6: true
+rhel8cis_rule_3_4_3_7: true
+rhel8cis_rule_3_4_3_8: true
+rhel8cis_rule_3_4_4_1_1: true
+rhel8cis_rule_3_4_4_1_2: true
+rhel8cis_rule_3_4_4_1_3: true
+rhel8cis_rule_3_4_4_1_4: true
+rhel8cis_rule_3_4_4_2_1: true
+rhel8cis_rule_3_4_4_2_2: true
+rhel8cis_rule_3_4_4_2_3: true
+rhel8cis_rule_3_4_4_2_4: true
+rhel8cis_rule_3_5: true
+rhel8cis_rule_3_6: true
+
+# Section 4 rules
+rhel8cis_rule_4_1_1_1: true
+rhel8cis_rule_4_1_1_2: true
+rhel8cis_rule_4_1_1_3: true
+rhel8cis_rule_4_1_1_4: true
+rhel8cis_rule_4_1_2_1: true
+rhel8cis_rule_4_1_2_2: true
+rhel8cis_rule_4_1_2_3: true
+rhel8cis_rule_4_1_3: true
+rhel8cis_rule_4_1_4: true
+rhel8cis_rule_4_1_5: true
+rhel8cis_rule_4_1_6: true
+rhel8cis_rule_4_1_7: true
+rhel8cis_rule_4_1_8: true
+rhel8cis_rule_4_1_9: true
+rhel8cis_rule_4_1_10: true
+rhel8cis_rule_4_1_11: true
+rhel8cis_rule_4_1_12: true
+rhel8cis_rule_4_1_13: true
+rhel8cis_rule_4_1_14: true
+rhel8cis_rule_4_1_15: true
+rhel8cis_rule_4_1_16: true
+rhel8cis_rule_4_1_17: true
+rhel8cis_rule_4_2_1_1: true
+rhel8cis_rule_4_2_1_2: true
+rhel8cis_rule_4_2_1_3: true
+rhel8cis_rule_4_2_1_4: false
+rhel8cis_rule_4_2_1_5: true
+rhel8cis_rule_4_2_1_6: true
+rhel8cis_rule_4_2_2_1: true
+rhel8cis_rule_4_2_2_2: true
+rhel8cis_rule_4_2_2_3: true
+rhel8cis_rule_4_2_3: true
+rhel8cis_rule_4_3: true
+
+# Section 5 rules
+rhel8cis_rule_5_1_1: true
+rhel8cis_rule_5_1_2: true
+rhel8cis_rule_5_1_3: true
+rhel8cis_rule_5_1_4: true
+rhel8cis_rule_5_1_5: true
+rhel8cis_rule_5_1_6: true
+rhel8cis_rule_5_1_7: true
+rhel8cis_rule_5_1_8: true
+rhel8cis_rule_5_2_1: true
+rhel8cis_rule_5_2_2: true
+rhel8cis_rule_5_2_3: true
+rhel8cis_rule_5_2_4: true
+rhel8cis_rule_5_2_5: true
+rhel8cis_rule_5_2_6: true
+rhel8cis_rule_5_2_7: true
+rhel8cis_rule_5_2_8: true
+rhel8cis_rule_5_2_9: true
+rhel8cis_rule_5_2_10: true
+rhel8cis_rule_5_2_12: true
+rhel8cis_rule_5_2_11: true
+rhel8cis_rule_5_2_13: true
+rhel8cis_rule_5_2_14: true
+rhel8cis_rule_5_2_15: true
+rhel8cis_rule_5_2_16: true
+rhel8cis_rule_5_2_17: true
+rhel8cis_rule_5_2_18: true
+rhel8cis_rule_5_2_19: true
+rhel8cis_rule_5_2_20: true
+rhel8cis_rule_5_3_1: true
+rhel8cis_rule_5_3_2: true
+rhel8cis_rule_5_3_3: true
+rhel8cis_rule_5_4_1: true
+rhel8cis_rule_5_4_2: true
+rhel8cis_rule_5_4_3: true
+rhel8cis_rule_5_4_4: true
+rhel8cis_rule_5_4_5: true
+rhel8cis_rule_5_5_1_1: true
+rhel8cis_rule_5_5_1_2: true
+rhel8cis_rule_5_5_1_3: true
+rhel8cis_rule_5_5_1_4: true
+rhel8cis_rule_5_5_1_5: true
+rhel8cis_rule_5_5_2: true
+rhel8cis_rule_5_5_3: true
+rhel8cis_rule_5_5_4: true
+rhel8cis_rule_5_5_5: true
+rhel8cis_rule_5_6: true
+rhel8cis_rule_5_7: true
+
+# Section 6 rules
+rhel8cis_rule_6_1_1: true
+rhel8cis_rule_6_1_2: true
+rhel8cis_rule_6_1_3: true
+rhel8cis_rule_6_1_4: true
+rhel8cis_rule_6_1_5: true
+rhel8cis_rule_6_1_6: true
+rhel8cis_rule_6_1_7: true
+rhel8cis_rule_6_1_8: true
+rhel8cis_rule_6_1_9: true
+rhel8cis_rule_6_1_10: true
+rhel8cis_rule_6_1_11: true
+rhel8cis_rule_6_1_12: true
+rhel8cis_rule_6_1_13: true
+rhel8cis_rule_6_1_14: true
+rhel8cis_rule_6_2_1: true
+rhel8cis_rule_6_2_2: true
+rhel8cis_rule_6_2_3: true
+rhel8cis_rule_6_2_4: true
+rhel8cis_rule_6_2_5: true
+rhel8cis_rule_6_2_6: true
+rhel8cis_rule_6_2_7: true
+rhel8cis_rule_6_2_8: false
+rhel8cis_rule_6_2_9: true
+rhel8cis_rule_6_2_10: true
+rhel8cis_rule_6_2_11: true
+rhel8cis_rule_6_2_12: true
+rhel8cis_rule_6_2_13: true
+rhel8cis_rule_6_2_14: true
+rhel8cis_rule_6_2_15: true
+rhel8cis_rule_6_2_16: true
+rhel8cis_rule_6_2_17: true
+rhel8cis_rule_6_2_18: true
+rhel8cis_rule_6_2_19: true
+rhel8cis_rule_6_2_20: true
+
+# Service configuration booleans set true to keep service
+rhel8cis_avahi_server: false
+rhel8cis_cups_server: false
+rhel8cis_dhcp_server: false
+rhel8cis_ldap_server: false
+rhel8cis_telnet_server: false
+rhel8cis_nfs_server: false
+rhel8cis_rpc_server: false
+rhel8cis_ntalk_server: false
+rhel8cis_rsyncd_server: false
+rhel8cis_tftp_server: false
+rhel8cis_rsh_server: false
+rhel8cis_nis_server: false
+rhel8cis_snmp_server: false
+rhel8cis_squid_server: false
+rhel8cis_smb_server: false
+rhel8cis_dovecot_server: false
+rhel8cis_httpd_server: false
+rhel8cis_vsftpd_server: false
+rhel8cis_named_server: false
+rhel8cis_nfs_rpc_server: false
+rhel8cis_is_mail_server: false
+rhel8cis_bind: false
+rhel8cis_vsftpd: false
+rhel8cis_httpd: false
+rhel8cis_dovecot: false
+rhel8cis_samba: false
+rhel8cis_squid: false
+rhel8cis_net_snmp: false
+rhel8cis_allow_autofs: false
+
+## Section 1 vars
+# 1.3.3 var log location variable
+rhel8cis_varlog_location: "/var/log/sudo.log"
+
+# xinetd required
+rhel8cis_xinetd_required: false
+
+# RedHat Satellite Subscription items
+rhel8cis_rhnsd_required: false
+
+# 1.4.2 Bootloader password
+rhel8cis_bootloader_password: random
+rhel8cis_set_boot_pass: false
+
+# 1.10/1.11 Set crypto policy (LEGACY, DEFAULT, FUTURE, FIPS)
+# Control 1.10 sates not ot use LEGACY and control 1.11 says to use FUTURE or FIPS.
+rhel8cis_crypto_policy: "FIPS"
+
+# System network parameters (host only OR host and router)
+rhel8cis_is_router: false
+
+# IPv6 required
+rhel8cis_ipv6_required: true
+
+# AIDE
+rhel8cis_config_aide: true
+# AIDE cron settings
+rhel8cis_aide_cron:
+    cron_user: root
+    cron_file: /etc/crontab
+    aide_job: '/usr/sbin/aide --check'
+    aide_minute: 0
+    aide_hour: 5
+    aide_day: '*'
+    aide_month: '*'
+    aide_weekday: '*'
+
+# SELinux policy
+rhel8cis_selinux_pol: targeted
+
+# Whether or not to run tasks related to auditing/patching the desktop environment
+rhel8cis_gui: no
+
+# Set to 'true' if X Windows is needed in your environment
+rhel8cis_xwindows_required: no
+
+rhel8cis_openldap_clients_required: false
+rhel8cis_telnet_required: false
+rhel8cis_talk_required: false
+rhel8cis_rsh_required: false
+rhel8cis_ypbind_required: false
+
+# 2.2.1.1 Time Synchronization - Either chrony or ntp
+rhel8cis_time_synchronization: chrony
+
+# 2.2.1.2 Time Synchronization servers - used in template file chrony.conf.j2
+rhel8cis_time_synchronization_servers:
+    - 0.pool.ntp.org
+    - 1.pool.ntp.org
+    - 2.pool.ntp.org
+    - 3.pool.ntp.org
+
+rhel8cis_chrony_server_options: "minpoll 8"
+rhel8cis_ntp_server_options: "iburst"
+
+## Section3 vars
+# 3.4.2 | PATCH | Ensure /etc/hosts.allow is configured
+rhel8cis_host_allow:
+    - "10.0.0.0/255.0.0.0"
+    - "172.16.0.0/255.240.0.0"
+    - "192.168.0.0/255.255.0.0"
+
+# Firewall Service - either firewalld, iptables, or nftables
+rhel8cis_firewall: firewalld
+
+# 3.4.2.4 Default zone setting
+rhel8cis_default_zone: public
+
+# 3.4.2.5 Zone and Interface setting
+rhel8cis_int_zone: customezone
+rhel8cis_interface: eth0
+
+rhel8cis_firewall_services:
+    - ssh
+    - dhcpv6-client
+
+# 3.4.3.2 Set nftables new table create
+rhel8cis_nft_tables_autoNewTable: true
+rhel8cis_nft_tables_tableName: filter
+
+# 3.4.3.3 Set nftables new chain create
+rhel8cis_nft_tables_autoChainCreate: true
+
+# Warning Banner Content (issue, issue.net, motd)
+rhel8cis_warning_banner: |
+    Authorized uses only. All activity may be monitored and reported.
+# End Banner
+
+## Section4 vars
+
+rhel8cis_auditd:
+    admin_space_left_action: halt
+    max_log_file_action: keep_logs
+
+rhel8cis_logrotate: "daily"
+
+# The audit_back_log_limit value should never be below 8192
+rhel8cis_audit_back_log_limit: 8192
+
+# The max_log_file parameter should be based on your sites policy
+rhel8cis_max_log_file_size: 10
+
+# RHEL-08-4.2.1.4/4.2.1.5 remote and destation log server name
+rhel8cis_remote_log_server: logagg.example.com
+
+# RHEL-08-4.2.1.5
+rhel8cis_system_is_log_server: false
+
+## Section5 vars
+
+rhel8cis_sshd:
+    clientalivecountmax: 3
+    clientaliveinterval: 300
+    ciphers: "aes256-ctr,aes192-ctr,aes128-ctr"
+    macs: "hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com"
+    logingracetime: 60
+    # WARNING: make sure you understand the precedence when working with these values!!
+    # allowusers:
+    # allowgroups: systems dba
+    # denyusers:
+    # denygroups:
+rhel8cis_pam_faillock:
+    attempts: 5
+    interval: 900
+    unlock_time: 900
+    fail_for_root: no
+    remember: 5
+    pwhash: sha512
+
+# 5.2.5 SSH LogLevel setting. Options are INFO or VERBOSE
+rhel8cis_ssh_loglevel: INFO
+
+# 5.2.19 SSH MaxSessions setting. Must be 4 our less
+rhel8cis_ssh_maxsessions: 4
+rhel8cis_inactivelock:
+    lock_days: 30
+
+# 5.3.1/5.3.2 Custon authselect profile settings. Settings in place now will fail, they are place holders from the control example
+rhel8cis_authselect:
+    custom_profile_name: custom-profile
+    default_file_to_copy: "sssd --symlink-meta"
+    options: with-sudo with-faillock without-nullok
+
+# 5.3.1 Enable automation to creat custom profile settings, using the setings above
+rhel8cis_authselect_custom_profile_create: true
+
+# 5.3.2 Enable autmoation to select custom profile options, using the settings above
+rhel8cis_authselect_custom_profile_select: true
+
+rhel8cis_pass:
+    max_days: 365
+    min_days: 7
+    warn_age: 7
+# Syslog system - either rsyslog or syslog-ng
+rhel8cis_syslog: rsyslog
+rhel8cis_rsyslog_ansibleManaged: true
+
+rhel8cis_vartmp:
+    source: /tmp
+    fstype: none
+    opts: "defaults,nodev,nosuid,noexec,bind"
+    enabled: no
+
+# Starting GID for interactive users
+rhel8stig_int_gid: 1000
+
+# RHEL-08-5.4.5
+# Session timeout setting file (TMOUT setting can be set in multiple files)
+# Timeout value is in seconds. (60 seconds * 10 = 600)
+rhel8cis_shell_session_timeout:
+    file: /etc/profile.d/tmout.sh
+    timeout: 600
+# RHEL-08-5.4.1.5 Allow ansible to expire password for account with a last changed date in the future. False will just display users in violation, true will expire those users passwords
+rhel8cis_futurepwchgdate_autofix: true
+
+## Section6 vars
+
+# RHEL-08_6.1.1 Allow ansible to adjust package descrepancies . False will just display packages with descrepancies, True will correct descrepancies
+rhelcis_rpm_descrep_autofixes: true
+
+# RHEL-08_6.1.10 Allow ansible to adjust world-writable files. False will just display world-writable files, True will remove world-writable
+rhel8cis_no_world_write_adjust: true
+rhel8cis_passwd_label: "{{ (this_item | default(item)).id }}: {{ (this_item | default(item)).dir }}"
+rhel8cis_dotperm_ansibleManaged: true

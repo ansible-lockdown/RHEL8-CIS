@@ -1,0 +1,71 @@
+---
+# tasks file for RHEL8-CIS
+- name: Check OS version and family
+  fail:
+      msg: "This role can only be run against RHEL 8. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
+  when:
+      - ansible_os_family == 'RedHat'
+      - ansible_distribution_major_version is version_compare('8', '!=')
+  tags:
+      - always
+
+- name: Check ansible version
+  fail:
+      msg: You must use ansible 2.1 or greater
+  when: not ansible_version.full is version_compare('2.1', '>=')
+  tags:
+      - always
+
+- name: Install OpenSCAP and run a report
+  import_tasks: audit_oscap_scan_before.yml
+  when: rhel8cis_oscap_scan
+  tags:
+      - oscapreport
+
+- include: prelim.yml
+  become: yes
+  tags:
+      - prelim_tasks
+      - always
+
+- include: parse_etc_password.yml
+  become: yes
+  when: rhel8cis_section6|bool
+
+- include: section1.yml
+  become: yes
+  when: rhel8cis_section1|bool
+  tags:
+      - rhel8cis_section1
+
+- include: section2.yml
+  become: yes
+  when: rhel8cis_section2|bool
+
+- include: section3.yml
+  become: yes
+  when: rhel8cis_section3|bool
+
+- include: section4.yml
+  become: yes
+  when: rhel8cis_section4|bool
+
+- include: section5.yml
+  become: yes
+  when: rhel8cis_section5|bool
+
+- include: section6.yml
+  become: yes
+  when: rhel8cis_section6|bool
+
+- include: post.yml
+  become: yes
+  tags:
+      - post_tasks
+      - always
+
+- name: run the OpenSCAP reporting tool again
+  import_tasks: audit_oscap_scan_after.yml
+  when: rhel8cis_oscap_scan
+  tags:
+      - oscapreport

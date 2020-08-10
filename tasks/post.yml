@@ -1,0 +1,9 @@
+---
+# Post tasks
+
+- name: Perform YUM package cleanup
+  command: dnf -y autoremove
+  changed_when: no
+  ignore_errors: yes
+  tags:
+      - skip_ansible_lint
