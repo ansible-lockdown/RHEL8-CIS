@@ -24,7 +24,7 @@
         when:
             - '"audit-libs-" not in rhel8cis_4_1_1_1_auditdpackages.stdout'
   when:
-      - rhel8cis_rule_4_1_1_1|bool
+      - rhel8cis_rule_4_1_1_1
   tags:
       - level2
       - patch
@@ -37,7 +37,7 @@
       enabled: yes
   when:
       - not rhel8cis_skip_for_travis
-      - rhel8cis_rule_4_1_1_2|bool
+      - rhel8cis_rule_4_1_1_2
       - ansible_connection != 'docker'
   tags:
       - level2
@@ -54,7 +54,7 @@
   ignore_errors: yes
   notify: generate new grub config
   when:
-      - rhel8cis_rule_4_1_1_3|bool
+      - rhel8cis_rule_4_1_1_3
   tags:
       - level2
       - auditd
@@ -70,7 +70,7 @@
   ignore_errors: yes
   become: true
   when:
-      - rhel8cis_rule_4_1_1_4|bool
+      - rhel8cis_rule_4_1_1_4
   tags:
       - level2
       - patch
@@ -83,7 +83,7 @@
       line: "max_log_file = {{ rhel8cis_max_log_file_size }}"
       state: present
   when:
-      - rhel8cis_rule_4_1_2_1|bool
+      - rhel8cis_rule_4_1_2_1
   notify: restart auditd
   tags:
       - level2
@@ -98,7 +98,7 @@
       line: "max_log_file_action = {{ rhel8cis_auditd['max_log_file_action'] }}"
       state: present
   when:
-      - rhel8cis_rule_4_1_2_2|bool
+      - rhel8cis_rule_4_1_2_2
   notify: restart auditd
   tags:
       - level2
@@ -113,7 +113,7 @@
       line: "admin_space_left_action = {{ rhel8cis_auditd['admin_space_left_action'] }}"
       state: present
   when:
-      - rhel8cis_rule_4_1_2_3|bool
+      - rhel8cis_rule_4_1_2_3
   notify: restart auditd
   tags:
       - level2
@@ -129,7 +129,7 @@
       group: root
       mode: 0600
   when:
-      - rhel8cis_rule_4_1_3|bool
+      - rhel8cis_rule_4_1_3
   notify: restart auditd
   tags:
       - level2
@@ -145,7 +145,7 @@
       group: root
       mode: 0600
   when:
-      - rhel8cis_rule_4_1_4|bool
+      - rhel8cis_rule_4_1_4
   notify: restart auditd
   tags:
       - level2
@@ -161,7 +161,7 @@
       group: root
       mode: 0600
   when:
-      - rhel8cis_rule_4_1_5|bool
+      - rhel8cis_rule_4_1_5
   notify: restart auditd
   tags:
       - level2
@@ -177,7 +177,7 @@
       group: root
       mode: 0600
   when:
-      - rhel8cis_rule_4_1_6|bool
+      - rhel8cis_rule_4_1_6
   notify: restart auditd
   tags:
       - level2
@@ -193,7 +193,7 @@
       group: root
       mode: 0600
   when:
-      - rhel8cis_rule_4_1_7|bool
+      - rhel8cis_rule_4_1_7
   notify: restart auditd
   tags:
       - level2
@@ -209,7 +209,7 @@
       group: root
       mode: 0600
   when:
-      - rhel8cis_rule_4_1_8|bool
+      - rhel8cis_rule_4_1_8
   notify: restart auditd
   tags:
       - level2
@@ -225,7 +225,7 @@
       group: root
       mode: 0600
   when:
-      - rhel8cis_rule_4_1_9|bool
+      - rhel8cis_rule_4_1_9
   notify: restart auditd
   tags:
       - level2
@@ -241,7 +241,7 @@
       group: root
       mode: 0600
   when:
-      - rhel8cis_rule_4_1_10|bool
+      - rhel8cis_rule_4_1_10
   notify: restart auditd
   tags:
       - level2
@@ -257,7 +257,7 @@
       group: root
       mode: 0600
   when:
-      - rhel8cis_rule_4_1_11|bool
+      - rhel8cis_rule_4_1_11
   notify: restart auditd
   tags:
       - level2
@@ -282,7 +282,7 @@
             mode: 0600
         notify: restart auditd
   when:
-      - rhel8cis_rule_4_1_12|bool
+      - rhel8cis_rule_4_1_12
   tags:
       - level2
       - auditd
@@ -298,7 +298,7 @@
       mode: 0600
   notify: restart auditd
   when:
-      - rhel8cis_rule_4_1_13|bool
+      - rhel8cis_rule_4_1_13
   tags:
       - level2
       - auditd
@@ -313,7 +313,7 @@
       group: root
       mode: 0600
   when:
-      - rhel8cis_rule_4_1_14|bool
+      - rhel8cis_rule_4_1_14
   notify: restart auditd
   tags:
       - level2
@@ -329,7 +329,7 @@
       group: root
       mode: 0600
   when:
-      - rhel8cis_rule_4_1_15|bool
+      - rhel8cis_rule_4_1_15
   notify: restart auditd
   tags:
       - level2
@@ -345,7 +345,7 @@
       group: root
       mode: 0600
   when:
-      - rhel8cis_rule_4_1_16|bool
+      - rhel8cis_rule_4_1_16
   notify: restart auditd
   tags:
       - level2
@@ -361,7 +361,7 @@
       group: root
       mode: 0600
   when:
-      - rhel8cis_rule_4_1_17|bool
+      - rhel8cis_rule_4_1_17
   notify: restart auditd
   tags:
       - level2
@@ -374,7 +374,7 @@
       name: "{{ rhel8cis_syslog }}"
       state: present
   when:
-      - rhel8cis_rule_4_2_1_1|bool
+      - rhel8cis_rule_4_2_1_1
   tags:
       - level1
       - patch
@@ -385,7 +385,7 @@
       name: rsyslog
       enabled: yes
   when:
-      - rhel8cis_rule_4_2_1_2|bool
+      - rhel8cis_rule_4_2_1_2
       - rhel8cis_syslog == 'rsyslog'
   tags:
       - level1
@@ -400,7 +400,7 @@
       line: '$FileCreateMode 0640'
   notify: restart rsyslog
   when:
-      - rhel8cis_rule_4_2_1_3|bool
+      - rhel8cis_rule_4_2_1_3
   tags:
       - level1
       - patch
@@ -483,7 +483,7 @@
             insertafter: '#### RULES ####'
         notify: restart rsyslog
   when:
-      - rhel8cis_rule_4_2_1_4|bool
+      - rhel8cis_rule_4_2_1_4
   tags:
       - level1
       - patch
@@ -504,7 +504,7 @@
       - result.rc != 257
   notify: restart rsyslog
   when:
-      - rhel8cis_rule_4_2_1_5|bool
+      - rhel8cis_rule_4_2_1_5
       - rhel8cis_remote_log_server is defined
   tags:
       - level1
@@ -538,7 +538,7 @@
         when:
             - rhel8cis_system_is_log_server
   when:
-      - rhel8cis_rule_4_2_1_6|bool
+      - rhel8cis_rule_4_2_1_6
   tags:
       - level1
       - patch
@@ -553,7 +553,7 @@
       state: present
   become: true
   when:
-      - rhel8cis_rule_4_2_2_1|bool
+      - rhel8cis_rule_4_2_2_1
   tags:
       - level1
       - patch
@@ -567,7 +567,7 @@
       state: present
   become: true
   when:
-      - rhel8cis_rule_4_2_2_2|bool
+      - rhel8cis_rule_4_2_2_2
   tags:
       - level1
       - patch
@@ -581,7 +581,7 @@
       state: present
   become: true
   when:
-      - rhel8cis_rule_4_2_2_3|bool
+      - rhel8cis_rule_4_2_2_3
   tags:
       - level1
       - patch
@@ -592,7 +592,7 @@
   changed_when: no
   failed_when: no
   when:
-      - rhel8cis_rule_4_2_3|bool
+      - rhel8cis_rule_4_2_3
   tags:
       - level1
       - patch
@@ -614,7 +614,7 @@
             - "{{ log_rotates.files }}"
             - { path: "/etc/logrotate.conf" }
   when:
-      - rhel8cis_rule_4_3|bool
+      - rhel8cis_rule_4_3
   tags:
       - level1
       - patch

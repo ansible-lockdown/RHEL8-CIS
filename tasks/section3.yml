@@ -31,7 +31,7 @@
             - sysctl flush ipv6 route table
   when:
       - not rhel8cis_is_router
-      - rhel8cis_rule_3_1_1|bool
+      - rhel8cis_rule_3_1_1
   tags:
       - level1
       - sysctl
@@ -53,7 +53,7 @@
       - sysctl flush ipv4 route table
   when:
       - not rhel8cis_is_router
-      - rhel8cis_rule_3_1_2|bool
+      - rhel8cis_rule_3_1_2
   tags:
       - level1
       - sysctl
@@ -98,7 +98,7 @@
   #   notify:
   #       - sysctl flush ipv6 route table
   when:
-      - rhel8cis_rule_3_2_1|bool
+      - rhel8cis_rule_3_2_1
   tags:
       - level1
       - sysctl
@@ -137,7 +137,7 @@
         when:
             - rhel8cis_ipv6_required
   when:
-      - rhel8cis_rule_3_2_2|bool
+      - rhel8cis_rule_3_2_2
   tags:
       - level1
       - sysctl
@@ -158,7 +158,7 @@
   notify:
       - sysctl flush ipv4 route table
   when:
-      - rhel8cis_rule_3_2_3|bool
+      - rhel8cis_rule_3_2_3
   tags:
       - level1
       - sysctl
@@ -179,7 +179,7 @@
   notify:
       - sysctl flush ipv4 route table
   when:
-      - rhel8cis_rule_3_2_4|bool
+      - rhel8cis_rule_3_2_4
   tags:
       - level1
       - sysctl
@@ -196,7 +196,7 @@
   notify:
       - sysctl flush ipv4 route table
   when:
-      - rhel8cis_rule_3_2_5|bool
+      - rhel8cis_rule_3_2_5
   tags:
       - level1
       - sysctl
@@ -213,7 +213,7 @@
   notify:
       - sysctl flush ipv4 route table
   when:
-      - rhel8cis_rule_3_2_6|bool
+      - rhel8cis_rule_3_2_6
   tags:
       - level1
       - sysctl
@@ -231,7 +231,7 @@
   notify:
       - sysctl flush ipv4 route table
   when:
-      - rhel8cis_rule_3_2_7|bool
+      - rhel8cis_rule_3_2_7
   tags:
       - level1
       - sysctl
@@ -248,7 +248,7 @@
   notify:
       - sysctl flush ipv4 route table
   when:
-      - rhel8cis_rule_3_2_8|bool
+      - rhel8cis_rule_3_2_8
   tags:
       - level1
       - sysctl
@@ -270,7 +270,7 @@
       - sysctl flush ipv6 route table
   when:
       - rhel8cis_ipv6_required
-      - rhel8cis_rule_3_2_9|bool
+      - rhel8cis_rule_3_2_9
   tags:
       - level1
       - sysctl
@@ -284,7 +284,7 @@
       line: "install dccp /bin/true"
       create: yes
   when:
-      - rhel8cis_rule_3_3_1|bool
+      - rhel8cis_rule_3_3_1
   tags:
       - level2
       - patch
@@ -297,7 +297,7 @@
       line: "install sctp /bin/true"
       create: yes
   when:
-      - rhel8cis_rule_3_3_2|bool
+      - rhel8cis_rule_3_3_2
   tags:
       - level2
       - patch
@@ -310,7 +310,7 @@
       line: "install rds /bin/true"
       create: yes
   when:
-      - rhel8cis_rule_3_3_3|bool
+      - rhel8cis_rule_3_3_3
   tags:
       - level2
       - patch
@@ -324,7 +324,7 @@
   notify: restart {{ rhel8cis_firewall }}
   when:
       - rhel8cis_firewall == "firewalld"
-      - rhel8cis_rule_3_4_1_1|bool
+      - rhel8cis_rule_3_4_1_1
   tags:
       - level1
       - patch
@@ -338,7 +338,7 @@
   become: true
   when:
       - rhel8cis_firewall == "firewalld"
-      - rhel8cis_rule_3_4_2_1|bool
+      - rhel8cis_rule_3_4_2_1
   tags:
       - level1
       - patch
@@ -349,7 +349,7 @@
   command: systemctl --now mask iptables
   when:
       - rhel8cis_firewall == "firewalld"
-      - rhel8cis_rule_3_4_2_2|bool
+      - rhel8cis_rule_3_4_2_2
   tags:
       - level1
       - patch
@@ -362,7 +362,7 @@
       enabled: no
   when:
       - rhel8cis_firewall == "firewalld"
-      - rhel8cis_rule_3_4_2_3|bool
+      - rhel8cis_rule_3_4_2_3
   tags:
       - level1
       - patch
@@ -372,7 +372,7 @@
   command: firewall-cmd --set-default-zone="{{ rhel8cis_default_zone }}"
   when:
       - rhel8cis_firewall == "firewalld"
-      - rhel8cis_rule_3_4_2_4|bool
+      - rhel8cis_rule_3_4_2_4
   tags:
       - level1
       - patch
@@ -392,7 +392,7 @@
                 - "{{ rhel8cis_3_4_2_5_interfacepolicy.stdout_lines }}"
   when:
       - rhel8cis_firewall == "firewalld"
-      - rhel8cis_rule_3_4_2_5|bool
+      - rhel8cis_rule_3_4_2_5
   tags:
       - level1
       - audit
@@ -412,7 +412,7 @@
                 - "{{ rhel8cis_3_4_2_6_servicesport.stdout_lines }}"
   when:
       - rhel8cis_firewall == "firewalld"
-      - rhel8cis_rule_3_4_2_6|bool
+      - rhel8cis_rule_3_4_2_6
   tags:
       - level1
       - audit
@@ -431,7 +431,7 @@
             - rhel8cis_ipv6_required
   when:
       - rhel8cis_firewall != "iptables"
-      - rhel8cis_rule_3_4_3_1|bool
+      - rhel8cis_rule_3_4_3_1
   tags:
       - level1
       - patch
@@ -469,7 +469,7 @@
             - rhel8cis_nft_tables_autoNewTable
   when:
       - rhel8cis_firewall == "nftables"
-      - rhel8cis_rule_3_4_3_2|bool
+      - rhel8cis_rule_3_4_3_2
   tags:
       - level1
       - patch
@@ -516,7 +516,7 @@
             - rhel8cis_nft_tables_autoChainCreate
   when:
       - rhel8cis_firewall == "nftables"
-      - rhel8cis_rule_3_4_3_2|bool
+      - rhel8cis_rule_3_4_3_2
   tags:
       - level1
       - patch
@@ -564,7 +564,7 @@
             - '"ip6 saddr ::1 counter packets 0 bytes 0 drop" not in rhel8cis_3_4_3_4_ip6saddr.stdout'
   when:
       - rhel8cis_firewall == "nftables"
-      - rhel8cis_rule_3_4_3_4|bool
+      - rhel8cis_rule_3_4_3_4
   tags:
       - level1
       - patch
@@ -623,7 +623,7 @@
             - '"ip protocol icmp ct state established,related,new accept" not in rhel8cis_3_4_3_5_outconnectionrule.stdout'
   when:
       - rhel8cis_firewall == "nftables"
-      - rhel8cis_rule_3_4_3_5|bool
+      - rhel8cis_rule_3_4_3_5
   tags:
       - level1
       - patch
@@ -684,7 +684,7 @@
             - '"type filter hook output priority 0; policy drop;" not in rhel8cis_3_4_3_6_outputpolicy.stdout'
   when:
       - rhel8cis_firewall == "nftables"
-      - rhel8cis_rule_3_4_3_6|bool
+      - rhel8cis_rule_3_4_3_6
   tags:
       - level1
       - patch
@@ -697,7 +697,7 @@
   become: true
   when:
       - rhel8cis_firewall == "nftables"
-      - rhel8cis_rule_3_4_3_7|bool
+      - rhel8cis_rule_3_4_3_7
   tags:
       - level1
       - patch
@@ -712,7 +712,7 @@
   become: true
   when:
       - rhel8cis_firewall == "nftables"
-      - rhel8cis_rule_3_4_3_7|bool
+      - rhel8cis_rule_3_4_3_7
   tags:
       - level1
       - patch
@@ -736,7 +736,7 @@
             - FORWARD
             - OUTPUT
   when:
-      - rhel8cis_rule_3_4_4_1_1|bool
+      - rhel8cis_rule_3_4_4_1_1
       - rhel8cis_firewall == "iptables"
   tags:
       - level1
@@ -767,7 +767,7 @@
             jump: DROP
   when:
       - rhel8cis_firewall == "iptables"
-      - rhel8cis_rule_3_4_4_1_2|bool
+      - rhel8cis_rule_3_4_4_1_2
   tags:
       - level1
       - patch
@@ -790,7 +790,7 @@
       - { chain: INPUT, protocol: icmp, ctstate: ESTABLISHED }
   when:
       - rhel8cis_firewall == "iptables"
-      - rhel8cis_rule_3_4_4_1_3|bool
+      - rhel8cis_rule_3_4_4_1_3
   tags:
       - level1
       - patch
@@ -837,7 +837,7 @@
             - rhel8cis_3_4_4_1_4_otcp.stdout is defined
   when:
       - rhel8cis_firewall == "iptables"
-      - rhel8cis_rule_3_4_4_1_4|bool
+      - rhel8cis_rule_3_4_4_1_4
   tags:
       - level1
       - patch
@@ -866,7 +866,7 @@
             - OUTPUT
   when:
       - rhel8cis_firewall == "iptables"
-      - rhel8cis_rule_3_4_4_2_1|bool
+      - rhel8cis_rule_3_4_4_2_1
       - rhel8cis_ipv6_required
   tags:
       - level1
@@ -903,7 +903,7 @@
         become: true
   when:
       - rhel8cis_firewall == "iptables"
-      - rhel8cis_rule_3_4_4_2_2|bool
+      - rhel8cis_rule_3_4_4_2_2
       - rhel8cis_ipv6_required
   tags:
       - level1
@@ -929,7 +929,7 @@
       - { chain: INPUT, protocol: icmp, ctstate: ESTABLISHED }
   when:
       - rhel8cis_firewall == "iptables"
-      - rhel8cis_rule_3_4_4_2_3|bool
+      - rhel8cis_rule_3_4_4_2_3
       - rhel8cis_ipv6_required
   tags:
       - level1
@@ -960,7 +960,7 @@
             - rhel8cis_3_4_4_2_4_otcp.stdout is defined
   when:
       - rhel8cis_firewall == "iptables"
-      - rhel8cis_rule_3_4_4_2_4|bool
+      - rhel8cis_rule_3_4_4_2_4
       - rhel8cis_ipv6_required
   tags:
       - level1
@@ -993,7 +993,7 @@
         when: rhel_08_wifi_enabled is changed
 
   when:
-      - rhel8cis_rule_3_5|bool
+      - rhel8cis_rule_3_5
   tags:
       - level1
       - level2
@@ -1010,7 +1010,7 @@
   notify: generate new grub config
   when:
       - not rhel8cis_ipv6_required
-      - rhel8cis_rule_3_6|bool
+      - rhel8cis_rule_3_6
   tags:
       - level2
       - patch
