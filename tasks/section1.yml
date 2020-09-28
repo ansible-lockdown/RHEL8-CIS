@@ -15,7 +15,7 @@
         when:
             - ansible_connection != 'docker'
   when:
-      - rhel8cis_rule_1_1_1_1|bool
+      - rhel8cis_rule_1_1_1_1
   tags:
       - level1
       - scored
@@ -39,7 +39,7 @@
         when:
             - ansible_connection != 'docker'
   when:
-      - rhel8cis_rule_1_1_1_2|bool
+      - rhel8cis_rule_1_1_1_2
   tags:
       - level2
       - scored
@@ -63,7 +63,7 @@
         when:
             - ansible_connection != 'docker'
   when:
-      - rhel8cis_rule_1_1_1_3|bool
+      - rhel8cis_rule_1_1_1_3
   tags:
       - level1
       - scored
@@ -87,7 +87,7 @@
         when:
             - ansible_connection != 'docker'
   when:
-      - rhel8cis_rule_1_1_1_4|bool
+      - rhel8cis_rule_1_1_1_4
 
   tags:
       - level1
@@ -112,7 +112,7 @@
             masked: no
             state: started
   when:
-      - rhel8cis_rule_1_1_2|bool
+      - rhel8cis_rule_1_1_2
   tags:
       - level2
       - scored
@@ -123,7 +123,6 @@
         "SCORED | 1.1.3 | PATCH | Ensure nodev option set on /tmp partition"
         "SCORED | 1.1.4 | PATCH | Ensure nosuid option set on /tmp partition"
         "SCORED | 1.1.5 | PATCH | Ensure noexec option set on /tmp partition"
-        "| drop custom tmp.mount"
   copy:
       src: etc/systemd/system/tmp.mount
       dest: /etc/systemd/system/tmp.mount
@@ -132,9 +131,9 @@
       mode: 0644
   notify: systemd restart tmp.mount
   when:
-      - rhel8cis_rule_1_1_3|bool
-      - rhel8cis_rule_1_1_4|bool
-      - rhel8cis_rule_1_1_5|bool
+      - rhel8cis_rule_1_1_3
+      - rhel8cis_rule_1_1_4
+      - rhel8cis_rule_1_1_5
   tags:
       - level1
       - scored
@@ -151,7 +150,7 @@
   changed_when: no
   failed_when: no
   when:
-      - rhel8cis_rule_1_1_6|bool
+      - rhel8cis_rule_1_1_6
   tags:
       - level2
       - scored
@@ -165,7 +164,7 @@
   changed_when: no
   failed_when: no
   when:
-      - rhel8cis_rule_1_1_7|bool
+      - rhel8cis_rule_1_1_7
   tags:
       - level2
       - scored
@@ -185,9 +184,9 @@
       opts: "{{ rhel8cis_vartmp['opts'] }}"
   when:
       - rhel8cis_vartmp['enabled']
-      - rhel8cis_rule_1_1_8|bool
-      - rhel8cis_rule_1_1_9|bool
-      - rhel8cis_rule_1_1_10|bool
+      - rhel8cis_rule_1_1_8
+      - rhel8cis_rule_1_1_9
+      - rhel8cis_rule_1_1_10
   tags:
       - level1
       - scored
@@ -202,7 +201,7 @@
   changed_when: no
   failed_when: no
   when:
-      - rhel8cis_rule_1_1_11|bool
+      - rhel8cis_rule_1_1_11
   tags:
       - level2
       - scored
@@ -216,7 +215,7 @@
   changed_when: no
   failed_when: no
   when:
-      - rhel8cis_rule_1_1_12|bool
+      - rhel8cis_rule_1_1_12
   tags:
       - level2
       - scored
@@ -230,7 +229,7 @@
   changed_when: no
   failed_when: no
   when:
-      - rhel8cis_rule_1_1_13|bool
+      - rhel8cis_rule_1_1_13
   tags:
       - level2
       - scored
@@ -246,7 +245,7 @@
       fstype: "{{ item.fstype }}"
       opts: "nodev"
   when:
-      - rhel8cis_rule_1_1_14|bool
+      - rhel8cis_rule_1_1_14
       - item.mount == "/home"
   with_items: "{{ ansible_mounts }}"
   tags:
@@ -265,9 +264,9 @@
       fstype: tmpfs
       opts: "defaults,nodev,nosuid,noexec"
   when:
-      - rhel8cis_rule_1_1_15|bool
-      - rhel8cis_rule_1_1_16|bool
-      - rhel8cis_rule_1_1_17|bool
+      - rhel8cis_rule_1_1_15
+      - rhel8cis_rule_1_1_16
+      - rhel8cis_rule_1_1_17
   tags:
       - level1
       - scored
@@ -281,7 +280,7 @@
       msg: "--> Not relevant"
   changed_when: no
   when:
-      - rhel8cis_rule_1_1_18|bool
+      - rhel8cis_rule_1_1_18
   tags:
       - level1
       - notscored
@@ -293,7 +292,7 @@
       msg: "--> Not relevant"
   changed_when: no
   when:
-      - rhel8cis_rule_1_1_19|bool
+      - rhel8cis_rule_1_1_19
   tags:
       - level1
       - notscored
@@ -305,7 +304,7 @@
       msg: "--> Not relevant"
   changed_when: no
   when:
-      - rhel8cis_rule_1_1_20|bool
+      - rhel8cis_rule_1_1_20
   tags:
       - level1
       - notscored
@@ -318,7 +317,7 @@
   failed_when: no
   # when: sticky_bit_on_worldwritable_dirs_audit.rc == '0'
   when:
-      - rhel8cis_rule_1_1_21|bool
+      - rhel8cis_rule_1_1_21
   tags:
       - level1
       - patch
@@ -331,7 +330,7 @@
   when:
       - not rhel8cis_allow_autofs
       - autofs_service_status.stdout == "loaded"
-      - rhel8cis_rule_1_1_22|bool
+      - rhel8cis_rule_1_1_22
   tags:
       - level1
       - level2
@@ -351,7 +350,7 @@
             name: usb-storage
             state: absent
   when:
-      - rhel8cis_rule_1_1_23|bool
+      - rhel8cis_rule_1_1_23
   tags:
       - level1
       - level2
@@ -364,7 +363,7 @@
   failed_when: no
   when:
       - ansible_distribution == "RedHat"
-      - rhel8cis_rule_1_2_1|bool
+      - rhel8cis_rule_1_2_1
   tags:
       - level1
       - notscored
@@ -378,7 +377,7 @@
       enabled: no
   when:
       - ansible_distribution == "RedHat" and rhnsd_service_status.stdout == "loaded" and not rhel8cis_rhnsd_required
-      - rhel8cis_rule_1_2_5|bool
+      - rhel8cis_rule_1_2_5
   tags:
       - level1
       - notscored
@@ -388,7 +387,7 @@
 - name: "NOTSCORED | 1.2.3 | PATCH | Ensure GPG keys are configured"
   command: gpg --quiet --with-fingerprint /etc/pki/rpm-gpg/RPM-GPG-KEY-{{ ansible_distribution|lower }}-release
   when:
-      - rhel8cis_rule_1_2_3|bool
+      - rhel8cis_rule_1_2_3
       - ansible_distribution == "RedHat"
   tags:
       - level1
@@ -413,7 +412,7 @@
         with_items:
             - "{{ yum_repos.files }}"
   when:
-      - rhel8cis_rule_1_2_4|bool
+      - rhel8cis_rule_1_2_4
   tags:
       - level1
       - scored
@@ -428,7 +427,7 @@
   changed_when: no
   failed_when: no
   when:
-      - rhel8cis_rule_1_2_5|bool
+      - rhel8cis_rule_1_2_5
   tags:
       - level1
       - notscored
@@ -458,7 +457,7 @@
       state: present
   become: true
   when:
-      - rhel8cis_rule_1_3_2|bool
+      - rhel8cis_rule_1_3_2
   tags:
       - level1
       - scored
@@ -473,7 +472,7 @@
       state: present
   become: true
   when:
-      - rhel8cis_rule_1_3_1|bool
+      - rhel8cis_rule_1_3_1
   tags:
       - level1
       - scored
@@ -496,8 +495,8 @@
         async: 45
         poll: 0
   when:
-      - rhel8cis_config_aide|bool
-      - rhel8cis_rule_1_4_1|bool
+      - rhel8cis_config_aide
+      - rhel8cis_rule_1_4_1
   tags:
       - level1
       - scored
@@ -517,7 +516,7 @@
       weekday: "{{ rhel8cis_aide_cron['aide_weekday'] | default('*') }}"
       job: "{{ rhel8cis_aide_cron['aide_job'] }}"
   when:
-      - rhel8cis_rule_1_4_2|bool
+      - rhel8cis_rule_1_4_2
   tags:
       - level1
       - scored
@@ -543,7 +542,7 @@
         when:
             - grub_cfg.stat.exists and grub_cfg.stat.islnk
   when:
-      - rhel8cis_rule_1_4_1|bool
+      - rhel8cis_rule_1_4_1
   tags:
       - level1
       - scored
@@ -564,9 +563,9 @@
             content: "GRUB2_PASSWORD={{ grub_pass.passhash }}"
         notify: generate new grub config
   when:
-      - rhel8cis_set_boot_pass|bool
+      - rhel8cis_set_boot_pass
       - grub_pass is defined and grub_pass.passhash is defined and grub_pass.passhash != ''
-      - rhel8cis_rule_1_5_2|bool
+      - rhel8cis_rule_1_5_2
   tags:
       - level1
       - scored
@@ -588,7 +587,7 @@
             regexp: '/sbin/sulogin'
             line: 'ExecStart=-/usr/lib/systemd/systemd-sulogin-shell rescue'
   when:
-      - rhel8cis_rule_1_5_3|bool
+      - rhel8cis_rule_1_5_3
       - ansible_distribution_major_version == 8
   tags:
       - level1
@@ -614,7 +613,7 @@
             sysctl_set: yes
             ignoreerrors: yes
   when:
-      - rhel8cis_rule_1_6_1|bool
+      - rhel8cis_rule_1_6_1
   tags:
       - level1
       - scored
@@ -631,7 +630,7 @@
       sysctl_set: yes
       ignoreerrors: yes
   when:
-      - rhel8cis_rule_1_6_2|bool
+      - rhel8cis_rule_1_6_2
   tags:
       - level1
       - scored
@@ -643,7 +642,7 @@
       name: libselinux
       state: present
   when:
-      - rhel8cis_rule_1_7_1_1|bool
+      - rhel8cis_rule_1_7_1_1
   tags:
       - level2
       - scored
@@ -659,7 +658,7 @@
   ignore_errors: yes
   notify: generate new grub config
   when:
-      - rhel8cis_rule_1_7_1_2|bool
+      - rhel8cis_rule_1_7_1_2
   tags:
       - level2
       - scored
@@ -672,8 +671,8 @@
       policy: "{{ rhel8cis_selinux_pol }}"
       state: enforcing
   when:
-      - not rhel8cis_selinux_disable|bool
-      - rhel8cis_rule_1_7_1_3|bool
+      - not rhel8cis_selinux_disable
+      - rhel8cis_rule_1_7_1_3
   tags:
       - level2
       - scored
@@ -687,8 +686,8 @@
       policy: "{{ rhel8cis_selinux_pol }}"
       state: enforcing
   when:
-      - not rhel8cis_selinux_disable|bool
-      - rhel8cis_rule_1_7_1_4|bool
+      - not rhel8cis_selinux_disable
+      - rhel8cis_rule_1_7_1_4
   tags:
       - level2
       - scored
@@ -713,7 +712,7 @@
             msg: "Warning! You have unconfined daemons: {{ rhelcis_1_7_1_5_unconf_daemons.stdout_lines }}"
         when: rhelcis_1_7_1_5_unconf_daemons.stdout != ""
   when:
-      - rhel8cis_rule_1_7_1_5|bool
+      - rhel8cis_rule_1_7_1_5
   tags:
       - level2
       - audit
@@ -724,7 +723,7 @@
       name: setroubleshoot
       state: absent
   when:
-      - rhel8cis_rule_1_7_1_6|bool
+      - rhel8cis_rule_1_7_1_6
   tags:
       - level2
       - scored
@@ -737,7 +736,7 @@
       name: mcstrans
       state: absent
   when:
-      - rhel8cis_rule_1_7_1_7|bool
+      - rhel8cis_rule_1_7_1_7
   tags:
       - level2
       - scored
@@ -749,7 +748,7 @@
       src: etc/motd.j2
       dest: /etc/motd
   when:
-      - rhel8cis_rule_1_8_1_1|bool
+      - rhel8cis_rule_1_8_1_1
   tags:
       - level1
       - banner
@@ -761,7 +760,7 @@
       src: etc/issue.j2
       dest: /etc/issue
   when:
-      - rhel8cis_rule_1_8_1_2|bool
+      - rhel8cis_rule_1_8_1_2
   tags:
       - level1
       - patch
@@ -772,7 +771,7 @@
       src: etc/issue.net.j2
       dest: /etc/issue.net
   when:
-      - rhel8cis_rule_1_8_1_3|bool
+      - rhel8cis_rule_1_8_1_3
   tags:
       - level1
       - banner
@@ -787,7 +786,7 @@
       group: root
       mode: 0644
   when:
-      - rhel8cis_rule_1_8_1_4|bool
+      - rhel8cis_rule_1_8_1_4
   tags:
       - level1
       - perms
@@ -802,7 +801,7 @@
       group: root
       mode: 0644
   when:
-      - rhel8cis_rule_1_8_1_5|bool
+      - rhel8cis_rule_1_8_1_5
   tags:
       - level1
       - perms
@@ -817,7 +816,7 @@
       group: root
       mode: 0644
   when:
-      - rhel8cis_rule_1_8_1_6|bool
+      - rhel8cis_rule_1_8_1_6
   tags:
       - level1
       - perms
@@ -842,8 +841,8 @@
       - { file: '/etc/dconf/db/gdm.d/01-banner-message', regexp: 'banner-message-enable', line: 'banner-message-enable=true' }
       - { file: '/etc/dconf/db/gdm.d/01-banner-message', regexp: 'banner-message-text', line: "banner-message-text='{{ rhel8cis_warning_banner }}' " }
   when:
-      - rhel8cis_gui|bool
-      - rhel8cis_rule_1_8_2|bool
+      - rhel8cis_gui
+      - rhel8cis_rule_1_8_2
   tags:
       - level1
       - level2
@@ -855,7 +854,7 @@
       name: "*"
       state: latest
   when:
-      - rhel8cis_rule_1_9|bool
+      - rhel8cis_rule_1_9
   tags:
       - level1
       - patch
@@ -872,7 +871,7 @@
         shell: update-crypto-policies
         become: true
   when:
-      - rhel8cis_rule_1_10|bool
+      - rhel8cis_rule_1_10
   tags:
       - level1
       - patch
@@ -888,7 +887,7 @@
         shell: update-crypto-policies
         become: true
   when:
-      - rhel8cis_rule_1_11|bool
+      - rhel8cis_rule_1_11
   tags:
       - level2
       - patch

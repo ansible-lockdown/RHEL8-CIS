@@ -4,7 +4,7 @@
       name: crond
       enabled: yes
   when:
-      - rhel8cis_rule_5_1_1|bool
+      - rhel8cis_rule_5_1_1
   tags:
       - level1
       - patch
@@ -17,7 +17,7 @@
       group: root
       mode: 0600
   when:
-      - rhel8cis_rule_5_1_2|bool
+      - rhel8cis_rule_5_1_2
   tags:
       - level1
       - patch
@@ -31,7 +31,7 @@
       group: root
       mode: 0700
   when:
-      - rhel8cis_rule_5_1_3|bool
+      - rhel8cis_rule_5_1_3
   tags:
       - level1
       - patch
@@ -45,7 +45,7 @@
       group: root
       mode: 0700
   when:
-      - rhel8cis_rule_5_1_4|bool
+      - rhel8cis_rule_5_1_4
   tags:
       - level1
       - patch
@@ -59,7 +59,7 @@
       group: root
       mode: 0700
   when:
-      - rhel8cis_rule_5_1_5|bool
+      - rhel8cis_rule_5_1_5
   tags:
       - level1
       - patch
@@ -73,7 +73,7 @@
       group: root
       mode: 0700
   when:
-      - rhel8cis_rule_5_1_6|bool
+      - rhel8cis_rule_5_1_6
   tags:
       - level1
       - patch
@@ -87,7 +87,7 @@
       group: root
       mode: 0700
   when:
-      - rhel8cis_rule_5_1_7|bool
+      - rhel8cis_rule_5_1_7
   tags:
       - level1
       - patch
@@ -131,7 +131,7 @@
             group: root
             mode: 0600
   when:
-      - rhel8cis_rule_5_1_8|bool
+      - rhel8cis_rule_5_1_8
   tags:
       - level1
       - patch
@@ -145,7 +145,7 @@
       group: root
       mode: 0600
   when:
-      - rhel8cis_rule_5_2_1|bool
+      - rhel8cis_rule_5_2_1
   tags:
       - level1
       - patch
@@ -197,7 +197,7 @@
         when:
             - "rhel8cis_sshd['denygroups']|default('') != ''"
   when:
-      - rhel8cis_rule_5_2_2|bool
+      - rhel8cis_rule_5_2_2
   tags:
       - level1
       - patch
@@ -210,7 +210,7 @@
       - find /etc/ssh -xdev -type f -name 'ssh_host_*_key' -exec chown root:root {} \;
       - find /etc/ssh -xdev -type f -name 'ssh_host_*_key' -exec chmod 0600 {} \;
   when:
-      - rhel8cis_rule_5_2_3|bool
+      - rhel8cis_rule_5_2_3
   tags:
       - level1
       - patch
@@ -223,7 +223,7 @@
       - find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' -exec chmod 0644 {} \;
       - find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' -exec chown root:root {} \;
   when:
-      - rhel8cis_rule_5_2_4|bool
+      - rhel8cis_rule_5_2_4
   tags:
       - level1
       - patch
@@ -236,7 +236,7 @@
       regexp: "^#LogLevel|^LogLevel"
       line: 'LogLevel {{ rhel8cis_ssh_loglevel }}'
   when:
-      - rhel8cis_rule_5_2_5|bool
+      - rhel8cis_rule_5_2_5
   tags:
       - level1
       - patch
@@ -249,7 +249,7 @@
       regexp: "^#X11Forwarding|^X11Forwarding"
       line: 'X11Forwarding no'
   when:
-      - rhel8cis_rule_5_2_6|bool
+      - rhel8cis_rule_5_2_6
   tags:
       - level1
       - level2
@@ -263,7 +263,7 @@
       regexp: '^(#)?MaxAuthTries \d'
       line: 'MaxAuthTries 4'
   when:
-      - rhel8cis_rule_5_2_7|bool
+      - rhel8cis_rule_5_2_7
   tags:
       - level1
       - patch
@@ -276,7 +276,7 @@
       regexp: "^#IgnoreRhosts|^IgnoreRhosts"
       line: 'IgnoreRhosts yes'
   when:
-      - rhel8cis_rule_5_2_8|bool
+      - rhel8cis_rule_5_2_8
   tags:
       - level1
       - patch
@@ -289,7 +289,7 @@
       regexp: ^#HostbasedAuthentication|^HostbasedAuthentication"
       line: 'HostbasedAuthentication no'
   when:
-      - rhel8cis_rule_5_2_9|bool
+      - rhel8cis_rule_5_2_9
   tags:
       - level1
       - patch
@@ -302,7 +302,7 @@
       regexp: "^#PermitRootLogin|^PermitRootLogin"
       line: 'PermitRootLogin no'
   when:
-      - rhel8cis_rule_5_2_10|bool
+      - rhel8cis_rule_5_2_10
   tags:
       - level1
       - patch
@@ -315,7 +315,7 @@
       regexp: "^#PermitEmptyPasswords|^PermitEmptyPasswords"
       line: 'PermitEmptyPasswords no'
   when:
-      - rhel8cis_rule_5_2_11|bool
+      - rhel8cis_rule_5_2_11
   tags:
       - level1
       - patch
@@ -328,7 +328,7 @@
       regexp: "^#PermitUserEnvironment|^PermitUserEnvironment"
       line: 'PermitUserEnvironment no'
   when:
-      - rhel8cis_rule_5_2_12|bool
+      - rhel8cis_rule_5_2_12
   tags:
       - level1
       - patch
@@ -350,7 +350,7 @@
             regexp: '^ClientAliveCountMax'
             line: "ClientAliveCountMax {{ rhel8cis_sshd['clientalivecountmax'] }}"
   when:
-      - rhel8cis_rule_5_2_13|bool
+      - rhel8cis_rule_5_2_13
   tags:
       - level1
       - patch
@@ -363,7 +363,7 @@
       regexp: "^#LoginGraceTime|^LoginGraceTime"
       line: "LoginGraceTime {{ rhel8cis_sshd['logingracetime'] }}"
   when:
-      - rhel8cis_rule_5_2_14|bool
+      - rhel8cis_rule_5_2_14
   tags:
       - level1
       - patch
@@ -376,7 +376,7 @@
       regexp: '^Banner'
       line: 'Banner /etc/issue.net'
   when:
-      - rhel8cis_rule_5_2_15|bool
+      - rhel8cis_rule_5_2_15
   tags:
       - level1
       - patch
@@ -389,7 +389,7 @@
       regexp: "^#UsePAM|^UsePAM"
       line: 'UsePAM yes'
   when:
-      - rhel8cis_rule_5_2_16|bool
+      - rhel8cis_rule_5_2_16
   tags:
       - level1
       - patch
@@ -402,7 +402,7 @@
       regexp: "^#AllowTcpForwarding|^AllowTcpForwarding"
       line: 'AllowTcpForwarding no'
   when:
-      - rhel8cis_rule_5_2_17|bool
+      - rhel8cis_rule_5_2_17
   tags:
       - level2
       - patch
@@ -415,7 +415,7 @@
       regexp: "^#MaxStartups|^MaxStartups"
       line: 'MaxStartups 10:30:60'
   when:
-      - rhel8cis_rule_5_2_18|bool
+      - rhel8cis_rule_5_2_18
   tags:
       - level1
       - patch
@@ -428,7 +428,7 @@
       regexp: "^#MaxSessions|^MaxSessions"
       line: 'MaxSessions {{ rhel8cis_ssh_maxsessions }}'
   when:
-      - rhel8cis_rule_5_2_19|bool
+      - rhel8cis_rule_5_2_19
   tags:
       - level1
       - patch
@@ -438,7 +438,7 @@
   shell: sed -ri "s/^\s*(CRYPTO_POLICY\s*=.*)$/# \1/" /etc/sysconfig/sshd
   notify: restart sshd
   when:
-      - rhel8cis_rule_5_2_19|bool
+      - rhel8cis_rule_5_2_19
   tags:
       - level1
       - patch
@@ -447,7 +447,7 @@
 - name: "SCORED | 5.3.1 | PATCH | Create custom authselect profile"
   block:
       - name: "SCORED | 5.3.1 | AUDIT | Create custom authselect profile | Gather profiles"
-        shell: "authselect current | grep Profile ID: custom/"
+        shell: 'authselect current | grep "Profile ID: custom/"'
         failed_when: no
         changed_when: no
         register: rhel8cis_5_3_1_profiles
@@ -463,7 +463,7 @@
         when:
             - rhel8cis_authselect_custom_profile_create
   when:
-      - rhel8cis_rule_5_3_1|bool
+      - rhel8cis_rule_5_3_1
 
 - name: "SCORED | 5.3.2 | PATCH | Select authselect profile"
   block:
@@ -472,7 +472,6 @@
         failed_when: no
         changed_when: no
         register: rhel8cis_5_3_2_profiles
-        become: true
 
       - name: "SCORED | 5.3.2 | AUDIT | Select authselect profile | Show profiles"
         debug:
@@ -485,7 +484,7 @@
         when:
             - rhel8cis_authselect_custom_profile_select
   when:
-      - rhel8cis_rule_5_3_2|bool
+      - rhel8cis_rule_5_3_2
 
 - name: "SCORED | 5.3.3 | PATCH | Ensure authselect includes with-faillock"
   block:
@@ -506,7 +505,7 @@
         when:
             - rhel8cis_authselect_custom_profile_select
   when:
-      - rhel8cis_rule_5_3_3|bool
+      - rhel8cis_rule_5_3_3
 
 - name: |
         "SCORED | 5.4.1 | PATCH | Ensure password creation requirements are configured"
@@ -621,10 +620,10 @@
             - "system-auth"
             - "password-auth"
   when:
-      - rhel8cis_rule_5_4_1|bool
-      - rhel8cis_rule_5_4_2|bool
-      - rhel8cis_rule_5_4_3|bool
-      - rhel8cis_rule_5_4_4|bool
+      - rhel8cis_rule_5_4_1
+      - rhel8cis_rule_5_4_2
+      - rhel8cis_rule_5_4_3
+      - rhel8cis_rule_5_4_4
   tags:
       - level1
       - patch
@@ -651,7 +650,7 @@
       - dest: /etc/profile
         state: "{{ (rhel8cis_shell_session_timeout.file == '/etc/profile') | ternary('present', 'absent') }}"
   when:
-      - rhel8cis_rule_5_4_5|bool
+      - rhel8cis_rule_5_4_5
   tags:
       - level2
       - patch
@@ -664,7 +663,7 @@
       regexp: '^PASS_MAX_DAYS'
       line: "PASS_MAX_DAYS {{ rhel8cis_pass['max_days'] }}"
   when:
-      - rhel8cis_rule_5_5_1_1|bool
+      - rhel8cis_rule_5_5_1_1
   tags:
       - level1
       - patch
@@ -677,7 +676,7 @@
       regexp: '^PASS_MIN_DAYS'
       line: "PASS_MIN_DAYS {{ rhel8cis_pass['min_days'] }}"
   when:
-      - rhel8cis_rule_5_5_1_2|bool
+      - rhel8cis_rule_5_5_1_2
   tags:
       - level1
       - patch
@@ -690,7 +689,7 @@
       regexp: '^PASS_WARN_AGE'
       line: "PASS_WARN_AGE {{ rhel8cis_pass['warn_age'] }}"
   when:
-      - rhel8cis_rule_5_5_1_3|bool
+      - rhel8cis_rule_5_5_1_3
   tags:
       - level1
       - patch
@@ -713,7 +712,7 @@
         with_items:
             - "{{ rhel_08_5_5_1_4_audit.stdout_lines }}"
   when:
-      - rhel8cis_rule_5_5_1_4|bool
+      - rhel8cis_rule_5_5_1_4
   tags:
       - level1
       - patch
@@ -752,7 +751,7 @@
         with_items:
             - "{{ rhel8cis_5_5_1_5_user_list.stdout_lines }}"
   when:
-      - rhel8cis_rule_5_5_1_5|bool
+      - rhel8cis_rule_5_5_1_5
   tags:
       - level1
       - patch
@@ -772,7 +771,7 @@
             - item.id != "sync"
             - item.id != "shutdown"
             - item.id != "halt"
-            - item.gid < rhel8stig_int_gid
+            - item.gid < rhel8cis_int_gid
             - item.shell != "      /bin/false"
             - item.shell != "      /usr/sbin/nologin"
 
@@ -788,11 +787,11 @@
             - item.id != "shutdown"
             - item.id != "sync"
             - item.id != "root"
-            - item.gid < rhel8stig_int_gid
+            - item.gid < rhel8cis_int_gid
             - item.shell != "      /bin/false"
             - item.shell != "      /usr/sbin/nologin"
   when:
-      - rhel8cis_rule_5_5_2|bool
+      - rhel8cis_rule_5_5_2
   tags:
       - level1
       - patch
@@ -816,7 +815,7 @@
       - dest: /etc/profile
         state: "{{ (rhel8cis_shell_session_timeout.file == '/etc/profile') | ternary('present', 'absent') }}"
   when:
-      - rhel8cis_rule_5_5_3|bool
+      - rhel8cis_rule_5_5_3
   tags:
       - level2
       - patch
@@ -827,7 +826,7 @@
   changed_when: no
   failed_when: no
   when:
-      - rhel8cis_rule_5_5_4|bool
+      - rhel8cis_rule_5_5_4
   tags:
       - level1
       - patch
@@ -847,7 +846,7 @@
             regexp: '(^\s+umask) 002'
             replace: '\1 027'
   when:
-      - rhel8cis_rule_5_5_5|bool
+      - rhel8cis_rule_5_5_5
   tags:
       - level1
       - patch
@@ -879,7 +878,7 @@
                 - "There is no /etc/securetty file, this has been removed by default in RHEL8"
         when: not rhel8cis_securetty_check.stat.exists
   when:
-      - rhel8cis_rule_5_6|bool
+      - rhel8cis_rule_5_6
   tags:
       - level1
       - audit
@@ -899,7 +898,7 @@
             name: root
             groups: wheel
   when:
-      - rhel8cis_rule_5_7|bool
+      - rhel8cis_rule_5_7
   tags:
       - level1
       - patch
