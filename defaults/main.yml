@@ -1,10 +1,5 @@
 ---
 # defaults file for rhel8-CIS
-# If you would like a report at the end accordin to OpenSCAP as to the report results
-# then you should set rhel7cis_oscap_scan to true/yes.
-# NOTE: This requires the python_xmltojson package on the control host.
-rhel8cis_oscap_scan: false
-rhel8cis_report_dir: /tmp
 
 rhel8cis_skip_for_travis: false
 rhel8cis_system_is_container: false
