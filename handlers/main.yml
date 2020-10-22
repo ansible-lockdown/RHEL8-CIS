@@ -83,16 +83,6 @@
   command: /sbin/grub2-mkconfig -o /boot/grub2/grub.cfg
   ignore_errors: True
 
-- name: prereport score
-  debug:
-      msg: "Pre-run OpenSCAP score is {{ rhel8cis_prescanresults.Benchmark.TestResult.score['#text'] }}"
-  when: rhel8cis_oscap_scan
-
-- name: postreport score
-  debug:
-      msg: "Post-run OpenSCAP score is {{ rhel8cis_postscanresults.Benchmark.TestResult.score['#text'] }}"
-  when: rhel8cis_oscap_scan
-
 - name: restart rsyslog
   become: yes
   service:
