@@ -29,7 +29,7 @@ jobs:
         uses: refactr/action-run-pipeline@v0.1.2
         with:
           # API token
-          api_token: '${{ secrets.REFACTR_KEY }}'
+          api_token: '${{ secrets.GEORGE_REFACTR }}'
           # Project ID
           project_id: 5f47f0c4a13c7b18373e5556
           # Job ID
