@@ -16,12 +16,6 @@
   tags:
       - always
 
-- name: Install OpenSCAP and run a report
-  import_tasks: audit_oscap_scan_before.yml
-  when: rhel8cis_oscap_scan
-  tags:
-      - oscapreport
-
 - include: prelim.yml
   become: yes
   tags:
@@ -63,9 +57,3 @@
   tags:
       - post_tasks
       - always
-
-- name: run the OpenSCAP reporting tool again
-  import_tasks: audit_oscap_scan_after.yml
-  when: rhel8cis_oscap_scan
-  tags:
-      - oscapreport

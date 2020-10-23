@@ -1,4 +1,4 @@
-RHEL 8 CIS STIG
+RHEL 8 CIS
 ================
 
 [![Build Status](https://gitlab.com/mindpointgroup/lockdown-enterprise/rhel-8-cis/badges/master/pipeline.svg)](https://gitlab.com/mindpointgroup/lockdown-enterprise/rhel-8-cis/commits/master)
@@ -10,7 +10,6 @@ This role **will make changes to the system** that could break things. This is n
 
 Based on [CIS RedHat Enterprise Linux 8 Benchmark v2.1.1 - 01-31-2017 ](https://community.cisecurity.org/collab/public/index.php).
 
-This repo originated from work done by [Sam Doran](https://github.com/samdoran/ansible-role-stig)
 
 Requirements
 ------------
