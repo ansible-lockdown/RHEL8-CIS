@@ -22,7 +22,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - name: Print env variables
-        run: echo the branch ${GIT_LOCAL_BRANCH}
+        run: echo the branch ${GIT_BRANCH}
       
       # # Refactr pipeline for devel pull request/merge
       # - name: Refactr - Run Pipeline (to devel)
