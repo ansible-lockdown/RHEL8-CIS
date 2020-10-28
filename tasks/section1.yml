@@ -855,6 +855,7 @@
       state: latest
   when:
       - rhel8cis_rule_1_9
+      - not system_is_ec2
   tags:
       - level1
       - patch
