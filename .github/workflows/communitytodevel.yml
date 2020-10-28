@@ -1,12 +1,10 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CommunityToMaster
+name: CommunityToDevel
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the devel branch
 on:
-  push:
-    branches: [ devel ]
   pull_request:
     branches: [ devel ]
 
