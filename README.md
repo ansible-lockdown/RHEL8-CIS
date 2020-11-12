@@ -34,20 +34,20 @@ Requirements
 
 **Technical Dependencies:**
 - Running Ansible/Tower setup (this role is tested against Ansible version 2.9.1 and newer)
-- Python3 Ansibl run environment
+- Python3 Ansible run environment
 - python-def (should be included in RHEL/CentOS 8)
 - libselinux-python
 
 Role Variables
 --------------
-This role is designed that the end user should not have to edit the tasks themselves. All editing should happen via the defaults/main.yml file or with extra vars in the project, job, workflow, etc. These variables can be found [here](https://github.com/ansible-lockdown/RHEL8-CIS/wiki/Main-Variables) in the Main Variables Wiki page. All variables are listed there along with descriptions.
+This role is designed that the end user should not have to edit the tasks themselves. All customizing should be done via the defaults/main.yml file or with extra vars within the project, job, workflow, etc. These variables can be found [here](https://github.com/ansible-lockdown/RHEL8-CIS/wiki/Main-Variables) in the Main Variables Wiki page. All variables are listed there along with descriptions.
 
 
 Tags
 ----
-There are many tags available for precise control of what is and is not changed. Each control has it's own set of tags noting what level, if it's scored/notscored, what OS element it relates to, if it's a patch or audit, and the rule number. 
+There are many tags available for added control precision. Each control has it's own set of tags noting what level, if it's scored/notscored, what OS element it relates to, if it's a patch or audit, and the rule number. 
 
-Below is an example of the tag section from a control. Using this example if you set your run to skip all controls related to services, this task will be skipped. The opposite can also happen where you run only tasks related to services. You can use any tag to control that level of precision role wide. 
+Below is an example of the tag section from a control within this role. Using this example if you set your run to skip all controls with the tag services, this task will be skipped. The opposite can also happen where you run only controls tagged with services. 
 ```
       tags:
       - level1
@@ -60,7 +60,7 @@ Below is an example of the tag section from a control. Using this example if you
 
 Branches
 -------
-**devel** - This is the working development branch, and also the default branch. Community pull requests will pull into this branch<br>
+**devel** - This is the default branch and the working development branch. Community pull requests will pull into this branch<br>
 **main** - This is the release branch<br>
 **reports** - This is a protected branch for our scoring reports, no code should ever go here<br>
 **all other branches** - Individual community member branches<br>
