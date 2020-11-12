@@ -60,10 +60,10 @@ Below is an example of the tag section from a control. Using this example if you
 
 Braches
 -------
-devel - This is the working development branch, and also the default branch. Community pull requests will pull into this branch<br>
-main - This is the release branch<br>
-reports - This is a protected branch for our scoring reports, no code should ever go here<br>
-all other branches - Individual community member branches<br>
+**devel** - This is the working development branch, and also the default branch. Community pull requests will pull into this branch<br>
+**main** - This is the release branch<br>
+**reports** - This is a protected branch for our scoring reports, no code should ever go here<br>
+**all other branches** - Individual community member branches<br>
 
 Community Contribution
 ----------------------
