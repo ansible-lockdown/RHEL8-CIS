@@ -57,3 +57,14 @@ Below is an example of the tag section from a control. Using this example if you
       - patch
       - rule_2.2.4
 ```
+
+Braches
+-------
+devel - This is the working development branch, and also the default branch. Community pull requests will pull into this branch. 
+main - This is the release branch
+reports - This is a protected branch for our scoring reports, no code should ever go here
+all other branches - Individual community member branches. 
+
+Community Contribution
+----------------------
+The community is encouraged to contribute to this role. Individual community members will work in their own branch. Once you have your modificiations completed and you wish to add to the release of this role please initiate a Pull Request into the devel branch. This PR will be reviewed by authorized reviewers before being merged into our development branch (devel). Along with our review this will also kick-off a CI pipeline to test functionality, this functionality test needs to be passing for us to merge into Devel. As a rule please GPG sign your commits as well as signoff on any commits you hope to bring into devel. Once fully reviewed authorized members will merge into main for a new release. 
