@@ -1,7 +1,7 @@
 RHEL 8 CIS
 ================
 
-[![Build Status](https://gitlab.com/mindpointgroup/lockdown-enterprise/rhel-8-cis/badges/master/pipeline.svg)](https://gitlab.com/mindpointgroup/lockdown-enterprise/rhel-8-cis/commits/master)
+[![Build Status](https://img.shields.io/github/workflow/status/ansible-lockdown/RHEL8-CIS/CommunityToDevel?label=Devel%20Build%20Status&style=plastic)
 
 
 Configure RHEL/Centos 8 machine to be [CIS](https://www.cisecurity.org/cis-benchmarks/) compliant. Level 1 and 2 findings will be corrected by default.
