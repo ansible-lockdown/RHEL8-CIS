@@ -25,7 +25,7 @@ Requirements
 
 **General:**
 - Basic knowledge of Ansible, below are some links to the Ansible documentation to help get started if you are unfamiliar with Ansible
-  - [Here is the main Ansible documentation page](https://docs.ansible.com)
+  - [Main Ansible documentation page](https://docs.ansible.com)
 - Ansible and/or Tower Installed, configured, and running. This includes all of the base Ansible/Tower configurations, infrastructure setup, and needed packages installed. 
 - Please read through the tasks in this role to gain an understanding of what each control is doing. Some of the tasks are disruptive and can have unintended consiquences in live production systems. With this also familiarize yourself with the variables in the defaults/main.yml file.
 
