@@ -1,12 +1,12 @@
 RHEL 8 CIS
 ================
 
-[![Build Status](https://gitlab.com/mindpointgroup/lockdown-enterprise/rhel-8-cis/badges/master/pipeline.svg)](https://gitlab.com/mindpointgroup/lockdown-enterprise/rhel-8-cis/commits/master)
+![Build Status](https://img.shields.io/github/workflow/status/ansible-lockdown/RHEL8-CIS/CommunityToDevel?label=Devel%20Build%20Status&style=plastic)
 
 
-Configure RHEL/Centos 8 machine to be [CIS](https://www.cisecurity.org/cis-benchmarks/) compliant. Level 1 and 2 findings will be corrected by default.
+Configure RHEL/Centos 8 machine to be [CIS](https://www.cisecurity.org/cis-benchmarks/) compliant.
 
-This role **will make changes to the system** that could break things. This is not an auditing tool but rather a remediation tool to be used after an audit has been conducted.
+This role **will make changes to the system** which may have unintended concequences. This is not an auditing tool but rather a remediation tool to be used after an audit has been conducted.
 
 Based on [CIS RedHat Enterprise Linux 8 Benchmark v2.1.1 - 01-31-2017 ](https://community.cisecurity.org/collab/public/index.php).
 
@@ -14,8 +14,17 @@ Based on [CIS RedHat Enterprise Linux 8 Benchmark v2.1.1 - 01-31-2017 ](https://
 Requirements
 ------------
 
-You should carefully read through the tasks to make sure these changes will not break your systems before running this playbook.
-If you want to do a dry run without changing anything, set the below sections (rhel8cis_section1-6) to false. 
+    General:
+      - Basic knowledge of Ansible, here are some links to the Ansible documentation to help get started if you are unfamiliar with Ansible
+          - [Here is the main Ansible documentation page](https://docs.ansible.com)
+      - Ansible and/or Tower Installed, configured, and running. This includes all of the base Ansible/Tower configurations, infrastructure setup, and neede packages installed. 
+      - Please read through the tasks in this role to gain an understanding of what each control is doing. Some of the tasks are disruptive and can have unintended consiquences in live production systems. With this also familiarize yourself with the variables in the defaults/main.yml file
+
+    Technical Dependencies :
+      - Running Ansible/Tower setup (this role is tested against Ansible version 2.9.1 and newer)
+      - Python3 Ansibl run environment
+      - python-def (should be included in RHEL/CentOS 8)
+      - libselinux-python
 
 Role Variables
 --------------
@@ -139,34 +148,18 @@ rhel8cis_host_allow:
 rhel8cis_firewall: firewalld
 rhel8cis_firewall: iptables
 ``` 
-  
-
-Dependencies
-------------
-
-Ansible > 2.6.5
-
-Example Playbook
--------------------------
-
-This sample playbook should be run in a folder that is above the main RHEL8-CIS / RHEL8-CIS-devel folder.
-
-```
-- name: Harden Server
-  hosts: servers
-  become: yes
-
-  roles:
-    - RHEL8-CIS
-```
 
 Tags
 ----
-Many tags are available for precise control of what is and is not changed.
+There are many tags available for precise control of what is and is not changed. Each control has it's own set of tags noting what level, if it's scored/notscored, what OS element it relates to, if it's a patch or audit, and the rule number. 
 
-Some examples of using tags:
-
+Below is an example of the tag section from a control. Using this example if you set your run to skip all controls related to services, this task will be skipped. The opposite can also happen where you run only tasks related to services. You can use any tag to control that level of precision role wide. 
 ```
-    # Audit and patch the site
-    ansible-playbook site.yml --tags="patch"
+      tags:
+      - level1
+      - scored
+      - avahi
+      - services
+      - patch
+      - rule_2.2.4
 ```
