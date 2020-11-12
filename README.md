@@ -58,7 +58,7 @@ Below is an example of the tag section from a control. Using this example if you
       - rule_2.2.4
 ```
 
-Braches
+Branches
 -------
 **devel** - This is the working development branch, and also the default branch. Community pull requests will pull into this branch<br>
 **main** - This is the release branch<br>
