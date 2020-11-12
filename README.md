@@ -14,6 +14,10 @@ Documentation
 -------------
 [Wiki](https://github.com/ansible-lockdown/RHEL8-CIS/wiki)
 [Repo GitHub Page](https://ansible-lockdown.github.io/RHEL8-CIS/)
+[Getting Started](https://www.lockdownenterprise.com/docs/getting-started-with-lockdown)
+[Customizing Roles](https://www.lockdownenterprise.com/docs/customizing-lockdown-enterprise)
+[Per-Host Configuration](https://www.lockdownenterprise.com/docs/per-host-lockdown-enterprise-configuration)
+[Getting the Most Out of the Role](https://www.lockdownenterprise.com/docs/get-the-most-out-of-lockdown-enterprise)
 
 
 Requirements
