@@ -67,4 +67,9 @@ Branches
 
 Community Contribution
 ----------------------
-The community is encouraged to contribute to this role. Individual community members will work in their own branch. Once you have your modificiations completed and you wish to add to the release of this role please initiate a Pull Request into the devel branch. This PR will be reviewed by authorized reviewers before being merged into our development branch (devel). Along with our review this will also kick-off a CI pipeline to test functionality, this functionality test needs to be passing for us to merge into Devel. As a rule please GPG sign your commits as well as signoff on any commits you hope to bring into devel. Once fully reviewed authorized members will merge into main for a new release. 
+
+We encourage you (the community) to contribute to this role. Please read the rules below. 
+- Your work is done in your own individual branch. Make sure to Signed-off and GPG sign all commits you intend to merge.
+- All community Pull Requests are pulled into the devel branch
+- Pull Requests into devel will confirm your commits have a GPG signature, Signed-off, and a functional test before being approved
+- Once your changes are merged and a more detailed review is complete, an authorized member will merge your changes into the main branch for a new release
