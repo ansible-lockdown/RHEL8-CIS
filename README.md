@@ -8,7 +8,7 @@ Configure RHEL/Centos 8 machine to be [CIS](https://www.cisecurity.org/cis-bench
 
 This role **will make changes to the system** that could break things. This is not an auditing tool but rather a remediation tool to be used after an audit has been conducted.
 
-Based on [CIS RedHat Enterprise Linux 8 Benchmark v2.1.1 - 01-31-2017 ](https://community.cisecurity.org/collab/public/index.php).
+Based on [CIS Red Hat Enterprise Linux 8 Benchmark v1.0.0 - 2019-09-30](https://community.cisecurity.org/collab/public/index.php).
 
 
 Requirements
