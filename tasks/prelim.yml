@@ -1,5 +1,10 @@
 ---
 # Preliminary tasks that should always be run
+# Load /tmp details if it is specified in /etc/fstab
+- name: "PRELIM | Check for /tmp in /etc/fstab"
+  set_fact:
+    tmp_fstab: "{{ ansible_mounts | selectattr('mount', 'equalto', '/tmp') | list | first }}"
+
 # List users in order to look files inside each home directory
 - name: "PRELIM | List users accounts"
   command: "awk -F: '{print $1}' /etc/passwd"
