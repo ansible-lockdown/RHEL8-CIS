@@ -6,7 +6,7 @@ RHEL 8 CIS
 
 Configure RHEL/Centos 8 machine to be [CIS](https://www.cisecurity.org/cis-benchmarks/) compliant
 
-Based on [CIS RedHat Enterprise Linux 8 Benchmark v2.1.1 - 01-31-2017 ](https://community.cisecurity.org/collab/public/index.php)
+Based on [CIS RedHat Enterprise Linux 8 Benchmark v1.0.0 - 09-30-2019 ](https://www.cisecurity.org/cis-benchmarks/)
 
 Caution(s)
 -------
