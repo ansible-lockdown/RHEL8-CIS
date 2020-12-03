@@ -438,7 +438,7 @@
   shell: sed -ri "s/^\s*(CRYPTO_POLICY\s*=.*)$/# \1/" /etc/sysconfig/sshd
   notify: restart sshd
   when:
-      - rhel8cis_rule_5_2_19
+      - rhel8cis_rule_5_2_20
   tags:
       - level1
       - patch
