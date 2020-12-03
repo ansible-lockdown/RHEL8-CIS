@@ -49,22 +49,6 @@
       - patch
       - rule_2.2.1.2
 
-- name: "SCORED | 2.2.1.3 | PATCH | Ensure chrony is configured | modify /etc/sysconfig/chronyd | 1"
-  lineinfile:
-      dest: /etc/sysconfig/chronyd
-      regexp: "^(#)?OPTIONS"
-      line: "OPTIONS=\"-u chrony\""
-      state: present
-      create: yes
-  when:
-      - rhel8cis_time_synchronization == "chrony"
-      - rhel8cis_rule_2_2_1_3
-      - not rhel8cis_system_is_container
-  tags:
-      - level1
-      - patch
-      - rule_2.2.1.3
-
 - name: "SCORED | 2.2.2 | PATCH | Ensure X Window System is not installed"
   shell: dnf -y remove xorg-x11*
   when:
