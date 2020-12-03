@@ -632,30 +632,6 @@
       - rule_5.4.3
       - rule_5.4.4
 
-- name: "SCORED | 5.4.5 | PATCH | Ensure default user shell timeout is 900 seconds or less"
-  blockinfile:
-      create: yes
-      mode: 0644
-      dest: "{{ item.dest }}"
-      state: "{{ item.state }}"
-      marker: "# {mark} ANSIBLE MANAGED"
-      block: |
-        # Set session timeout - CIS ID RHEL-08-5.4.5
-        TMOUT={{ rhel8cis_shell_session_timeout.timeout }}
-        readonly TMOUT
-        export TMOUT
-  with_items:
-      - dest: "{{ rhel8cis_shell_session_timeout.file }}"
-        state: present
-      - dest: /etc/profile
-        state: "{{ (rhel8cis_shell_session_timeout.file == '/etc/profile') | ternary('present', 'absent') }}"
-  when:
-      - rhel8cis_rule_5_4_5
-  tags:
-      - level2
-      - patch
-      - rule_5.4.5
-
 - name: "SCORED | 5.5.1.1 | PATCH | Ensure password expiration is 365 days or less"
   lineinfile:
       state: present
