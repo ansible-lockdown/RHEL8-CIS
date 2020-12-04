@@ -377,7 +377,7 @@
       enabled: no
   when:
       - ansible_distribution == "RedHat" and rhnsd_service_status.stdout == "loaded" and not rhel8cis_rhnsd_required
-      - rhel8cis_rule_1_2_5
+      - rhel8cis_rule_1_2_2
   tags:
       - level1
       - notscored
