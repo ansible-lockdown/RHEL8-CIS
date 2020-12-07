@@ -265,9 +265,9 @@
       - patch
       - rule_4.1.11
 
-- name: "SCORED | 4.1.12 | PATCH | Ensure use of privileged commands is collected"
+- name: "SCORED | 4.1.12 | PATCH | Ensure successful file system mounts are collected"
   block:
-      - name: "SCORED | 4.1.12 | PATCH | Ensure use of privileged commands is collected"
+      - name: "SCORED | 4.1.12 | PATCH | Ensure successful file system mounts are collected"
         shell: for i in  $(df | grep '^/dev' | awk '{ print $NF }'); do find $i -xdev -type f -perm -4000 -o -type f -perm -2000 2>/dev/null; done
         register: priv_procs
         changed_when: no

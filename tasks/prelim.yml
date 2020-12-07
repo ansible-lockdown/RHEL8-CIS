@@ -29,6 +29,15 @@
       name: cronie
       state: present
 
+- name: "PRELIM | Install authconfig"
+  dnf:
+      name: authconfig
+      state: present
+  when:
+      - rhel8cis_rule_5_3_1 or
+        rhel8cis_rule_5_3_2 or
+        rhel8cis_rule_5_3_3
+
 - name: "PRELIM | Check if prelink package is installed"
   command: rpm -q prelink
   args:
