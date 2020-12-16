@@ -290,20 +290,6 @@
       - patch
       - rule_2.2.17
 
-- name: "SCORED | 2.2.17 | PATCH | Ensure rsh server is not enabled | rsh"
-  service:
-      name: rsh.socket
-      state: stopped
-      enabled: no
-  when:
-      - not rhel8cis_rsh_server
-      - rsh_service_status.stdout == "loaded"
-      - rhel8cis_rule_2_2_17
-  tags:
-      - level1
-      - patch
-      - rule_2.2.17
-
 - name: "SCORED | 2.2.18 | PATCH | Ensure mail transfer agent is configured for local-only mode"
   lineinfile:
       dest: /etc/postfix/main.cf
