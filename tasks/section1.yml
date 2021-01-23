@@ -492,7 +492,7 @@
             creates: /var/lib/aide/aide.db.gz
         changed_when: no
         failed_when: no
-        async: 45
+        async: "{{ ansible_check_mode | ternary(0, 45) }}"
         poll: 0
   when:
       - rhel8cis_config_aide
