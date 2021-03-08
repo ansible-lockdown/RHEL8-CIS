@@ -542,7 +542,7 @@
         when:
             - grub_cfg.stat.exists and grub_cfg.stat.islnk
   when:
-      - rhel8cis_rule_1_4_1
+      - rhel8cis_rule_1_5_1
   tags:
       - level1
       - scored
