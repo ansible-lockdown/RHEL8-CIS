@@ -1,0 +1,259 @@
+---
+
+- name: "SCORED | 2.2.2 | PATCH | Ensure X Window System is not installed"
+  package:
+    name: xorg-x11*
+    state: absent
+  when:
+  - not rhel8cis_xwindows_required
+  - rhel8cis_rule_2_2_2
+  tags:
+  - level1
+  - scored
+  - xwindows
+  - patch
+  - rule_2.2.2
+
+- name: "SCORED | 2.2.3 | PATCH | Ensure rsync service is not enabled "
+  service:
+    name: rsyncd
+    state: stopped
+    enabled: no
+  when:
+  - not rhel8cis_rsyncd_server
+  - rsyncd_service_status.stdout == "loaded"
+  - rhel8cis_rule_2_2_3
+  tags:
+  - level1
+  - patch
+  - rule_2.2.3
+
+- name: "SCORED | 2.2.4 | PATCH | Ensure Avahi Server is not enabled"
+  service:
+    name: avahi-daemon
+    state: stopped
+    enabled: no
+  when:
+  - not rhel8cis_avahi_server
+  - avahi_service_status.stdout == "loaded"
+  - rhel8cis_rule_2_2_4
+  tags:
+  - level1
+  - scored
+  - avahi
+  - services
+  - patch
+  - rule_2.2.4
+
+- name: "SCORED | 2.2.5 | PATCH | Ensure SNMP Server is not enabled"
+  service:
+    name: snmpd
+    state: stopped
+    enabled: no
+  when:
+  - not rhel8cis_snmp_server
+  - snmpd_service_status.stdout == "loaded"
+  - rhel8cis_rule_2_2_5
+  tags:
+  - level1
+  - patch
+  - rule_2.2.5
+
+- name: "SCORED | 2.2.6 | PATCH | Ensure HTTP Proxy Server is not enabled"
+  service:
+    name: squid
+    state: stopped
+    enabled: no
+  when:
+  - not rhel8cis_squid_server
+  - squid_service_status.stdout == "loaded"
+  - rhel8cis_rule_2_2_6
+  tags:
+  - level1
+  - patch
+  - rule_2.2.6
+
+- name: "SCORED | 2.2.7 | PATCH | Ensure Samba is not enabled"
+  service:
+    name: smb
+    state: stopped
+    enabled: no
+  when:
+  - not rhel8cis_smb_server
+  - smb_service_status.stdout == "loaded"
+  - rhel8cis_rule_2_2_7
+  tags:
+  - level1
+  - patch
+  - rule_2.2.7
+
+- name: "SCORED | 2.2.8 | PATCH | Ensure IMAP and POP3 server is not enabled"
+  service:
+    name: dovecot
+    state: stopped
+    enabled: no
+  when:
+  - not rhel8cis_dovecot_server
+  - dovecot_service_status.stdout == "loaded"
+  - rhel8cis_rule_2_2_8
+  tags:
+  - level1
+  - patch
+  - rule_2.2.8
+
+- name: "SCORED | 2.2.9 | PATCH | Ensure HTTP server is not enabled"
+  service:
+    name: httpd
+    state: stopped
+    enabled: no
+  when:
+  - not rhel8cis_httpd_server
+  - httpd_service_status.stdout == "loaded"
+  - rhel8cis_rule_2_2_9
+  tags:
+  - level1
+  - patch
+  - rule_2.2.9
+
+- name: "SCORED | 2.2.10 | PATCH | Ensure FTP Server is not enabled"
+  service:
+    name: vsftpd
+    state: stopped
+    enabled: no
+  when:
+  - not rhel8cis_vsftpd_server
+  - vsftpd_service_status.stdout == "loaded"
+  - rhel8cis_rule_2_2_10
+  tags:
+  - level1
+  - patch
+  - rule_2.2.10
+
+- name: "SCORED | 2.2.11 | PATCH | Ensure DNS Server is not enabled"
+  service:
+    name: named
+    state: stopped
+    enabled: no
+  when:
+  - not rhel8cis_named_server
+  - named_service_status.stdout == "loaded"
+  - rhel8cis_rule_2_2_11
+  tags:
+  - level1
+  - patch
+  - rule_2.2.11
+
+- name: "SCORED | 2.2.12 | PATCH | Ensure NFS is not enabled"
+  service:
+    name: nfs
+    state: stopped
+    enabled: no
+  when:
+  - not rhel8cis_nfs_rpc_server
+  - nfs_service_status.stdout == "loaded"
+  - rhel8cis_rule_2_2_12
+  tags:
+  - level1
+  - scored
+  - nfs
+  - services
+  - patch
+  - rule_2.2.12
+
+- name: "SCORED | 2.2.13 | PATCH | Ensure RPC is not enabled"
+  service:
+    name: rpcbind
+    state: stopped
+    enabled: no
+  when:
+  - not rhel8cis_nfs_rpc_server
+  - rpcbind_service_status.stdout == "loaded"
+  - rhel8cis_rule_2_2_13
+  tags:
+  - level1
+  - scored
+  - rpc
+  - services
+  - patch
+  - rule_2.2.7
+
+- name: "SCORED | 2.2.14 | PATCH | Ensure LDAP server is not enabled"
+  service:
+    name: slapd
+    state: stopped
+    enabled: no
+  when:
+  - not rhel8cis_ldap_server
+  - slapd_service_status.stdout == "loaded"
+  - rhel8cis_rule_2_2_14
+  tags:
+  - level1
+  - scored
+  - ldap
+  - services
+  - patch
+  - rule_2.2.6
+
+- name: "SCORED | 2.2.15 | PATCH | Ensure DHCP Server is not enabled"
+  service:
+    name: dhcpd
+    state: stopped
+    enabled: no
+  when:
+  - not rhel8cis_dhcp_server
+  - dhcpd_service_status.stdout == "loaded"
+  - rhel8cis_rule_2_2_15
+  tags:
+  - level1
+  - scored
+  - dhcp
+  - services
+  - patch
+  - rule_2.2.15
+
+- name: "SCORED | 2.2.16 | PATCH | Ensure CUPS is not enabled"
+  service:
+    name: cups
+    state: stopped
+    enabled: no
+  when:
+  - not rhel8cis_cups_server
+  - cups_service_status.stdout == "loaded"
+  - rhel8cis_rule_2_2_16
+  tags:
+  - level1
+  - level2
+  - scored
+  - cups
+  - services
+  - patch
+  - rule_2.2.16
+
+- name: "SCORED | 2.2.17 | PATCH | Ensure NIS Server is not enabled"
+  service:
+    name: ypserv
+    state: stopped
+    enabled: no
+  when:
+  - not rhel8cis_nis_server
+  - ypserv_service_status.stdout == "loaded"
+  - rhel8cis_rule_2_2_17
+  tags:
+  - level1
+  - patch
+  - rule_2.2.17
+
+- name: "SCORED | 2.2.18 | PATCH | Ensure mail transfer agent is configured for local-only mode"
+  lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^(#)?inet_interfaces"
+    line: "inet_interfaces = loopback-only"
+  notify: restart postfix
+  when:
+  - not rhel8cis_is_mail_server
+  - postfix_installed.rc == 0
+  - rhel8cis_rule_2_2_18
+  tags:
+  - level1
+  - patch
+  - rule_2.2.1

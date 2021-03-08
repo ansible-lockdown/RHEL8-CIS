@@ -20,29 +20,28 @@
   check_mode: no
 
 - name: "PRELIM | Section 4.1 | Configure System Accounting (auditd)"
-  package:
-    name: audit
-    state: present
+  dnf:
+      name: audit
+      state: present
 
 - name: "PRELIM | Section 5.1 | Configure cron"
-  package:
-    name: cronie
-    state: present
+  dnf:
+      name: cronie
+      state: present
 
 - name: "PRELIM | Install authconfig"
-  package:
-    name: authconfig
-    state: present
+  dnf:
+      name: authconfig
+      state: present
   when:
-  - rhel8cis_rule_5_3_1 or
-    rhel8cis_rule_5_3_2 or
-    rhel8cis_rule_5_3_3
-
+      - rhel8cis_rule_5_3_1 or
+        rhel8cis_rule_5_3_2 or
+        rhel8cis_rule_5_3_3
 
 - name: "PRELIM | Check if prelink package is installed"
   command: rpm -q prelink
   args:
-    warn: false
+      warn: false
   register: prelink_installed
   changed_when: no
   failed_when: no

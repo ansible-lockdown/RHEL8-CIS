@@ -2,58 +2,81 @@
 # tasks file for RHEL8-CIS
 - name: Check OS version and family
   fail:
-      msg: "This role can only be run against RHEL 8. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
+    msg: "This role can only be run against RHEL 8. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
   when:
-      - ansible_os_family == 'RedHat'
-      - ansible_distribution_major_version is version_compare('8', '!=')
+  - ansible_os_family == 'RedHat'
+  - ansible_distribution_major_version is version_compare('8', '!=')
   tags:
-      - always
+  - always
 
 - name: Check ansible version
   fail:
-      msg: You must use ansible 2.1 or greater
-  when: not ansible_version.full is version_compare('2.1', '>=')
+    msg: You must use ansible 2.9 or greater
+  when: not ansible_version.full is version_compare('2.9', '>=')
   tags:
-      - always
+  - always
 
 - include: prelim.yml
   become: yes
   tags:
-      - prelim_tasks
-      - always
+  - prelim_tasks
+  - always
+
+- import_tasks: pre_LE_audit.yml
+  when:
+  - rhel8cis_run_audit
+
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - always
 
 - include: parse_etc_password.yml
   become: yes
-  when: rhel8cis_section6|bool
+  when: rhel8cis_section6
 
-- include: section1.yml
+- include: section_1/main.yml
   become: yes
-  when: rhel8cis_section1|bool
+  when: rhel8cis_section1
   tags:
-      - rhel8cis_section1
+  - rhel8cis_section1
 
-- include: section2.yml
+- include: section_2/main.yml
   become: yes
-  when: rhel8cis_section2|bool
+  when: rhel8cis_section2
 
-- include: section3.yml
+- include: section_3/main.yml
   become: yes
-  when: rhel8cis_section3|bool
+  when: rhel8cis_section3
 
-- include: section4.yml
+- include: section_4/main.yml
   become: yes
-  when: rhel8cis_section4|bool
+  when: rhel8cis_section4
 
-- include: section5.yml
+- include: section_5/main.yml
   become: yes
-  when: rhel8cis_section5|bool
+  when: rhel8cis_section5
 
-- include: section6.yml
+- include: section_6/main.yml
   become: yes
-  when: rhel8cis_section6|bool
+  when: rhel8cis_section6
 
 - include: post.yml
   become: yes
   tags:
-      - post_tasks
-      - always
+  - post_tasks
+  - always
+
+- name: flush handlers
+  meta: flush_handlers
+
+- import_tasks: post_LE_audit.yml
+  when:
+  - rhel8cis_run_audit
+
+- name: Show Audit Summary
+  debug:
+    msg: "{{ Audit_results.split('\n') }}"
+  when:
+  - rhel8cis_run_audit

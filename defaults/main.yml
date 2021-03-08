@@ -17,6 +17,19 @@ rhel8cis_section6: true
 
 rhel8cis_selinux_disable: false
 
+## Benchmark name used by audting control role
+# The audit variable found at the base
+benchmark: RHEL8-CIS
+
+# Enable goss binary download
+rhel8cis_setup_audit: false
+# Options are downoad from github or copy from pre downloaded location
+# copy or download
+get_goss_file: download
+
+# Enable audits to run
+rhel8cis_run_audit: false
+
 # These variables correspond with the CIS rule IDs or paragraph numbers defined in
 # the CIS benchmark documents.
 # PLEASE NOTE: These work in coordination with the section # group variables and tags.
@@ -318,6 +331,7 @@ rhel8cis_xinetd_required: false
 rhel8cis_rhnsd_required: false
 
 # 1.4.2 Bootloader password
+rhel8cis_bootloader_password_hash: 'grub.pbkdf2.sha512.changethispassword'
 rhel8cis_bootloader_password: random
 rhel8cis_set_boot_pass: false
 
@@ -408,6 +422,8 @@ rhel8cis_warning_banner: |
 ## Section4 vars
 
 rhel8cis_auditd:
+    space_left_action: email
+    action_mail_acct: root
     admin_space_left_action: halt
     max_log_file_action: keep_logs
 
@@ -479,6 +495,10 @@ rhel8cis_vartmp:
     fstype: none
     opts: "defaults,nodev,nosuid,noexec,bind"
     enabled: no
+## PAM
+rhel8cis_pam_password: 
+    minlen: "14"
+    minclass: "4"
 
 # Starting GID for interactive users
 rhel8cis_int_gid: 1000
@@ -492,6 +512,9 @@ rhel8cis_shell_session_timeout:
 # RHEL-08-5.4.1.5 Allow ansible to expire password for account with a last changed date in the future. False will just display users in violation, true will expire those users passwords
 rhel8cis_futurepwchgdate_autofix: true
 
+# wheel users list
+rhel8cis_wheel_users: "root"
+
 ## Section6 vars
 
 # RHEL-08_6.1.1 Allow ansible to adjust package descrepancies . False will just display packages with descrepancies, True will correct descrepancies
@@ -501,3 +524,44 @@ rhelcis_rpm_descrep_autofixes: true
 rhel8cis_no_world_write_adjust: true
 rhel8cis_passwd_label: "{{ (this_item | default(item)).id }}: {{ (this_item | default(item)).dir }}"
 rhel8cis_dotperm_ansibleManaged: true
+
+# Goss Audit Variables
+# how to get audit files onto host options
+# options are git/copy/get_url
+rhel7cis_audit_content: git
+
+# git
+rhel7cis_audit_file_git: "https://github.com/ansible-lockdown/{{ benchmark }}-Audit.git"
+rhel7cis_audit_git_version: main
+
+# copy:
+#rhel7cis_audit_local_copy: "some path to copy from"
+
+# get_url:
+#rhel7cis_audit_files_url: "some url maybe s3?"
+
+
+## audit controls ##
+goss_version:
+  release: v0.3.16
+  checksum: 'sha256:827e354b48f93bce933f5efcd1f00dc82569c42a179cf2d384b040d8a80bfbfb'
+
+### Audit Settings ###
+#goss_checksum: "checksum_{{ goss_version }}"
+goss_path: /usr/local/bin/
+goss_bin: "{{ goss_path }}goss"
+goss_format: documentation
+goss_url: "https://github.com/aelsabbahy/goss/releases/download/{{ goss_version.release }}/goss-linux-amd64"
+
+## Goss tests information
+goss_audit_dir: "/var/tmp/{{ benchmark }}-Audit/"
+goss_file: "{{ goss_audit_dir }}goss.yml"
+goss_vars_path: "{{ goss_audit_dir }}/vars/{{ ansible_hostname }}.yml"
+goss_out_dir: '/var/tmp'
+pre_audit_outfile: "{{ goss_out_dir }}/pre_remediation_scan"
+post_audit_outfile: "{{ goss_out_dir }}/post_remediation_scan"
+
+Audit_results: |
+      The pre remediation results are: {{ pre_audit_summary }}.
+      The post remediation results are: {{ post_audit_summary }}.
+      Full breakdown can be found in {{ goss_out_dir }}

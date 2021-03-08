@@ -1,0 +1,40 @@
+- name: "SECTION | 3.1.x | Packet and IP redirection"
+  include: cis_3.1.x.yml
+
+- name: "SECTION | 3.2.x | Network Parameters (Host Only)"
+  include: cis_3.2.x.yml
+
+- name: "SECTION | 3.3.x | Uncommon Network Protocols"
+  include: cis_3.3.x.yml
+
+- name: "SECTION | 3.4.1.x | firewall defined"
+  include: cis_3.4.1.1.yml
+
+- name: "SECTION | 3.4.2.x | firewalld firewall"  
+  include: cis_3.4.2.x.yml
+  when:
+  - rhel8cis_firewall == "firewalld"
+
+- name: "SECTION | 3.4.3.x | Configure nftables firewall"
+  include: cis_3.4.3.x.yml
+  when:
+  - rhel8cis_firewall == "nftables"
+
+- name: "SECTION | 3.4.4.1.x | Configure iptables IPv4"
+  include: cis_3.4.4.1.x.yml
+  when:
+  - rhel8cis_firewall == "iptables"
+
+- name: "SECTION | 3.4.4.2.x | Configure iptables IPv6"
+  include: cis_3.4.4.2.x.yml
+  when:
+  - ( rhel8cis_firewall == "iptables" and rhel8cis_ipv6_required )
+
+- name: "SECTION | 3.5 | Configure wireless"
+  include: cis_3.5.yml
+
+- name: "SECTION | 3.5 | disable IPv6"
+  include: cis_3.5.yml
+  when:
+  - not rhel8cis_ipv6_required
+  
