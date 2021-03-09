@@ -233,7 +233,7 @@
       enabled: no
   when:
       - not rhel8cis_allow_autofs
-      - autofs_service_status.stdout == "loaded"
+      - "'autofs' in ansible_facts.packages"
       - rhel8cis_rule_1_1_22
   tags:
       - level1
