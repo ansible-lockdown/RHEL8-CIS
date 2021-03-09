@@ -42,7 +42,7 @@
     - ansible_connection != 'docker'
   when:
   - rhel8cis_rule_1_1_1_2
-  - not rhel8cis_legacy_boot
+  - rhel8cis_legacy_boot
   tags:
   - level2
   - scored
