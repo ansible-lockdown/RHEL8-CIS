@@ -349,9 +349,8 @@ rhel8cis_firewall: {{ rhel8cis_firewall }}
 #rhel8cis_firewall: iptables
 rhel8cis_default_firewall_zone: {{ rhel8cis_default_zone }}
 rhel8cis_firewall_interface: 
-{% for nic in rhel8cis_interface %}
-- {{ nic }}
-{% endfor %}
+- enp0s3 
+- enp0s8
 
 rhel8cis_firewall_services: {{ rhel8cis_firewall_services }}
 
