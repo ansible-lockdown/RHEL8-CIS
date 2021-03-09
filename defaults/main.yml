@@ -26,13 +26,13 @@ python2_bin: /bin/python2.7
 benchmark: RHEL8-CIS
 
 # Enable goss binary download
-rhel8cis_setup_audit: false
+rhel8cis_setup_audit: true
 # Options are downoad from github or copy from pre downloaded location
 # copy or download
 get_goss_file: download
 
 # Enable audits to run
-rhel8cis_run_audit: false
+rhel8cis_run_audit: true
 
 # These variables correspond with the CIS rule IDs or paragraph numbers defined in
 # the CIS benchmark documents.
@@ -536,7 +536,7 @@ rhel8cis_audit_content: git
 
 # git
 rhel8cis_audit_file_git: "https://github.com/ansible-lockdown/{{ benchmark }}-Audit.git"
-rhel8cis_audit_git_version: main
+rhel8cis_audit_git_version: integrated
 
 # copy:
 #rhel8cis_audit_local_copy: "some path to copy from"

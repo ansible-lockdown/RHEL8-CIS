@@ -2,16 +2,17 @@
 
 - name: "SCORED | 1.10 | PATCH | Ensure system-wide crypto policy is not legacy"
   block:
-  - name: "SCORED | 1.10 | PATCH | Ensure system-wide crypto policy is not legacy | Set crypto policy"
-    shell: update-crypto-policies --set "{{ rhel8cis_crypto_policy }}"
-    become: true
+    - name: "SCORED | 1.10 | PATCH | Ensure system-wide crypto policy is not legacy | Set crypto policy"
+      shell: update-crypto-policies --set "{{ rhel8cis_crypto_policy }}"
+      become: true
 
-  - name: "SCORED | 1.10 | PATCH | Ensure system-wide crypto policy is not legacy | Activate crypto policy"
-    shell: update-crypto-policies
-    become: true
+    - name: "SCORED | 1.10 | PATCH | Ensure system-wide crypto policy is not legacy | Activate crypto policy"
+      shell: update-crypto-policies
+      become: true
   when:
-  - rhel8cis_rule_1_10
+      - rhel8cis_rule_1_10
   tags:
-  - level1
-  - patch
-  - rule_1.10
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_1.10

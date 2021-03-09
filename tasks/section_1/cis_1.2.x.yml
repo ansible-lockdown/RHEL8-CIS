@@ -8,7 +8,8 @@
       - ansible_distribution == "RedHat"
       - rhel8cis_rule_1_2_1
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - notscored
       - patch
       - rule_1.2.1
@@ -22,7 +23,8 @@
       - ansible_distribution == "RedHat" and rhnsd_service_status.stdout == "loaded" and not rhel8cis_rhnsd_required
       - rhel8cis_rule_1_2_2
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - notscored
       - patch
       - rule_1.2.2
@@ -33,7 +35,8 @@
       - rhel8cis_rule_1_2_3
       - ansible_distribution == "RedHat"
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - notscored
       - patch
       - rule_1.2.3
@@ -57,7 +60,8 @@
   when:
       - rhel8cis_rule_1_2_4
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - scored
       - patch
       - rule_1.2.4
@@ -72,7 +76,8 @@
   when:
       - rhel8cis_rule_1_2_5
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - notscored
       - patch
       - rule_1.2.5

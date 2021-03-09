@@ -2,33 +2,30 @@
 
 - name: "SCORED | 3.5 | PATCH | Ensure wireless interfaces are disabled"
   block:
-  - name: "SCORED | 3.5 | AUDIT | Ensure wireless interfaces are disabled | Check if nmcli command is available"
-    command: rpm -q NetworkManager
-    args:
-      warn: no
-    check_mode: no
-    changed_when: no
-    become: true
-    register: rhel_08_nmcli_available
-    failed_when: no
+      - name: "SCORED | 3.5 | AUDIT | Ensure wireless interfaces are disabled | Check if nmcli command is available"
+        command: rpm -q NetworkManager
+        changed_when: false
+        failed_when: alse
+        args:
+          warn: no
+        register: rhel_08_nmcli_available
 
-  - name: "SCORED | 3.5 | AUDIT | Ensure wireless interfaces are disabled | Check if wifi is enabled"
-    command: nmcli radio all
-    register: rhel_08_wifi_enabled
-    check_mode: no
-    become: true
-    changed_when: rhel_08_wifi_enabled.stdout != "disabled"
-    when: rhel_08_nmcli_available.rc == 0
+      - name: "SCORED | 3.5 | AUDIT | Ensure wireless interfaces are disabled | Check if wifi is enabled"
+        command: nmcli radio all
+        register: rhel_08_wifi_enabled
+        changed_when: rhel_08_wifi_enabled.stdout != "disabled"
+        failed_when: false
+        when: rhel_08_nmcli_available.rc == 0
 
-  - name: "SCORED | 3.5 | PATCH | Ensure wireless interfaces are disabled | Disable wifi if enabled"
-    command: nmcli radio all off
-    become: true
-    when: rhel_08_wifi_enabled is changed
-
+      - name: "SCORED | 3.5 | PATCH | Ensure wireless interfaces are disabled | Disable wifi if enabled"
+        command: nmcli radio all off
+        changed_when: false
+        failed_when: false
+        when: rhel_08_wifi_enabled is changed
   when:
-  - rhel8cis_rule_3_5
+      - rhel8cis_rule_3_5
   tags:
-  - level1
-  - level2
-  - patch
-  - rule_3.5
+      - level1-server
+      - level2-workstation
+      - patch
+      - rule_3.5

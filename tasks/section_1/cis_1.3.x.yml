@@ -2,44 +2,41 @@
 
 - name: "SCORED | 1.3.1 | PATCH | Ensure sudo is installed"
   package:
-    name: sudo
-    state: present
-  become: true
+      name: sudo
+      state: present
   when:
-  - rhel8cis_rule_1_3_1
+      - rhel8cis_rule_1_3_1
   tags:
-  - level1
-  - scored
-  - sudo
-  - patch
-  - rule_1.3.1
+      - level1
+      - scored
+      - sudo
+      - patch
+      - rule_1.3.1
 
 - name: "SCORED | 1.3.2 | PATCH | Ensure sudo commands use pty"
   lineinfile:
-    dest: /etc/sudoers
-    regexp: ^Defaults
-    line: "Defaults    use_pty"
-    state: present
-  become: true
+      dest: /etc/sudoers
+      regexp: ^Defaults
+      line: "Defaults    use_pty"
+      state: present
   when:
-  - rhel8cis_rule_1_3_2
+      - rhel8cis_rule_1_3_2
   tags:
-  - level1
-  - scored
-  - patch
-  - rule_1.3.2
+      - level1
+      - scored
+      - patch
+      - rule_1.3.2
 
 - name: "SCORED | 1.3.3 | PATCH | Ensure sudo log file exists"
   lineinfile:
-    dest: /etc/sudoers
-    regexp: ^Defaults
-    line: 'Defaults    logfile="{{ rhel8cis_varlog_location }}"'
-    state: present
-  become: true
+      dest: /etc/sudoers
+      regexp: ^Defaults
+      line: 'Defaults    logfile="{{ rhel8cis_varlog_location }}"'
+      state: present
   when:
-  - rhel8cis_rule_1_3_1
+      - rhel8cis_rule_1_3_1
   tags:
-  - level1
-  - scored
-  - patch
-  - rule_1.3.3
+      - level1
+      - scored
+      - patch
+      - rule_1.3.3
