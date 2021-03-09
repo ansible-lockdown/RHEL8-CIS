@@ -7,7 +7,7 @@
   include: cis_4.1.2.x.yml
 
 - name: "SECTION | 4.1.x| Auditd rules"
-  include: cis_4.2.1.x.yml
+  include: cis_4.1.x.yml
 
 - name: "SECTION | 4.2.x| Configure Logging"
   include: cis_4.2.1.x.yml

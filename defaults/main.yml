@@ -17,6 +17,10 @@ rhel8cis_section6: true
 
 rhel8cis_selinux_disable: false
 
+## Python Binary
+## This is used for python3 Installations where python2 OS modules are used in ansible
+python2_bin: /bin/python2.7
+
 ## Benchmark name used by audting control role
 # The audit variable found at the base
 benchmark: RHEL8-CIS
@@ -528,17 +532,17 @@ rhel8cis_dotperm_ansibleManaged: true
 # Goss Audit Variables
 # how to get audit files onto host options
 # options are git/copy/get_url
-rhel7cis_audit_content: git
+rhel8cis_audit_content: git
 
 # git
-rhel7cis_audit_file_git: "https://github.com/ansible-lockdown/{{ benchmark }}-Audit.git"
-rhel7cis_audit_git_version: main
+rhel8cis_audit_file_git: "https://github.com/ansible-lockdown/{{ benchmark }}-Audit.git"
+rhel8cis_audit_git_version: main
 
 # copy:
-#rhel7cis_audit_local_copy: "some path to copy from"
+#rhel8cis_audit_local_copy: "some path to copy from"
 
 # get_url:
-#rhel7cis_audit_files_url: "some url maybe s3?"
+#rhel8cis_audit_files_url: "some url maybe s3?"
 
 
 ## audit controls ##

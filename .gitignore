@@ -9,6 +9,7 @@ tests/Dockerfile
 packer_cache
 delete*
 ignore*
+test_inv
 # VSCode
 .vscode
 

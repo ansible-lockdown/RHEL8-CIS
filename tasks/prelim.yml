@@ -37,3 +37,16 @@
   - rhel8cis_rule_5_3_1 or
     rhel8cis_rule_5_3_2 or
     rhel8cis_rule_5_3_3
+
+- name: "Check whether machine is UEFI-based"
+  block:
+  - name: "Check whether machine is UEFI-based"
+    stat:
+      path: /sys/firmware/efi
+    register: rhel_08_efi_boot
+        
+  - name: set fact for legacy or uefi boot
+    set_fact:
+      rhel8cis_legacy_boot: 'true'
+    when: not rhel_08_efi_boot.stat.exists
+    

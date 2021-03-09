@@ -19,8 +19,6 @@
     package:
       name: git
       state: present
-    vars:
-      ansible_python_interpreter: "{{ python2_bin }}"
 
   - name: retrieve audit content files from git
     git:

@@ -15,7 +15,7 @@
       state: present
     become: true
     when:
-    - '"package audit is not installed" in rhel8cis_4_1_1_1_auditdpackages.stdout'
+    - '"auditd" not in ansible_facts.packages'
 
   - name: "SCORED | 4.1.1.1 | PATCH | Ensure auditd is installed | Install auditd-lib packages"
     package:
@@ -23,7 +23,7 @@
       state: present
     become: true
     when:
-    - '"audit-libs-" not in rhel8cis_4_1_1_1_auditdpackages.stdout'
+    - '"auditd-lib" not in ansible_facts.packages'
   when:
   - rhel8cis_rule_4_1_1_1
   tags:
@@ -51,7 +51,6 @@
     dest: /etc/default/grub
     regexp: '(^GRUB_CMDLINE_LINUX\s*\=\s*)(?:")(.+)(?<!audit=1)(?:")'
     replace: '\1"\2 audit=1"'
-    follow: yes
   ignore_errors: yes
   notify: generate new grub config
   when:
@@ -67,7 +66,6 @@
     dest: /etc/default/grub
     regexp: '(^GRUB_CMDLINE_LINUX\s*\=\s*)(?:")(.+)(?<!audit_backlog_limit={{ rhel8cis_audit_back_log_limit }})(?:")'
     replace: '\1"\2 audit_backlog_limit={{ rhel8cis_audit_back_log_limit }}"'
-    follow: yes
   ignore_errors: yes
   become: true
   when:
