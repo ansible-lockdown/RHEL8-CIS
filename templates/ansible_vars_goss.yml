@@ -14,8 +14,9 @@ rhel8cis_level1: true
 rhel8cis_level2: true
 # to enable rules that may have IO impact on a system e.g. full filesystem scans or CPU heavy
 run_heavy_tests: true
-
-rhel8cis_legacy_boot: true
+{% if rhel8cis_legacy_boot is defined %}
+rhel8cis_legacy_boot: {{ rhel8cis_legacy_boot }}
+{% endif %}
 
 # These variables correspond with the CIS rule IDs or paragraph numbers defined in
 # the CIS benchmark documents.
