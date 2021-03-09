@@ -1,4 +1,2 @@
 -a always,exit -F arch=b32 -S rmdir,unlink,unlinkat,rename -S renameat -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=delete
-{% if ansible_architecture == 'x86_64' -%} 
 -a always,exit -F arch=b64 -S rmdir,unlink,unlinkat,rename -S renameat -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=delete
-{% endif %}
