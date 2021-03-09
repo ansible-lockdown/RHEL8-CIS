@@ -21,7 +21,7 @@
     enabled: no
   when:
   - not rhel8cis_rsyncd_server
-  - rsyncd_service_status.stdout == "loaded"
+  - "'rsyncd' in ansible_facts.packages"
   - rhel8cis_rule_2_2_3
   tags:
   - level1
@@ -35,7 +35,7 @@
     enabled: no
   when:
   - not rhel8cis_avahi_server
-  - avahi_service_status.stdout == "loaded"
+  - "'avahi' in ansible_facts.packages"
   - rhel8cis_rule_2_2_4
   tags:
   - level1
@@ -52,7 +52,7 @@
     enabled: no
   when:
   - not rhel8cis_snmp_server
-  - snmpd_service_status.stdout == "loaded"
+  - "'net-snmp' in ansible_facts.packages"
   - rhel8cis_rule_2_2_5
   tags:
   - level1
@@ -66,7 +66,7 @@
     enabled: no
   when:
   - not rhel8cis_squid_server
-  - squid_service_status.stdout == "loaded"
+  - "'squid' in ansible_facts.packages"
   - rhel8cis_rule_2_2_6
   tags:
   - level1
@@ -80,7 +80,7 @@
     enabled: no
   when:
   - not rhel8cis_smb_server
-  - smb_service_status.stdout == "loaded"
+  - "'samba' in ansible_facts.packages"
   - rhel8cis_rule_2_2_7
   tags:
   - level1
@@ -94,7 +94,7 @@
     enabled: no
   when:
   - not rhel8cis_dovecot_server
-  - dovecot_service_status.stdout == "loaded"
+  - "'dovecot' in ansible_facts.packages"
   - rhel8cis_rule_2_2_8
   tags:
   - level1
@@ -108,7 +108,7 @@
     enabled: no
   when:
   - not rhel8cis_httpd_server
-  - httpd_service_status.stdout == "loaded"
+  - "'httpd' in ansible_facts.packages"
   - rhel8cis_rule_2_2_9
   tags:
   - level1
@@ -122,7 +122,7 @@
     enabled: no
   when:
   - not rhel8cis_vsftpd_server
-  - vsftpd_service_status.stdout == "loaded"
+  - "'vsftpd' in ansible_facts.packages"
   - rhel8cis_rule_2_2_10
   tags:
   - level1
@@ -136,7 +136,7 @@
     enabled: no
   when:
   - not rhel8cis_named_server
-  - named_service_status.stdout == "loaded"
+  - "'bind' in ansible_facts.packages"
   - rhel8cis_rule_2_2_11
   tags:
   - level1
@@ -150,7 +150,7 @@
     enabled: no
   when:
   - not rhel8cis_nfs_rpc_server
-  - nfs_service_status.stdout == "loaded"
+  - "'nfs-utils' in ansible_facts.packages"
   - rhel8cis_rule_2_2_12
   tags:
   - level1
@@ -167,7 +167,7 @@
     enabled: no
   when:
   - not rhel8cis_nfs_rpc_server
-  - rpcbind_service_status.stdout == "loaded"
+  - "'rpcbind' in ansible_facts.packages"
   - rhel8cis_rule_2_2_13
   tags:
   - level1
@@ -184,7 +184,7 @@
     enabled: no
   when:
   - not rhel8cis_ldap_server
-  - slapd_service_status.stdout == "loaded"
+  - "'openldap-servers' in ansible_facts.packages"
   - rhel8cis_rule_2_2_14
   tags:
   - level1
@@ -201,7 +201,7 @@
     enabled: no
   when:
   - not rhel8cis_dhcp_server
-  - dhcpd_service_status.stdout == "loaded"
+  - "'dhcp' in ansible_facts.packages"
   - rhel8cis_rule_2_2_15
   tags:
   - level1
@@ -218,7 +218,7 @@
     enabled: no
   when:
   - not rhel8cis_cups_server
-  - cups_service_status.stdout == "loaded"
+  - "'cups' in ansible_facts.packages"
   - rhel8cis_rule_2_2_16
   tags:
   - level1
@@ -236,7 +236,7 @@
     enabled: no
   when:
   - not rhel8cis_nis_server
-  - ypserv_service_status.stdout == "loaded"
+  - "'ypserv' in ansible_facts.packages"
   - rhel8cis_rule_2_2_17
   tags:
   - level1
@@ -251,7 +251,7 @@
   notify: restart postfix
   when:
   - not rhel8cis_is_mail_server
-  - postfix_installed.rc == 0
+  - "'postfix' in ansible_facts.packages"
   - rhel8cis_rule_2_2_18
   tags:
   - level1

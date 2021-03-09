@@ -6,6 +6,7 @@
    state: absent
   when:
   - not rhel8cis_ypbind_required
+  - "'ypbind' in ansible_facts.packages"
   - rhel8cis_rule_2_3_1
   tags:
   - level1
@@ -18,6 +19,7 @@
     state: absent
   when:
   - not rhel8cis_telnet_required
+  - "'telnet' in ansible_facts.packages"
   - rhel8cis_rule_2_3_2
   tags:
   - level1
@@ -30,6 +32,7 @@
     state: absent
   when:
   - not rhel8cis_openldap_clients_required
+  - "'openldap-clients' in ansible_facts.packages"
   - rhel8cis_rule_2_3_3
   tags:
   - level1

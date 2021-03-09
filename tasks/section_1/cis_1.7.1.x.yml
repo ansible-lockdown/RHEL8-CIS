@@ -87,6 +87,7 @@
     state: absent
   when:
   - rhel8cis_rule_1_7_1_6
+  - "'setroubleshoot' in ansible_facts.packages"
   tags:
   - level2
   - scored

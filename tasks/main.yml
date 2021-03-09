@@ -16,6 +16,14 @@
   tags:
   - always
 
+- name: Check rhel7cis_bootloader_password_hash variable has been changed
+  assert:
+    that: rhel8cis_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'
+    msg: "This role will not be able to run single user password commands as rhel8cis_bootloader_password_hash variable has not been set"
+  when:
+  - rhel8cis_set_boot_pass
+  - rhel8cis_rule_1_5_2
+
 - include: prelim.yml
   become: yes
   tags:
