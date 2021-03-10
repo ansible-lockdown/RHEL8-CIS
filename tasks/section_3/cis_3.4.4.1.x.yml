@@ -85,13 +85,13 @@
   block:
       - name: "SCORED | 3.4.4.1.4 | AUDIT | Ensure firewall rules exist for all open ports | Get list of TCP open ports"
         shell: netstat -ant |grep "tcp.*LISTEN" | awk '{ print $4 }'| sed 's/.*://'
-        change_when: false
+        changed_when: false
         failed_when: false
         register: rhel8cis_3_4_4_1_4_otcp
 
       - name: "SCORED | 3.4.4.1.4| AUDIT | Ensure firewall rules exist for all open ports | Get the list of udp open ports"
         shell: netstat -ant |grep "udp.*LISTEN" | awk '{ print $4 }'| sed 's/.*://'
-        change_when: false
+        changed_when: false
         failed_when: false
         register: rhel8cis_3_4_4_1_4_oudp
 

@@ -21,6 +21,7 @@
       name: iptables
       enabled: false
       masked: true
+  ignore_errors: true
   when:
       - rhel8cis_firewall == "firewalld"
       - rhel8cis_rule_3_4_2_2

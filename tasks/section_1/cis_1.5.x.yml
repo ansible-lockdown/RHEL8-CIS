@@ -27,17 +27,10 @@
       - rule_1.5.1
 
 - name: "SCORED | 1.5.2 | PATCH | Ensure bootloader password is set"
-  block:
-      - name: "SCORED | 1.5.2 | PATCH | Ensure bootloader password is set | Set random pw to bootloader"
-        grub_crypt:
-            password: "{{ rhel8cis_bootloader_password }}"
-        register: grub_pass
-
-      - name: "SCORED | 1.5.2 | PATCH | Ensure bootloader password is set"
-        copy:
-            dest: /boot/grub2/user.cfg
-            content: "GRUB2_PASSWORD={{ grub_pass.passhash }}"
-        notify: generate new grub config
+  copy:
+      dest: /boot/grub2/user.cfg
+      content: "GRUB2_PASSWORD={{ rhel8cis_bootloader_password_hash }}"
+  notify: generate new grub config
   when:
       - rhel8cis_set_boot_pass
       - grub_pass is defined and grub_pass.passhash is defined and grub_pass.passhash != ''

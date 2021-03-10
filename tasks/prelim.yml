@@ -49,4 +49,13 @@
     set_fact:
       rhel8cis_legacy_boot: 'true'
     when: not rhel_08_efi_boot.stat.exists
-    
+
+- name: "PRELIM | Check for rhnsd service"
+  shell: "systemctl show rhnsd | grep LoadState | cut -d = -f 2"
+  changed_when: false
+  check_mode: false
+  register: rhnsd_service_status
+  when:
+      - rhel8cis_rule_1_2_2
+  tags:
+      - skip_ansible_lint

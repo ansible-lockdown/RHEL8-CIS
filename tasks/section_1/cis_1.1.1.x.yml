@@ -12,7 +12,7 @@
       - name: "SCORED | 1.1.1.1 | PATCH | Remove cramfs module | Disable cramfs"
         modprobe:
             name: cramfs
-              state: absent
+            state: absent
         when:
             - ansible_connection != 'docker'
   when:

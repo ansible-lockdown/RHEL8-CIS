@@ -160,11 +160,11 @@
         with_nested:
             - "{{ (ansible_check_mode | ternary(rhel_08_6_2_7_patch_audit, rhel_08_6_2_7_patch)).results |
               rejectattr('skipped', 'defined') | map(attribute='item') | map('first') | list }}"
-        -
-          - etype: group
-            mode: rx
-          - etype: other
-            mode: '0'
+            -
+              - etype: group
+                mode: rx
+              - etype: other
+                mode: '0'
   when:
       - rhel8cis_rule_6_2_7
   tags:
