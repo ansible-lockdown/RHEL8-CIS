@@ -35,10 +35,14 @@
 - name: "SCORED | 4.1.2.3 | PATCH | Ensure system is disabled when audit logs are full"
   lineinfile:
       dest: /etc/audit/auditd.conf
-      regexp: "^admin_space_left_action"
-      line: "admin_space_left_action = {{ rhel8cis_auditd['admin_space_left_action'] }}"
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
       state: present
   notify: restart auditd
+  with_items:
+      - { regexp: '^admin_space_left_action', line: 'admin_space_left_action = {{ rhel8cis_auditd['admin_space_left_action'] }}' }
+      - { regexp: '^action_mail_acct', line: 'action_mail_acct = {{ rhel8cis_auditd['action_mail_acct'] }}' }
+      - { regexp: '^space_left_action', line: 'space_left_action = {{ rhel8cis_auditd['space_left_action'] }}' }
   when:
       - rhel8cis_rule_4_1_2_3
   tags:
