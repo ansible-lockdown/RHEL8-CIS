@@ -7,7 +7,8 @@
   when:
       - rhel8cis_rule_1_3_1
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - scored
       - sudo
       - patch
@@ -22,7 +23,8 @@
   when:
       - rhel8cis_rule_1_3_2
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - scored
       - patch
       - rule_1.3.2
@@ -36,7 +38,8 @@
   when:
       - rhel8cis_rule_1_3_1
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - scored
       - patch
       - rule_1.3.3
