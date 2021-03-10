@@ -49,12 +49,19 @@
       - rule_1.1.5
 
 - name: "SCORED | 1.1.6 | PATCH | Ensure separate partition exists for /var"
-  shell: mount | grep "on /var "
-  args:
-      warn: false
-  register: var_mounted
-  changed_when: false
-  failed_when: false
+  block:
+      - name: "SCORED | 1.1.6 | PATCH | Ensure separate partition exists for /var | Get /var partition status"
+        shell: mount | grep "on /var "
+        changed_when: false
+        failed_when: false
+        register: var_mounted
+
+      - name: "SCORED | 1.1.6 | PATCH | Ensure separate partition exists for /var | Message out about partition"
+        debug:
+            msg:
+                - "Alert! A separate partition should exist for the /var directory"
+                - "Automation can not make this change on the fly"
+        when: var_mounted == ""
   when:
       - rhel8cis_rule_1_1_6
   tags:
@@ -66,10 +73,19 @@
       - skip_ansible_lint
 
 - name: "SCORED | 1.1.7 | PATCH | Ensure separate partition exists for /var/tmp"
-  shell: mount | grep "on /var/tmp "
-  register: var_tmp_mounted
-  changed_when: false
-  failed_when: false
+  block:
+      - name: "SCORED | 1.1.7 | PATCH | Ensure separate partition exists for /var/tmp | Get /var/tmp partition status"
+        shell: mount | grep "on /var/tmp "
+        changed_when: false
+        failed_when: false
+        register: var_tmp_mounted
+
+      - name: "SCORED | 1.1.7 | PATCH | Ensure separate partition exists for /var/tmp | Message out about partition"
+        debug:
+            msg:
+                - "Alert! A separate partition should exist for the /var/tmp directory"
+                - "Automation can not make this change on the fly"
+        when: var_tmp_mounted == ""
   when:
       - rhel8cis_rule_1_1_7
   tags:
@@ -105,10 +121,19 @@
       - rule_1.1.10
 
 - name: "SCORED | 1.1.11 | PATCH | Ensure separate partition exists for /var/log"
-  shell: mount | grep "on /var/log "
-  register: var_log_mounted
-  changed_when: false
-  failed_when: false
+  block:
+      - name: "SCORED | 1.1.11 | PATCH | Ensure separate partition exists for /var/log"
+        shell: mount | grep "on /var/log "
+        register: var_log_mounted
+        changed_when: false
+        failed_when: false
+
+      - name: "SCORED | 1.1.11 | PATCH | Ensure separate partition exists for /var/log"
+        debug:
+            msg:
+                - "Alert! A separate partition should exist for the /var/log directory"
+                - "Automation can not make this change on the fly"
+        when: var_log_mounted == ""
   when:
       - rhel8cis_rule_1_1_11
   tags:
@@ -119,33 +144,51 @@
       - rule_1.1.11
       - skip_ansible_lint
 
-- name: "SCORED | 1.1.12 | PATCH | Ensure separate partition exists for /var/log/audit"
-  shell: mount | grep "on /var/log/audit "
-  register: var_log_audit_mounted
-  changed_when: false
-  failed_when: false
+- name: "SCORED | 1.1.12 | AUDIT | Ensure separate partition exists for /var/log/audit"
+  block:
+      - name: "SCORED | 1.1.12 | AUDIT | Ensure separate partition exists for /var/log/audit | Get /var/log/audit partition status"
+        shell: mount | grep "on /var/log/audit "
+        changed_when: false
+        failed_when: false
+        register: var_log_audit_mounted
+
+      - name: "SCORED | 1.1.12 | AUDIT | Ensure separate partition exists for /var/log/audit | Message out about partition"
+        debug:
+            msg:
+                - "Alert! A separate partition should exist for the /var/log/audit directory"
+                - "Automation can not make this change on the fly"
+        when: var_log_mounted == ""
   when:
       - rhel8cis_rule_1_1_12
   tags:
       - level2-server
       - level2-workstation
       - scored
-      - patch
+      - audit
       - rule_1.1.12
       - skip_ansible_lint
 
-- name: "SCORED | 1.1.13 | PATCH | Ensure separate partition exists for /home"
-  shell: mount | grep "on /home"
-  register: home_mounted
-  changed_when: false
-  failed_when: false
+- name: "SCORED | 1.1.13 | AUDIT | Ensure separate partition exists for /home"
+  block:
+      - name: "SCORED | 1.1.13 | AUDIT | Ensure separate partition exists for /home | Get /hom partition status"
+        shell: mount | grep "on /home"
+        changed_when: false
+        failed_when: false
+        register: home_mounted
+
+      - name: "SCORED | 1.1.13 | AUDIT | Ensure separate partition exists for /home | Message out about partition"
+        debug:
+            msg:
+                - "Alert! A separate partition should exist for the /home directory"
+                - "Automation can not make this change on the fly"
+        when: home_mounted == ""
   when:
       - rhel8cis_rule_1_1_13
   tags:
       - level2-server
       - level2-workstation
       - scored
-      - patch
+      - audit
       - rule_1.1.13
       - skip_ansible_lint
 

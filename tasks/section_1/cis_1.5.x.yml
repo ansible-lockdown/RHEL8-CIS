@@ -5,8 +5,8 @@
       - name: "SCORED | 1.5.1 | AUDIT | Ensure permissions on bootloader config are configured | Get grub config settings"
         stat:
             path: /etc/grub2.cfg
+        changed_when: false
         register: grub_cfg
-        changed_when: no
 
       - name: "SCORED | 1.5.1 | PATCH | Ensure permissions on bootloader config are configured | Update grub config settings"
         file:

@@ -2,8 +2,8 @@
 
 - name: "NOTSCORED | 1.2.1 | PATCH | Ensure Red Hat Subscription Manager connection is configured"
   command: subscription-manager register
-  changed_when: no
-  failed_when: no
+  changed_when: false
+  failed_when: false
   when:
       - ansible_distribution == "RedHat"
       - rhel8cis_rule_1_2_1
@@ -43,12 +43,12 @@
 
 - name: "SCORED | 1.2.4 | PATCH | Ensure gpgcheck is globally activated"
   block:
-      - name: "SCORED | 1.2.4 | PATCH | Ensure gpgcheck is globally activated | Find repos"
+      - name: "SCORED | 1.2.4 | AUDIT | Ensure gpgcheck is globally activated | Find repos"
         find:
             paths: /etc/yum.repos.d
             patterns: "*.repo"
         register: yum_repos
-        changed_when: no
+        changed_when: false
 
       - name: "SCORED | 1.2.4 | PATCH | Ensure gpgcheck is globally activated | Update yum.repos"
         replace:
@@ -68,11 +68,11 @@
 
 - name: "NOTSCORED | 1.2.5 | PATCH | Ensure package manager repositories are configured"
   command: dnf repolist
+  changed_when: false
+  failed_when: false
+  register: dnf_configured
   args:
       warn: false
-  register: dnf_configured
-  changed_when: no
-  failed_when: no
   when:
       - rhel8cis_rule_1_2_5
   tags:

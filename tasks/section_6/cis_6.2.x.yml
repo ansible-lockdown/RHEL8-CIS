@@ -288,7 +288,6 @@
       - name: "SCORED | 6.2.14 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Print warning about users with invalid GIDs missing GID entries in /etc/group"
         debug:
             msg: "WARNING: The following users have non-existent GIDs (Groups): {{ passwd_gid_check.stdout_lines | join (', ') }}"
-        changed_when: no
         when: passwd_gid_check.stdout is defined
   when:
       - rhel8cis_rule_6_2_14
