@@ -39,8 +39,7 @@
         modprobe:
             name: vfat
             state: absent
-        when:
-        - ansible_connection != 'docker'
+        when: ansible_connection != 'docker'
   when:
       - rhel8cis_rule_1_1_1_2
       - rhel8cis_legacy_boot

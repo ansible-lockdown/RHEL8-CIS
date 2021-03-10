@@ -4,9 +4,9 @@
   block:
       - name: "SCORED | 1.1.2 | PATCH | Ensure /tmp is configured | change mount options in config file for systemd"
         lineinfile:
-            path: /etc/selinux/config
-            regexp: "^Options=mode"
-            line: "Options=mode=1777,strictatime,noexec,nodev,nosuid"
+            path: /etc/fstab
+            regexp: '^tmpfs /tmp'
+            line: "tmpfs /tmp tmpfs {{ rhel8cis_tmp_tmpfs_settings }}"
 
       - name: "SCORED | 1.1.2 | PATCH | Ensure /tmp is configured | enforce systemd enabled service"
         systemd:
@@ -53,8 +53,8 @@
   args:
       warn: false
   register: var_mounted
-  changed_when: no
-  failed_when: no
+  changed_when: false
+  failed_when: false
   when:
       - rhel8cis_rule_1_1_6
   tags:
@@ -68,8 +68,8 @@
 - name: "SCORED | 1.1.7 | PATCH | Ensure separate partition exists for /var/tmp"
   shell: mount | grep "on /var/tmp "
   register: var_tmp_mounted
-  changed_when: no
-  failed_when: no
+  changed_when: false
+  failed_when: false
   when:
       - rhel8cis_rule_1_1_7
   tags:
@@ -107,8 +107,8 @@
 - name: "SCORED | 1.1.11 | PATCH | Ensure separate partition exists for /var/log"
   shell: mount | grep "on /var/log "
   register: var_log_mounted
-  changed_when: no
-  failed_when: no
+  changed_when: false
+  failed_when: false
   when:
       - rhel8cis_rule_1_1_11
   tags:
@@ -122,8 +122,8 @@
 - name: "SCORED | 1.1.12 | PATCH | Ensure separate partition exists for /var/log/audit"
   shell: mount | grep "on /var/log/audit "
   register: var_log_audit_mounted
-  changed_when: no
-  failed_when: no
+  changed_when: false
+  failed_when: false
   when:
       - rhel8cis_rule_1_1_12
   tags:
@@ -137,8 +137,8 @@
 - name: "SCORED | 1.1.13 | PATCH | Ensure separate partition exists for /home"
   shell: mount | grep "on /home"
   register: home_mounted
-  changed_when: no
-  failed_when: no
+  changed_when: false
+  failed_when: false
   when:
       - rhel8cis_rule_1_1_13
   tags:
@@ -192,7 +192,7 @@
 - name: "NOTSCORED | 1.1.18 | PATCH | Ensure nodev option set on removable media partitions"
   debug:
       msg: "--> Not relevant"
-  changed_when: no
+  changed_when: false
   when:
       - rhel8cis_rule_1_1_18
   tags:
@@ -205,7 +205,7 @@
 - name: "NOTSCORED | 1.1.19 | PATCH | Ensure nosuid option set on removable media partitions"
   debug:
       msg: "--> Not relevant"
-  changed_when: no
+  changed_when: false
   when:
       - rhel8cis_rule_1_1_19
   tags:
@@ -218,7 +218,7 @@
 - name: "NOTSCORED | 1.1.20 | PATCH | Ensure noexec option set on removable media partitions"
   debug:
       msg: "--> Not relevant"
-  changed_when: no
+  changed_when: false
   when:
       - rhel8cis_rule_1_1_20
   tags:
@@ -230,8 +230,8 @@
 
 - name: "SCORED | 1.1.21 | PATCH | Ensure sticky bit is set on all world-writable directories"
   shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d -perm -0002 2>/dev/null | xargs chmod a+t
-  changed_when: no
-  failed_when: no
+  changed_when: false
+  failed_when: false
   # when: sticky_bit_on_worldwritable_dirs_audit.rc == '0'
   when:
       - rhel8cis_rule_1_1_21

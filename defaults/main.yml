@@ -326,6 +326,11 @@ rhel8cis_allow_autofs: false
 
 ## Section 1 vars
 
+# 1.1.2
+# These settings go into the /etc/fstab file for the /tmp mount settings
+# The value must contain nosuid,nodev,noexec to conform to CIS standards
+rhel8cis_tmp_tmpfs_settings: "defaults,rw,nosuid,nodev,noexec,relatime 0 0"
+
 # 1.2.2
 # Do you require rhnsd
 rhel8cis_rhnsd_required: false
