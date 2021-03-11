@@ -30,10 +30,10 @@
   block:
       - name: "SCORED | 3.4.4.1.2 | PATCH | Ensure loopback traffic is configured | INPUT Loopback ACCEPT"
         iptables:
-          action: append
-          chain: INPUT
-          in_interface: lo
-          jump: ACCEPT
+            action: append
+            chain: INPUT
+            in_interface: lo
+            jump: ACCEPT
 
       - name: "SCORED | 3.4.4.1.2 | PATCH | Ensure loopback traffic is configured | OUTPUT Loopback ACCEPT"
         iptables:
@@ -44,10 +44,10 @@
 
       - name: "SCORED | 3.4.4.1.2 | PATCH | Ensure loopback traffic is configured | INPUT Loopback 127.0.0.0/8"
         iptables:
-          action: append
-          chain: INPUT
-          source: 127.0.0.0/8
-          jump: DROP
+            action: append
+            chain: INPUT
+            source: 127.0.0.0/8
+            jump: DROP
   when:
       - rhel8cis_firewall == "iptables"
       - rhel8cis_rule_3_4_4_1_2

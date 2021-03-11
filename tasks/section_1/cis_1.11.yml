@@ -4,11 +4,9 @@
   block:
       - name: "SCORED | 1.11 | PATCH | Ensure system-wide crypto policy is FUTURE or FIPS| Set crypto policy"
         shell: update-crypto-policies --set "{{ rhel8cis_crypto_policy }}"
-        become: true
 
       - name: "SCORED | 1.11 | PATCH | Ensure system-wide crypto policy is FUTURE or FIPS | Activate crypto policy"
         shell: update-crypto-policies
-        become: true
   when:
       - rhel8cis_rule_1_11
   tags:

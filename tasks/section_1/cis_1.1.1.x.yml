@@ -3,11 +3,11 @@
   block:
       - name: "SCORED | 1.1.1.1 | PATCH | Ensure mounting of cramfs filesystems is disabled | Edit modprobe config"
         lineinfile:
-              dest: /etc/modprobe.d/CIS.conf
-              regexp: "^(#)?install cramfs(\\s|$)"
-              line: "install cramfs /bin/true"
-              create: yes
-              mode: 0600
+            dest: /etc/modprobe.d/CIS.conf
+            regexp: "^(#)?install cramfs(\\s|$)"
+            line: "install cramfs /bin/true"
+            create: yes
+            mode: 0600
 
       - name: "SCORED | 1.1.1.1 | PATCH | Remove cramfs module | Disable cramfs"
         modprobe:
