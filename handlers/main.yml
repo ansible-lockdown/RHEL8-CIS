@@ -35,6 +35,11 @@
       masked: no
       state: reloaded
 
+- name: remount tmp
+  command: mount -o remount /tmp
+  args:
+    warn: false
+
 - name: generate new grub config
   become: yes
   command: grub2-mkconfig -o "{{ grub_cfg.stat.lnk_source }}"

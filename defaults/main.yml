@@ -329,10 +329,20 @@ rhel8cis_allow_autofs: false
 # 1.1.2
 # These settings go into the /etc/fstab file for the /tmp mount settings
 # The value must contain nosuid,nodev,noexec to conform to CIS standards
-rhel8cis_tmp_tmpfs_settings: "defaults,rw,nosuid,nodev,noexec,relatime 0 0"
+# rhel8cis_tmp_tmpfs_settings: "defaults,rw,nosuid,nodev,noexec,relatime 0 0"
+# If set true uses the tmp.mount service else using fstab configuration
+rhel8cis_tmp_svc: false
+
+# 1.2.1
+# This is the login information for your RedHat Subscription
+# DO NOT USE PLAIN TEXT PASSWORDS!!!!!
+# The intent here is to use a password utility like Ansible Vault here
+rhel8cis_rh_sub_user: user
+rhel8cis_rh_sub_password: password
 
 # 1.2.2
 # Do you require rhnsd
+# RedHat Satellite Subscription items
 rhel8cis_rhnsd_required: false
 
 # 1.3.3 var log location variable
@@ -340,9 +350,6 @@ rhel8cis_varlog_location: "/var/log/sudo.log"
 
 # xinetd required
 rhel8cis_xinetd_required: false
-
-# RedHat Satellite Subscription items
-rhel8cis_rhnsd_required: false
 
 # 1.4.2 Bootloader password
 rhel8cis_bootloader_password_hash: 'grub.pbkdf2.sha512.changethispassword'
@@ -379,7 +386,7 @@ rhel8cis_selinux_pol: targeted
 rhel8cis_gui: no
 
 # Set to 'true' if X Windows is needed in your environment
-rhel8cis_xwindows_required: no
+rhel8cis_xwindows_required: false
 
 rhel8cis_openldap_clients_required: false
 rhel8cis_telnet_required: false

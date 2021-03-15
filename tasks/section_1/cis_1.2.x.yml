@@ -1,11 +1,13 @@
 ---
 
 - name: "NOTSCORED | 1.2.1 | PATCH | Ensure Red Hat Subscription Manager connection is configured"
-  command: subscription-manager register
-  changed_when: false
-  failed_when: false
+  redhat_subscription:
+      state: present
+      username: "{{ rhel8cis_rh_sub_user }}"
+      password: "{{ rhel8cis_rh_sub_password }}"
+      auto_attach: true
   when:
-      - ansible_distribution == "RedHat"
+      - ansible_distribution == "RedHat" and rhel8cis_rhnsd_required
       - rhel8cis_rule_1_2_1
   tags:
       - level1-server
