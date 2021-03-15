@@ -97,7 +97,7 @@
       src: "{{ item.device }}"
       fstype: "{{ item.fstype }}"
       state: present
-  loop: "{{ ansible_mounts }}" make this change on the fly"
+  loop: "{{ ansible_mounts }} make this change on the fly"
   when:
       - rhel8cis_rule_1_1_11
       - item.mount == "/var/log"
