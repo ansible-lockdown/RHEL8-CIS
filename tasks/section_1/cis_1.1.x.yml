@@ -1,23 +1,5 @@
 ---
 
-- name: "SCORED | 1.1.2 | PATCH | Ensure /tmp is configured"
-  systemd:
-      name: tmp.mount
-      daemon_reload: yes
-      enabled: yes
-      masked: no
-      state: started
-  when:
-      - rhel8cis_rule_1_1_2
-      - rhel8cis_tmp_svc
-  tags:
-      - level1-server
-      - level1-workstation
-      - scored
-      - patch
-      - mounts
-      - rule_1.1.2
-
 - name: |
         "SCORED | 1.1.2 | PATCH | Ensure /tmp is configured"
         "SCORED | 1.1.3 | PATCH | Ensure nodev option set on /tmp partition"
