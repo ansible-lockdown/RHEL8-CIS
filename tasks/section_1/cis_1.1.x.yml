@@ -14,6 +14,7 @@
   notify: remount tmp
   loop: "{{ ansible_mounts }}"
   when:
+      - item.mount == "/tmp"
       - rhel8cis_rule_1_1_3
       - rhel8cis_rule_1_1_4
       - rhel8cis_rule_1_1_5
@@ -97,7 +98,7 @@
       src: "{{ item.device }}"
       fstype: "{{ item.fstype }}"
       state: present
-  loop: "{{ ansible_mounts }} make this change on the fly"
+  loop: "{{ ansible_mounts }}"
   when:
       - rhel8cis_rule_1_1_11
       - item.mount == "/var/log"
@@ -149,7 +150,7 @@
       - scored
       - audit
       - mounts
-      - rule_1.1.13
+      - rule_1.1.13 
       - skip_ansible_lint
 
 - name: |
