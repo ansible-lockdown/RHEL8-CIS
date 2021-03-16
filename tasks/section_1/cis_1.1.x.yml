@@ -10,13 +10,14 @@
       src: "{{ item.device }}"
       fstype: "{{ item.fstype }}"
       state: present
-      opts: defaults,{% if rhel7cis_rule_1_1_3 %}noexec,{% endif %}{% if rhel7cis_rule_1_1_4 %}nodev,{% endif %}{% if rhel7cis_rule_1_1_5 %}nosuid{% endif %}
+      opts: defaults,{% if rhel8cis_rule_1_1_3 %}noexec,{% endif %}{% if rhel8cis_rule_1_1_4 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_5 %}nosuid{% endif %}
   notify: remount tmp
   loop: "{{ ansible_mounts }}"
   when:
-      - rhel8cis_rule_1_1_3
-      - rhel8cis_rule_1_1_4
-      - rhel8cis_rule_1_1_5
+      - rhel8cis_rule_1_1_2 or
+        rhel8cis_rule_1_1_3 or
+        rhel8cis_rule_1_1_4 or
+        rhel8cis_rule_1_1_5
   tags:
       - level1-server
       - level1-workstation
@@ -74,7 +75,7 @@
       src: "{{ item.device }}"
       fstype: "{{ item.fstype }}"
       state: present
-      opts: defaults,{% if rhel7cis_rule_1_1_12 %}noexec,{% endif %}{% if rhel7cis_rule_1_1_13 %}nodev,{% endif %}{% if rhel7cis_rule_1_1_14 %}nosuid{% endif %}
+      opts: defaults,{% if rhel8cis_rule_1_1_12 %}noexec,{% endif %}{% if rhel8cis_rule_1_1_13 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_14 %}nosuid{% endif %}
   loop: "{{ ansible_mounts }}"
   when:
       - item.mount == "/var/tmp"
@@ -97,7 +98,7 @@
       src: "{{ item.device }}"
       fstype: "{{ item.fstype }}"
       state: present
-  loop: "{{ ansible_mounts }}" make this change on the fly"
+  loop: "{{ ansible_mounts }}"
   when:
       - rhel8cis_rule_1_1_11
       - item.mount == "/var/log"
@@ -161,7 +162,7 @@
       src: "{{ item.device }}"
       fstype: tmpfs
       state: present
-      opts: defaults,{% if rhel7cis_rule_1_1_7 %}noexec,{% endif %}{% if rhel7cis_rule_1_1_8 %}nodev,{% endif %}{% if rhel7cis_rule_1_1_9 %}nosuid{% endif %}
+      opts: defaults,{% if rhel8cis_rule_1_1_7 %}noexec,{% endif %}{% if rhel8cis_rule_1_1_8 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_9 %}nosuid{% endif %}
   loop: "{{ ansible_mounts }}"
   when:
       - item.mount == "/dev/shm"
