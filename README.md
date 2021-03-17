@@ -2,6 +2,8 @@ RHEL 8 CIS
 ================
 
 ![Build Status](https://img.shields.io/github/workflow/status/ansible-lockdown/RHEL8-CIS/CommunityToDevel?label=Devel%20Build%20Status&style=plastic)
+![Build Status](https://img.shields.io/github/workflow/status/ansible-lockdown/RHEL8-CIS/DevelToMain?label=Main%20Build%20Status&style=plastic)
+![Release](https://img.shields.io/github/v/release/ansible-lockdown/RHEL8-CIS?style=plastic)
 
 
 Configure RHEL/Centos 8 machine to be [CIS](https://www.cisecurity.org/cis-benchmarks/) compliant
@@ -25,9 +27,24 @@ Documentation
 [Wiki](https://github.com/ansible-lockdown/RHEL8-CIS/wiki)<br>
 [Repo GitHub Page](https://ansible-lockdown.github.io/RHEL8-CIS/)<br>
 
+Auditing (new)
+--------------
+
+This can be turned on or off within the defaults/main.yml file with the variable rhel8cis_run_audit. The value is false by default, please refer to the wiki for more details.
+
+This is a much quicker, very lightweight, checking (where possible) config compliance and live/running settings.
+
+A new form of auditing has been develeoped, by using a small (12MB) go binary called [goss](https://github.com/aelsabbahy/goss) along with the relevant configurations to check. Without the need for infrastructure or other tooling.
+This audit will not only check the config has the correct setting but aims to capture if it is running with that configuration also trying to remove [false positives](https://www.mindpointgroup.com/blog/is-compliance-scanning-still-relevant/) in the process.
+
+Refer to [RHEL8-CIS-Audit](https://github.com/ansible-lockdown/RHEL8-CIS-Audit).
+
 
 Requirements
 ------------
+
+RHEL 7 or CentOS 7 - Other versions are not supported.
+Access to download or add the goss binary and content to the system if using auditing. options are available on how to get the content to the system.
 
 **General:**
 - Basic knowledge of Ansible, below are some links to the Ansible documentation to help get started if you are unfamiliar with Ansible
@@ -38,9 +55,10 @@ Requirements
 - Functioning Ansible and/or Tower Installed, configured, and running. This includes all of the base Ansible/Tower configurations, needed packages installed, and infrastructure setup. 
 - Please read through the tasks in this role to gain an understanding of what each control is doing. Some of the tasks are disruptive and can have unintended consiquences in a live production system. Also familiarize yourself with the variables in the defaults/main.yml file or the [Main Variables Wiki Page](https://github.com/ansible-lockdown/RHEL8-CIS/wiki/Main-Variables).
 
-**Technical Dependencies:**
-- Running Ansible/Tower setup (this role is tested against Ansible version 2.9.1 and newer)
-- Python3 Ansible run environment
+Dependencies
+------------
+- Python3
+- Ansible 2.9+
 - python-def (should be included in RHEL/CentOS 8)
 - libselinux-python
 
@@ -64,6 +82,24 @@ Below is an example of the tag section from a control within this role. Using th
       - rule_2.2.4
 ```
 
+Example Audit Summary
+---------------------
+
+This is based on a vagrant image with selections enabled. e.g. No Gui or firewall.
+Note: More tests are run during audit as we check config and running state.
+````
+ok: [default] => {
+    "msg": [
+        "The pre remediation results are: ['Total Duration: 5.454s', 'Count: 338, Failed: 47, Skipped: 5'].",
+        "The post remediation results are: ['Total Duration: 5.007s', 'Count: 338, Failed: 46, Skipped: 5'].",
+        "Full breakdown can be found in /var/tmp",
+        ""
+    ]
+}
+
+PLAY RECAP *******************************************************************************************************************************************
+default                    : ok=270  changed=23   unreachable=0    failed=0    skipped=140  rescued=0    ignored=0  
+````
 Branches
 -------
 **devel** - This is the default branch and the working development branch. Community pull requests will pull into this branch<br>
