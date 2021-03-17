@@ -74,7 +74,8 @@ There are many tags available for added control precision. Each control has it's
 Below is an example of the tag section from a control within this role. Using this example if you set your run to skip all controls with the tag services, this task will be skipped. The opposite can also happen where you run only controls tagged with services. 
 ```
       tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - scored
       - avahi
       - services
