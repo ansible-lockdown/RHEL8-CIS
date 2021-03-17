@@ -10,7 +10,6 @@
       src: "{{ item.device }}"
       fstype: "{{ item.fstype }}"
       state: present
-<<<<<<< HEAD
       opts: defaults,{% if rhel8cis_rule_1_1_3 %}noexec,{% endif %}{% if rhel8cis_rule_1_1_4 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_5 %}nosuid{% endif %}
   notify: remount tmp
   loop: "{{ ansible_mounts }}"
@@ -19,16 +18,6 @@
         rhel8cis_rule_1_1_3 or
         rhel8cis_rule_1_1_4 or
         rhel8cis_rule_1_1_5
-=======
-      opts: defaults,{% if rhel8cis_rule_1_1_5 %}noexec,{% endif %}{% if rhel8cis_rule_1_1_3 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_4 %}nosuid{% endif %}
-  notify: remount tmp
-  loop: "{{ ansible_mounts }}"
-  when:
-      - item.mount == "/tmp"
-      - rhel8cis_rule_1_1_3
-      - rhel8cis_rule_1_1_4
-      - rhel8cis_rule_1_1_5
->>>>>>> 9a7f013aa1cd82b21f83974757de888f7637e866
   tags:
       - level1-server
       - level1-workstation
@@ -86,11 +75,7 @@
       src: "{{ item.device }}"
       fstype: "{{ item.fstype }}"
       state: present
-<<<<<<< HEAD
-      opts: defaults,{% if rhel8cis_rule_1_1_12 %}noexec,{% endif %}{% if rhel8cis_rule_1_1_13 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_14 %}nosuid{% endif %}
-=======
       opts: defaults,{% if rhel8cis_rule_1_1_10 %}noexec,{% endif %}{% if rhel8cis_rule_1_1_8 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_9 %}nosuid{% endif %}
->>>>>>> 9a7f013aa1cd82b21f83974757de888f7637e866
   loop: "{{ ansible_mounts }}"
   when:
       - item.mount == "/var/tmp"
@@ -177,11 +162,7 @@
       src: "{{ item.device }}"
       fstype: tmpfs
       state: present
-<<<<<<< HEAD
-      opts: defaults,{% if rhel8cis_rule_1_1_7 %}noexec,{% endif %}{% if rhel8cis_rule_1_1_8 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_9 %}nosuid{% endif %}
-=======
       opts: defaults,{% if rhel8cis_rule_1_1_17 %}noexec,{% endif %}{% if rhel8cis_rule_1_1_15 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_16 %}nosuid{% endif %}
->>>>>>> 9a7f013aa1cd82b21f83974757de888f7637e866
   loop: "{{ ansible_mounts }}"
   when:
       - item.mount == "/dev/shm"
