@@ -430,7 +430,7 @@ rhel8cis_firewall_services:
 
 # 3.4.3.2 Set nftables new table create
 rhel8cis_nft_tables_autonewtable: true
-rhel8cis_nft_tables_tableName: filter
+rhel8cis_nft_tables_tablename: filter
 
 # 3.4.3.3 Set nftables new chain create
 rhel8cis_nft_tables_autoChainCreate: true
