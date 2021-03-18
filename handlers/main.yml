@@ -7,6 +7,7 @@
       name: net.ipv4.route.flush
       value: '1'
       sysctl_set: yes
+      ignore_errors: yes
   when: ansible_virtualization_type != "docker"
 
 - name: sysctl flush ipv6 route table
