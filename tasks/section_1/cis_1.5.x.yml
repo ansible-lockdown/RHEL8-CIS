@@ -15,9 +15,10 @@
             group: root
             mode: 0600
         when:
-             - grub_cfg.stat.exists and grub_cfg.stat.islnk
+             - grub_cfg.stat.exists
+             - grub_cfg.stat.islnk
   when:
-      - rhel8cis_rule_1_4_1
+      - rhel8cis_rule_1_5_1
   tags:
       - level1-server
       - level1-workstation
@@ -33,7 +34,8 @@
   notify: generate new grub config
   when:
       - rhel8cis_set_boot_pass
-      - grub_pass is defined and grub_pass.passhash is defined and grub_pass.passhash != ''
+      - grub_pass is defined and grub_pass.passhash is defined
+      - grub_pass.passhash != ''
       - rhel8cis_rule_1_5_2
   tags:
       - level1-server

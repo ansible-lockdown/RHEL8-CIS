@@ -7,7 +7,8 @@
       password: "{{ rhel8cis_rh_sub_password }}"
       auto_attach: true
   when:
-      - ansible_distribution == "RedHat" and rhel8cis_rhnsd_required
+      - ansible_distribution == "RedHat"
+      - rhel8cis_rhnsd_required
       - rhel8cis_rule_1_2_1
   tags:
       - level1-server
@@ -22,7 +23,8 @@
       state: stopped
       enabled: no
   when:
-      - ansible_distribution == "RedHat" and rhnsd_service_status.stdout == "loaded" and not rhel8cis_rhnsd_required
+      - ansible_distribution == "RedHat"
+      - rhnsd_service_status.stdout == "loaded" and not rhel8cis_rhnsd_required
       - rhel8cis_rule_1_2_2
   tags:
       - level1-server
@@ -69,12 +71,20 @@
       - rule_1.2.4
 
 - name: "NOTSCORED | 1.2.5 | PATCH | Ensure package manager repositories are configured"
-  command: dnf repolist
-  changed_when: false
-  failed_when: false
-  register: dnf_configured
-  args:
-      warn: false
+  block:
+      - name: "NOTSCORED | 1.2.5 | PATCH | Ensure package manager repositories are configured | Get repo list"
+        command: dnf repolist
+        changed_when: false
+        failed_when: false
+        register: dnf_configured
+        args:
+            warn: false
+
+      - name: "NOTSCORED | 1.2.5 | PATCH | Ensure package manager repositories are configured | Display repo list"
+        debug:
+            msg:
+                - "Alert! Below are the configured repos. Please review and make sure all allign with site policy"
+                - "{{ dnf_configured.stdout_lines }}"
   when:
       - rhel8cis_rule_1_2_5
   tags:
