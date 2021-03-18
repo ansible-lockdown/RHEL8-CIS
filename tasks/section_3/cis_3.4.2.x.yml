@@ -58,6 +58,8 @@
   block:
       - name: "SCORED | 3.4.2.5 | AUDIT | Ensure network interfaces are assigned to appropriate zone | Get list of interfaces and polocies"
         shell: "nmcli -t connection show | awk -F: '{ if($4){print $4} }' | while read INT; do firewall-cmd --get-active-zones | grep -B1 $INT; done"
+        changed_when: false
+        failed_when: false
         register: rhel8cis_3_4_2_5_interfacepolicy
 
       - name: "SCORED | 3.4.2.5 | AUDIT | Ensure network interfaces are assigned to appropriate zone | Get list of interfaces and polocies | Show the interface to policy"
