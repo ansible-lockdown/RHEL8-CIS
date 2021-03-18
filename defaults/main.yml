@@ -429,7 +429,7 @@ rhel8cis_firewall_services:
     - dhcpv6-client
 
 # 3.4.3.2 Set nftables new table create
-rhel8cis_nft_tables_autoNewTable: true
+rhel8cis_nft_tables_autonewtable: true
 rhel8cis_nft_tables_tableName: filter
 
 # 3.4.3.3 Set nftables new chain create
