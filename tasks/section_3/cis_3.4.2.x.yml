@@ -14,9 +14,7 @@
       - patch
       - rule_3_4_2_1
 
-# I converted this to a command module from service since I was getting errors trying to disable the service with that module. I need to revisit
 - name: "SCORED | 3.4.2.2 | PATCH | Ensure iptables is not enabled"
-#  command: systemctl --now mask iptables
   systemd:
       name: iptables
       enabled: false
