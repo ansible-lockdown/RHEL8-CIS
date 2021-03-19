@@ -4,3 +4,4 @@
 -a always,exit -F arch=b64 -S chmod -S fchmod -S fchmodat -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -k perm_mod
 -a always,exit -F arch=b64 -S chown -S fchown -S fchownat -S lchown -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -k perm_mod
 -a always,exit -F arch=b64 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -k perm_mod
+
