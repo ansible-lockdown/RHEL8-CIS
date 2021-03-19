@@ -18,6 +18,8 @@ run_heavy_tests: true
 rhel8cis_legacy_boot: {{ rhel8cis_legacy_boot }}
 {% endif %}
 
+
+rhel8cis_set_boot_pass: {{ rhel8cis_set_boot_pass }}
 # These variables correspond with the CIS rule IDs or paragraph numbers defined in
 # the CIS benchmark documents.
 # PLEASE NOTE: These work in coordination with the section # group variables and tags.
