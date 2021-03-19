@@ -6,7 +6,7 @@
       regexp: "^(#)?install dccp(\\s|$)"
       line: "install dccp /bin/true"
       create: yes
-      mode: 0644
+      mode: 0600
   when:
       - rhel8cis_rule_3_3_1
   tags:
@@ -21,7 +21,7 @@
       regexp: "^(#)?install sctp(\\s|$)"
       line: "install sctp /bin/true"
       create: yes
-      mode: 0644
+      mode: 0600
   when:
       - rhel8cis_rule_3_3_2
   tags:
@@ -36,7 +36,7 @@
       regexp: "^(#)?install rds(\\s|$)"
       line: "install rds /bin/true"
       create: yes
-      mode: 0644
+      mode: 0600
   when:
       - rhel8cis_rule_3_3_3
   tags:
@@ -51,7 +51,7 @@
       regexp: "^(#)?install tipc(\\s|$)"
       line: "install tipc /bin/true"
       create: yes
-      mode: 0644
+      mode: 0600
   when:
       - rhel8cis_rule_3_3_4
   tags:
