@@ -553,7 +553,7 @@ rhel8cis_audit_content: git
 
 # git
 rhel8cis_audit_file_git: "https://github.com/ansible-lockdown/{{ benchmark }}-Audit.git"
-rhel8cis_audit_git_version: integrated
+rhel8cis_audit_git_version: main
 
 # copy:
 #rhel8cis_audit_local_copy: "some path to copy from"
