@@ -18,7 +18,6 @@
       dest: /etc/default/grub
       regexp: '(selinux|enforcing)\s*=\s*0\s*'
       replace: ''
-      follow: yes
   register: selinux_grub_patch
   ignore_errors: yes
   notify: generate new grub config
