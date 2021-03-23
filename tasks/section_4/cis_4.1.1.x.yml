@@ -87,7 +87,7 @@
       - name: "SCORED | 4.1.1.4 | PATCH | Ensure audit_backlog_limit is sufficient | Replace existing setting"
         replace:
             dest: /etc/default/grub
-            regexp: 'audit_backlog_limit=([^\s]+)'
+            regexp: 'audit_backlog_limit=\d+'
             replace: 'audit_backlog_limit={{ rhel8cis_audit_back_log_limit }}'
         notify: generate new grub config
         when: "'audit_backlog_limit=' in rhel8cis_4_1_1_4_grub_cmdline_linux.stdout"
