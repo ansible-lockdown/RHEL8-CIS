@@ -55,6 +55,7 @@
       src: "{{ item.device }}"
       fstype: "{{ item.fstype }}"
       state: present
+      opts: defaults,{% if rhel8cis_rule_1_1_10 %}noexec,{% endif %}{% if rhel8cis_rule_1_1_8 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_9 %}nosuid{% endif %}
   loop: "{{ ansible_mounts }}"
   when:
       - rhel8cis_rule_1_1_7
@@ -81,6 +82,7 @@
   loop: "{{ ansible_mounts }}"
   when:
       - item.mount == "/var/tmp"
+      - rhel8cis_rule_1_1_7
       - rhel8cis_rule_1_1_8 or
         rhel8cis_rule_1_1_9 or
         rhel8cis_rule_1_1_10
@@ -89,10 +91,7 @@
       - level1-workstation
       - scored
       - patch
-      - mounts
-      - rule_1.1.8
-      - rule_1.1.9
-      - rule_1.1.10
+      - mounts  
 
 - name: "SCORED | 1.1.11 | PATCH | Ensure separate partition exists for /var/log"
   mount:
