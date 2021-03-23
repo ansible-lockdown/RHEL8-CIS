@@ -1,0 +1,14 @@
+---
+
+- name: "SCORED | 1.11 | PATCH | Ensure system-wide crypto policy is FUTURE or FIPS"
+  shell: "{{ item }}"
+  loop:
+      - update-crypto-policies --set "{{ rhel8cis_crypto_policy }}"
+      - update-crypto-policies
+  when:
+      - rhel8cis_rule_1_11
+  tags:
+      - level2-server
+      - level2-workstation
+      - patch
+      - rule_1.11

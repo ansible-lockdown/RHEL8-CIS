@@ -1,0 +1,18 @@
+---
+
+- name: "NOTSCORED | 3.6 | PATCH | Disable IPv6"
+  replace:
+      dest: /etc/default/grub
+      regexp: '(^GRUB_CMDLINE_LINUX\s*\=\s*)(?:")(.+)(?<!ipv6.disable=1)(?:")'
+      replace: '\1"\2 ipv6.disable=1"'
+      follow: yes
+  ignore_errors: yes
+  notify: generate new grub config
+  when:
+      - not rhel8cis_ipv6_required
+      - rhel8cis_rule_3_6
+  tags:
+      - level2-server
+      - level2-workstation
+      - patch
+      - rule_3.6

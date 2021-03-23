@@ -1,0 +1,122 @@
+---
+
+- name: "SCORED | 3.4.4.2.1 | PATCH | Ensure IPv6 default deny firewall policy"
+  block:
+      - name: "SCORED | 3.4.4.2.1 | PATCH | Ensure IPv6 default deny firewall policy | Configure ssh to be allowed"
+        iptables:
+            chain: INPUT
+            protocol: tcp
+            destination_port: "22"
+            jump: ACCEPT
+            ip_version: ipv6
+
+      - name: "SCORED | 3.4.4.2.1 | PATCH | Ensure IPv6 default deny firewall policy | Set drop items"
+        iptables:
+            policy: DROP
+            chain: "{{ item }}"
+            ip_version: ipv6
+        with_items:
+            - INPUT
+            - FORWARD
+            - OUTPUT
+  when:
+      - rhel8cis_firewall == "iptables"
+      - rhel8cis_rule_3_4_4_2_1
+      - rhel8cis_ipv6_required
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_3.4.4.2.1
+
+- name: "SCORED | 3.4.4.2.2 | PATCH | Ensure IPv6 loopback traffic is configured"
+  block:
+      - name: "SCORED | 3.4.4.2.2 | PATCH | Ensure IPv6 loopback traffic is configured | INPUT Loopback ACCEPT"
+        iptables:
+            action: append
+            chain: INPUT
+            in_interface: lo
+            jump: ACCEPT
+            ip_version: ipv6
+
+      - name: "SCORED | 3.4.4.2.2 | PATCH | Ensure IPv6 loopback traffic is configured | OUTPUT Loopback ACCEPT"
+        iptables:
+            action: append
+            chain: OUTPUT
+            out_interface: lo
+            jump: ACCEPT
+            ip_version: ipv6
+
+      - name: "SCORED | 3.4.4.2.2 | PATCH | Ensure IPv6 loopback traffic is configured | INPUT Loopback 127.0.0.0/8"
+        iptables:
+            action: append
+            chain: INPUT
+            source: ::1
+            jump: DROP
+            ip_version: ipv6
+  when:
+      - rhel8cis_firewall == "iptables"
+      - rhel8cis_rule_3_4_4_2_2
+      - rhel8cis_ipv6_required
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_3.4.4.2.2
+
+- name: "NOTSCORED | 3.4.4.2.3 | PATCH | Ensure IPv6 outbound and established connections are configured"
+  iptables:
+      action: append
+      chain: '{{ item.chain }}'
+      protocol: '{{ item.protocol }}'
+      match: state
+      ctstate: '{{ item.ctstate }}'
+      jump: ACCEPT
+      ip_version: ipv6
+  with_items:
+      - { chain: OUTPUT, protocol: tcp, ctstate: 'NEW,ESTABLISHED' }
+      - { chain: OUTPUT, protocol: udp, ctstate: 'NEW,ESTABLISHED' }
+      - { chain: OUTPUT, protocol: icmp, ctstate: 'NEW,ESTABLISHED' }
+      - { chain: INPUT, protocol: tcp, ctstate: ESTABLISHED }
+      - { chain: INPUT, protocol: udp, ctstate: ESTABLISHED }
+      - { chain: INPUT, protocol: icmp, ctstate: ESTABLISHED }
+  when:
+      - rhel8cis_firewall == "iptables"
+      - rhel8cis_rule_3_4_4_2_3
+      - rhel8cis_ipv6_required
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_3.4.4.2.3
+
+- name: "NOTSCORED | 3.4.4.2.4 | PATCH | Ensure IPV6 firewall rules exist for all open ports"
+  block:
+      - name: "NOTSCORED | 3.4.4.2.4 | AUDIT | Ensure IPv6 firewall rules exist for all open ports | Get list of TCP6 open ports"
+        shell: netstat -ant |grep "tcp6.*LISTEN" | awk '{ print $4 }'| sed 's/.*://'
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_3_4_4_2_4_otcp
+
+      - name: "NOTSCORED | 3.4.4.2.4 | PATCH | Ensure IPv6 firewall rules exist for all open ports| Adjust open tcp6 ports"
+        iptables:
+            action: append
+            chain: INPUT
+            protocol: tcp
+            destination_port: "{{ item }}"
+            match: state
+            ctstate: NEW
+            jump: ACCEPT
+            ip_version: ipv6
+        with_items:
+            - "{{ rhel8cis_3_4_4_2_4_otcp.stdout_lines }}"
+        when: rhel8cis_3_4_4_2_4_otcp.stdout is defined
+  when:
+      - rhel8cis_firewall == "iptables"
+      - rhel8cis_rule_3_4_4_2_4
+      - rhel8cis_ipv6_required
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_3.4.4.2.4

@@ -1,0 +1,131 @@
+---
+
+- name: |
+    "SCORED | 5.4.1 | PATCH | Ensure password creation requirements are configured
+     SCORED | 5.4.2 | PATCH | Ensure lockout for failed password attempts is configured
+     SCORED | 5.4.3 | PATCH | Ensure password reuse is limited
+     SCORED | 5.4.4 | PATCH | Ensure password hashing algorithm is SHA-512"
+  block:
+      - name: "SCORED | 5.4.1 | PATCH | Ensure password creation requirements are configured | Set pwquality config settings"
+        lineinfile:
+            state: present
+            dest: /etc/security/pwquality.conf
+            regexp: '^{{ item }}'
+            line: '{{ item }}'
+        with_items:
+            - "minlen = {{ rhel8cis_pam_password.minlen }}"
+            - "minclass = {{ rhel8cis_pam_password.minclass }}"
+        when: rhel8cis_rule_5_4_1
+
+      - name: |
+          "SCORED | 5.4.1 | PATCH | Ensure password creation requirements are configured | Set system-auth retry settings
+           SCORED | 5.4.3 | PATCH | Ensure password reuse is limited | Set system-auth remember settings"
+        lineinfile:
+            dest: /etc/pam.d/system-auth
+            state: present
+            regexp: '^password    requisite                                    pam_pwquality.so'
+            line: "password    requisite                                    pam_pwquality.so try_first_pass local_users_only enforce-for-root retry=3 remember={{ rhel8cis_pam_faillock.remember }}"
+            insertbefore: '^#?password ?'
+        when:
+            - rhel8cis_rule_5_4_1 or
+              rhel8cis_rule_5_4_3
+
+      - name: "SCORED | 5.4.1 | PATCH | Ensure password creation requirements are configured | Set system-auth retry settings"
+        lineinfile:
+            dest: /etc/pam.d/password-auth
+            state: present
+            regexp: '^password    requisite                                    pam_pwquality.so'
+            line: "password    requisite                                    pam_pwquality.so try_first_pass local_users_only enforce-for-root retry=3"
+            insertbefore: '^#?password ?'
+        when: rhel8cis_rule_5_4_1
+
+      - name: "SCORED | 5.4.2 | PATCH | Ensure lockout for failed password attempts is configured | Add deny count and unlock time for preauth"
+        lineinfile:
+            dest: /etc/pam.d/{{ item }}
+            state: present
+            regexp: '^auth        required                                     pam_faillock.so preauth'
+            line: "auth        required                                     pam_faillock.so preauth silent deny={{ rhel8cis_pam_faillock.attempts }}{{ (rhel8cis_pam_faillock.fail_for_root) | ternary(' even_deny_root ',' ') }}unlock_time={{ rhel8cis_pam_faillock.unlock_time }}"
+            insertafter: '^#?auth ?'
+        with_items:
+            - "system-auth"
+            - "password-auth"
+        when: rhel8cis_rule_5_4_2
+
+      - name: "SCORED | 5.4.2 | PATCH | Ensure lockout for failed password attempts is configured | Add deny count and unlock times for authfail"
+        lineinfile:
+            dest: /etc/pam.d/{{ item }}
+            state: present
+            regexp: '^auth        required                                     pam_faillock.so authfail'
+            line: "auth        required                                     pam_faillock.so authfail deny={{ rhel8cis_pam_faillock.attempts }}{{ (rhel8cis_pam_faillock.fail_for_root) | ternary(' even_deny_root ',' ') }}unlock_time={{ rhel8cis_pam_faillock.unlock_time }}"
+            insertafter: '^#?auth ?'
+        with_items:
+            - "system-auth"
+            - "password-auth"
+        when: rhel8cis_rule_5_4_2
+
+      - name: |
+           "SCORED | 5.4.3 | PATCH | Ensure password reuse is limited | Set system-auth remember remember settings
+            SCORED | 5.4.4 | PATCH | Ensure password hashing algorithm is SHA-512 | Set system-auth pwhash settings"
+        lineinfile:
+            dest: /etc/pam.d/system-auth
+            state: present
+            regexp: '^password    sufficient                                   pam_unix.so'
+            line: "password    sufficient                                   pam_unix.so {{ rhel8cis_pam_faillock.pwhash }} shadow try_first_pass use_authtok remember={{ rhel8cis_pam_faillock.remember }}"
+            insertafter: '^#?password ?'
+        when:
+            - rhel8cis_rule_5_4_3 or
+              rhel8cis_rule_5_4_4
+
+      - name: "SCORED | 5.4.4 | PATCH | Ensure password hashing algorithm is SHA-512 | Set system-auth pwhash settings"
+        lineinfile:
+            dest: /etc/pam.d/password-auth
+            state: present
+            regexp: '^password    sufficient                                   pam_unix.so'
+            line: "password    sufficient                                   pam_unix.so {{ rhel8cis_pam_faillock.pwhash }} shadow try_first_pass use_authtok"
+            insertafter: '^#?password ?'
+        when: rhel8cis_rule_5_4_4
+
+          # The two steps below were added to keep authconfig from overwritting the above configs. This follows steps from here: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/chap-hardening_your_system_with_tools_and_services
+          # With the steps below you will score five (5) points lower due to false positive results
+      - name: |
+           "SCORED | 5.4.1 | PATCH | Ensure password creation requirements are configured"
+            SCORED | 5.4.2 | PATCH | Ensure lockout for failed password attempts is configured
+            SCORED | 5.4.3 | PATCH | Ensure password reuse is limited
+            SCORED | 5.4.4 | PATCH | Ensure password hashing algorithm is SHA-512"
+        copy:
+            src: /etc/pam.d/{{ item }}
+            dest: /etc/pam.d/{{ item }}-local
+            remote_src: yes
+            owner: root
+            group: root
+            mode: '0644'
+        with_items:
+            - "system-auth"
+            - "password-auth"
+
+      - name: |
+           "SCORED | 5.4.1 | PATCH | Ensure password creation requirements are configured"
+            SCORED | 5.4.2 | PATCH | Ensure lockout for failed password attempts is configured
+            SCORED | 5.4.3 | PATCH | Ensure password reuse is limited
+            SCORED | 5.4.4 | PATCH | Ensure password hashing algorithm is SHA-512"
+        file:
+            src: /etc/pam.d/{{ item }}-local
+            dest: /etc/pam.d/{{ item }}
+            state: link
+            force: yes
+        with_items:
+            - "system-auth"
+            - "password-auth"
+  when:
+      - rhel8cis_rule_5_4_1 or
+        rhel8cis_rule_5_4_2 or
+        rhel8cis_rule_5_4_3 or
+        rhel8cis_rule_5_4_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_5.4.1
+      - rule_5.4.2
+      - rule_5.4.3
+      - rule_5.4.4

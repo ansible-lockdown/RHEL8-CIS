@@ -1,0 +1,101 @@
+---
+- name: "SCORED | 1.1.1.1 | PATCH | Ensure mounting of cramfs filesystems is disabled"
+  block:
+      - name: "SCORED | 1.1.1.1 | PATCH | Ensure mounting of cramfs filesystems is disabled | Edit modprobe config"
+        lineinfile:
+            dest: /etc/modprobe.d/CIS.conf
+            regexp: "^(#)?install cramfs(\\s|$)"
+            line: "install cramfs /bin/true"
+            create: yes
+            mode: 0600
+
+      - name: "SCORED | 1.1.1.1 | PATCH | Remove cramfs module | Disable cramfs"
+        modprobe:
+            name: cramfs
+            state: absent
+        when: ansible_connection != 'docker'
+  when:
+      - rhel8cis_rule_1_1_1_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - scored
+      - patch
+      - rule_1.1.1.1
+      - cramfs
+
+- name: "NOT SCORED | 1.1.1.2 | PATCH | Ensure mounting of vFAT filesystems is limited"
+  block:
+      - name: "NOT SCORED | 1.1.1.2 | PATCH | Ensure mounting of vFAT filesystems is limited | Edit modprobe config"
+        lineinfile:
+            dest: /etc/modprobe.d/CIS.conf
+            regexp: "^(#)?install vfat(\\s|$)"
+            line: "install vfat /bin/true"
+            create: yes
+            mode: 0600
+
+      - name: "NOT SCORED | 1.1.1.2 | PATCH | Ensure mounting of vFAT filesystems is limited | Disable vFAT"
+        modprobe:
+            name: vfat
+            state: absent
+        when: ansible_connection != 'docker'
+  when:
+      - rhel8cis_rule_1_1_1_2
+      - rhel8cis_legacy_boot
+  tags:
+      - level2-server
+      - level2-workstation
+      - scored
+      - patch
+      - rule_1.1.1.2
+      - vfat
+
+- name: "SCORED | 1.1.1.3 | PATCH | Ensure mounting of squashfs filesystems is disabled"
+  block:
+      - name: "SCORED | 1.1.1.3 | PATCH | Ensure mounting of squashfs filesystems is disabled | Edit modprobe config"
+        lineinfile:
+            dest: /etc/modprobe.d/CIS.conf
+            regexp: "^(#)?install squashfs(\\s|$)"
+            line: "install squashfs /bin/true"
+            create: yes
+            mode: 0600
+
+      - name: "SCORED | 1.1.1.3 | PATCH | Ensure mounting of squashfs filesystems is disabled | Disable squashfs"
+        modprobe:
+            name: squashfs
+            state: absent
+        when: ansible_connection != 'docker'
+  when:
+      - rhel8cis_rule_1_1_1_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - scored
+      - patch
+      - rule_1.1.1.3
+      - squashfs
+
+- name: "SCORED | 1.1.1.4 | PATCH | Ensure mounting of udf filesystems is disabled"
+  block:
+      - name: "SCORED | 1.1.1.4 | PATCH | Ensure mounting of udf filesystems is disable | Edit modprobe config"
+        lineinfile:
+            dest: /etc/modprobe.d/CIS.conf
+            regexp: "^(#)?install udf(\\s|$)"
+            line: "install udf /bin/true"
+            create: yes
+            mode: 0600
+
+      - name: "SCORED | 1.1.1.4 | PATCH | Ensure mounting of udf filesystems is disable | Disable udf"
+        modprobe:
+            name: udf
+            state: absent
+        when: ansible_connection != 'docker'
+  when:
+      - rhel8cis_rule_1_1_1_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - scored
+      - patch
+      - rule_1.1.1.4
+      - udf

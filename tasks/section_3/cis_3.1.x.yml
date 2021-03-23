@@ -1,0 +1,53 @@
+---
+
+- name: "SCORED | 3.1.1 | PATCH | Ensure IP forwarding is disabled"
+  block:
+      - name: "SCORED | 3.1.1 | PATCH | Ensure IP forwarding is disabled | Disable IPv4 forwarding"
+        sysctl:
+            name: net.ipv4.ip_forward
+            value: '0'
+            state: present
+            reload: yes
+            ignoreerrors: yes
+        notify: sysctl flush ipv4 route table
+
+      - name: "SCORED | 3.1.1 | PATCH | Ensure IP forwarding is disabled | Disable IPv6 forwarding"
+        sysctl:
+            name: net.ipv6.conf.all.forwarding
+            value: '0'
+            state: present
+            reload: yes
+            ignoreerrors: yes
+        notify: sysctl flush ipv6 route table
+        when: rhel8cis_ipv6_required
+  when:
+      - not rhel8cis_is_router
+      - rhel8cis_rule_3_1_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - sysctl
+      - patch
+      - rule_3.1.1
+
+- name: "SCORED | 3.1.2 | PATCH | Ensure packet redirect sending is disabled"
+  sysctl:
+      name: '{{ item.name }}'
+      value: '{{ item.value }}'
+      sysctl_set: yes
+      state: present
+      reload: yes
+      ignoreerrors: yes
+  notify: sysctl flush ipv4 route table
+  with_items:
+      - { name: net.ipv4.conf.all.send_redirects, value: 0 }
+      - { name: net.ipv4.conf.default.send_redirects, value: 0 }
+  when:
+      - not rhel8cis_is_router
+      - rhel8cis_rule_3_1_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - sysctl
+      - patch
+      - rule_3.1.2

@@ -1,0 +1,15 @@
+---
+
+- name: "SCORED | 3.4.1.1 | PATCH | Ensure a Firewall package is installed"
+  package:
+      name: "{{ rhel8cis_firewall }}"
+      state: present
+  notify: restart {{ rhel8cis_firewall }}
+  when:
+      - rhel8cis_firewall == "firewalld"
+      - rhel8cis_rule_3_4_1_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_3.4.1.1

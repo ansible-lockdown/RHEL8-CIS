@@ -1,6 +1,5 @@
 -a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=access
 -a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=access
-{% if ansible_architecture == 'x86_64' -%} 
 -a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=access
 -a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=access
-{% endif %}
+

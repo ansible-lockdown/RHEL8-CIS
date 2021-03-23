@@ -1,0 +1,59 @@
+---
+
+- name: "SCORED | 1.5.1 | PATCH | Ensure permissions on bootloader config are configured"
+  file:
+      path: "{{ grub_cfg.stat.lnk_source }}"
+      owner: root
+      group: root
+      mode: 0600
+  when:
+      - rhel8cis_rule_1_5_1
+      - grub_cfg.stat.exists
+      - grub_cfg.stat.islnk
+  tags:
+      - level1-server
+      - level1-workstation
+      - scored
+      - grub
+      - patch
+      - rule_1.5.1
+
+- name: "SCORED | 1.5.2 | PATCH | Ensure bootloader password is set"
+  copy:
+      dest: /boot/grub2/user.cfg
+      content: "GRUB2_PASSWORD={{ rhel8cis_bootloader_password_hash }}"
+  notify: generate new grub config
+  when:
+      - rhel8cis_set_boot_pass
+      - grub_pass is defined and grub_pass.passhash is defined
+      - grub_pass.passhash != ''
+      - rhel8cis_rule_1_5_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - scored
+      - grub
+      - patch
+      - rule_1.5.2
+
+- name: "NOTSCORED | 1.5.3 | PATCH | Ensure authentication required for single user mode"
+  block:
+      - name: "NOTSCORED | 1.5.3 | PATCH | Ensure authentication required for single user mode | Emergency service"
+        lineinfile:
+            dest: /usr/lib/systemd/system/emergency.service
+            regexp: '/sbin/sulogin'
+            line: 'ExecStart=-/usr/lib/systemd/systemd-sulogin-shell emergency'
+
+      - name: "NOTSCORED | 1.5.3 | PATCH | Ensure authentication required for single user mode | Rescue service"
+        lineinfile:
+            dest: /usr/lib/systemd/system/rescue.service
+            regexp: '/sbin/sulogin'
+            line: 'ExecStart=-/usr/lib/systemd/systemd-sulogin-shell rescue'
+  when:
+      - rhel8cis_rule_1_5_3
+      - ansible_distribution_major_version == 8
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_1.5.3

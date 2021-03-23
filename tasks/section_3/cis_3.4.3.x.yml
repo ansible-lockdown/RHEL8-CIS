@@ -1,0 +1,262 @@
+---
+
+- name: "NOTSCORED | 3.4.3.1 | PATCH | Ensure iptables are flushed"
+  command: ip6tables -F
+  when:
+      - rhel8cis_rule_3_4_3_1
+      - rhel8cis_firewall != "iptables"
+      - rhel8cis_ipv6_required
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_3.4.3.1
+
+- name: "SCORED | 3.4.3.2 | PATCH | Ensure a table exists"
+  block:
+      - name: "SCORED | 3.4.3.2 | AUDIT | Ensure a table exists | Check for tables"
+        command: nft list tables
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_3_4_3_2_nft_tables
+
+      - name: "SCORED | 3.4.3.2 | AUDIT | Ensure a table exists | Show existing tables"
+        debug:
+            msg:
+                - "Below are the current nft tables, please review"
+                - "{{ rhel8cis_3_4_3_2_nft_tables.stdout_lines }}"
+        when: rhel8cis_3_4_3_2_nft_tables.stdout != ""
+
+      - name: "SCORED | 3.4.3.2 | AUDIT | Ensure a table exists | Alert on no tables"
+        debug:
+            msg:
+                - "Warning! You currently have no nft tables, please review your setup"
+                - 'Use the command "nft create table inet <table name>" to create a new table'
+        when:
+            - rhel8cis_3_4_3_2_nft_tables.stdout == ""
+            - not rhel8cis_nft_tables_autonewtable
+
+      - name: "SCORED | 3.4.3.2 | PATCH | Ensure a table exists | Create table if needed"
+        command: nft create table inet "{{ rhel8cis_nft_tables_tablename }}"
+        failed_when: no
+        when: rhel8cis_nft_tables_autonewtable
+  when:
+      - rhel8cis_firewall == "nftables"
+      - rhel8cis_rule_3_4_3_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_3.4.3.2
+
+- name: "SCORED | 3.4.3.3 | PATCH | Ensure base chains exist"
+  block:
+      - name: "SCORED | 3.4.3.3 | AUDIT | Ensure base chains exist | Get current chains for INPUT"
+        shell: nft list ruleset | grep 'hook input'
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_3_4_3_3_input_chains
+
+      - name: "SCORED | 3.4.3.3 | AUDIT | Ensure base chains exist | Get current chains for FORWARD"
+        shell: nft list ruleset | grep 'hook forward'
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_3_4_3_3_forward_chains
+
+      - name: "SCORED | 3.4.3.3 | AUDIT | Ensure base chains exist | Get current chains for OUTPUT"
+        shell: nft list ruleset | grep 'hook output'
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_3_4_3_3_output_chains
+
+      - name: "SCORED | 3.4.3.3 | AUDIT | Ensure base chains exist | Display chains for review"
+        debug:
+            msg:
+                - "Below are the current INPUT chains"
+                - "{{ rhel8cis_3_4_3_3_input_chains.stdout_lines }}"
+                - "Below are the current FORWARD chains"
+                - "{{ rhel8cis_3_4_3_3_forward_chains.stdout_lines }}"
+                - "Below are teh current OUTPUT chains"
+                - "{{ rhel8cis_3_4_3_3_output_chains.stdout_lines }}"
+        when: not rhel8cis_nft_tables_autoChainCreate
+
+      - name: "SCORED | 3.4.3.3 | PATCH | Ensure base chains exist | Create chains if needed"
+        shell: "{{ item }}"
+        failed_when: no
+        with_items:
+            - nft create chain inet "{{ rhel8cis_nft_tables_tablename }}" input { type filter hook input priority 0 \; }
+            - nft create chain inet "{{ rhel8cis_nft_tables_tablename }}" forward { type filter hook forward priority 0 \; }
+            - nft create chain inet "{{ rhel8cis_nft_tables_tablename }}" output { type filter hook output priority 0 \; }
+        when: rhel8cis_nft_tables_autoChainCreate
+  when:
+      - rhel8cis_firewall == "nftables"
+      - rhel8cis_rule_3_4_3_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_3.4.3.3
+
+- name: "SCORED | 3.4.3.4 | PATCH | Ensure loopback traffic is configured"
+  block:
+      - name: "SCORED | 3.4.3.4 | AUDIT | Ensure loopback traffic is configured | Gather iif lo accept existence"
+        shell: nft list ruleset | awk '/hook input/,/}/' | grep 'iif "lo" accept'
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_3_4_3_4_iiflo
+
+      - name: "SCORED | 3.4.3.4 | AUDIT | Ensure loopback traffic is configured | Gather ip saddr existence"
+        shell: nft list ruleset | awk '/hook input/,/}/' | grep 'ip saddr'
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_3_4_3_4_ipsaddr
+
+      - name: "SCORED | 3.4.3.4 | AUDIT | Ensure loopback traffic is configured | Gather ip6 saddr existence"
+        shell: nft list ruleset | awk '/hook input/,/}/' | grep 'ip6 saddr'
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_3_4_3_4_ip6saddr
+
+      - name: "SCORED | 3.4.3.4 | PATCH | Ensure loopback traffic is configured | Set iif lo accept rule"
+        command: nft add rule inet "{{ rhel8cis_nft_tables_tablename }}" input iif lo accept
+        when: '"iif \"lo\" accept" not in rhel8cis_3_4_3_4_iiflo.stdout'
+
+      - name: "SCORED | 3.4.3.4 | PATCH | Ensure loopback traffic is configured | Set ip sddr rule"
+        command: nft add rule inet "{{ rhel8cis_nft_tables_tablename }}" input ip saddr 127.0.0.0/8 counter drop
+        when: '"ip saddr 127.0.0.0/8 counter packets 0 bytes 0 drop" not in rhel8cis_3_4_3_4_ipsaddr.stdout'
+
+      - name: "SCORED | 3.4.3.4 | PATCH | Ensure loopback traffic is configured | Set ip6 saddr rule"
+        command: nft add rule inet "{{ rhel8cis_nft_tables_tablename }}" input ip6 saddr ::1 counter drop
+        when: '"ip6 saddr ::1 counter packets 0 bytes 0 drop" not in rhel8cis_3_4_3_4_ip6saddr.stdout'
+  when:
+      - rhel8cis_firewall == "nftables"
+      - rhel8cis_rule_3_4_3_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_3.4.3.4
+
+- name: "NOTSCORED | 3.4.3.5 | PATCH | Ensure outbound and established connections are configured"
+  block:
+      - name: "NOTSCORED | 3.4.3.5 | AUDIT | Ensure outbound and established connections are configured | Gather incoming connection rules"
+        shell: nft list ruleset | awk '/hook input/,/}/' | grep -E 'ip protocol (tcp|udp|icmp) ct state'
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_3_4_3_5_inconnectionrule
+
+      - name: "NOTSCORED | 3.4.3.5 | AUDIT | Ensure outbound and established connections are configured | Gather outbound connection rules"
+        shell: nft list ruleset | awk '/hook output/,/}/' | grep -E 'ip protocol (tcp|udp|icmp) ct state'
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_3_4_3_5_outconnectionrule
+
+      - name: "NOTSCORED | 3.4.3.5 | PATCH | Ensure outbound and established connections are configured | Add input tcp established accpet policy"
+        command: nft add rule inet "{{ rhel8cis_nft_tables_tablename }}" input ip protocol tcp ct state established accept
+        when: '"ip protocol tcp ct state established accept" not in rhel8cis_3_4_3_5_inconnectionrule.stdout'
+
+      - name: "NOTSCORED | 3.4.3.5 | PATCH | Ensure outbound and established connections are configured | Add input udp established accpet policy"
+        command: nft add rule inet "{{ rhel8cis_nft_tables_tablename }}" input ip protocol udp ct state established accept
+        when: '"ip protocol udp ct state established accept" not in rhel8cis_3_4_3_5_inconnectionrule.stdout'
+
+      - name: "NOTSCORED | 3.4.3.5 | PATCH | Ensure outbound and established connections are configured | Add input icmp established accpet policy"
+        command: nft add rule inet "{{ rhel8cis_nft_tables_tablename }}" input ip protocol icmp ct state established accept
+        when: '"ip protocol icmp ct state established accept" not in rhel8cis_3_4_3_5_inconnectionrule.stdout'
+
+      - name: "NOTSCORED | 3.4.3.5 | PATCH | Ensure outbound and established connections are configured | Add output tcp new, related, established accpet policy"
+        command: nft add rule inet "{{ rhel8cis_nft_tables_tablename }}" output ip protocol tcp ct state new,related,established accept
+        when: '"ip protocol tcp ct state established,related,new accept" not in rhel8cis_3_4_3_5_outconnectionrule.stdout'
+
+      - name: "NOTSCORED | 3.4.3.5 | PATCH | Ensure outbound and established connections are configured | Add output udp new, related, established accpet policy"
+        command: nft add rule inet "{{ rhel8cis_nft_tables_tablename }}" output ip protocol udp ct state new,related,established accept
+        when: '"ip protocol udp ct state established,related,new accept" not in rhel8cis_3_4_3_5_outconnectionrule.stdout'
+
+      - name: "NOTSCORED | 3.4.3.5 | PATCH | Ensure outbound and established connections are configured | Add output icmp new, related, established accpet policy"
+        command: nft add rule inet "{{ rhel8cis_nft_tables_tablename }}" output ip protocol icmp ct state new,related,established accept
+        when: '"ip protocol icmp ct state established,related,new accept" not in rhel8cis_3_4_3_5_outconnectionrule.stdout'
+  when:
+      - rhel8cis_firewall == "nftables"
+      - rhel8cis_rule_3_4_3_5
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_3.4.3.5
+
+- name: "SCORED | 3.4.3.6 | PATCH | Ensure default deny firewall policy"
+  block:
+      - name: "SCORED | 3.4.3.6 | AUDIT | Ensure default deny firewall policy | Check for hook input deny policy"
+        shell: nft list table inet "{{ rhel8cis_nft_tables_tablename }}" | grep 'hook input'
+        failed_when: false
+        changed_when: false
+        register: rhel8cis_3_4_3_6_inputpolicy
+
+      - name: "SCORED | 3.4.3.6 | AUDIT | Ensure default deny firewall policy | Check for hook forward deny policy"
+        shell: nft list table inet "{{ rhel8cis_nft_tables_tablename }}" | grep 'hook forward'
+        failed_when: false
+        changed_when: false
+        register: rhel8cis_3_4_3_6_forwardpolicy
+
+      - name: "SCORED | 3.4.3.6 | AUDIT | Ensure default deny firewall policy | Check for hook output deny policy"
+        shell: nft list table inet "{{ rhel8cis_nft_tables_tablename }}" | grep 'hook output'
+        failed_when: false
+        changed_when: false
+        register: rhel8cis_3_4_3_6_outputpolicy
+
+      - name: "SCORED | 3.4.3.6 | AUDIT | Ensure default deny firewall policy | Check for SSH allow"
+        shell: nft list table inet "{{ rhel8cis_nft_tables_tablename }}" | grep 'ssh'
+        failed_when: false
+        changed_when: false
+        register: rhel8cis_3_4_3_6_sshallowcheck
+
+      - name: "SCORED | 3.4.3.6 | PATCH | Ensure default deny firewall policy | Enable SSH traffic"
+        command: nft add rule inet "{{ rhel8cis_nft_tables_tablename }}" input tcp dport ssh accept
+        when: '"tcp dport ssh accept" not in rhel8cis_3_4_3_6_sshallowcheck.stdout'
+
+      - name: "SCORED | 3.4.3.6 | PATCH | Ensure default deny firewall policy | Set hook input deny policy"
+        command: nft chain inet "{{ rhel8cis_nft_tables_tablename }}" input { policy drop \; }
+        when: '"type filter hook input priority 0; policy drop;" not in rhel8cis_3_4_3_6_inputpolicy.stdout'
+
+      - name: "SCORED | 3.4.3.6 | PATCH | Ensure default deny firewall policy | Create hook forward deny policy"
+        command: nft chain inet "{{ rhel8cis_nft_tables_tablename }}" forward { policy drop \; }
+        when: '"type filter hook forward priority 0; policy drop;" not in rhel8cis_3_4_3_6_forwardpolicy.stdout'
+
+      - name: "SCORED | 3.4.3.6 | PATCH | Ensure default deny firewall policy | Create hook output deny policy"
+        command: nft chain inet "{{ rhel8cis_nft_tables_tablename }}" output { policy drop \; }
+        when: '"type filter hook output priority 0; policy drop;" not in rhel8cis_3_4_3_6_outputpolicy.stdout'
+  when:
+      - rhel8cis_firewall == "nftables"
+      - rhel8cis_rule_3_4_3_6
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_3.4.3.6
+
+- name: "SCORED | 3.4.3.7 | PATCH | Ensure nftables service is enabled | Check if nftables is enabled"
+  service:
+      name: nftables
+      enabled: yes
+  when:
+      - rhel8cis_firewall == "nftables"
+      - rhel8cis_rule_3_4_3_7
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_3.4.3.7
+
+- name: "SCORED | 3.4.3.8 | PATCH | Ensure nftables rules are permanent"
+  lineinfile:
+      path: /etc/sysconfig/nftables.conf
+      state: present
+      insertafter: EOF
+      line: include "/etc/nftables/inet-{{ rhel8cis_nft_tables_tablename }}"
+  when:
+      - rhel8cis_firewall == "nftables"
+      - rhel8cis_rule_3_4_3_7
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_3.4.3.8

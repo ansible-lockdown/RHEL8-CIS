@@ -1,0 +1,22 @@
+---
+
+- name: "SECTION | 4.1| Configure System Accounting (auditd)"
+  include: cis_4.1.1.x.yml
+
+- name: "SECTION | 4.1.2.x| Configure Data Retention"
+  include: cis_4.1.2.x.yml
+
+- name: "SECTION | 4.1.x| Auditd rules"
+  include: cis_4.1.x.yml
+
+- name: "SECTION | 4.2.x| Configure Logging"
+  include: cis_4.2.1.x.yml
+
+- name: "SECTION | 4.2.2.x| Configure journald"
+  include: cis_4.2.2.x.yml
+
+- name: "SECTION | 4.2.3 | Configure logile perms"
+  include: cis_4.2.3.yml
+  
+- name: "SECTION | 4.3 | Configure logrotate"
+  include: cis_4.3.yml

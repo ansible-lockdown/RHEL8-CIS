@@ -1,0 +1,207 @@
+---
+
+- name: "SCORED | 3.2.1 | PATCH | Ensure source routed packets are not accepted"
+  block:
+      - name: "SCORED | 3.2.1 | PATCH | Ensure source routed packets are not accepted | Set routed packets IPv4"
+        sysctl:
+            name: '{{ item.name }}'
+            value: '{{ item.value }}'
+            sysctl_set: yes
+            state: present
+            reload: yes
+            ignoreerrors: yes
+        notify: sysctl flush ipv4 route table
+        with_items:
+            - { name: net.ipv4.conf.all.accept_source_route, value: 0 }
+            - { name: net.ipv4.conf.default.accept_source_route, value: 0 }
+
+      - name: "SCORED | 3.2.1 | PATCH | Ensure source routed packets are not accepted | Set routed packets IPv6"
+        sysctl:
+            name: '{{ item.name }}'
+            value: '{{ item.value }}'
+            sysctl_set: yes
+            reload: yes
+            ignoreerrors: yes
+        notify: sysctl flush ipv6 route table
+        with_items:
+            - { name: net.ipv6.conf.all.accept_source_route, value: 0}
+            - { name: net.ipv6.conf.default.accept_source_route, value: 0 }
+        when: rhel8cis_ipv6_required
+  when:
+      - rhel8cis_rule_3_2_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - sysctl
+      - patch
+      - rule_3.2.1
+
+- name: "SCORED | 3.2.2 | PATCH | Ensure ICMP redirects are not accepted"
+  block:
+      - name: "SCORED | 3.2.2 | PATCH | Ensure ICMP redirects are not accepted | Set ICMP redirects IPv4"
+        sysctl:
+            name: '{{ item.name }}'
+            value: '{{ item.value }}'
+            sysctl_set: yes
+            state: present
+            reload: yes
+            ignoreerrors: yes
+        notify: sysctl flush ipv4 route table
+        with_items:
+            - { name: net.ipv4.conf.all.accept_redirects, value: 0 }
+            - { name: net.ipv4.conf.default.accept_redirects, value: 0 }
+
+      - name: "SCORED | 3.2.2 | PATCH | Ensure ICMP redirects are not accepted | Set ICMP redirects IPv6"
+        sysctl:
+            name: '{{ item.name }}'
+            value: '{{ item.value }}'
+            sysctl_set: yes
+            state: present
+            reload: yes
+            ignoreerrors: yes
+        notify: sysctl flush ipv4 route table
+        with_items:
+            - { name: net.ipv6.conf.all.accept_redirects, value: 0 }
+            - { name: net.ipv6.conf.default.accept_redirects, value: 0 }
+        when: rhel8cis_ipv6_required
+  when:
+      - rhel8cis_rule_3_2_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - sysctl
+      - patch
+      - rule_3.2.2
+
+- name: "SCORED | 3.2.3 | PATCH | Ensure secure ICMP redirects are not accepted"
+  sysctl:
+      name: '{{ item.name }}'
+      value: '{{ item.value }}'
+      sysctl_set: yes
+      state: present
+      reload: yes
+      ignoreerrors: yes
+  notify: sysctl flush ipv4 route table
+  with_items:
+      - { name: net.ipv4.conf.all.secure_redirects, value: 0 }
+      - { name: net.ipv4.conf.default.secure_redirects, value: 0 }
+  when:
+      - rhel8cis_rule_3_2_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - sysctl
+      - patch
+      - rule_3.2.3
+
+- name: "SCORED | 3.2.4 | PATCH | Ensure suspicious packets are logged"
+  sysctl:
+      name: '{{ item.name }}'
+      value: '{{ item.value }}'
+      sysctl_set: yes
+      state: present
+      reload: yes
+      ignoreerrors: yes
+  notify: sysctl flush ipv4 route table
+  with_items:
+      - { name: net.ipv4.conf.all.log_martians, value: 1 }
+      - { name: net.ipv4.conf.default.log_martians, value: 1 }
+  when:
+      - rhel8cis_rule_3_2_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - sysctl
+      - patch
+      - rule_3.2.4
+
+- name: "SCORED | 3.2.5 | PATCH | Ensure broadcast ICMP requests are ignored"
+  sysctl:
+      name: net.ipv4.icmp_echo_ignore_broadcasts
+      value: '1'
+      state: present
+      reload: yes
+      ignoreerrors: yes
+  notify: sysctl flush ipv4 route table
+  when:
+      - rhel8cis_rule_3_2_5
+  tags:
+      - level1-server
+      - level1-workstation
+      - sysctl
+      - patch
+      - rule_3.2.5
+
+- name: "SCORED | 3.2.6 | PATCH | Ensure bogus ICMP responses are ignored"
+  sysctl:
+      name: net.ipv4.icmp_ignore_bogus_error_responses
+      value: '1'
+      state: present
+      reload: yes
+      ignoreerrors: yes
+  notify: sysctl flush ipv4 route table
+  when:
+      - rhel8cis_rule_3_2_6
+  tags:
+      - level1-server
+      - level1-workstation
+      - sysctl
+      - patch
+      - rule_3.2.6
+
+- name: "SCORED | 3.2.7 | PATCH | Ensure Reverse Path Filtering is enabled"
+  sysctl:
+      name: net.ipv4.conf.default.rp_filter
+      value: '1'
+      sysctl_set: yes
+      state: present
+      reload: yes
+      ignoreerrors: yes
+  notify: sysctl flush ipv4 route table
+  when:
+      - rhel8cis_rule_3_2_7
+  tags:
+      - level1-server
+      - level1-workstation
+      - sysctl
+      - patch
+      - rule_3.2.7
+
+- name: "SCORED | 3.2.8 | PATCH | Ensure TCP SYN Cookies is enabled"
+  sysctl:
+      name: net.ipv4.tcp_syncookies
+      value: '1'
+      state: present
+      reload: yes
+      ignoreerrors: yes
+  notify: sysctl flush ipv4 route table
+  when:
+      - rhel8cis_rule_3_2_8
+  tags:
+      - level1-server
+      - level1-workstation
+      - sysctl
+      - patch
+      - rule_3.2.8
+
+- name: "SCORED | 3.2.9 | PATCH | Ensure IPv6 router advertisements are not accepted"
+  sysctl:
+      name: '{{ item.name }}'
+      value: '{{ item.value }}'
+      sysctl_set: yes
+      state: present
+      reload: yes
+      ignoreerrors: yes
+  notify: sysctl flush ipv6 route table
+  with_items:
+      - { name: net.ipv6.conf.all.accept_ra, value: 0 }
+      - { name: net.ipv6.conf.default.accept_ra, value: 0 }
+  when:
+      - rhel8cis_ipv6_required
+      - rhel8cis_rule_3_2_9
+  tags:
+      - level1-server
+      - level1-workstation
+      - sysctl
+      - patch
+      - rule_3.2.9

@@ -1,0 +1,25 @@
+---
+
+- name: "SECTION | 5.1 | Configure time-based job schedulers"
+  include: cis_5.1.x.yml
+
+- name: "SECTION | 5.2 | Configure SSH Server"
+  include: cis_5.2.x.yml
+
+- name: "SECTION | 5.3 | Configure Profiles"
+  include: cis_5.3.x.yml
+
+- name: "SECTION | 5.4 | Configure PAM "
+  include: cis_5.4.x.yml
+
+- name: "SECTION | 5.5.1.x | Passwords and Accounts"
+  include: cis_5.5.1.x.yml
+
+- name: "SECTION | 5.5.x | System Accounts and User Settings"
+  include: cis_5.5.x.yml
+
+- name: "SECTION | 5.6 | Root Login"
+  include: cis_5.6.yml
+
+- name: Section | 5.7 | su Command Restriction
+  include: cis_5.7.yml

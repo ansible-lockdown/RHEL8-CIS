@@ -1,0 +1,130 @@
+---
+
+- name: "SCORED | 3.4.4.1.1 | PATCH | Ensure default deny firewall policy"
+  block:
+      - name: "SCORED | 3.4.4.1.1 | PATCH | Ensure default deny firewall policy | Configure ssh to be allowed"
+        iptables:
+            chain: INPUT
+            protocol: tcp
+            destination_port: "22"
+            jump: ACCEPT
+
+      - name: "SCORED | 3.4.4.1.1 | PATCH | Ensure default deny firewall policy | Set drop items"
+        iptables:
+            policy: DROP
+            chain: "{{ item }}"
+        with_items:
+            - INPUT
+            - FORWARD
+            - OUTPUT
+  when:
+      - rhel8cis_rule_3_4_4_1_1
+      - rhel8cis_firewall == "iptables"
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_3.4.4.1.1
+
+- name: "SCORED | 3.4.4.1.2 | PATCH | Ensure loopback traffic is configured"
+  block:
+      - name: "SCORED | 3.4.4.1.2 | PATCH | Ensure loopback traffic is configured | INPUT Loopback ACCEPT"
+        iptables:
+            action: append
+            chain: INPUT
+            in_interface: lo
+            jump: ACCEPT
+
+      - name: "SCORED | 3.4.4.1.2 | PATCH | Ensure loopback traffic is configured | OUTPUT Loopback ACCEPT"
+        iptables:
+          action: append
+          chain: OUTPUT
+          out_interface: lo
+          jump: ACCEPT
+
+      - name: "SCORED | 3.4.4.1.2 | PATCH | Ensure loopback traffic is configured | INPUT Loopback 127.0.0.0/8"
+        iptables:
+            action: append
+            chain: INPUT
+            source: 127.0.0.0/8
+            jump: DROP
+  when:
+      - rhel8cis_firewall == "iptables"
+      - rhel8cis_rule_3_4_4_1_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_3.4.4.1.2
+
+- name: "NOTSCORED | 3.4.4.1.3 | PATCH | Ensure outbound and established connections are configured"
+  iptables:
+      action: append
+      chain: '{{ item.chain }}'
+      protocol: '{{ item.protocol }}'
+      match: state
+      ctstate: '{{ item.ctstate }}'
+      jump: ACCEPT
+  with_items:
+      - { chain: OUTPUT, protocol: tcp, ctstate: 'NEW,ESTABLISHED' }
+      - { chain: OUTPUT, protocol: udp, ctstate: 'NEW,ESTABLISHED' }
+      - { chain: OUTPUT, protocol: icmp, ctstate: 'NEW,ESTABLISHED' }
+      - { chain: INPUT, protocol: tcp, ctstate: ESTABLISHED }
+      - { chain: INPUT, protocol: udp, ctstate: ESTABLISHED }
+      - { chain: INPUT, protocol: icmp, ctstate: ESTABLISHED }
+  when:
+      - rhel8cis_firewall == "iptables"
+      - rhel8cis_rule_3_4_4_1_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_3.4.4.1.3
+
+- name: "SCORED | 3.4.4.1.4 | PATCH | Ensure firewall rules exist for all open ports"
+  block:
+      - name: "SCORED | 3.4.4.1.4 | AUDIT | Ensure firewall rules exist for all open ports | Get list of TCP open ports"
+        shell: netstat -ant |grep "tcp.*LISTEN" | awk '{ print $4 }'| sed 's/.*://'
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_3_4_4_1_4_otcp
+
+      - name: "SCORED | 3.4.4.1.4| AUDIT | Ensure firewall rules exist for all open ports | Get the list of udp open ports"
+        shell: netstat -ant |grep "udp.*LISTEN" | awk '{ print $4 }'| sed 's/.*://'
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_3_4_4_1_4_oudp
+
+      - name: "SCORED | 3.4.4.1.4 | PATCH | Ensure firewall rules exist for all open ports| Adjust open tcp ports"
+        iptables:
+            action: append
+            chain: INPUT
+            protocol: tcp
+            destination_port: "{{ item }}"
+            match: state
+            ctstate: NEW
+            jump: ACCEPT
+        with_items:
+            - "{{ rhel8cis_3_4_4_1_4_otcp.stdout_lines }}"
+        when: rhel8cis_3_4_4_1_4_otcp.stdout is defined
+
+      - name: "SCORED | 3.4.4.1.4 | PATCH | Ensure firewall rules exist for all open ports | Adjust open udp ports"
+        iptables:
+            action: append
+            chain: INPUT
+            protocol: udp
+            destination_port: "{{ item }}"
+            match: state
+            ctstate: NEW
+            jump: ACCEPT
+        with_items:
+            - "{{ rhel8cis_3_4_4_1_4_oudp.stdout_lines }}"
+        when: rhel8cis_3_4_4_1_4_otcp.stdout is defined
+  when:
+      - rhel8cis_firewall == "iptables"
+      - rhel8cis_rule_3_4_4_1_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_3.4.4.1.4
