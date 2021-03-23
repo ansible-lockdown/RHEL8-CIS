@@ -7,6 +7,13 @@
   changed_when: no
   check_mode: no
 
+- name: "PRELIM | AUDIT | Ensure permissions on bootloader config are configured | Get grub config settings"
+  stat:
+      path: /etc/grub2.cfg
+  changed_when: false
+  register: grub_cfg
+
+
 - name: "PRELIM | Gather accounts with empty password fields"
   shell: "cat /etc/shadow | awk -F: '($2 == \"\" ) {j++;print $1; } END {exit j}'"
   register: empty_password_accounts

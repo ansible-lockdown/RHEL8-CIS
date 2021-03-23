@@ -1,24 +1,15 @@
 ---
 
 - name: "SCORED | 1.5.1 | PATCH | Ensure permissions on bootloader config are configured"
-  block:
-      - name: "SCORED | 1.5.1 | AUDIT | Ensure permissions on bootloader config are configured | Get grub config settings"
-        stat:
-            path: /etc/grub2.cfg
-        changed_when: false
-        register: grub_cfg
-
-      - name: "SCORED | 1.5.1 | PATCH | Ensure permissions on bootloader config are configured | Update grub config settings"
-        file:
-            path: "{{ grub_cfg.stat.lnk_source }}"
-            owner: root
-            group: root
-            mode: 0600
-        when:
-             - grub_cfg.stat.exists
-             - grub_cfg.stat.islnk
+  file:
+      path: "{{ grub_cfg.stat.lnk_source }}"
+      owner: root
+      group: root
+      mode: 0600
   when:
       - rhel8cis_rule_1_5_1
+      - grub_cfg.stat.exists
+      - grub_cfg.stat.islnk
   tags:
       - level1-server
       - level1-workstation
