@@ -1,0 +1,46 @@
+---
+
+- name: "SCORED | 1.6.1 | PATCH | Ensure core dumps are restricted"
+  block:
+      - name: "SCORED | 1.6.1 | PATCH | Ensure core dumps are restricted | Update limits.conf file"
+        lineinfile:
+            state: present
+            dest: /etc/security/limits.conf
+            regexp: '^#?\\*.*core'
+            line: '*                hard    core            0'
+            insertbefore: '^# End of file'
+
+      - name: "SCORED | 1.6.1 | PATCH | Ensure core dumps are restricted | Set active kernel parameter"
+        sysctl:
+            name: fs.suid_dumpable
+            value: '0'
+            state: present
+            reload: yes
+            sysctl_set: yes
+            ignoreerrors: yes
+  when:
+      - rhel8cis_rule_1_6_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - scored
+      - sysctl
+      - patch
+      - rule_1.6.1
+
+- name: "SCORED | 1.6.2 | PATCH | Ensure address space layout randomization (ASLR) is enabled"
+  sysctl:
+      name: kernel.randomize_va_space
+      value: '2'
+      state: present
+      reload: yes
+      sysctl_set: yes
+      ignoreerrors: yes
+  when:
+      - rhel8cis_rule_1_6_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - scored
+      - patch
+      - rule_1.6.2

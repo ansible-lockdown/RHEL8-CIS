@@ -1,0 +1,99 @@
+---
+
+- name: "SCORED | 3.4.2.1 | PATCH | Ensure firewalld service is enabled and running"
+  service:
+      name: firewalld
+      state: started
+      enabled: yes
+  when:
+      - rhel8cis_firewall == "firewalld"
+      - rhel8cis_rule_3_4_2_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_3_4_2_1
+
+- name: "SCORED | 3.4.2.2 | PATCH | Ensure iptables is not enabled"
+  systemd:
+      name: iptables
+      enabled: false
+      masked: true
+  ignore_errors: true
+  when:
+      - rhel8cis_firewall == "firewalld"
+      - rhel8cis_rule_3_4_2_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_3_4_2_2
+
+- name: "SCORED | 3.4.2.3 | PATCH | Ensure nftables is not enabled"
+  systemd:
+      name: nftables
+      enabled: false
+      masked: true
+  when:
+      - rhel8cis_firewall == "firewalld"
+      - rhel8cis_rule_3_4_2_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_3_4_2_3
+
+- name: "SCORED | 3.4.2.4 | PATCH | Ensure default zone is set"
+  command: firewall-cmd --set-default-zone="{{ rhel8cis_default_zone }}"
+  when:
+      - rhel8cis_firewall == "firewalld"
+      - rhel8cis_rule_3_4_2_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_3.4.2.4
+
+- name: "SCORED | 3.4.2.5 | AUDIT | Ensure network interfaces are assigned to appropriate zone"
+  block:
+      - name: "SCORED | 3.4.2.5 | AUDIT | Ensure network interfaces are assigned to appropriate zone | Get list of interfaces and polocies"
+        shell: "nmcli -t connection show | awk -F: '{ if($4){print $4} }' | while read INT; do firewall-cmd --get-active-zones | grep -B1 $INT; done"
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_3_4_2_5_interfacepolicy
+
+      - name: "SCORED | 3.4.2.5 | AUDIT | Ensure network interfaces are assigned to appropriate zone | Get list of interfaces and polocies | Show the interface to policy"
+        debug:
+            msg:
+                - "The items below are the policies tied to the interfaces, please correct as needed"
+                - "{{ rhel8cis_3_4_2_5_interfacepolicy.stdout_lines }}"
+  when:
+      - rhel8cis_firewall == "firewalld"
+      - rhel8cis_rule_3_4_2_5
+  tags:
+      - level1-server
+      - level1-workstation
+      - audit
+      - rule_3.4.2.5
+
+- name: "SCORED | 3.4.2.6 | AUDIT | Ensure unnecessary services and ports are not accepted"
+  block:
+      - name: "SCORED | 3.4.2.6 | AUDIT | Ensure unnecessary services and ports are not accepted | Get list of services and ports"
+        shell: "firewall-cmd --get-active-zones | awk '!/:/ {print $1}' | while read ZN; do firewall-cmd --list-all --zone=$ZN; done"
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_3_4_2_6_servicesport
+
+      - name: "SCORED | 3.4.2.6 | AUDIT | Ensure unnecessary services and ports are not accepted | Show services adn ports"
+        debug:
+            msg:
+              - "The items below are the services and ports that are accepted, please correct as needed"
+              - "{{ rhel8cis_3_4_2_6_servicesport.stdout_lines }}"
+  when:
+      - rhel8cis_firewall == "firewalld"
+      - rhel8cis_rule_3_4_2_6
+  tags:
+      - level1-server
+      - level1-workstation
+      - audit
+      - rule_3.4.2.6

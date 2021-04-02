@@ -1,0 +1,15 @@
+---
+
+- name: "SCORED | 1.9 | PATCH | Ensure updates, patches, and additional security software are installed"
+  package:
+      name: "*"
+      state: latest
+  when:
+      - rhel8cis_rule_1_9
+      - not system_is_ec2
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_1.9
+      - skip_ansible_lint

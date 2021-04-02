@@ -1,0 +1,96 @@
+---
+
+- name: "NOTSCORED | 1.2.1 | PATCH | Ensure Red Hat Subscription Manager connection is configured"
+  redhat_subscription:
+      state: present
+      username: "{{ rhel8cis_rh_sub_user }}"
+      password: "{{ rhel8cis_rh_sub_password }}"
+      auto_attach: true
+  when:
+      - ansible_distribution == "RedHat"
+      - rhel8cis_rhnsd_required
+      - rhel8cis_rule_1_2_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - notscored
+      - patch
+      - rule_1.2.1
+
+- name: "NOTSCORED | 1.2.2 | PATCH | Disable the rhnsd Daemon"
+  service:
+      name: rhnsd
+      state: stopped
+      enabled: no
+  when:
+      - ansible_distribution == "RedHat"
+      - rhnsd_service_status.stdout == "loaded" and not rhel8cis_rhnsd_required
+      - rhel8cis_rule_1_2_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - notscored
+      - patch
+      - rule_1.2.2
+
+- name: "NOTSCORED | 1.2.3 | PATCH | Ensure GPG keys are configured"
+  command: gpg --quiet --with-fingerprint /etc/pki/rpm-gpg/RPM-GPG-KEY-{{ ansible_distribution|lower }}-release
+  when:
+      - rhel8cis_rule_1_2_3
+      - ansible_distribution == "RedHat"
+  tags:
+      - level1-server
+      - level1-workstation
+      - notscored
+      - patch
+      - rule_1.2.3
+
+- name: "SCORED | 1.2.4 | PATCH | Ensure gpgcheck is globally activated"
+  block:
+      - name: "SCORED | 1.2.4 | AUDIT | Ensure gpgcheck is globally activated | Find repos"
+        find:
+            paths: /etc/yum.repos.d
+            patterns: "*.repo"
+        register: yum_repos
+        changed_when: false
+
+      - name: "SCORED | 1.2.4 | PATCH | Ensure gpgcheck is globally activated | Update yum.repos"
+        replace:
+            name: "{{ item.path }}"
+            regexp: "^gpgcheck=0"
+            replace: "gpgcheck=1"
+        with_items:
+            - "{{ yum_repos.files }}"
+  when:
+      - rhel8cis_rule_1_2_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - scored
+      - patch
+      - rule_1.2.4
+
+- name: "NOTSCORED | 1.2.5 | PATCH | Ensure package manager repositories are configured"
+  block:
+      - name: "NOTSCORED | 1.2.5 | PATCH | Ensure package manager repositories are configured | Get repo list"
+        command: dnf repolist
+        changed_when: false
+        failed_when: false
+        register: dnf_configured
+        args:
+            warn: false
+
+      - name: "NOTSCORED | 1.2.5 | PATCH | Ensure package manager repositories are configured | Display repo list"
+        debug:
+            msg:
+                - "Alert! Below are the configured repos. Please review and make sure all allign with site policy"
+                - "{{ dnf_configured.stdout_lines }}"
+  when:
+      - rhel8cis_rule_1_2_5
+  tags:
+      - level1-server
+      - level1-workstation
+      - notscored
+      - patch
+      - rule_1.2.5
+      - skip_ansible_lint

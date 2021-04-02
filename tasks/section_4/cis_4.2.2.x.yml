@@ -1,0 +1,43 @@
+---
+
+- name: "SCORED | 4.2.2.1 | PATCH | Ensure journald is configured to send logs to rsyslog"
+  lineinfile:
+      dest: /etc/systemd/journald.conf
+      regexp: "^#ForwardToSyslog=|^ForwardToSyslog="
+      line: ForwardToSyslog=yes
+      state: present
+  when:
+      - rhel8cis_rule_4_2_2_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_4.2.2.1
+
+- name: "SCORED | 4.2.2.2 | PATCH | Ensure journald is configured to compress large log files"
+  lineinfile:
+      dest: /etc/systemd/journald.conf
+      regexp: "^#Compress=|^Compress="
+      line: Compress=yes
+      state: present
+  when:
+      - rhel8cis_rule_4_2_2_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_4.2.2.2
+
+- name: "SCORED | 4.2.2.3 | PATCH | Ensure journald is configured to write logfiles to persistent disk"
+  lineinfile:
+      dest: /etc/systemd/journald.conf
+      regexp: "^#Storage=|^Storage="
+      line: Storage=persistent
+      state: present
+  when:
+      - rhel8cis_rule_4_2_2_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_4.2.2.3

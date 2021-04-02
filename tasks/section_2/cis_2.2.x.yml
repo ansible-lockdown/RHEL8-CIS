@@ -1,61 +1,23 @@
 ---
-- name: "SCORED | 2.1.1 | PATCH | Ensure xinetd is not installed"
-  dnf:
-      name: xinetd
-      state: absent
-  when:
-      - rhel8cis_rule_2_1_1
-  tags:
-      - level1
-      - scored
-      - patch
-      - rule_2.1.1
-
-- name: "NOTSCORED | 2.2.1.1 | PATCH | Ensure time synchronization is in use - service install"
-  dnf:
-      name: "{{ rhel8cis_time_synchronization }}"
-      state: present
-  when:
-      - rhel8cis_rule_2_2_1_1
-      - not rhel8cis_system_is_container
-  tags:
-      - level1
-      - patch
-      - rule_2.2.1.1
-
-- name: "SCORED | 2.2.1.2 | PATCH | Ensure chrony is configured"
-  block:
-      - name: "SCORED | 2.2.1.2 | PATCH | Ensure chrony is configured | Set configuration"
-        template:
-            src: chrony.conf.j2
-            dest: /etc/chrony.conf
-            owner: root
-            group: root
-            mode: 0644
-
-      - name: "SCORED | 2.2.1.2 | PATCH | Ensure chrony is configured | modify /etc/sysconfig/chronyd | 1"
-        lineinfile:
-            dest: /etc/sysconfig/chronyd
-            regexp: "^(#)?OPTIONS"
-            line: "OPTIONS=\"-u chrony\""
-            state: present
-            create: yes
-  when:
-      - rhel8cis_time_synchronization == "chrony"
-      - rhel8cis_rule_2_2_1_2
-      - not rhel8cis_system_is_container
-  tags:
-      - level1
-      - patch
-      - rule_2.2.1.2
 
 - name: "SCORED | 2.2.2 | PATCH | Ensure X Window System is not installed"
-  shell: dnf -y remove xorg-x11*
+  block:
+      - name: "SCORED | 2.2.2 | AUDIT | Ensure X Window System is not installed | capture xorg-x11 packages"
+        shell: rpm -qa | grep xorg-x11
+        register: xorg_x11_installed
+        failed_when: xorg_x11_installed.rc >=2
+        changed_when: false
+
+      - name: "SCORED | 2.2.2 | PATCH | Ensure X Window System is not installed | remove packages if found"
+        shell: "dnf remove {{ item }}"
+        with_items:
+            - xorg_x11_installed.stdout
+        when: xorg_x11_installed.stdout | length > 0
   when:
       - not rhel8cis_xwindows_required
       - rhel8cis_rule_2_2_2
   tags:
-      - level1
+      - level1-server
       - scored
       - xwindows
       - patch
@@ -68,10 +30,11 @@
       enabled: no
   when:
       - not rhel8cis_rsyncd_server
-      - rsyncd_service_status.stdout == "loaded"
+      - "'rsyncd' in ansible_facts.packages"
       - rhel8cis_rule_2_2_3
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - patch
       - rule_2.2.3
 
@@ -82,10 +45,11 @@
       enabled: no
   when:
       - not rhel8cis_avahi_server
-      - avahi_service_status.stdout == "loaded"
+      - "'avahi' in ansible_facts.packages"
       - rhel8cis_rule_2_2_4
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - scored
       - avahi
       - services
@@ -99,10 +63,11 @@
       enabled: no
   when:
       - not rhel8cis_snmp_server
-      - snmpd_service_status.stdout == "loaded"
+      - "'net-snmp' in ansible_facts.packages"
       - rhel8cis_rule_2_2_5
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - patch
       - rule_2.2.5
 
@@ -113,10 +78,11 @@
       enabled: no
   when:
       - not rhel8cis_squid_server
-      - squid_service_status.stdout == "loaded"
+      - "'squid' in ansible_facts.packages"
       - rhel8cis_rule_2_2_6
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - patch
       - rule_2.2.6
 
@@ -127,10 +93,11 @@
       enabled: no
   when:
       - not rhel8cis_smb_server
-      - smb_service_status.stdout == "loaded"
+      - "'samba' in ansible_facts.packages"
       - rhel8cis_rule_2_2_7
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - patch
       - rule_2.2.7
 
@@ -141,10 +108,11 @@
       enabled: no
   when:
       - not rhel8cis_dovecot_server
-      - dovecot_service_status.stdout == "loaded"
+      - "'dovecot' in ansible_facts.packages"
       - rhel8cis_rule_2_2_8
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - patch
       - rule_2.2.8
 
@@ -155,10 +123,11 @@
       enabled: no
   when:
       - not rhel8cis_httpd_server
-      - httpd_service_status.stdout == "loaded"
+      - "'httpd' in ansible_facts.packages"
       - rhel8cis_rule_2_2_9
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - patch
       - rule_2.2.9
 
@@ -169,10 +138,11 @@
       enabled: no
   when:
       - not rhel8cis_vsftpd_server
-      - vsftpd_service_status.stdout == "loaded"
+      - "'vsftpd' in ansible_facts.packages"
       - rhel8cis_rule_2_2_10
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - patch
       - rule_2.2.10
 
@@ -183,10 +153,11 @@
       enabled: no
   when:
       - not rhel8cis_named_server
-      - named_service_status.stdout == "loaded"
+      - "'bind' in ansible_facts.packages"
       - rhel8cis_rule_2_2_11
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - patch
       - rule_2.2.11
 
@@ -197,10 +168,11 @@
       enabled: no
   when:
       - not rhel8cis_nfs_rpc_server
-      - nfs_service_status.stdout == "loaded"
+      - "'nfs-utils' in ansible_facts.packages"
       - rhel8cis_rule_2_2_12
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - scored
       - nfs
       - services
@@ -214,10 +186,11 @@
       enabled: no
   when:
       - not rhel8cis_nfs_rpc_server
-      - rpcbind_service_status.stdout == "loaded"
+      - "'rpcbind' in ansible_facts.packages"
       - rhel8cis_rule_2_2_13
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - scored
       - rpc
       - services
@@ -231,10 +204,11 @@
       enabled: no
   when:
       - not rhel8cis_ldap_server
-      - slapd_service_status.stdout == "loaded"
+      - "'openldap-servers' in ansible_facts.packages"
       - rhel8cis_rule_2_2_14
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - scored
       - ldap
       - services
@@ -248,10 +222,11 @@
       enabled: no
   when:
       - not rhel8cis_dhcp_server
-      - dhcpd_service_status.stdout == "loaded"
+      - "'dhcp' in ansible_facts.packages"
       - rhel8cis_rule_2_2_15
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - scored
       - dhcp
       - services
@@ -265,11 +240,11 @@
       enabled: no
   when:
       - not rhel8cis_cups_server
-      - cups_service_status.stdout == "loaded"
+      - "'cups' in ansible_facts.packages"
       - rhel8cis_rule_2_2_16
   tags:
-      - level1
-      - level2
+      - level1-server
+      - level2-workstation
       - scored
       - cups
       - services
@@ -283,10 +258,11 @@
       enabled: no
   when:
       - not rhel8cis_nis_server
-      - ypserv_service_status.stdout == "loaded"
+      - "'ypserv' in ansible_facts.packages"
       - rhel8cis_rule_2_2_17
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - patch
       - rule_2.2.17
 
@@ -298,45 +274,10 @@
   notify: restart postfix
   when:
       - not rhel8cis_is_mail_server
-      - postfix_installed.rc == 0
+      - "'postfix' in ansible_facts.packages"
       - rhel8cis_rule_2_2_18
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - patch
-      - rule_2.2.18
-
-- name: "SCORED | 2.3.1 | PATCH | Ensure NIS Client is not installed"
-  dnf:
-      name: ypbind
-      state: absent
-  when:
-      - not rhel8cis_ypbind_required
-      - rhel8cis_rule_2_3_1
-  tags:
-      - level1
-      - patch
-      - rule_2.3.1
-
-- name: "SCORED | 2.3.2 | PATCH | Ensure telnet client is not installed"
-  dnf:
-      name: telnet
-      state: absent
-  when:
-      - not rhel8cis_telnet_required
-      - rhel8cis_rule_2_3_2
-  tags:
-      - level1
-      - patch
-      - rule_2.3.2
-
-- name: "SCORED | 2.3.3 | PATCH | Ensure LDAP client is not installed"
-  dnf:
-      name: openldap-clients
-      state: absent
-  when:
-      - not rhel8cis_openldap_clients_required
-      - rhel8cis_rule_2_3_3
-  tags:
-      - level1
-      - patch
-      - rule_2.3.3
+      - rule_2.2.1

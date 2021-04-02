@@ -1,0 +1,79 @@
+---
+
+- name: "SCORED | 5.3.1 | PATCH | Create custom authselect profile"
+  block:
+      - name: "SCORED | 5.3.1 | AUDIT | Create custom authselect profile | Gather profiles"
+        shell: 'authselect current | grep "Profile ID: custom/"'
+        failed_when: false
+        changed_when: false
+        register: rhel8cis_5_3_1_profiles
+
+      - name: "SCORED | 5.3.1 | AUDIT | Create custom authselect profile | Show profiles"
+        debug:
+            msg:
+                - "Below are the current custom profiles"
+                - "{{ rhel8cis_5_3_1_profiles.stdout_lines }}"
+
+      - name: "SCORED | 5.3.1 | PATCH | Create custom authselect profile | Create custom profiles"
+        shell: authselect create-profile {{ rhel8cis_authselect['custom_profile_name'] }} -b {{ rhel8cis_authselect['default_file_to_copy'] }}
+        when: rhel8cis_authselect_custom_profile_create
+  when:
+      - rhel8cis_rule_5_3_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - authselect
+      - rule_5.3.1
+
+- name: "SCORED | 5.3.2 | PATCH | Select authselect profile"
+  block:
+      - name: "SCORED | 5.3.2 | AUDIT | Select authselect profile | Gather profiles and enabled features"
+        shell: "authselect current"
+        failed_when: false
+        changed_when: false
+        register: rhel8cis_5_3_2_profiles
+
+      - name: "SCORED | 5.3.2 | AUDIT | Select authselect profile | Show profiles"
+        debug:
+            msg:
+                - "Below are the current custom profiles"
+                - "{{ rhel8cis_5_3_2_profiles.stdout_lines }}"
+
+      - name: "SCORED | 5.3.2 | PATCH | Select authselect profile | Create custom profiles"
+        shell: "authselect select custom/{{ rhel8cis_authselect['custom_profile_name'] }} {{ rhel8cis_authselect['options'] }}"
+        when: rhel8cis_authselect_custom_profile_select
+  when:
+      - rhel8cis_rule_5_3_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - authselect
+      - rule_5.3.2
+
+- name: "SCORED | 5.3.3 | PATCH | Ensure authselect includes with-faillock"
+  block:
+      - name: "SCORED | 5.3.3 | AUDIT | Ensure authselect includes with-faillock | Gather profiles and enabled features"
+        shell: "authselect current | grep with-faillock"
+        failed_when: false
+        changed_when: false
+        register: rhel8cis_5_3_3_profiles_faillock
+
+      - name: "SCORED | 5.3.3 | AUDIT | Ensure authselect includes with-faillock| Show profiles"
+        debug:
+            msg:
+                - "Below are the current custom profiles"
+                - "{{ rhel8cis_5_3_3_profiles_faillock.stdout_lines }}"
+
+      - name: "SCORED | 5.3.3 | PATCH | Ensure authselect includes with-faillock | Create custom profiles"
+        shell: "authselect select custom/{{ rhel8cis_authselect['custom_profile_name'] }} with-faillock"
+        when: rhel8cis_authselect_custom_profile_select
+  when:
+      - rhel8cis_rule_5_3_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - authselect
+      - rule_5.3.3

@@ -1,0 +1,42 @@
+---
+
+- name: "NOTSCORED | 2.2.1.1 | PATCH | Ensure time synchronization is in use - service install"
+  package:
+      name: "{{ rhel8cis_time_synchronization }}"
+      state: present
+  when:
+      - rhel8cis_rule_2_2_1_1
+      - not rhel8cis_system_is_container
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_2.2.1.1
+
+- name: "SCORED | 2.2.1.2 | PATCH | Ensure chrony is configured"
+  block:
+      - name: "SCORED | 2.2.1.2 | PATCH | Ensure chrony is configured | Set configuration"
+        template:
+            src: chrony.conf.j2
+            dest: /etc/chrony.conf
+            owner: root
+            group: root
+            mode: 0644
+
+      - name: "SCORED | 2.2.1.2 | PATCH | Ensure chrony is configured | modify /etc/sysconfig/chronyd | 1"
+        lineinfile:
+            dest: /etc/sysconfig/chronyd
+            regexp: "^(#)?OPTIONS"
+            line: "OPTIONS=\"-u chrony\""
+            state: present
+            create: yes
+            mode: 0644
+  when:
+      - rhel8cis_time_synchronization == "chrony"
+      - rhel8cis_rule_2_2_1_2
+      - not rhel8cis_system_is_container
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_2.2.1.2

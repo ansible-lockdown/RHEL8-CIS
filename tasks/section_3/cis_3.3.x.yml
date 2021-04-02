@@ -1,0 +1,61 @@
+---
+
+- name: "SCORED | 3.3.1 | PATCH | Ensure DCCP is disabled"
+  lineinfile:
+      dest: /etc/modprobe.d/CIS.conf
+      regexp: "^(#)?install dccp(\\s|$)"
+      line: "install dccp /bin/true"
+      create: yes
+      mode: 0600
+  when:
+      - rhel8cis_rule_3_3_1
+  tags:
+      - level2-server
+      - level2-workstation
+      - patch
+      - rule_3.3.1
+
+- name: "SCORED | 3.3.2 | PATCH | Ensure SCTP is disabled"
+  lineinfile:
+      dest: /etc/modprobe.d/CIS.conf
+      regexp: "^(#)?install sctp(\\s|$)"
+      line: "install sctp /bin/true"
+      create: yes
+      mode: 0600
+  when:
+      - rhel8cis_rule_3_3_2
+  tags:
+      - level2-server
+      - level2-workstation
+      - patch
+      - rule_3.3.2
+
+- name: "SCORED | 3.3.3 | PATCH | Ensure RDS is disabled"
+  lineinfile:
+      dest: /etc/modprobe.d/CIS.conf
+      regexp: "^(#)?install rds(\\s|$)"
+      line: "install rds /bin/true"
+      create: yes
+      mode: 0600
+  when:
+      - rhel8cis_rule_3_3_3
+  tags:
+      - level2-server
+      - level2-workstation
+      - patch
+      - rule_3.3.3
+
+- name: "SCORED | 3.3.4 | PATCH | Ensure TIPC is disabled"
+  lineinfile:
+      dest: /etc/modprobe.d/CIS.conf
+      regexp: "^(#)?install tipc(\\s|$)"
+      line: "install tipc /bin/true"
+      create: yes
+      mode: 0600
+  when:
+      - rhel8cis_rule_3_3_4
+  tags:
+      - level2-server
+      - level2-workstation
+      - patch
+      - rule_3.3.4

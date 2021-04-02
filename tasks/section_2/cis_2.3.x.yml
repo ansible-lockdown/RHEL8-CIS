@@ -1,0 +1,43 @@
+---
+
+- name: "SCORED | 2.3.1 | PATCH | Ensure NIS Client is not installed"
+  package:
+     name: ypbind
+     state: absent
+  when:
+      - not rhel8cis_ypbind_required
+      - "'ypbind' in ansible_facts.packages"
+      - rhel8cis_rule_2_3_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_2.3.1
+
+- name: "SCORED | 2.3.2 | PATCH | Ensure telnet client is not installed"
+  package:
+      name: telnet
+      state: absent
+  when:
+      - not rhel8cis_telnet_required
+      - "'telnet' in ansible_facts.packages"
+      - rhel8cis_rule_2_3_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_2.3.2
+
+- name: "SCORED | 2.3.3 | PATCH | Ensure LDAP client is not installed"
+  package:
+      name: openldap-clients
+      state: absent
+  when:
+      - not rhel8cis_openldap_clients_required
+      - "'openldap-clients' in ansible_facts.packages"
+      - rhel8cis_rule_2_3_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_2.3.3

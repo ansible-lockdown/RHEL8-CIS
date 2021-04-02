@@ -1,0 +1,178 @@
+---
+
+- name: "SCORED | 4.2.1.1 | PATCH | Ensure rsyslog or syslog-ng is installed"
+  package:
+      name: "{{ rhel8cis_syslog }}"
+      state: present
+  when:
+      - rhel8cis_rule_4_2_1_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_4.2.1.1
+
+- name: "SCORED | 4.2.1.2 | PATCH | Ensure rsyslog Service is enabled"
+  service:
+      name: rsyslog
+      enabled: yes
+  when:
+      - rhel8cis_rule_4_2_1_2
+      - rhel8cis_syslog == 'rsyslog'
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rsyslog
+      - rule_4.2.1.2
+
+- name: "SCORED | 4.2.1.3 | PATCH | Ensure rsyslog default file permissions configured"
+  lineinfile:
+      dest: /etc/rsyslog.conf
+      regexp: '^\$FileCreateMode'
+      line: '$FileCreateMode 0640'
+  notify: restart rsyslog
+  when:
+      - rhel8cis_rule_4_2_1_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_4.2.1.3
+
+- name: "NOTSCORED | 4.2.1.4 | PATCH | Ensure logging is configured"
+  block:
+      - name: "NOTSCORED | 4.2.1.4 | AUDIT | Ensure logging is configured | rsyslog current config message out"
+        command: cat /etc/rsyslog.conf
+        become: yes
+        changed_when: false
+        failed_when: no
+        register: rhel_08_4_2_1_4_audit
+      - debug:
+            msg:
+                - "These are the current logging configurations for rsyslog, please review:"
+                - "{{ rhel_08_4_2_1_4_audit.stdout_lines }}"
+
+      - name: "NOTSCORED | 4.2.1.4 | PATCH | Ensure logging is configured | mail.* log setting"
+        lineinfile:
+            path: /etc/rsyslog.conf
+            state: present
+            regexp: '^mail\.\*(.*)$'
+            marker: "# {mark} MAIL LOG SETTINGS (ANSIBLE MANAGED)"
+            block: |
+              # mail logging additions to meet CIS standards
+              mail.*                                                  -/var/log/mail
+              mail.info                                               -/var/log/mail.info
+              mail.warning                                            -/var/log/mail.warning
+              mail.err                                                /var/log/mail.err
+            insertafter: '# Log all the mail messages in one place.'
+        notify: restart rsyslog
+        when: rhel8cis_rsyslog_ansibleManaged
+
+      - name: "NOTSCORED | 4.2.1.4 | PATCH | Ensure logging is configured | news.crit log setting"
+        lineinfile:
+            path: /etc/rsyslog.conf
+            state: present
+            regexp: '^news\.\crit(.*)$'
+            marker: "# {mark} NEWS LOG SETTINGS (ANSIBLE MANAGED)"
+            block: |
+              # news logging additions to meet CIS standards
+              news.crit                                               -/var/log/news/news.crit
+              news.notice                                             -/var/log/news/news.crit
+            insertafter: '# Save news errors of level crit and higher in a special file.'
+        notify: restart rsyslog
+        when: rhel8cis_rsyslog_ansibleManaged
+
+      - name: "NOTSCORED | 4.2.1.4 | PATCH | Ensure logging is configured | Misc. log setting"
+        blockinfile:
+            path: /etc/rsyslog.conf
+            state: present
+            regexp: '^news\.\notice(.*)$'
+            marker: "# {mark} MISC. LOG SETTINGS (ANSIBLE MANAGED)"
+            block: |
+              # misc. logging additions to meet CIS standards
+              *.=warning;*.=err                                        -/var/log/warn
+              *.crit                                                   /var/log/warn
+              *.*;mail.none;news.none                                  /var/log/messages
+            insertafter: '#### RULES ####'
+        notify: restart rsyslog
+        when: rhel8cis_rsyslog_ansibleManaged
+
+      - name: "NOTSCORED | 4.2.1.4 | PATCH | Ensure logging is configured | Local log settings"
+        blockinfile:
+            path: /etc/rsyslog.conf
+            state: present
+            regexp: '^news\.\notice(.*)$'
+            marker: "#{mark} LOCAL LOG SETTINGS (ANSIBLE MANAGED)"
+            block: |
+              # local log settings
+              local0,local1.*                                          -/var/log/localmessages
+              local2,local3.*                                          -/var/log/localmessages
+              local4,local5.*                                          -/var/log/localmessages
+              local6,local7.*                                          -/var/log/localmessages
+              *.emrg                                                    :omusrmsg:*
+            insertafter: '#### RULES ####'
+        notify: restart rsyslog
+  when:
+      - rhel8cis_rule_4_2_1_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rsyslog
+      - rule_4.2.1.4
+
+- name: "SCORED | 4.2.1.5 | PATCH | Ensure rsyslog is configured to send logs to a remote log host"
+  blockinfile:
+      path: /etc/rsyslog.conf
+      state: present
+      block: |
+        # remote host is: name/ip:port, e.g. 192.168.0.1:514, port optional
+        *.* @@{{ rhel8cis_remote_log_server }}
+      insertafter: EOF
+  register: result
+  failed_when:
+      - result is failed
+      - result.rc != 257
+  notify: restart rsyslog
+  when:
+      - rhel8cis_rule_4_2_1_5
+      - rhel8cis_remote_log_server is defined
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_4.2.1.5
+      - rsyslog
+
+- name: "NOTSCORED | 4.2.1.6 | PATCH | Ensure remote rsyslog messages are only accepted on designated log hosts."
+  block:
+      - name: "NOTSCORED | 4.2.1.6 | PATCH | Ensure remote rsyslog messages are only accepted on designated log hosts. | When not log host"
+        replace:
+            path: /etc/rsyslog.conf
+            regexp: '({{ item }})'
+            replace: '#\1'
+        notify: restart rsyslog
+        with_items:
+            - '^(\$ModLoad imtcp)'
+            - '^(\$InputTCPServerRun)'
+        when: not rhel8cis_system_is_log_server
+
+      - name: "NOTSCORED | 4.2.1.6 | PATCH | Ensure remote rsyslog messages are only accepted on designated log hosts. | When log host"
+        replace:
+            path: /etc/rsyslog.conf
+            regexp: '^#(.*{{ item }}.*)'
+            replace: '\1'
+        notify: restart rsyslog
+        with_items:
+        - 'ModLoad imtcp'
+        - 'InputTCPServerRun'
+        when: rhel8cis_system_is_log_server
+  when:
+      - rhel8cis_rule_4_2_1_6
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_4.2.1.6
+      - rsyslog
