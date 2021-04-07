@@ -6,6 +6,7 @@
         shell: 'authselect current | grep "Profile ID: custom/"'
         failed_when: false
         changed_when: false
+        check_mode: no
         register: rhel8cis_5_3_1_profiles
 
       - name: "SCORED | 5.3.1 | AUDIT | Create custom authselect profile | Show profiles"
@@ -32,6 +33,7 @@
         shell: "authselect current"
         failed_when: false
         changed_when: false
+        check_mode: no
         register: rhel8cis_5_3_2_profiles
 
       - name: "SCORED | 5.3.2 | AUDIT | Select authselect profile | Show profiles"
@@ -58,6 +60,7 @@
         shell: "authselect current | grep with-faillock"
         failed_when: false
         changed_when: false
+        check_mode: no
         register: rhel8cis_5_3_3_profiles_faillock
 
       - name: "SCORED | 5.3.3 | AUDIT | Ensure authselect includes with-faillock| Show profiles"

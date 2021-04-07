@@ -49,6 +49,7 @@
         shell: grep GRUB_CMDLINE_LINUX /etc/default/grub | sed 's/.$//'
         changed_when: false
         failed_when: false
+        check_mode: no
         register: rhel8cis_4_1_1_3_grub_cmdline_linux
         
       - name: "SCORED | 4.1.1.3 | PATCH | Ensure auditing for processes that start prior to auditd is enabled | Replace existing setting"
@@ -82,6 +83,7 @@
         shell: grep GRUB_CMDLINE_LINUX /etc/default/grub | sed 's/.$//'
         changed_when: false
         failed_when: false
+        check_mode: no
         register: rhel8cis_4_1_1_4_grub_cmdline_linux
 
       - name: "SCORED | 4.1.1.4 | PATCH | Ensure audit_backlog_limit is sufficient | Replace existing setting"

@@ -6,6 +6,7 @@
         command: rpm -q NetworkManager
         changed_when: false
         failed_when: false
+        check_mode: no
         args:
           warn: no
         register: rhel_08_nmcli_available

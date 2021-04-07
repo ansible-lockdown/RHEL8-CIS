@@ -31,18 +31,21 @@
   block:
       - name: "SCORED | 6.2.3 | AUDIT | Ensure root PATH Integrity | Determine empty value"
         shell: 'echo $PATH | grep ::'
+        check_mode: no
         register: path_colon
         changed_when: False
         failed_when: path_colon.rc == 0
 
       - name: "SCORED | 6.2.3 | AUDIT | Ensure root PATH Integrity | Determin colon end"
         shell: 'echo $PATH | grep :$'
+        check_mode: no
         register: path_colon_end
         changed_when: False
         failed_when: path_colon_end.rc == 0
 
       - name: "SCORED | 6.2.3 | AUDIT | Ensure root PATH Integrity | Determine dot in path"
         shell: "/bin/bash --login -c 'env | grep ^PATH=' | sed -e 's/PATH=//' -e 's/::/:/' -e 's/:$//' -e 's/:/\\n/g'"
+        check_mode: no
         register: dot_in_path
         changed_when: False
         failed_when: '"." in dot_in_path.stdout_lines'
@@ -378,6 +381,7 @@
         shell: 'getent passwd | cut -d: -f1 | sort -n | uniq -d'
         changed_when: false
         failed_when: false
+        check_mode: no
         register: group_group_check
 
       - name: "SCORED | 6.2.18 | AUDIT | Ensure no duplicate group names exist | Print message that no duplicate groups exist"
@@ -403,18 +407,21 @@
         shell: "getent group shadow | cut -d: -f3"
         changed_when: false
         failed_when: false
+        check_mode: no
         register: rhel8cis_shadow_gid
 
       - name: "SCORED | 6.2.19 | AUDIT | Ensure shadow group is empty | Check /etc/group for empty shadow group"
         shell: grep ^shadow:[^:]*:[^:]*:[^:]+ /etc/group
         changed_when: false
         failed_when: false
+        check_mode: no
         register: rhel8cis_empty_shadow
 
       - name: "SCORED | 6.2.19 | AUDIT | Ensure shadow group is empty | Check for users assigned to shadow"
         shell: "getent passwd | awk -F: '$4 == '{{ rhel8cis_shadow_gid.stdout }}' {print $1}'"
         changed_when: false
         failed_when: false
+        check_mode: no
         register: rhel8cis_shadow_passwd
 
       - name: "SCORED | 6.2.19 | AUDIT | Ensure shadow group is empty | Alert shadow group is empty and no users assigned"
