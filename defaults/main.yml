@@ -538,8 +538,8 @@ rhel8cis_wheel_users: "root"
 
 ## Section6 vars
 
-# RHEL-08_6.1.1 Allow ansible to adjust package descrepancies . False will just display packages with descrepancies, True will correct descrepancies
-rhelcis_rpm_descrep_autofixes: true
+# RHEL-08_6.1.1 
+rhel8cis_rpm_audit_file: /var/tmp/rpm_file_check
 
 # RHEL-08_6.1.10 Allow ansible to adjust world-writable files. False will just display world-writable files, True will remove world-writable
 rhel8cis_no_world_write_adjust: true
