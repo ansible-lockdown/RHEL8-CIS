@@ -163,7 +163,7 @@
 
 - name: "SCORED | 2.2.12 | PATCH | Ensure NFS is not enabled"
   service:
-      name: nfs
+      name: nfs-server
       state: stopped
       enabled: no
   when:
