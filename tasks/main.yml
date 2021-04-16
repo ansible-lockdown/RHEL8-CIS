@@ -16,6 +16,10 @@
   tags:
   - always
 
+- name: Check crypto-policy input
+  assert:
+    that: rhel8cis_crypto_policy in rhel8cis_allowed_crypto_policies
+
 - name: Check rhel7cis_bootloader_password_hash variable has been changed
   assert:
     that: rhel8cis_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'

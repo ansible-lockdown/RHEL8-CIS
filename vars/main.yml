@@ -1,2 +1,5 @@
 ---
 # vars file for RHEL8-CIS
+rhel8cis_allowed_crypto_policies:
+  - 'FUTURE'
+  - 'FIPS'

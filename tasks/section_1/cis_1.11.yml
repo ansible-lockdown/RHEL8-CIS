@@ -1,12 +1,12 @@
 ---
 
 - name: "SCORED | 1.11 | PATCH | Ensure system-wide crypto policy is FUTURE or FIPS"
-  shell: "{{ item }}"
-  loop:
-      - update-crypto-policies --set "{{ rhel8cis_crypto_policy }}"
-      - update-crypto-policies
+  shell: |
+      update-crypto-policies --set "{{ rhel8cis_crypto_policy }}"
+      update-crypto-policies
   when:
       - rhel8cis_rule_1_11
+      - system_wide_crypto_policy['stdout'] not in rhel8cis_allowed_crypto_policies
   tags:
       - level2-server
       - level2-workstation

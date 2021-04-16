@@ -26,6 +26,12 @@
   changed_when: no
   check_mode: no
 
+- name: "PRELIM | Gather system-wide crypto-policy"
+  shell: update-crypto-policies --show
+  register: system_wide_crypto_policy
+  changed_when: no
+  check_mode: no
+
 - name: "PRELIM | Section 4.1 | Configure System Accounting (auditd)"
   package:
     name: audit
@@ -51,7 +57,7 @@
     stat:
       path: /sys/firmware/efi
     register: rhel_08_efi_boot
-        
+
   - name: set fact for legacy or uefi boot
     set_fact:
       rhel8cis_legacy_boot: 'true'
