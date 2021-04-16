@@ -61,10 +61,23 @@
       - rule_5.2.2
 
 - name: "SCORED | 5.2.3 | PATCH | Ensure permissions on SSH private host key files are configured"
-  command: "{{ item }}"
-  with_items:
-      - find /etc/ssh -xdev -type f -name 'ssh_host_*_key' -exec chown root:root {} \;
-      - find /etc/ssh -xdev -type f -name 'ssh_host_*_key' -exec chmod 0600 {} \;
+  block:
+      - name: "SCORED | 5.2.3 | PATCH | Ensure permissions on SSH private host key files are configured | Find the SSH private host keys"
+        find:
+            paths: /etc/ssh
+            patterns: 'ssh_host_*_key'
+            recurse: true
+            file_type: any
+        register: rhel8cis_5_2_3_ssh_private_host_key
+
+      - name: "SCORED | 5.2.3 | PATCH | Ensure permissions on SSH private host key files are configured | Set permissions on SSH private host keys"
+        file:
+            path: "{{ item.path }}"
+            owner: root
+            group: root
+            mode: 0600
+        with_items:
+            - "{{ rhel8cis_5_2_3_ssh_private_host_key.files }}"
   when:
       - rhel8cis_rule_5_2_3
   tags:
@@ -74,10 +87,23 @@
       - rule_5.2.3
 
 - name: "SCORED | 5.2.4 | PATCH | Ensure permissions on SSH public host key files are configured"
-  command: "{{ item }}"
-  with_items:
-      - find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' -exec chmod 0644 {} \;
-      - find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' -exec chown root:root {} \;
+  block:
+      - name: "SCORED | 5.2.4 | PATCH | Ensure permissions on SSH public host key files are configured | Find the SSH public host keys"
+        find:
+            paths: /etc/ssh
+            patterns: 'ssh_host_*_key.pub'
+            recurse: true
+            file_type: any
+        register: rhel8cis_5_2_4_ssh_public_host_key
+
+      - name: "SCORED | 5.2.4 | PATCH | Ensure permissions on SSH public host key files are configured | Set permissions on SSH public host keys"
+        file:
+            path: "{{ item.path }}"
+            owner: root
+            group: root
+            mode: 0644
+        with_items:
+            - "{{ rhel8cis_5_2_4_ssh_public_host_key.files }}"
   when:
       - rhel8cis_rule_5_2_4
   tags:
