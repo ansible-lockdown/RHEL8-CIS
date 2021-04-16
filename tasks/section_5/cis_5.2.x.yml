@@ -61,10 +61,19 @@
       - rule_5.2.2
 
 - name: "SCORED | 5.2.3 | PATCH | Ensure permissions on SSH private host key files are configured"
-  command: "{{ item }}"
-  with_items:
-      - find /etc/ssh -xdev -type f -name 'ssh_host_*_key' -exec chown root:root {} \;
-      - find /etc/ssh -xdev -type f -name 'ssh_host_*_key' -exec chmod 0600 {} \;
+  block:
+    - name: "SCORED | 5.2.3 | PATCH | Ensure permissions on SSH private host key files are configured | Find files"
+      find:
+        paths: /etc/ssh
+        patterns: ssh_host_*_key
+      register: cis_5_2_3_find_result
+    - name: "SCORED | 5.2.3 | PATCH | Ensure permissions on SSH private host key files are configured | Ensure permissions"
+      file:
+        path: "{{ item['path'] }}"
+        mode: 0600
+        owner: root
+        group: root
+      loop: "{{ cis_5_2_3_find_result['files'] }}"
   when:
       - rhel8cis_rule_5_2_3
   tags:
@@ -74,10 +83,19 @@
       - rule_5.2.3
 
 - name: "SCORED | 5.2.4 | PATCH | Ensure permissions on SSH public host key files are configured"
-  command: "{{ item }}"
-  with_items:
-      - find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' -exec chmod 0644 {} \;
-      - find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' -exec chown root:root {} \;
+  block:
+    - name: "SCORED | 5.2.4 | PATCH | Ensure permissions on SSH public host key files are configured | Find files"
+      find:
+        paths: /etc/ssh
+        patterns: ssh_host_*_key.pub
+      register: cis_5_2_4_find_result
+    - name: "SCORED | 5.2.4 | PATCH | Ensure permissions on SSH public host key files are configured | Ensure permissions"
+      file:
+        path: "{{ item['path'] }}"
+        mode: 0644
+        owner: root
+        group: root
+      loop: "{{ cis_5_2_4_find_result['files'] }}"
   when:
       - rhel8cis_rule_5_2_4
   tags:
