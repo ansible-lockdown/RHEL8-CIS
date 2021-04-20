@@ -1,12 +1,12 @@
 ---
 
 - name: "SCORED | 1.10 | PATCH | Ensure system-wide crypto policy is not legacy"
-  shell: "{{ item }}"
-  loop:
-      - update-crypto-policies --set "{{ rhel8cis_crypto_policy }}"
-      - update-crypto-policies
+  shell: |
+      update-crypto-policies --set "{{ rhel8cis_crypto_policy }}"
+      update-crypto-policies
   when:
       - rhel8cis_rule_1_10
+      - system_wide_crypto_policy['stdout'] == 'LEGACY'
   tags:
       - level1-server
       - level1-workstation
