@@ -16,6 +16,7 @@ rhel8cis_section5: true
 rhel8cis_section6: true
 
 rhel8cis_selinux_disable: false
+rhel8cis_legacy_boot: false
 
 ## Python Binary
 ## This is used for python3 Installations where python2 OS modules are used in ansible
