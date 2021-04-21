@@ -1,6 +1,11 @@
 # Changes to rhel8CIS
 
+
+
 ## v1.2.1
+
+- bootloader and default variables
+- empty strings lint updates
 
 ### 87
 
@@ -9,6 +14,12 @@
 ### 88
 
 - checkmode_improvements added to relevant tasks
+
+### PR #96 
+
+- crypto policy idempotency
+
+
 
 ## v1.2.0
 
