@@ -25,7 +25,24 @@
       - name: "NOTSCORED | 6.1.1 | AUDIT | Audit system file permissions | Message out no package descrepancies"
         debug:
             msg: "Good News! There are no package descrepancies"
+<<<<<<< HEAD
+        when: rhel8cis_6_1_1_packages_rpm.stdout | length == 0
+
+      - name: "NOTSCORED | 6.1.1 | AUDIT | Audit system file permissions | Message out alert for package descrepancies"
+        debug:
+            msg: "Warning! You have some package descrepancies. These packages need review: {{ rhel8cis_6_1_1_packages_rpm.stdout_lines }}"
+        when: rhel8cis_6_1_1_packages_rpm.stdout | length > 0
+
+      - name: "NOTSCORED | 6.1.1 | PATCH | Audit system file permissions | Address descrepancies found (Configurable)"
+        shell: >
+              ( rpm --setugids /bin/{{ rhel8cis_6_1_1_packages_rpm.stdout_lines }}; rpm --setperms /bin/{{ rhel8cis_6_1_1_packages_rpm.stdout_lines }} )
+              2>&1 1>&2 | grep -v ': No such file or directory$'
+        when:
+            - rhel8cis_6_1_1_packages_rpm.stdout | length > 0
+            - rhelcis_rpm_descrep_autofixes
+=======
         when: rhel8cis_6_1_1_packages_rpm.stdout|length == 0
+>>>>>>> logic_6_1_1
   when:
       - rhel8cis_rule_6_1_1
   tags:

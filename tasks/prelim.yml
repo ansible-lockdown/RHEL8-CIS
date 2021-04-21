@@ -13,7 +13,6 @@
   changed_when: false
   register: grub_cfg
 
-
 - name: "PRELIM | Gather accounts with empty password fields"
   shell: "cat /etc/shadow | awk -F: '($2 == \"\" ) {j++;print $1; } END {exit j}'"
   register: empty_password_accounts
@@ -60,7 +59,7 @@
 
   - name: set fact for legacy or uefi boot
     set_fact:
-      rhel8cis_legacy_boot: 'true'
+      rhel8cis_legacy_boot: true
     when: not rhel_08_efi_boot.stat.exists
 
 - name: "PRELIM | Check for rhnsd service"

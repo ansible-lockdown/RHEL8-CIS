@@ -124,7 +124,7 @@
       - name: "SCORED | 6.2.7 | AUDIT | Ensure users' home directories permissions are 750 or more restrictive"
         command: find -H {{ item.0 | quote }} -not -type l -perm /027
         check_mode: false
-        changed_when: rhel_08_6_2_7_patch_audit.stdout != ""
+        changed_when: rhel_08_6_2_7_patch_audit.stdout | length > 0
         register: rhel_08_6_2_7_patch_audit
         when:
             - ansible_check_mode
@@ -429,15 +429,15 @@
             msg:
                 - " Good News! The shadow group is empty and there are no users assigned to shadow"
         when:
-            - rhel8cis_empty_shadow.stdout == ""
-            - rhel8cis_shadow_passwd.stdout == ""
+            - rhel8cis_empty_shadow.stdout | length == 0
+            - rhel8cis_shadow_passwd.stdout | length == 0
 
       - name: "SCORED | 6.2.19 | AUDIT | Ensure shadow group is empty | Alert shadow group is not empty"
         debug:
             msg:
                 - "Alert! The shadow group is not empty"
         when:
-            - rhel8cis_empty_shadow.stdout != ""
+            - rhel8cis_empty_shadow.stdout | length > 0
 
       - name: "SCORED | 6.2.19 | AUDIT | Ensure shadow group is empty | Alert users are using shadow group"
         debug:
@@ -445,7 +445,7 @@
                 - "Alert! The following users are assigned to the shadow group, please assing them to the appropriate group"
                 - "{{ rhel8cis_shadow_passwd.stdout_lines }}"
         when:
-            - rhel8cis_shadow_passwd.stdout != ""
+            - rhel8cis_shadow_passwd.stdout | length > 0
   when:
       - rhel8cis_rule_6_2_19
   tags:
@@ -465,7 +465,7 @@
       - name: "SCORED | 6.2.20 | AUDIT | Ensure users home directories permissions are 750 or more restrictive"
         command: find -H {{ item.0 | quote }} -not -type l -perm /027
         check_mode: false
-        changed_when: rhel_08_6_2_20_patch_audit.stdout != ""
+        changed_when: rhel_08_6_2_20_patch_audit.stdout "| length > 0"
         register: rhel_08_6_2_20_patch_audit
         when:
             - ansible_check_mode
