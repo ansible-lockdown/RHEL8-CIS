@@ -16,6 +16,7 @@ rhel8cis_section5: true
 rhel8cis_section6: true
 
 rhel8cis_selinux_disable: false
+rhel8cis_legacy_boot: false
 
 ## Python Binary
 ## This is used for python3 Installations where python2 OS modules are used in ansible
@@ -358,7 +359,7 @@ rhel8cis_set_boot_pass: false
 
 # 1.10/1.11 Set crypto policy (LEGACY, DEFAULT, FUTURE, FIPS)
 # Control 1.10 sates not ot use LEGACY and control 1.11 says to use FUTURE or FIPS.
-rhel8cis_crypto_policy: "FIPS"
+rhel8cis_crypto_policy: "FUTURE"
 
 # System network parameters (host only OR host and router)
 rhel8cis_is_router: false
@@ -538,8 +539,8 @@ rhel8cis_wheel_users: "root"
 
 ## Section6 vars
 
-# RHEL-08_6.1.1 Allow ansible to adjust package descrepancies . False will just display packages with descrepancies, True will correct descrepancies
-rhelcis_rpm_descrep_autofixes: true
+# RHEL-08_6.1.1 
+rhel8cis_rpm_audit_file: /var/tmp/rpm_file_check
 
 # RHEL-08_6.1.10 Allow ansible to adjust world-writable files. False will just display world-writable files, True will remove world-writable
 rhel8cis_no_world_write_adjust: true

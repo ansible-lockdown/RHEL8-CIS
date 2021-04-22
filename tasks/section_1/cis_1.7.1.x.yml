@@ -20,7 +20,7 @@
       replace: ''
   register: selinux_grub_patch
   ignore_errors: yes
-  notify: generate new grub config
+  notify: grub2cfg
   when:
       - rhel8cis_rule_1_7_1_2
   tags:
@@ -73,12 +73,12 @@
       - name: "SCORED | 1.7.1.5 | AUDIT | Ensure no unconfined daemons exist | Message on no unconfined daemones"
         debug:
             msg: "Good News! There are no unconfined daemons found on your system"
-        when: rhelcis_1_7_1_5_unconf_daemons.stdout == ""
+        when: rhelcis_1_7_1_5_unconf_daemons.stdout | length == 0
 
       - name: "SCORED | 1.7.1.5 | AUDIT | Ensure no unconfined daemons exist | Message on unconfined daemones"
         debug:
             msg: "Warning! You have unconfined daemons: {{ rhelcis_1_7_1_5_unconf_daemons.stdout_lines }}"
-        when: rhelcis_1_7_1_5_unconf_daemons.stdout != ""
+        when: rhelcis_1_7_1_5_unconf_daemons.stdout | length > 0
   when:
       - rhel8cis_rule_1_7_1_5
   tags:

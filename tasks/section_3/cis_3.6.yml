@@ -7,7 +7,7 @@
       replace: '\1"\2 ipv6.disable=1"'
       follow: yes
   ignore_errors: yes
-  notify: generate new grub config
+  notify: grub2cfg
   when:
       - not rhel8cis_ipv6_required
       - rhel8cis_rule_3_6

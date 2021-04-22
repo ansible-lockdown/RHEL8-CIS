@@ -2,35 +2,30 @@
 
 - name: "NOTSCORED | 6.1.1 | PATCH | Audit system file permissions"
   block:
-      - name: "NOTSCORED | 6.1.1 | AUDIT | Audit system file permissions | Register package list"
-        command: ls -a /bin/
-        failed_when: false
-        changed_when: false
-        register: rhel8cis_6_1_1_packages
-
       - name: "NOTSCORED | 6.1.1 | AUDIT | Audit system file permissions | Audit the packages"
-        shell: rpm -Va --nomtime --nosize --nomd5 --nolinkto > /bin/{{ rhel8cis_6_1_1_packages.stdout_lines }}
+        shell: rpm -Va --nomtime --nosize --nomd5 --nolinkto
         changed_when: false
         failed_when: false
         register: rhel8cis_6_1_1_packages_rpm
+      
+      - name: "NOTSCORED | 6.1.1 | AUDIT | Audit system file permissions | Create list and warning"
+        block:
+            - name: "NOTSCORED | 6.1.1 | AUDIT | Audit system file permissions | Add file discrepancy list to system"
+              copy:
+                dest: "{{ rhel8cis_rpm_audit_file }}"
+                content: "{{ rhel8cis_6_1_1_packages_rpm.stdout }}"
 
+            - name: "NOTSCORED | 6.1.1 | AUDIT | Audit system file permissions | Message out alert for package descrepancies"
+              debug:
+                  msg: |
+                     "Warning! You have some package descrepancies issues.
+                      The file list can be found in {{ rhel8cis_rpm_audit_file }}"
+        when: rhel8cis_6_1_1_packages_rpm.stdout|length > 0
+      
       - name: "NOTSCORED | 6.1.1 | AUDIT | Audit system file permissions | Message out no package descrepancies"
         debug:
             msg: "Good News! There are no package descrepancies"
-        when: rhel8cis_6_1_1_packages_rpm.stdout == ""
-
-      - name: "NOTSCORED | 6.1.1 | AUDIT | Audit system file permissions | Message out alert for package descrepancies"
-        debug:
-            msg: "Warning! You have some package descrepancies. These packages need review: {{ rhel8cis_6_1_1_packages_rpm.stdout_lines }}"
-        when: rhel8cis_6_1_1_packages_rpm.stdout != ""
-
-      - name: "NOTSCORED | 6.1.1 | PATCH | Audit system file permissions | Address descrepancies found (Configurable)"
-        shell: >
-              ( rpm --setugids /bin/{{ rhel8cis_6_1_1_packages_rpm.stdout_lines }}; rpm --setperms /bin/{{ rhel8cis_6_1_1_packages_rpm.stdout_lines }} )
-              2>&1 1>&2 | grep -v ': No such file or directory$'
-        when:
-            - rhel8cis_6_1_1_packages_rpm.stdout != ""
-            - rhelcis_rpm_descrep_autofixes
+        when: rhel8cis_6_1_1_packages_rpm.stdout|length == 0
   when:
       - rhel8cis_rule_6_1_1
   tags:

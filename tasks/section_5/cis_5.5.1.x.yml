@@ -48,14 +48,16 @@
         shell: useradd -D | grep INACTIVE={{ rhel8cis_inactivelock.lock_days }} | cut -f2 -d=
         changed_when: false
         failed_when: false
+        check_mode: no
         register: rhel8cis_5_5_1_4_inactive_settings
 
       - name: "SCORED | 5.5.1.4 | PATCH | Ensure inactive password lock is 30 days or less | Set default inactive setting"
         command: useradd -D -f {{ rhel8cis_inactivelock.lock_days }}
-        when: rhel8cis_5_5_1_4_inactive_settings.stdout == ""
+        when: rhel8cis_5_5_1_4_inactive_settings.stdout | length == 0
 
       - name: "AUDIT | 5.5.1.4 | PATCH | Ensure inactive password lock is 30 days or less | Getting user list"
         shell: 'egrep ^[^:]+:[^\!*] /etc/shadow | cut -d: -f1'
+        check_mode: no
         register: rhel_08_5_5_1_4_audit
         changed_when: false
 
@@ -77,30 +79,32 @@
         shell: echo $(($(date --utc --date "$1" +%s)/86400))
         failed_when: false
         changed_when: false
+        check_mode: no
         register: rhel8cis_5_5_1_5_currentUT
 
       - name: "SCORED | 5.5.1.5 | AUDIT | Ensure all users last password change date is in the past | Get list of users with last changed pw date in the future"
         shell: "cat /etc/shadow | awk -F: '{if($3>{{ rhel8cis_5_5_1_5_currentUT.stdout }})print$1}'"
         changed_when: false
         failed_when: false
+        check_mode: no
         register: rhel8cis_5_5_1_5_user_list
 
       - name: "SCORED | 5.5.1.5 | AUDIT | Ensure all users last password change date is in the past | Alert no pw change in the future exist"
         debug:
             msg: "Good News! All accounts have PW change dates that are in the past"
-        when: rhel8cis_5_5_1_5_user_list.stdout == ""
+        when: rhel8cis_5_5_1_5_user_list.stdout | length == 0
 
       - name: "SCORED | 5.5.1.5 | AUDIT | Ensure all users last password change date is in the past | Alert on accounts with pw change in the future"
         debug:
             msg: "Warning! The following accounts have the last PW change date in the future: {{ rhel8cis_5_5_1_5_user_list.stdout_lines }}"
         when:
-            - rhel8cis_5_5_1_5_user_list.stdout != ""
+            - rhel8cis_5_5_1_5_user_list.stdout | length > 0
             - not rhel8cis_futurepwchgdate_autofix
 
       - name: "SCORED | 5.5.1.5 | PATCH | Ensure all users last password change date is in the past | Fix accounts with pw change in the future"
         command: passwd --expire {{ item }}
         when:
-            - rhel8cis_5_5_1_5_user_list != ""
+            - rhel8cis_5_5_1_5_user_list | length > 0
             - rhel8cis_futurepwchgdate_autofix
         with_items:
             - "{{ rhel8cis_5_5_1_5_user_list.stdout_lines }}"
