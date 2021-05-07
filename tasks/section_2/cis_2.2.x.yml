@@ -12,7 +12,7 @@
       - name: "SCORED | 2.2.2 | PATCH | Ensure X Window System is not installed | remove packages if found"
         shell: "dnf remove {{ item }}"
         with_items:
-            - xorg_x11_installed.stdout
+            - xorg_x11_installed.stdout_lines
         when: xorg_x11_installed.stdout | length > 0
   when:
       - not rhel8cis_xwindows_required
