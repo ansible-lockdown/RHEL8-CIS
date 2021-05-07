@@ -1,6 +1,11 @@
 # Changes to rhel8CIS
 
+## 1.2.2
 
+- #33 mkgrub missing variable issues - efi and bios path resolution
+  - thanks to mrampant & mickey1928geo
+- #102 2.2.2 xorg pkg removal extended
+  - thanks to RosarioVinoth
 
 ## v1.2.1
 
@@ -15,11 +20,9 @@
 
 - checkmode_improvements added to relevant tasks
 
-### PR #96 
+### PR #96
 
 - crypto policy idempotency
-
-
 
 ## v1.2.0
 
