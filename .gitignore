@@ -1,6 +1,7 @@
 .env
 *.log
 *.retry
+.cache
 .vagrant
 tests/*redhat-subscription
 tests/Dockerfile
