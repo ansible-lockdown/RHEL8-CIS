@@ -518,7 +518,7 @@ rhel8cis_vartmp:
     opts: "defaults,nodev,nosuid,noexec,bind"
     enabled: no
 ## PAM
-rhel8cis_pam_password: 
+rhel8cis_pam_password:
     minlen: "14"
     minclass: "4"
 
@@ -539,7 +539,7 @@ rhel8cis_wheel_users: "root"
 
 ## Section6 vars
 
-# RHEL-08_6.1.1 
+# RHEL-08_6.1.1
 rhel8cis_rpm_audit_file: /var/tmp/rpm_file_check
 
 # RHEL-08_6.1.10 Allow ansible to adjust world-writable files. False will just display world-writable files, True will remove world-writable
@@ -557,19 +557,19 @@ rhel8cis_audit_file_git: "https://github.com/ansible-lockdown/{{ benchmark }}-Au
 rhel8cis_audit_git_version: main
 
 # copy:
-#rhel8cis_audit_local_copy: "some path to copy from"
+# rhel8cis_audit_local_copy: "some path to copy from"
 
 # get_url:
-#rhel8cis_audit_files_url: "some url maybe s3?"
+# rhel8cis_audit_files_url: "some url maybe s3?"
 
 
 ## audit controls ##
 goss_version:
-  release: v0.3.16
-  checksum: 'sha256:827e354b48f93bce933f5efcd1f00dc82569c42a179cf2d384b040d8a80bfbfb'
+    release: v0.3.16
+    checksum: 'sha256:827e354b48f93bce933f5efcd1f00dc82569c42a179cf2d384b040d8a80bfbfb'
 
 ### Audit Settings ###
-#goss_checksum: "checksum_{{ goss_version }}"
+# goss_checksum: "checksum_{{ goss_version }}"
 goss_path: /usr/local/bin/
 goss_bin: "{{ goss_path }}goss"
 goss_format: documentation
