@@ -4,17 +4,14 @@ galaxy_info:
     description: "Apply the DISA RHEL 8 CIS"
     company: "MindPoint Group"
     license: MIT
-    min_ansible_version: 2.8.0
-
+    min_ansible_version: 2.9.0
     platforms:
         - name: EL
           versions:
               - 8
-
     galaxy_tags:
         - system
         - security
         - CIS
         - hardening
-
 dependencies: []

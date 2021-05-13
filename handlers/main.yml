@@ -39,7 +39,7 @@
 - name: remount tmp
   command: mount -o remount /tmp
   args:
-    warn: false
+      warn: false
 
 - name: restart firewalld
   become: yes

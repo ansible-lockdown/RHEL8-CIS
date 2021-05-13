@@ -2,7 +2,7 @@
 # tasks file for RHEL8-CIS
 - name: Check OS version and family
   fail:
-    msg: "This role can only be run against RHEL 8. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
+      msg: "This role can only be run against RHEL 8. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
   when:
   - ansible_os_family == 'RedHat'
   - ansible_distribution_major_version is version_compare('8', '!=')
@@ -11,19 +11,19 @@
 
 - name: Check ansible version
   fail:
-    msg: You must use ansible 2.9 or greater
+      msg: You must use ansible 2.9 or greater
   when: not ansible_version.full is version_compare('2.9', '>=')
   tags:
   - always
 
 - name: Check crypto-policy input
   assert:
-    that: rhel8cis_crypto_policy in rhel8cis_allowed_crypto_policies
+      that: rhel8cis_crypto_policy in rhel8cis_allowed_crypto_policies
 
 - name: Check rhel7cis_bootloader_password_hash variable has been changed
   assert:
-    that: rhel8cis_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'
-    msg: "This role will not be able to run single user password commands as rhel8cis_bootloader_password_hash variable has not been set"
+      that: rhel8cis_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'
+      msg: "This role will not be able to run single user password commands as rhel8cis_bootloader_password_hash variable has not been set"
   when:
   - rhel8cis_set_boot_pass
   - rhel8cis_rule_1_5_2
@@ -40,7 +40,7 @@
 
 - name: Gather the package facts
   package_facts:
-    manager: auto
+      manager: auto
   tags:
   - always
 
@@ -89,6 +89,6 @@
 
 - name: Show Audit Summary
   debug:
-    msg: "{{ Audit_results.split('\n') }}"
+      msg: "{{ Audit_results.split('\n') }}"
   when:
   - rhel8cis_run_audit
