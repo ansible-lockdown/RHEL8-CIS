@@ -6,7 +6,6 @@
       regexp: '(^GRUB_CMDLINE_LINUX\s*\=\s*)(?:")(.+)(?<!ipv6.disable=1)(?:")'
       replace: '\1"\2 ipv6.disable=1"'
       follow: yes
-  ignore_errors: yes
   notify: grub2cfg
   when:
       - not rhel8cis_ipv6_required
