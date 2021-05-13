@@ -37,10 +37,10 @@
 
       - name: "SCORED | 3.4.4.1.2 | PATCH | Ensure loopback traffic is configured | OUTPUT Loopback ACCEPT"
         iptables:
-          action: append
-          chain: OUTPUT
-          out_interface: lo
-          jump: ACCEPT
+            action: append
+            chain: OUTPUT
+            out_interface: lo
+            jump: ACCEPT
 
       - name: "SCORED | 3.4.4.1.2 | PATCH | Ensure loopback traffic is configured | INPUT Loopback 127.0.0.0/8"
         iptables:

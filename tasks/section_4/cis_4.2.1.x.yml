@@ -48,7 +48,9 @@
         changed_when: false
         failed_when: no
         register: rhel_08_4_2_1_4_audit
-      - debug:
+
+      - name: "NOTSCORED | 4.2.1.4 | AUDIT | Ensure logging is configured | rsyslog current config message out"
+        debug:
             msg:
                 - "These are the current logging configurations for rsyslog, please review:"
                 - "{{ rhel_08_4_2_1_4_audit.stdout_lines }}"
@@ -165,8 +167,8 @@
             replace: '\1'
         notify: restart rsyslog
         with_items:
-        - 'ModLoad imtcp'
-        - 'InputTCPServerRun'
+            - 'ModLoad imtcp'
+            - 'InputTCPServerRun'
         when: rhel8cis_system_is_log_server
   when:
       - rhel8cis_rule_4_2_1_6

@@ -4,13 +4,17 @@
   block:
       - name: "SCORED | 2.2.2 | AUDIT | Ensure X Window System is not installed | capture xorg-x11 packages"
         shell: rpm -qa | grep xorg-x11
-        register: xorg_x11_installed
+        args:
+            warn: no
         failed_when: xorg_x11_installed.rc >=2
         check_mode: no
         changed_when: false
+        register: xorg_x11_installed
 
       - name: "SCORED | 2.2.2 | PATCH | Ensure X Window System is not installed | remove packages if found"
         shell: "dnf remove {{ item }}"
+        args:
+            warn: no
         with_items:
             - xorg_x11_installed.stdout_lines
         when: xorg_x11_installed.stdout | length > 0

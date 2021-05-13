@@ -45,13 +45,12 @@
         failed_when: false
         check_mode: no
         register: rhel8cis_4_1_1_3_grub_cmdline_linux
-        
+
       - name: "SCORED | 4.1.1.3 | PATCH | Ensure auditing for processes that start prior to auditd is enabled | Replace existing setting"
         replace:
             dest: /etc/default/grub
             regexp: 'audit=.'
             replace: 'audit=1'
-        ignore_errors: yes
         notify: grub2cfg
         when: "'audit=' in rhel8cis_4_1_1_3_grub_cmdline_linux.stdout"
 

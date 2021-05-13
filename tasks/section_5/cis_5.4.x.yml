@@ -85,8 +85,8 @@
             insertafter: '^#?password ?'
         when: rhel8cis_rule_5_4_4
 
-          # The two steps below were added to keep authconfig from overwritting the above configs. This follows steps from here: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/chap-hardening_your_system_with_tools_and_services
-          # With the steps below you will score five (5) points lower due to false positive results
+      # The two steps below were added to keep authconfig from overwritting the above configs. This follows steps from here: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/chap-hardening_your_system_with_tools_and_services
+      # With the steps below you will score five (5) points lower due to false positive results
       - name: |
            "SCORED | 5.4.1 | PATCH | Ensure password creation requirements are configured"
             SCORED | 5.4.2 | PATCH | Ensure lockout for failed password attempts is configured
