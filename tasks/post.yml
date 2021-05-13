@@ -6,4 +6,4 @@
   changed_when: no
   ignore_errors: yes
   tags:
-      - skip_ansible_lint
+  - skip_ansible_lint
