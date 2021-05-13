@@ -24,7 +24,7 @@
             regexp: "^AllowUsers"
             line: AllowUsers {{ rhel8cis_sshd['allowusers'] }}
         notify: restart sshd
-        when: "rhel8cis_sshd['allowusers']|default('') != ''"
+        when: "rhel8cis_sshd['allowusers']|default('') | length > 0"
 
       - name: "SCORED | 5.2.2 | PATCH | Ensure SSH access is limited | Add line to sshd_config for allowgroups"
         lineinfile:
@@ -33,7 +33,7 @@
             regexp: "^AllowGroups"
             line: AllowGroups {{ rhel8cis_sshd['allowgroups'] }}
         notify: restart sshd
-        when: "rhel8cis_sshd['allowgroups']|default('') != ''"
+        when: "rhel8cis_sshd['allowgroups']|default('') | length > 0"
 
       - name: "SCORED | 5.2.2 | PATCH | Ensure SSH access is limited | Add line to sshd_config for denyusers"
         lineinfile:
@@ -42,7 +42,7 @@
             regexp: "^DenyUsers"
             line: DenyUsers {{ rhel8cis_sshd['denyusers'] }}
         notify: restart sshd
-        when: "rhel8cis_sshd['denyusers']|default('') != ''"
+        when: "rhel8cis_sshd['denyusers']|default('') | length > 0"
 
       - name: "SCORED | 5.2.2 | PATCH | Ensure SSH access is limited | Add line to sshd_config for denygroups"
         lineinfile:
@@ -51,7 +51,7 @@
             regexp: "^DenyGroups"
             line: DenyGroups {{ rhel8cis_sshd['denygroups'] }}
         notify: restart sshd
-        when: "rhel8cis_sshd['denygroups']|default('') != ''"
+        when: "rhel8cis_sshd['denygroups']|default('') | length > 0"
   when:
       - rhel8cis_rule_5_2_2
   tags:
@@ -333,6 +333,8 @@
 
 - name: "SCORED | 5.2.20 | PATCH | Ensure system-wide crypto policy is not over-ridden"
   shell: sed -ri "s/^\s*(CRYPTO_POLICY\s*=.*)$/# \1/" /etc/sysconfig/sshd
+  args:
+      warn: no
   notify: restart sshd
   when:
       - rhel8cis_rule_5_2_20

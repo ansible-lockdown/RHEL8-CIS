@@ -2,8 +2,8 @@
 
 - name: "SCORED | 2.3.1 | PATCH | Ensure NIS Client is not installed"
   package:
-     name: ypbind
-     state: absent
+      name: ypbind
+      state: absent
   when:
       - not rhel8cis_ypbind_required
       - "'ypbind' in ansible_facts.packages"
