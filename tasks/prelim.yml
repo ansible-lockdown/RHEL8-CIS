@@ -7,6 +7,7 @@
       warn: no
   changed_when: no
   check_mode: no
+  register: users
 
 - name: "PRELIM | Gather accounts with empty password fields"
   shell: "cat /etc/shadow | awk -F: '($2 == \"\" ) {j++;print $1; } END {exit j}'"
