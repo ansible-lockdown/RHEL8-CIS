@@ -133,7 +133,7 @@
             - "{{ rhel_08_6_2_7_audit.results | map(attribute='item') | list }}"
             - "{{ rhel_08_6_2_7_audit.results | map(attribute='stat') | list }}"
         loop_control:
-          label: "{{ item.0 }}"
+            label: "{{ item.0 }}"
 
       - name: "SCORED | 6.2.7 | AUDIT | Ensure users' home directories permissions are 750 or more restrictive"
         file:
@@ -148,9 +148,9 @@
             - "{{ rhel_08_6_2_7_audit.results | map(attribute='item') | list }}"
             - "{{ rhel_08_6_2_7_audit.results | map(attribute='stat') | list }}"
         loop_control:
-          label: "{{ item.0 }}"
+            label: "{{ item.0 }}"
 
-          # set default ACLs so the homedir has an effective umask of 0027
+      # set default ACLs so the homedir has an effective umask of 0027
       - name: "SCORED | 6.2.7 | PATCH | Ensure users' home directories permissions are 750 or more restrictive"
         acl:
             path: "{{ item.0 }}"
@@ -164,10 +164,10 @@
             - "{{ (ansible_check_mode | ternary(rhel_08_6_2_7_patch_audit, rhel_08_6_2_7_patch)).results |
               rejectattr('skipped', 'defined') | map(attribute='item') | map('first') | list }}"
             -
-              - etype: group
-                mode: rx
-              - etype: other
-                mode: '0'
+                - etype: group
+                  mode: rx
+                - etype: other
+                  mode: '0'
   when:
       - rhel8cis_rule_6_2_7
   tags:
@@ -181,13 +181,16 @@
       path: "{{ item.dir }}"
       owner: "{{ item.id }}"
       state: directory
+  args:
+      warn: no
   with_items: "{{ rhel8cis_passwd }}"
   loop_control:
-    label: "{{ rhel8cis_passwd_label }}"
+      label: "{{ rhel8cis_passwd_label }}"
   when:
       - item.uid >= rhel8cis_int_gid
       - rhel8cis_rule_6_2_8
   tags:
+      - skip_ansible_lint  # settings found on 6_2_7
       - level1-server
       - level1-workstation
       - patch
@@ -203,7 +206,7 @@
 
       - name: "SCORED | 6.2.9 | AUDIT | Ensure users' dot files are not group or world-writable | Alert on files found"
         debug:
-          msg: "Good news! We have not found any group or world-writable dot files on your sytem"
+            msg: "Good news! We have not found any group or world-writable dot files on your sytem"
         when:
             - rhel8cis_6_2_9_audit.stdout is not defined
 
@@ -310,12 +313,12 @@
 
       - name: "SCORED | 6.2.15 | AUDIT | Ensure no duplicate UIDs exist | Print message that no duplicate UIDs exist"
         debug:
-          msg: "Good News! There are no duplicate UID's in the system"
+            msg: "Good News! There are no duplicate UID's in the system"
         when: user_uid_check.stdout is not defined
 
       - name: "SCORED | 6.2.15 | AUDIT | Ensure no duplicate UIDs exist | Print warning about users with duplicate UIDs"
         debug:
-          msg: "Warning: The following users have UIDs that are duplicates: {{ user_uid_check.stdout_lines }}"
+            msg: "Warning: The following users have UIDs that are duplicates: {{ user_uid_check.stdout_lines }}"
         when: user_uid_check.stdout is defined
   when:
       - rhel8cis_rule_6_2_15
@@ -327,21 +330,21 @@
 
 - name: "SCORED | 6.2.16 | PATCH | Ensure no duplicate GIDs exist"
   block:
-  - name: "SCORED | 6.2.16 | AUDIT | Ensure no duplicate GIDs exist | Check for duplicate GIDs"
-    shell: "pwck -r | awk -F: '{if ($3 in users) print $1 ; else users[$3]}' /etc/group"
-    changed_when: false
-    failed_when: false
-    register: user_user_check
+      - name: "SCORED | 6.2.16 | AUDIT | Ensure no duplicate GIDs exist | Check for duplicate GIDs"
+        shell: "pwck -r | awk -F: '{if ($3 in users) print $1 ; else users[$3]}' /etc/group"
+        changed_when: false
+        failed_when: false
+        register: user_user_check
 
-  - name: "SCORED | 6.2.16 | AUDIT | Ensure no duplicate GIDs exist | Print message that no duplicate GID's exist"
-    debug:
-        msg: "Good News! There are no duplicate GIDs in the system"
-    when: user_user_check.stdout is not defined
+      - name: "SCORED | 6.2.16 | AUDIT | Ensure no duplicate GIDs exist | Print message that no duplicate GID's exist"
+        debug:
+            msg: "Good News! There are no duplicate GIDs in the system"
+        when: user_user_check.stdout is not defined
 
-  - name: "SCORED | 6.2.16 | AUDIT | Ensure no duplicate GIDs exist | Print warning about users with duplicate GIDs"
-    debug:
-        msg: "Warning: The following groups have duplicate GIDs: {{ user_user_check.stdout_lines }}"
-    when: user_user_check.stdout is defined
+      - name: "SCORED | 6.2.16 | AUDIT | Ensure no duplicate GIDs exist | Print warning about users with duplicate GIDs"
+        debug:
+            msg: "Warning: The following groups have duplicate GIDs: {{ user_user_check.stdout_lines }}"
+        when: user_user_check.stdout is defined
   when:
       - rhel8cis_rule_6_2_16
   tags:
@@ -474,7 +477,7 @@
             - "{{ rhel_08_6_2_20_audit.results | map(attribute='item') | list }}"
             - "{{ rhel_08_6_2_20_audit.results | map(attribute='stat') | list }}"
         loop_control:
-          label: "{{ item.0 }}"
+            label: "{{ item.0 }}"
 
       - name: "SCORED | 6.2.20 | AUDIT | Ensure users home directories permissions are 750 or more restrictive"
         file:
@@ -489,7 +492,7 @@
             - "{{ rhel_08_6_2_20_audit.results | map(attribute='item') | list }}"
             - "{{ rhel_08_6_2_20_audit.results | map(attribute='stat') | list }}"
         loop_control:
-          label: "{{ item.0 }}"
+            label: "{{ item.0 }}"
 
       # set default ACLs so the homedir has an effective umask of 0027
       - name: "SCORED | 6.2.20 | PATCH | Ensure users home directories permissions are 750 or more restrictive"
@@ -502,13 +505,13 @@
             permissions: "{{ item.1.mode }}"
         when: not rhel8cis_system_is_container
         with_nested:
-        - "{{ (ansible_check_mode | ternary(rhel_08_6_2_20_patch_audit, rhel_08_6_2_20_patch)).results |
-          rejectattr('skipped', 'defined') | map(attribute='item') | map('first') | list }}"
-        -
-          - etype: group
-            mode: rx
-          - etype: other
-            mode: '0'
+            - "{{ (ansible_check_mode | ternary(rhel_08_6_2_20_patch_audit, rhel_08_6_2_20_patch)).results |
+              rejectattr('skipped', 'defined') | map(attribute='item') | map('first') | list }}"
+            -
+                - etype: group
+                  mode: rx
+                - etype: other
+                  mode: '0'
   when:
       - rhel8cis_rule_6_2_20
   tags:
