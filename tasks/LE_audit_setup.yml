@@ -8,7 +8,7 @@
       group: root
       checksum: "{{ goss_version.checksum }}"
       mode: 0555
-  when: 
+  when:
       - get_goss_file == 'download'
 
 - name: copy goss binary
