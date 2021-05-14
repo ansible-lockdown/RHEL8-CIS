@@ -4,7 +4,10 @@
 
 - #33 mkgrub missing variable issues - efi and bios path resolution
   - thanks to mrampant & mickey1928geo
+
 - #102 2.2.2 xorg pkg removal extended
+  - thanks to RosarioVinoth
+- #104 5.4.1 pwquality logic
   - thanks to RosarioVinoth
 
 ## v1.2.1
