@@ -40,7 +40,7 @@
 - name: "SCORED | 4.1.1.3 | PATCH | Ensure auditing for processes that start prior to auditd is enabled"
   block:
       - name: "SCORED | 4.1.1.3 | PATCH | Ensure auditing for processes that start prior to auditd is enabled | Get GRUB_CMDLINE_LINUX"
-        shell: grep GRUB_CMDLINE_LINUX /etc/default/grub | sed 's/.$//'
+        shell: grep 'GRUB_CMDLINE_LINUX=' /etc/default/grub | sed 's/.$//'
         changed_when: false
         failed_when: false
         check_mode: no
@@ -73,7 +73,7 @@
 - name: "SCORED | 4.1.1.4 | PATCH | Ensure audit_backlog_limit is sufficient"
   block:
       - name: "SCORED | 4.1.1.4 | PATCH | Ensure audit_backlog_limit is sufficient | Get GRUB_CMDLINE_LINUX"
-        shell: grep GRUB_CMDLINE_LINUX /etc/default/grub | sed 's/.$//'
+        shell: grep 'GRUB_CMDLINE_LINUX=' /etc/default/grub | sed 's/.$//'
         changed_when: false
         failed_when: false
         check_mode: no
