@@ -11,12 +11,12 @@
       group: root
       mode: 0644
   with_items:
-  - { file: '/etc/dconf/profile/gdm', regexp: 'user-db', line: 'user-db:user' }
-  - { file: '/etc/dconf/profile/gdm', regexp: 'system-db', line: 'system-db:gdm' }
-  - { file: '/etc/dconf/profile/gdm', regexp: 'file-db', line: 'file-db:/usr/share/gdm/greeter-dconf-defaults' }
-  - { file: '/etc/dconf/db/gdm.d/01-banner-message', regexp: '\[org\/gnome\/login-screen\]', line: '[org/gnome/login-screen]' }
-  - { file: '/etc/dconf/db/gdm.d/01-banner-message', regexp: 'banner-message-enable', line: 'banner-message-enable=true' }
-  - { file: '/etc/dconf/db/gdm.d/01-banner-message', regexp: 'banner-message-text', line: "banner-message-text='{{ rhel8cis_warning_banner }}' " }
+      - { file: '/etc/dconf/profile/gdm', regexp: 'user-db', line: 'user-db:user' }
+      - { file: '/etc/dconf/profile/gdm', regexp: 'system-db', line: 'system-db:gdm' }
+      - { file: '/etc/dconf/profile/gdm', regexp: 'file-db', line: 'file-db:/usr/share/gdm/greeter-dconf-defaults' }
+      - { file: '/etc/dconf/db/gdm.d/01-banner-message', regexp: '\[org\/gnome\/login-screen\]', line: '[org/gnome/login-screen]' }
+      - { file: '/etc/dconf/db/gdm.d/01-banner-message', regexp: 'banner-message-enable', line: 'banner-message-enable=true' }
+      - { file: '/etc/dconf/db/gdm.d/01-banner-message', regexp: 'banner-message-text', line: "banner-message-text='{{ rhel8cis_warning_banner }}' " }
   when:
       - rhel8cis_gui
       - rhel8cis_rule_1_8_2

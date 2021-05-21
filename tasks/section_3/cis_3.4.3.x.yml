@@ -82,6 +82,8 @@
 
       - name: "SCORED | 3.4.3.3 | PATCH | Ensure base chains exist | Create chains if needed"
         shell: "{{ item }}"
+        args:
+            warn: no
         failed_when: no
         with_items:
             - nft create chain inet "{{ rhel8cis_nft_tables_tablename }}" input { type filter hook input priority 0 \; }

@@ -1,0 +1,23 @@
+---
+ignore: |
+  tests/
+  molecule/
+  .gitlab-ci.yml
+  *molecule.yml
+
+extends: default
+
+rules:
+  indentation:
+    # Requiring 4 space indentation
+    spaces: 4
+    # Requiring consistent indentation within a file, either indented or not
+    indent-sequences: consistent
+  truthy: disable
+  braces:
+    max-spaces-inside: 1
+    level: error
+  brackets:
+    max-spaces-inside: 1
+    level: error
+  line-length: disable

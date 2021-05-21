@@ -1,3 +1,5 @@
+---
+
 - name: "SECTION | 3.1.x | Packet and IP redirection"
   include: cis_3.1.x.yml
 
@@ -10,7 +12,7 @@
 - name: "SECTION | 3.4.1.x | firewall defined"
   include: cis_3.4.1.1.yml
 
-- name: "SECTION | 3.4.2.x | firewalld firewall"  
+- name: "SECTION | 3.4.2.x | firewalld firewall"
   include: cis_3.4.2.x.yml
   when:
   - rhel8cis_firewall == "firewalld"
@@ -37,4 +39,3 @@
   include: cis_3.5.yml
   when:
   - not rhel8cis_ipv6_required
-  

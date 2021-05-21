@@ -6,6 +6,12 @@
   - thanks to mrampant & mickey1928geo
 - #102 2.2.2 xorg pkg removal extended
   - thanks to RosarioVinoth
+- #104 5.4.1 pwquality logic
+  - thanks to RosarioVinoth
+- #107 Idempotence improvement for 4.1.1.3 and 4.1.1.4
+  - thanks to andreyzher
+
+- lint changes and updates to sync with ansible-galaxy
 
 ## v1.2.1
 

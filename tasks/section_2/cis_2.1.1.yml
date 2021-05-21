@@ -1,3 +1,5 @@
+---
+
 - name: "SCORED | 2.1.1 | PATCH | Ensure xinetd is not installed"
   package:
       name: xinetd

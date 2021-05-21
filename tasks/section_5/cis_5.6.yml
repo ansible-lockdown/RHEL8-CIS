@@ -8,16 +8,17 @@
             path: /etc/securetty
         register: rhel8cis_securetty_check
 
-      - name: "NOTSCORED | 5.6 | AUDIT | Ensure root login is restricted to system console | Display consoles"
+      - name: "NOTSCORED | 5.6 | AUDIT | Ensure root login is restricted to system console | Capture consoles"
         command: cat /etc/securetty
         changed_when: false
         register: rhel_08_5_6_audit
         when: rhel8cis_securetty_check.stat.exists
-      
-      - debug:
+
+      - name: "NOTSCORED | 5.6 | AUDIT | Ensure root login is restricted to system console | Display Console"
+        debug:
             msg:
-              - "These are the consoles with root login access, please review:"
-              - "{{ rhel_08_5_6_audit.stdout_lines }}"
+                - "These are the consoles with root login access, please review:"
+                - "{{ rhel_08_5_6_audit.stdout_lines }}"
         when: rhel8cis_securetty_check.stat.exists
 
       - name: "NOTSCORED | 5.6 | AUDIT | Ensure root login is restricted to system console | Display that no securetty file exists"
