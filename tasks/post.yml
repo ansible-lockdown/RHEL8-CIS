@@ -1,9 +1,8 @@
 ---
 # Post tasks
 
-- name: Perform package cleanup
-  - name: Perform DNF package cleanup
-    dnf: 
-      autoremove: yes
+- name: Perform DNF package cleanup
+  dnf: 
+    autoremove: yes
   changed_when: no
   ignore_errors: yes
