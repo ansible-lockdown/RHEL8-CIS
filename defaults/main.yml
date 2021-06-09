@@ -200,7 +200,7 @@ rhel8cis_rule_4_1_17: true
 rhel8cis_rule_4_2_1_1: true
 rhel8cis_rule_4_2_1_2: true
 rhel8cis_rule_4_2_1_3: true
-rhel8cis_rule_4_2_1_4: false
+rhel8cis_rule_4_2_1_4: true
 rhel8cis_rule_4_2_1_5: true
 rhel8cis_rule_4_2_1_6: true
 rhel8cis_rule_4_2_2_1: true

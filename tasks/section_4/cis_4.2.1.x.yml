@@ -56,10 +56,9 @@
                 - "{{ rhel_08_4_2_1_4_audit.stdout_lines }}"
 
       - name: "NOTSCORED | 4.2.1.4 | PATCH | Ensure logging is configured | mail.* log setting"
-        lineinfile:
+        blockinfile:
             path: /etc/rsyslog.conf
             state: present
-            regexp: '^mail\.\*(.*)$'
             marker: "# {mark} MAIL LOG SETTINGS (ANSIBLE MANAGED)"
             block: |
               # mail logging additions to meet CIS standards
@@ -72,10 +71,9 @@
         when: rhel8cis_rsyslog_ansibleManaged
 
       - name: "NOTSCORED | 4.2.1.4 | PATCH | Ensure logging is configured | news.crit log setting"
-        lineinfile:
+        blockinfile:
             path: /etc/rsyslog.conf
             state: present
-            regexp: '^news\.\crit(.*)$'
             marker: "# {mark} NEWS LOG SETTINGS (ANSIBLE MANAGED)"
             block: |
               # news logging additions to meet CIS standards
@@ -89,7 +87,6 @@
         blockinfile:
             path: /etc/rsyslog.conf
             state: present
-            regexp: '^news\.\notice(.*)$'
             marker: "# {mark} MISC. LOG SETTINGS (ANSIBLE MANAGED)"
             block: |
               # misc. logging additions to meet CIS standards
@@ -104,7 +101,6 @@
         blockinfile:
             path: /etc/rsyslog.conf
             state: present
-            regexp: '^news\.\notice(.*)$'
             marker: "#{mark} LOCAL LOG SETTINGS (ANSIBLE MANAGED)"
             block: |
               # local log settings
