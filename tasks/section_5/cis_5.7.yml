@@ -11,7 +11,7 @@
 
       - name: "SCORED | 5.7 | PATCH | Ensure access to the su command is restricted | wheel group contains root"
         user:
-            name: "{{ rhel8cis_wheel_users }}"
+            name: "{{ rhel8cis_sugroup_users }}"
             groups: "{{ rhel8cis_sugroup | default('wheel') }}"
   when:
       - rhel8cis_rule_5_7

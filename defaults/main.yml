@@ -538,7 +538,7 @@ rhel8cis_futurepwchgdate_autofix: true
 # rhel8cis_sugroup: sugroup  # change accordingly wheel is default
 
 # wheel users list
-rhel8cis_wheel_users: "root"
+rhel8cis_sugroup_users: "root"
 
 ## Section6 vars
 
