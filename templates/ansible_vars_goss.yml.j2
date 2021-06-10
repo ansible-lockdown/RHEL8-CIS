@@ -455,7 +455,9 @@ rhel8cis_authselect:
 # 5.3.1 Enable automation to creat custom profile settings, using the setings above
 rhel8cis_authselect_custom_profile_create: {{ rhel8cis_authselect_custom_profile_create }}
 
-# 5.3.2 Enable autmoation to select custom profile options, using the settings above
+# 5.3.2 Enable automation to select custom profile options, using the settings above
 rhel8cis_authselect_custom_profile_select: {{ rhel8cis_authselect_custom_profile_select }}
 
-rhel8cis_wheel_users: {{ rhel8cis_wheel_users }}
+# 5.7
+rhel8cis_sugroup: {{ rhel8cis_sugroup| default('wheel') }}
+rhel8cis_sugroup_users: {{ rhel8cis_sugroup_users }}
