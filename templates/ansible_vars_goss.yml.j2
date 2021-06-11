@@ -9,11 +9,13 @@ rhel8cis_section4: {{ rhel8cis_section4 }}
 rhel8cis_section5: {{ rhel8cis_section5 }}
 rhel8cis_section6: {{ rhel8cis_section6 }}
 
+rhel8cis_level_1: {{ rhel8cis_level_1 }}
+rhel8cis_level_2: {{ rhel8cis_level_2 }}
+
 rhel8cis_selinux_disable: {{ rhel8cis_selinux_disable }}
 
 
-rhel8cis_level1: true
-rhel8cis_level2: true
+
 # to enable rules that may have IO impact on a system e.g. full filesystem scans or CPU heavy
 run_heavy_tests: true
 {% if rhel8cis_legacy_boot is defined %}

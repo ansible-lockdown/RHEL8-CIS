@@ -15,6 +15,9 @@ rhel8cis_section4: true
 rhel8cis_section5: true
 rhel8cis_section6: true
 
+rhel8cis_level_1: true
+rhel8cis_level_2: true
+
 rhel8cis_selinux_disable: false
 rhel8cis_legacy_boot: false
 
