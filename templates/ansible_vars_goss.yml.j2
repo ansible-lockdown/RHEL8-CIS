@@ -3,6 +3,8 @@ rhel8cis_benchmark:
 - "type: CIS"
 - "version: '1.0'"
 - "os: RHEL 8"
+- "epoch: {{ ansible_date_time.epoch }}"
+- "hostname: {{ ansible_hostname }}"
 
 rhel8cis_os_distribution: {{ ansible_distribution | lower }}
 
