@@ -1,15 +1,15 @@
 ---
 
-- name: "1.5.1 | L1 | Ensure permissions on bootloader config are configured"
+- name: "1.5.1 | L1 | PATCH | Ensure permissions on bootloader config are configured"
   block:
-      - name: "1.5.1 | L1 | Ensure permissions on bootloader config are configured"
+      - name: "1.5.1 | L1 | PATCH | Ensure permissions on bootloader config are configured"
         file:
             path: "{{ grub_cfg.stat.lnk_source }}"
             owner: root
             group: root
             mode: 0600
 
-      - name: "1.5.1 | L1 | Ensure permissions on bootloader config are configured | UEFI"
+      - name: "1.5.1 | L1 | PATCH | Ensure permissions on bootloader config are configured | UEFI"
         mount:
             name: /boot/efi
             src: "UUID={{ item.uuid }}"
@@ -33,7 +33,7 @@
       - patch
       - rule_1.5.1
 
-- name: "1.5.2 | L1 | Ensure bootloader password is set"
+- name: "1.5.2 | L1 | PATCH | Ensure bootloader password is set"
   copy:
       dest: /boot/grub2/user.cfg
       content: "GRUB2_PASSWORD={{ rhel8cis_bootloader_password_hash }}"
@@ -54,15 +54,15 @@
       - patch
       - rule_1.5.2
 
-- name: "1.5.3 | L1 | Ensure authentication required for single user mode"
+- name: "1.5.3 | L1 | PATCH | Ensure authentication required for single user mode"
   block:
-      - name: "1.5.3 | L1 | Ensure authentication required for single user mode | Emergency service"
+      - name: "1.5.3 | L1 | PATCH | Ensure authentication required for single user mode | Emergency service"
         lineinfile:
             dest: /usr/lib/systemd/system/emergency.service
             regexp: '/sbin/sulogin'
             line: 'ExecStart=-/usr/lib/systemd/systemd-sulogin-shell emergency'
 
-      - name: "1.5.3 | L1 | Ensure authentication required for single user mode | Rescue service"
+      - name: "1.5.3 | L1 | PATCH | Ensure authentication required for single user mode | Rescue service"
         lineinfile:
             dest: /usr/lib/systemd/system/rescue.service
             regexp: '/sbin/sulogin'

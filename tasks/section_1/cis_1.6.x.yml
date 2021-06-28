@@ -1,6 +1,6 @@
 ---
 
-- name: "1.6.1 | L1 | Ensure core dumps are restricted"
+- name: "1.6.1 | L1 | PATCH | Ensure core dumps are restricted"
   block:
       - name: "1.6.1 | L1 | Ensure core dumps are restricted | Update limits.conf file"
         lineinfile:
@@ -10,7 +10,7 @@
             line: '*                hard    core            0'
             insertbefore: '^# End of file'
 
-      - name: "1.6.1 | L1 | Ensure core dumps are restricted | Set active kernel parameter"
+      - name: "1.6.1 | L1 | PATCH | Ensure core dumps are restricted | Set active kernel parameter"
         sysctl:
             name: fs.suid_dumpable
             value: '0'
@@ -19,7 +19,7 @@
             sysctl_set: yes
             ignoreerrors: yes
 
-      - name: "1.6.1 | L1 | Ensure core dumps are restricted | if systemd coredump"
+      - name: "1.6.1 | L1 | PATCH | Ensure core dumps are restricted | if systemd coredump"
         lineinfile:
             path: /etc/systemd/coredump.conf
             regexp: "{{ item.regexp }}"
@@ -42,7 +42,7 @@
       - patch
       - rule_1.6.1
 
-- name: "1.6.2 | L1 | Ensure address space layout randomization (ASLR) is enabled"
+- name: "1.6.2 | L1 | PATCH | Ensure address space layout randomization (ASLR) is enabled"
   sysctl:
       name: kernel.randomize_va_space
       value: '2'

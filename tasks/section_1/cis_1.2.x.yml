@@ -1,6 +1,6 @@
 ---
 
-- name: "1.2.1 | L1 | Ensure Red Hat Subscription Manager connection is configured"
+- name: "1.2.1 | L1 | PATCH | Ensure Red Hat Subscription Manager connection is configured"
   redhat_subscription:
       state: present
       username: "{{ rhel8cis_rh_sub_user }}"
@@ -18,7 +18,7 @@
       - patch
       - rule_1.2.1
 
-- name: "1.2.2 | L1 | Disable the rhnsd Daemon"
+- name: "1.2.2 | L1 | PATCH | Disable the rhnsd Daemon"
   service:
       name: rhnsd
       state: stopped
@@ -34,7 +34,7 @@
       - patch
       - rule_1.2.2
 
-- name: "1.2.3 | L1 | Ensure GPG keys are configured"
+- name: "1.2.3 | L1 | AUDIT | Ensure GPG keys are configured"
   command: gpg --quiet --with-fingerprint /etc/pki/rpm-gpg/RPM-GPG-KEY-{{ ansible_distribution|lower }}-release
   when:
       - rhel8cis_rule_1_2_3
@@ -46,16 +46,16 @@
       - patch
       - rule_1.2.3
 
-- name: "1.2.4 | L1 | Ensure gpgcheck is globally activated"
+- name: "1.2.4 | L1 | PATCH | Ensure gpgcheck is globally activated"
   block:
-      - name: "1.2.4 | L1 | Ensure gpgcheck is globally activated | Find repos"
+      - name: "1.2.4 | L1 | AUDIT | Ensure gpgcheck is globally activated | Find repos"
         find:
             paths: /etc/yum.repos.d
             patterns: "*.repo"
         register: yum_repos
         changed_when: false
 
-      - name: "1.2.4 | L1 | Ensure gpgcheck is globally activated | Update yum.repos"
+      - name: "1.2.4 | L1 | PATCH | Ensure gpgcheck is globally activated | Update yum.repos"
         replace:
             name: "{{ item.path }}"
             regexp: "^gpgcheck=0"
@@ -73,7 +73,7 @@
 
 - name: "1.2.5 | L1 | Ensure package manager repositories are configured"
   block:
-      - name: "1.2.5 | L1 | Ensure package manager repositories are configured | Get repo list"
+      - name: "1.2.5 | L1 | AUDIT | Ensure package manager repositories are configured | Get repo list"
         command: dnf repolist
         changed_when: false
         failed_when: false
@@ -82,7 +82,7 @@
         args:
             warn: false
 
-      - name: "1.2.5 | L1 | Ensure package manager repositories are configured | Display repo list"
+      - name: "1.2.5 | L1 | AUDIT | Ensure package manager repositories are configured | Display repo list"
         debug:
             msg:
                 - "Alert! Below are the configured repos. Please review and make sure all allign with site policy"

@@ -1,13 +1,13 @@
 ---
 
-- name: "1.4.1 | L1 | Ensure AIDE is installed"
+- name: "1.4.1 | L1 | PATCH | Ensure AIDE is installed"
   block:
-      - name: "1.4.1 | L1 | Ensure AIDE is installed | Install AIDE"
+      - name: "1.4.1 | L1 | PATCH | Ensure AIDE is installed | Install AIDE"
         package:
             name: aide
             state: present
 
-      - name: "1.4.1 | L1 | Ensure AIDE is installed | Configure AIDE"
+      - name: "1.4.1 | L1 | PATCH | Ensure AIDE is installed | Configure AIDE"
         command: /usr/sbin/aide --init -B 'database_out=file:/var/lib/aide/aide.db.gz'
         changed_when: false
         failed_when: false
@@ -27,7 +27,7 @@
       - patch
       - rule_1.4.1
 
-- name: "1.4.2 | L1 | Ensure filesystem integrity is regularly checked"
+- name: "1.4.2 | L1 | PATCH | Ensure filesystem integrity is regularly checked"
   cron:
       name: Run AIDE integrity check
       cron_file: "{{ rhel8cis_aide_cron['cron_file'] }}"
