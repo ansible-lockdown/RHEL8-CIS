@@ -2,7 +2,7 @@
 # Post tasks
 
 - name: Perform DNF package cleanup
-  dnf: 
-    autoremove: yes
+  dnf:
+      autoremove: yes
   changed_when: no
   ignore_errors: yes

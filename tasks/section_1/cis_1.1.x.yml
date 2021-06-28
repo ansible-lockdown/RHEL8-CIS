@@ -49,9 +49,9 @@
       - rule_1.1.6
       - skip_ansible_lint
 
-- name: | 
+- name: |
           "1.1.7 | L2 | Ensure separate partition exists for /var/tmp |
- 
+
   mount:
       name: /var/tmp
       src: "{{ item.device }}"

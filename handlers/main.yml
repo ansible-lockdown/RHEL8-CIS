@@ -103,5 +103,4 @@
 
 - name: systemd_daemon_reload
   systemd:
-     daemon-reload: yes
-
+      daemon-reload: yes
