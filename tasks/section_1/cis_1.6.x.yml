@@ -22,7 +22,7 @@
       - name: "1.6.1 | L1 | Ensure core dumps are restricted | if systemd coredump"
         lineinfile:
             path: /etc/systemd/coredump.conf
-            regexp: "^{{ item.regexp }}"
+            regexp: "{{ item.regexp }}"
             line: "{{ item.regexp }}{{ item.line }}"
             state: present
         with_items:
