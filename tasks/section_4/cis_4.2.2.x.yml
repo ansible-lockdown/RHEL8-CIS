@@ -1,6 +1,6 @@
 ---
 
-- name: "SCORED | 4.2.2.1 | PATCH | Ensure journald is configured to send logs to rsyslog"
+- name: "4.2.2.1 | L1 | Ensure journald is configured to send logs to rsyslog"
   lineinfile:
       dest: /etc/systemd/journald.conf
       regexp: "^#ForwardToSyslog=|^ForwardToSyslog="
@@ -14,7 +14,7 @@
       - patch
       - rule_4.2.2.1
 
-- name: "SCORED | 4.2.2.2 | PATCH | Ensure journald is configured to compress large log files"
+- name: "4.2.2.2 | L1 | Ensure journald is configured to compress large log files"
   lineinfile:
       dest: /etc/systemd/journald.conf
       regexp: "^#Compress=|^Compress="
@@ -28,7 +28,7 @@
       - patch
       - rule_4.2.2.2
 
-- name: "SCORED | 4.2.2.3 | PATCH | Ensure journald is configured to write logfiles to persistent disk"
+- name: "4.2.2.3 | L1 | Ensure journald is configured to write logfiles to persistent disk"
   lineinfile:
       dest: /etc/systemd/journald.conf
       regexp: "^#Storage=|^Storage="
