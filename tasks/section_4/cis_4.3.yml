@@ -1,13 +1,13 @@
 ---
 
-- name: "4.3 | L1 | Ensure logrotate is configured"
+- name: "4.3 | L1 | PATCH | Ensure logrotate is configured"
   block:
-      - name: "4.3 | L1 | Ensure logrotate is configured | Get logrotate settings"
+      - name: "4.3 | L1 | AUDIT | Ensure logrotate is configured | Get logrotate settings"
         find:
             paths: /etc/logrotate.d/
         register: log_rotates
 
-      - name: "4.3 | L1 | Ensure logrotate is configured"
+      - name: "4.3 | L1 | PATCH | Ensure logrotate is configured"
         replace:
             path: "{{ item.path }}"
             regexp: '^(\s*)(daily|weekly|monthly|yearly)$'

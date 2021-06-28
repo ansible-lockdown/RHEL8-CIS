@@ -1,6 +1,6 @@
 ---
 
-- name: "4.1.3 | L2 | Ensure changes to system administration scope (sudoers) is collected"
+- name: "4.1.3 | L2 | PATCH | Ensure changes to system administration scope (sudoers) is collected"
   template:
       src: audit/rhel8cis_rule_4_1_3.rules.j2
       dest: /etc/audit/rules.d/rhel8cis_rule_4_1_3.rules
@@ -17,7 +17,7 @@
       - patch
       - rule_4.1.3
 
-- name: "4.1.4 | L2 | Ensure login and logout events are collected"
+- name: "4.1.4 | L2 | PATCH | Ensure login and logout events are collected"
   template:
       src: audit/rhel8cis_rule_4_1_4.rules.j2
       dest: /etc/audit/rules.d/rhel8cis_rule_4_1_4.rules
@@ -34,7 +34,7 @@
       - patch
       - rule_4.1.4
 
-- name: "4.1.5 | L2 | Ensure session initiation information is collected"
+- name: "4.1.5 | L2 | PATCH | Ensure session initiation information is collected"
   template:
       src: audit/rhel8cis_rule_4_1_5.rules.j2
       dest: /etc/audit/rules.d/rhel8cis_rule_4_1_5.rules
@@ -51,7 +51,7 @@
       - patch
       - rule_4.1.5
 
-- name: "4.1.6 | L2 | Ensure events that modify date and time information are collected"
+- name: "4.1.6 | L2 | PATCH | Ensure events that modify date and time information are collected"
   template:
       src: audit/rhel8cis_rule_4_1_6.rules.j2
       dest: /etc/audit/rules.d/rhel8cis_rule_4_1_6.rules
@@ -68,7 +68,7 @@
       - patch
       - rule_4.1.6
 
-- name: "4.1.7 | L2 | Ensure events that modify the system's Mandatory Access Controls are collected"
+- name: "4.1.7 | L2 | PATCH | Ensure events that modify the system's Mandatory Access Controls are collected"
   template:
       src: audit/rhel8cis_rule_4_1_7.rules.j2
       dest: /etc/audit/rules.d/rhel8cis_rule_4_1_7.rules
@@ -85,7 +85,7 @@
       - patch
       - rule_4.1.7
 
-- name: "4.1.8 | L2 | Ensure events that modify the system's network environment are collected"
+- name: "4.1.8 | L2 | PATCH | Ensure events that modify the system's network environment are collected"
   template:
       src: audit/rhel8cis_rule_4_1_8.rules.j2
       dest: /etc/audit/rules.d/rhel8cis_rule_4_1_8.rules
@@ -102,7 +102,7 @@
       - patch
       - rule_4.1.8
 
-- name: "4.1.9 | L2 | Ensure discretionary access control permission modification events are collected"
+- name: "4.1.9 | L2 | PATCH | Ensure discretionary access control permission modification events are collected"
   template:
       src: audit/rhel8cis_rule_4_1_9.rules.j2
       dest: /etc/audit/rules.d/rhel8cis_rule_4_1_9.rules
@@ -119,7 +119,7 @@
       - patch
       - rule_4.1.9
 
-- name: "4.1.10 | L2 | Ensure unsuccessful unauthorized file access attempts are collected"
+- name: "4.1.10 | L2 | PATCH | Ensure unsuccessful unauthorized file access attempts are collected"
   template:
       src: audit/rhel8cis_rule_4_1_10.rules.j2
       dest: /etc/audit/rules.d/rhel8cis_rule_4_1_10.rules
@@ -136,7 +136,7 @@
       - patch
       - rule_4.1.10
 
-- name: "4.1.11 | L2 | Ensure events that modify user/group information are collected"
+- name: "4.1.11 | L2 | PATCH | Ensure events that modify user/group information are collected"
   template:
       src: audit/rhel8cis_rule_4_1_11.rules.j2
       dest: /etc/audit/rules.d/rhel8cis_rule_4_1_11.rules
@@ -153,16 +153,16 @@
       - patch
       - rule_4.1.11
 
-- name: "4.1.12 | L2 | Ensure successful file system mounts are collected"
+- name: "4.1.12 | L2 | PATCH | Ensure successful file system mounts are collected"
   block:
-      - name: "4.1.12 | L2 | Ensure successful file system mounts are collected"
+      - name: "4.1.12 | L2 | AUDIT | Ensure successful file system mounts are collected"
         shell: for i in  $(df | grep '^/dev' | awk '{ print $NF }'); do find $i -xdev -type f -perm -4000 -o -type f -perm -2000 2>/dev/null; done
         changed_when: false
         failed_when: false
         check_mode: no
         register: priv_procs
 
-      - name: "4.1.12 | L2 | Ensure successful file system mounts are collected"
+      - name: "4.1.12 | L2 | PATCH | Ensure successful file system mounts are collected"
         template:
             src: audit/rhel8cis_rule_4_1_12.rules.j2
             dest: /etc/audit/rules.d/rhel8cis_rule_4_1_12.rules
@@ -179,7 +179,7 @@
       - patch
       - rule_4.1.12
 
-- name: "4.1.13 | L2 | Ensure use of privileged commands is collected"
+- name: "4.1.13 | L2 | PATCH | Ensure use of privileged commands is collected"
   template:
       src: audit/rhel8cis_rule_4_1_13.rules.j2
       dest: /etc/audit/rules.d/rhel8cis_rule_4_1_13.rules
@@ -196,7 +196,7 @@
       - patch
       - rule_4.1.13
 
-- name: "4.1.14 | L2 | Ensure file deletion events by users are collected"
+- name: "4.1.14 | L2 | PATCH | Ensure file deletion events by users are collected"
   template:
       src: audit/rhel8cis_rule_4_1_14.rules.j2
       dest: /etc/audit/rules.d/rhel8cis_rule_4_1_14.rules
@@ -213,7 +213,7 @@
       - patch
       - rule_4.1.14
 
-- name: "4.1.15 | L2 | Ensure kernel module loading and unloading is collected"
+- name: "4.1.15 | L2 | PATCH | Ensure kernel module loading and unloading is collected"
   template:
       src: audit/rhel8cis_rule_4_1_15.rules.j2
       dest: /etc/audit/rules.d/rhel8cis_rule_4_1_15.rules
@@ -230,7 +230,7 @@
       - patch
       - rule_4.1.15
 
-- name: "4.1.16 | L2 | Ensure system administrator actions (sudolog) are collected"
+- name: "4.1.16 | L2 | PATCH | Ensure system administrator actions (sudolog) are collected"
   template:
       src: audit/rhel8cis_rule_4_1_16.rules.j2
       dest: /etc/audit/rules.d/rhel8cis_rule_4_1_16.rules
@@ -247,7 +247,7 @@
       - patch
       - rule_4.1.16
 
-- name: "4.1.17 | L2 | Ensure the audit configuration is immutable"
+- name: "4.1.17 | L2 | PATCH | Ensure the audit configuration is immutable"
   template:
       src: audit/rhel8cis_rule_4_1_17.rules.j2
       dest: /etc/audit/rules.d/rhel8cis_rule_4_1_17.rules

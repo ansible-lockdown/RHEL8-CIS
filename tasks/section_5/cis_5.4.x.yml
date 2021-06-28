@@ -1,12 +1,12 @@
 ---
 
 - name: |
-    "5.4.1 | L1 | Ensure password creation requirements are configured
-     5.4.2 | L1 | Ensure lockout for failed password attempts is configured
-     5.4.3 | L1 | Ensure password reuse is limited
-     5.4.4 | L1 | Ensure password hashing algorithm is SHA-512"
+    "5.4.1 | L1 | PATCH | Ensure password creation requirements are configured
+     5.4.2 | L1 | PATCH | Ensure lockout for failed password attempts is configured
+     5.4.3 | L1 | PATCH | Ensure password reuse is limited
+     5.4.4 | L1 | PATCH | Ensure password hashing algorithm is SHA-512"
   block:
-      - name: "5.4.1 | L1 | Ensure password creation requirements are configured | Set pwquality config settings"
+      - name: "5.4.1 | L1 | PATCH | Ensure password creation requirements are configured | Set pwquality config settings"
         lineinfile:
             state: present
             dest: /etc/security/pwquality.conf
@@ -18,8 +18,8 @@
         when: rhel8cis_rule_5_4_1
 
       - name: |
-          "5.4.1 | L1 | Ensure password creation requirements are configured | Set system-auth retry settings
-           5.4.3| L1 | Ensure password reuse is limited | Set system-auth remember settings"
+          "5.4.1 | L1 | PATCH | Ensure password creation requirements are configured | Set system-auth retry settings
+           5.4.3| L1 | PATCH | Ensure password reuse is limited | Set system-auth remember settings"
         lineinfile:
             dest: /etc/pam.d/system-auth
             state: present
@@ -30,7 +30,7 @@
             - rhel8cis_rule_5_4_1 or
               rhel8cis_rule_5_4_3
 
-      - name: "5.4.1 | L1 | Ensure password creation requirements are configured | Set system-auth retry settings"
+      - name: "5.4.1 | L1 | PATCH | Ensure password creation requirements are configured | Set system-auth retry settings"
         lineinfile:
             dest: /etc/pam.d/password-auth
             state: present
@@ -39,7 +39,7 @@
             insertbefore: '^#?password ?'
         when: rhel8cis_rule_5_4_1
 
-      - name: "5.4.2 | L1 | Ensure lockout for failed password attempts is configured | Add deny count and unlock time for preauth"
+      - name: "5.4.2 | L1 | PATCH | Ensure lockout for failed password attempts is configured | Add deny count and unlock time for preauth"
         lineinfile:
             dest: /etc/pam.d/{{ item }}
             state: present
@@ -51,7 +51,7 @@
             - "password-auth"
         when: rhel8cis_rule_5_4_2
 
-      - name: "5.4.2 | L1 | Ensure lockout for failed password attempts is configured | Add deny count and unlock times for authfail"
+      - name: "5.4.2 | L1 | PATCH | Ensure lockout for failed password attempts is configured | Add deny count and unlock times for authfail"
         lineinfile:
             dest: /etc/pam.d/{{ item }}
             state: present
@@ -64,8 +64,8 @@
         when: rhel8cis_rule_5_4_2
 
       - name: |
-           "5.4.3 | L1 | Ensure password reuse is limited | Set system-auth remember remember settings
-            5.4.4 | L1 | Ensure password hashing algorithm is SHA-512 | Set system-auth pwhash settings"
+           "5.4.3 | L1 | PATCH | Ensure password reuse is limited | Set system-auth remember remember settings
+            5.4.4 | L1 | PATCH | Ensure password hashing algorithm is SHA-512 | Set system-auth pwhash settings"
         lineinfile:
             dest: /etc/pam.d/system-auth
             state: present
@@ -76,7 +76,7 @@
             - rhel8cis_rule_5_4_3 or
               rhel8cis_rule_5_4_4
 
-      - name: "5.4.4 | L1 | Ensure password hashing algorithm is SHA-512 | Set system-auth pwhash settings"
+      - name: "5.4.4 | L1 | PATCH | Ensure password hashing algorithm is SHA-512 | Set system-auth pwhash settings"
         lineinfile:
             dest: /etc/pam.d/password-auth
             state: present
@@ -88,10 +88,10 @@
       # The two steps below were added to keep authconfig from overwritting the above configs. This follows steps from here: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/chap-hardening_your_system_with_tools_and_services
       # With the steps below you will score five (5) points lower due to false positive results
       - name: |
-           "5.4.1 | L1 | Ensure password creation requirements are configured
-            5.4.2 | L1 | Ensure lockout for failed password attempts is configured
-            5.4.3 | L1 | Ensure password reuse is limited
-            5.4.4 | L1 | Ensure password hashing algorithm is SHA-512"
+           "5.4.1 | L1 | PATCH | Ensure password creation requirements are configured
+            5.4.2 | L1 | PATCH | Ensure lockout for failed password attempts is configured
+            5.4.3 | L1 | PATCH | Ensure password reuse is limited
+            5.4.4 | L1 | PATCH | Ensure password hashing algorithm is SHA-512"
         copy:
             src: /etc/pam.d/{{ item }}
             dest: /etc/pam.d/{{ item }}-local
@@ -104,10 +104,10 @@
             - "password-auth"
 
       - name: |
-           "5.4.1 | L1 | Ensure password creation requirements are configured
-            5.4.2 | L1 | Ensure lockout for failed password attempts is configured
-            5.4.3 | L1 | Ensure password reuse is limited
-            5.4.4 | L1 | Ensure password hashing algorithm is SHA-512"
+           "5.4.1 | L1 | PATCH | Ensure password creation requirements are configured
+            5.4.2 | L1 | PATCH | Ensure lockout for failed password attempts is configured
+            5.4.3 | L1 | PATCH | Ensure password reuse is limited
+            5.4.4 | L1 | PATCH | Ensure password hashing algorithm is SHA-512"
         file:
             src: /etc/pam.d/{{ item }}-local
             dest: /etc/pam.d/{{ item }}

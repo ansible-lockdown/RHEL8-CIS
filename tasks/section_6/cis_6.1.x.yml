@@ -1,8 +1,8 @@
 ---
 
-- name: "6.1.1 | L2 | Audit system file permissions"
+- name: "6.1.1 | L2 | AUDIT | Audit system file permissions"
   block:
-      - name: "6.1.1 | L2 | Audit system file permissions | Audit the packages"
+      - name: "6.1.1 | L2 | AUDIT | Audit system file permissions | Audit the packages"
         shell: rpm -Va --nomtime --nosize --nomd5 --nolinkto
         args:
             warn: no
@@ -10,21 +10,21 @@
         failed_when: false
         register: rhel8cis_6_1_1_packages_rpm
 
-      - name: "6.1.1 | L2 | Audit system file permissions | Create list and warning"
+      - name: "6.1.1 | L2 | AUDIT | Audit system file permissions | Create list and warning"
         block:
             - name: "6.1.1 | L2 | Audit system file permissions | Add file discrepancy list to system"
               copy:
                   dest: "{{ rhel8cis_rpm_audit_file }}"
                   content: "{{ rhel8cis_6_1_1_packages_rpm.stdout }}"
 
-            - name: "6.1.1 | L2 | Audit system file permissions | Message out alert for package descrepancies"
+            - name: "6.1.1 | L2 | AUDIT | Audit system file permissions | Message out alert for package descrepancies"
               debug:
                   msg: |
                      "Warning! You have some package descrepancies issues.
                       The file list can be found in {{ rhel8cis_rpm_audit_file }}"
         when: rhel8cis_6_1_1_packages_rpm.stdout|length > 0
 
-      - name: "6.1.1 | L2 | Audit system file permissions | Message out no package descrepancies"
+      - name: "6.1.1 | L2 | AUDIT | Audit system file permissions | Message out no package descrepancies"
         debug:
             msg: "Good News! There are no package descrepancies"
         when: rhel8cis_6_1_1_packages_rpm.stdout|length == 0
@@ -33,10 +33,10 @@
   tags:
       - level2-server
       - level2-workstation
-      - patch
+      - audit
       - rule_6.1.1
 
-- name: "6.1.2 | L1 | Ensure permissions on /etc/passwd are configured"
+- name: "6.1.2 | L1 | PATCH | Ensure permissions on /etc/passwd are configured"
   file:
       dest: /etc/passwd
       owner: root
@@ -50,7 +50,7 @@
       - patch
       - rule_6.1.2
 
-- name: "6.1.3 | L1 | Ensure permissions on /etc/shadow are configured"
+- name: "6.1.3 | L1 | PATCH | Ensure permissions on /etc/shadow are configured"
   file:
       dest: /etc/shadow
       owner: root
@@ -64,7 +64,7 @@
       - patch
       - rule_6.1.3
 
-- name: "6.1.4 | L1 | Ensure permissions on /etc/group are configured"
+- name: "6.1.4 | L1 | PATCH | Ensure permissions on /etc/group are configured"
   file:
       dest: /etc/group
       owner: root
@@ -78,7 +78,7 @@
       - patch
       - rule_6.1.4
 
-- name: "6.1.5 | L1 | Ensure permissions on /etc/gshadow are configured"
+- name: "6.1.5 | L1 | PATCH | Ensure permissions on /etc/gshadow are configured"
   file:
       dest: /etc/gshadow
       owner: root
@@ -92,7 +92,7 @@
       - patch
       - rule_6.1.5
 
-- name: "6.1.6 | L1 | Ensure permissions on /etc/passwd- are configured"
+- name: "6.1.6 | L1 | PATCH | Ensure permissions on /etc/passwd- are configured"
   file:
       dest: /etc/passwd-
       owner: root
@@ -106,7 +106,7 @@
       - patch
       - rule_6.1.6
 
-- name: "6.1.7 | L1 | Ensure permissions on /etc/shadow- are configured"
+- name: "6.1.7 | L1 | PATCH | Ensure permissions on /etc/shadow- are configured"
   file:
       dest: /etc/shadow-
       owner: root
@@ -120,7 +120,7 @@
       - patch
       - rule_6.1.7
 
-- name: "6.1.8 | L1 |  Ensure permissions on /etc/group- are configured"
+- name: "6.1.8 | L1 | PATCH |  Ensure permissions on /etc/group- are configured"
   file:
       dest: /etc/group-
       owner: root
@@ -134,7 +134,7 @@
       - patch
       - rule_6.1.8
 
-- name: "6.1.9 | L1 | Ensure permissions on /etc/gshadow- are configured"
+- name: "6.1.9 | L1 | PATCH | Ensure permissions on /etc/gshadow- are configured"
   file:
       dest: /etc/gshadow-
       owner: root
@@ -148,21 +148,21 @@
       - patch
       - rule_6.1.9
 
-- name: "6.1.10 | L1 | Ensure no world writable files exist"
+- name: "6.1.10 | L1 | PATCH | Ensure no world writable files exist"
   block:
-      - name: "6.1.10 | L1 | Ensure no world writable files exist | Get list of world-writable files"
+      - name: "6.1.10 | L1 | AUDIT | Ensure no world writable files exist | Get list of world-writable files"
         shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -0002
         failed_when: false
         changed_when: false
         register: rhel_08_6_1_10_perms_results
 
-      - name: "6.1.10 | L1 | Ensure no world writable files exist | Alert no world-writable files exist"
+      - name: "6.1.10 | L1 | AUDIT | Ensure no world writable files exist | Alert no world-writable files exist"
         debug:
             msg: "Good news! We have not found any world-writable files on your system"
         when:
             - rhel_08_6_1_10_perms_results.stdout is not defined
 
-      - name: "6.1.10 | L1 | Ensure no world writable files exist | Adjust world-writable files if they exist (Configurable)"
+      - name: "6.1.10 | L1 | PATCH | Ensure no world writable files exist | Adjust world-writable files if they exist (Configurable)"
         file:
             path: '{{ item }}'
             mode: o-w
@@ -179,9 +179,9 @@
       - patch
       - rule_6.1.10
 
-- name: "6.1.11 | L1 | Ensure no unowned files or directories exist"
+- name: "6.1.11 | L1 | AUDIT | Ensure no unowned files or directories exist"
   block:
-      - name: "6.1.11 | L1 | Ensure no unowned files or directories exist | Finding all unowned files or directories"
+      - name: "6.1.11 | L1 | AUDIT | Ensure no unowned files or directories exist | Finding all unowned files or directories"
         command: find "{{ item.mount }}" -xdev -nouser
         check_mode: false
         failed_when: false
@@ -190,7 +190,7 @@
         register: rhel_08_6_1_11_audit
         when: item['device'].startswith('/dev') and not 'bind' in item['options']
 
-      - name: "6.1.11 | L1 | Ensure no unowned files or directories exist | Displaying any unowned files or directories"
+      - name: "6.1.11 | L1 | AUDIT | Ensure no unowned files or directories exist | Displaying any unowned files or directories"
         debug:
             msg: "Manual intervention is required -- missing owner on items in {{ item.item.mount }}: {{ item.stdout_lines | join(', ') }}"
         with_items: "{{ rhel_08_6_1_11_audit.results }}"
@@ -202,12 +202,12 @@
   tags:
       - level1-server
       - level1-workstation
-      - patch
+      - audit
       - rule_6.1.11
 
-- name: "6.1.12 | L1 | Ensure no ungrouped files or directories exist"
+- name: "6.1.12 | L1 | AUDIT | Ensure no ungrouped files or directories exist"
   block:
-      - name: "6.1.12 | L1 | Ensure no ungrouped files or directories exist | Finding all ungrouped files or directories"
+      - name: "6.1.12 | L1 | AUDIT | Ensure no ungrouped files or directories exist | Finding all ungrouped files or directories"
         command: find "{{ item.mount }}" -xdev -nogroup
         check_mode: false
         failed_when: false
@@ -216,7 +216,7 @@
         with_items: "{{ ansible_mounts }}"
         when: item['device'].startswith('/dev') and not 'bind' in item['options']
 
-      - name: "6.1.12 | L1 | Ensure no ungrouped files or directories exist | Displaying all ungrouped files or directories"
+      - name: "6.1.12 | L1 | AUDIT | Ensure no ungrouped files or directories exist | Displaying all ungrouped files or directories"
         debug:
             msg: "Manual intervention is required -- missing group on items in {{ item.item.mount }}: {{ item.stdout_lines | join(', ') }}"
         with_items: "{{ rhel_08_6_1_12_audit.results }}"
@@ -231,16 +231,16 @@
       - patch
       - rule_6.1.12
 
-- name: "6.1.13 | L1 | Audit SUID executables"
+- name: "6.1.13 | L1 | AUDIT | Audit SUID executables"
   block:
-      - name: "6.1.13 | L1 | Audit SUID executables | Find all SUID executables"
+      - name: "6.1.13 | L1 | AUDIT | Audit SUID executables | Find all SUID executables"
         shell: df {{ item.mount }} -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -4000
         failed_when: false
         changed_when: false
         register: rhel_08_6_1_13_perms_results
         with_items: "{{ ansible_mounts }}"
 
-      - name: "6.1.13 | L1 | Audit SUID executables |  Alert no SUID executables exist"
+      - name: "6.1.13 | L1 | AUDIT | Audit SUID executables |  Alert no SUID executables exist"
         debug:
             msg: "Good news! We have not found any SUID executable files on your system"
         failed_when: false
@@ -248,7 +248,7 @@
         when:
             - rhel_08_6_1_13_perms_results.stdout is not defined
 
-      - name: "6.1.13 | L1 | Audit SUID executables |  Alert SUID executables exist"
+      - name: "6.1.13 | L1 | AUDIT | Audit SUID executables |  Alert SUID executables exist"
         debug:
             msg: "Manual intervention is required -- SUID set on items in {{ item.item.mount }}: {{ item.stout_lines | join(', ') }}"
         with_items: "{{ rhel_08_6_1_13_perms_results.stdout_lines }}"
@@ -259,19 +259,19 @@
   tags:
       - level1-server
       - level1-workstation
-      - patch
+      - audit
       - rule_6.1.13
 
-- name: "6.1.14 | L1 | Audit SGID executables"
+- name: "6.1.14 | L1 | AUDIT | Audit SGID executables"
   block:
-      - name: "6.1.14 | L1 | Audit SGID executables | Find all SGID executables"
+      - name: "6.1.14 | L1 | AUDIT | Audit SGID executables | Find all SGID executables"
         shell: df {{ item.mount }} -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -2000
         failed_when: false
         changed_when: false
         register: rhel_08_6_1_14_perms_results
         with_items: "{{ ansible_mounts }}"
 
-      - name: "6.1.14 | L1 | Audit SGID executables |  Alert no SGID executables exist"
+      - name: "6.1.14 | L1 | AUDIT | Audit SGID executables |  Alert no SGID executables exist"
         debug:
             msg: "Good news! We have not found any SGID executable files on your system"
         failed_when: false
@@ -279,7 +279,7 @@
         when:
             - rhel_08_6_1_14_perms_results.stdout is not defined
 
-      - name: "6.1.14 | L1 | Audit SGID executables |  Alert SGID executables exist"
+      - name: "6.1.14 | L1 | AUDIT | Audit SGID executables |  Alert SGID executables exist"
         debug:
             msg: "Manual intervention is required -- SGID set on items in {{ item.item.mount }}: {{ item.stout_lines | join(', ') }}"
         with_items: "{{ rhel_08_6_1_14_perms_results.stdout_lines }}"
