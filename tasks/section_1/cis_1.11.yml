@@ -1,6 +1,6 @@
 ---
 
-- name: "SCORED | 1.11 | PATCH | Ensure system-wide crypto policy is FUTURE or FIPS"
+- name: "1.11 | L2 | Ensure system-wide crypto policy is FUTURE or FIPS"
   shell: |
       update-crypto-policies --set "{{ rhel8cis_crypto_policy }}"
       update-crypto-policies
