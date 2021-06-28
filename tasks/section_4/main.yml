@@ -11,6 +11,7 @@
 
 - name: "SECTION | 4.2.x| Configure Logging"
   include: cis_4.2.1.x.yml
+  when: rhel8cis_syslog == 'rsyslog'
 
 - name: "SECTION | 4.2.2.x| Configure journald"
   include: cis_4.2.2.x.yml
