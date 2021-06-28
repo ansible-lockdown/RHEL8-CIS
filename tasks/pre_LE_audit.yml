@@ -78,6 +78,9 @@
       format: "{{ goss_format }}"
       output_file: "{{ pre_audit_outfile }}"
   failed_when: false
+  environment:
+    GOSS_FMT_OPTIONS: Pretty
+
 
 - name: Capture audit data if json format
   block:
