@@ -1,6 +1,6 @@
 ---
 
-- name: "3.4.4.2.1 | L1 | Ensure IPv6 default deny firewall policy"
+- name: "3.4.4.2.1 | L1 | PATCH | Ensure IPv6 default deny firewall policy"
   block:
       - name: "3.4.4.2.1 | L1 | Ensure IPv6 default deny firewall policy | Configure ssh to be allowed"
         iptables:
@@ -10,7 +10,7 @@
             jump: ACCEPT
             ip_version: ipv6
 
-      - name: "3.4.4.2.1 | L1 | Ensure IPv6 default deny firewall policy | Set drop items"
+      - name: "3.4.4.2.1 | L1 | PATCH | Ensure IPv6 default deny firewall policy | Set drop items"
         iptables:
             policy: DROP
             chain: "{{ item }}"
@@ -29,9 +29,9 @@
       - patch
       - rule_3.4.4.2.1
 
-- name: "3.4.4.2.2 | L1 |  Ensure IPv6 loopback traffic is configured"
+- name: "3.4.4.2.2 | L1 | PATCH |  Ensure IPv6 loopback traffic is configured"
   block:
-      - name: "3.4.4.2.2 | L1 | Ensure IPv6 loopback traffic is configured | INPUT Loopback ACCEPT"
+      - name: "3.4.4.2.2 | L1 | PATCH | Ensure IPv6 loopback traffic is configured | INPUT Loopback ACCEPT"
         iptables:
             action: append
             chain: INPUT
@@ -39,7 +39,7 @@
             jump: ACCEPT
             ip_version: ipv6
 
-      - name: "3.4.4.2.2 | L1 | Ensure IPv6 loopback traffic is configured | OUTPUT Loopback ACCEPT"
+      - name: "3.4.4.2.2 | L1 | PATCH | Ensure IPv6 loopback traffic is configured | OUTPUT Loopback ACCEPT"
         iptables:
             action: append
             chain: OUTPUT
@@ -47,7 +47,7 @@
             jump: ACCEPT
             ip_version: ipv6
 
-      - name: "3.4.4.2.2 | L1 | Ensure IPv6 loopback traffic is configured | INPUT Loopback 127.0.0.0/8"
+      - name: "3.4.4.2.2 | L1 | PATCH | Ensure IPv6 loopback traffic is configured | INPUT Loopback 127.0.0.0/8"
         iptables:
             action: append
             chain: INPUT
@@ -64,7 +64,7 @@
       - patch
       - rule_3.4.4.2.2
 
-- name: "3.4.4.2.3 | L1 | Ensure IPv6 outbound and established connections are configured"
+- name: "3.4.4.2.3 | L1 | PATCH | Ensure IPv6 outbound and established connections are configured"
   iptables:
       action: append
       chain: '{{ item.chain }}'
@@ -90,15 +90,15 @@
       - patch
       - rule_3.4.4.2.3
 
-- name: "3.4.4.2.4 | L1 | Ensure IPV6 firewall rules exist for all open ports"
+- name: "3.4.4.2.4 | L1 | PATCH | Ensure IPV6 firewall rules exist for all open ports"
   block:
-      - name: "3.4.4.2.4 | L1 | Ensure IPv6 firewall rules exist for all open ports | Get list of TCP6 open ports"
+      - name: "3.4.4.2.4 | L1 | AUDIT | Ensure IPv6 firewall rules exist for all open ports | Get list of TCP6 open ports"
         shell: netstat -ant |grep "tcp6.*LISTEN" | awk '{ print $4 }'| sed 's/.*://'
         changed_when: false
         failed_when: false
         register: rhel8cis_3_4_4_2_4_otcp
 
-      - name: "3.4.4.2.4 | L1 | Ensure IPv6 firewall rules exist for all open ports| Adjust open tcp6 ports"
+      - name: "3.4.4.2.4 | L1 | PATCH |Ensure IPv6 firewall rules exist for all open ports| Adjust open tcp6 ports"
         iptables:
             action: append
             chain: INPUT
@@ -121,7 +121,7 @@
       - patch
       - rule_3.4.4.2.4
 
-- name: "3.4.4.2.5 | L1 | Ensure ip6tables service is enabled | Check if ip6tables is enabled"
+- name: "3.4.4.2.5 | L1 | PATCH | Ensure ip6tables service is enabled | Check if ip6tables is enabled"
   service:
       name: ip6tables
       enabled: yes
