@@ -1,6 +1,6 @@
 ---
 
-- name: "2.3.1 | L1 | Ensure NIS Client is not installed"
+- name: "2.3.1 | L1 | PATCH | Ensure NIS Client is not installed"
   package:
       name: ypbind
       state: absent
@@ -14,7 +14,7 @@
       - patch
       - rule_2.3.1
 
-- name: "2.3.2 | L1 | Ensure telnet client is not installed"
+- name: "2.3.2 | L1 | PATCH | Ensure telnet client is not installed"
   package:
       name: telnet
       state: absent
@@ -28,7 +28,7 @@
       - patch
       - rule_2.3.2
 
-- name: "2.3.3 | L1 | Ensure LDAP client is not installed"
+- name: "2.3.3 | L1 | PATCH | Ensure LDAP client is not installed"
   package:
       name: openldap-clients
       state: absent
