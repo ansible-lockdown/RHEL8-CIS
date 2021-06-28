@@ -170,10 +170,12 @@ rhel8cis_rule_3_4_4_1_1: true
 rhel8cis_rule_3_4_4_1_2: true
 rhel8cis_rule_3_4_4_1_3: true
 rhel8cis_rule_3_4_4_1_4: true
+rhel8cis_rule_3_4_4_1_5: true
 rhel8cis_rule_3_4_4_2_1: true
 rhel8cis_rule_3_4_4_2_2: true
 rhel8cis_rule_3_4_4_2_3: true
 rhel8cis_rule_3_4_4_2_4: true
+rhel8cis_rule_3_4_4_2_5: true
 rhel8cis_rule_3_5: true
 rhel8cis_rule_3_6: true
 
