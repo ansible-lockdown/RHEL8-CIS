@@ -15,7 +15,7 @@
       - patch
       - rule_5.2.1
 
-- name: "5.2.2 | L1 | PATCH | Ensure SSH access is limited"
+- name: "5.2.2 | L1 | Ensure SSH access is limited"
   block:
       - name: "5.2.2 | L1 | Ensure SSH access is limited | Add line to sshd_config for allowusers"
         lineinfile:
@@ -196,7 +196,7 @@
       - patch
       - rule_5.2.10
 
-- name: "SCORED | 5.2.11 | PATCH | Ensure SSH PermitEmptyPasswords is disabled"
+- name: "5.2.11 | Ensure SSH PermitEmptyPasswords is disabled"
   lineinfile:
       state: present
       dest: /etc/ssh/sshd_config

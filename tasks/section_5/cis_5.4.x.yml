@@ -64,8 +64,8 @@
         when: rhel8cis_rule_5_4_2
 
       - name: |
-           "5.4.3 | L1 | PATCH | Ensure password reuse is limited | Set system-auth remember remember settings
-            5.4.4 | L1 | PATCH | Ensure password hashing algorithm is SHA-512 | Set system-auth pwhash settings"
+           "5.4.3 | L1 | Ensure password reuse is limited | Set system-auth remember remember settings
+            5.4.4 | L1 | Ensure password hashing algorithm is SHA-512 | Set system-auth pwhash settings"
         lineinfile:
             dest: /etc/pam.d/system-auth
             state: present
@@ -88,7 +88,7 @@
       # The two steps below were added to keep authconfig from overwritting the above configs. This follows steps from here: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/chap-hardening_your_system_with_tools_and_services
       # With the steps below you will score five (5) points lower due to false positive results
       - name: |
-           "5.4.1 | L1 | Ensure password creation requirements are configured"
+           "5.4.1 | L1 | Ensure password creation requirements are configured
             5.4.2 | L1 | Ensure lockout for failed password attempts is configured
             5.4.3 | L1 | Ensure password reuse is limited
             5.4.4 | L1 | Ensure password hashing algorithm is SHA-512"
@@ -104,11 +104,10 @@
             - "password-auth"
 
       - name: |
-           "5.4.1 | L1 | Ensure password creation requirements are configured"
+           "5.4.1 | L1 | Ensure password creation requirements are configured
             5.4.2 | L1 | Ensure lockout for failed password attempts is configured
             5.4.3 | L1 | Ensure password reuse is limited
             5.4.4 | L1 | Ensure password hashing algorithm is SHA-512"
-        copy:
         file:
             src: /etc/pam.d/{{ item }}-local
             dest: /etc/pam.d/{{ item }}

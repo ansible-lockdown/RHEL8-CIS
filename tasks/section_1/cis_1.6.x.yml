@@ -1,6 +1,6 @@
 ---
 
-- name: "1.6.1 | L1 | PATCH | Ensure core dumps are restricted"
+- name: "1.6.1 | L1 | Ensure core dumps are restricted"
   block:
       - name: "1.6.1 | L1 | Ensure core dumps are restricted | Update limits.conf file"
         lineinfile:
@@ -22,11 +22,12 @@
       - name: "1.6.1 | L1 | Ensure core dumps are restricted | if systemd coredump"
         lineinfile:
             path: /etc/systemd/coredump.conf
-            regexp:
-            line:
+            regexp: "^{{ item.regexp }}"
+            line: "{{ item.regexp }}{{ item.line }}"
+            state: present
         with_items:
-            - {'regexp': '^Storage=', 'line': 'none'}
-            - {'regexp': '^ProcessSizeMax=', 'line': '0'}
+            - {'regexp': 'Storage=', 'line': 'none'}
+            - {'regexp': 'ProcessSizeMax=', 'line': '0'}
         notify:
             - systemd_daemon_reload
         when:

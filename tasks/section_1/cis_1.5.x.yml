@@ -55,13 +55,13 @@
 
 - name: "1.5.3 | L1 | Ensure authentication required for single user mode"
   block:
-      - name: "NOTSCORED | 1.5.3 | PATCH | Ensure authentication required for single user mode | Emergency service"
+      - name: "1.5.3 | L1 | Ensure authentication required for single user mode | Emergency service"
         lineinfile:
             dest: /usr/lib/systemd/system/emergency.service
             regexp: '/sbin/sulogin'
             line: 'ExecStart=-/usr/lib/systemd/systemd-sulogin-shell emergency'
 
-      - name: "NOTSCORED | 1.5.3 | PATCH | Ensure authentication required for single user mode | Rescue service"
+      - name: "1.5.3 | L1 | Ensure authentication required for single user mode | Rescue service"
         lineinfile:
             dest: /usr/lib/systemd/system/rescue.service
             regexp: '/sbin/sulogin'

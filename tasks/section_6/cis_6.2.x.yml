@@ -121,7 +121,7 @@
         with_items: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8cis_int_gid) | selectattr('uid', '!=', 65534) | map(attribute='dir') | list }}"
         register: rhel_08_6_2_7_audit
 
-      - name: "6.2.7| L1 | Ensure users' home directories permissions are 750 or more restrictive"
+      - name: "6.2.7 | L1 | Ensure users' home directories permissions are 750 or more restrictive"
         command: find -H {{ item.0 | quote }} -not -type l -perm /027
         check_mode: false
         changed_when: rhel_08_6_2_7_patch_audit.stdout | length > 0
@@ -176,7 +176,7 @@
       - patch
       - rule_6.2.7
 
-- name: "6.2.8 | L1 |  Ensure users own their home directories"
+- name: "6.2.8 | L1 | Ensure users own their home directories"
   file:
       path: "{{ item.dir }}"
       owner: "{{ item.id }}"
@@ -196,7 +196,7 @@
       - patch
       - rule_6.2.8
 
-- name: "6.2.9 | L1 |  Ensure users' dot files are not group or world-writable"
+- name: "6.2.9 | L1 | Ensure users' dot files are not group or world-writable"
   block:
       - name: "6.2.9 | L1 |  Ensure users' dot files are not group or world-writable | Check for files"
         shell: find /home/ -name "\.*" -perm /g+w,o+w
@@ -380,7 +380,7 @@
 
 - name: "6.2.18 | L1 | Ensure no duplicate group names exist"
   block:
-      - name: "SCORED | 6.2.18 | AUDIT | Ensure no duplicate group names exist | Check for duplicate group names"
+      - name: "6.2.18 | L1 | Ensure no duplicate group names exist | Check for duplicate group names"
         shell: 'getent passwd | cut -d: -f1 | sort -n | uniq -d'
         changed_when: false
         failed_when: false
@@ -406,7 +406,7 @@
 
 - name: "6.2.19 | L1 | Ensure shadow group is empty"
   block:
-      - name: "SCORED | 6.2.19 | AUDIT | Ensure shadow group is empty | Check for shadow group and pull group id"
+      - name: "6.2.19 | L1 | Ensure shadow group is empty | Check for shadow group and pull group id"
         shell: "getent group shadow | cut -d: -f3"
         changed_when: false
         failed_when: false

@@ -3,7 +3,7 @@
 # this will just display the list of consoles. The site will need to confirm the allowed consoles are correct and change manually if needed.
 - name: "5.6 | L1 | Ensure root login is restricted to system console"
   block:
-      - name: "NOTSCORED | 5.6 | AUDIT | Ensure root login is restricted to system console | Check if securetty file exists"
+      - name: "5.6 | Ensure root login is restricted to system console | Check if securetty file exists"
         stat:
             path: /etc/securetty
         register: rhel8cis_securetty_check

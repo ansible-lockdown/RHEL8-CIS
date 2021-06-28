@@ -1,7 +1,7 @@
 ---
 - name: "1.1.1.1 | L1 | Ensure mounting of cramfs filesystems is disabled"
   block:
-      - name: "SCORED | 1.1.1.1 | Ensure mounting of cramfs filesystems is disabled | Edit modprobe config"
+      - name: "1.1.1.1 | Ensure mounting of cramfs filesystems is disabled | Edit modprobe config"
         lineinfile:
             dest: /etc/modprobe.d/CIS.conf
             regexp: "^(#)?install cramfs(\\s|$)"

@@ -2,7 +2,7 @@
 
 - name: "3.4.4.1.1 | L1 | Ensure default deny firewall policy"
   block:
-      - name: "SCORED | 3.4.4.1.1 | PATCH | Ensure default deny firewall policy | Configure ssh to be allowed"
+      - name: "3.4.4.1.1 |  Ensure default deny firewall policy | Configure ssh to be allowed"
         iptables:
             chain: INPUT
             protocol: tcp

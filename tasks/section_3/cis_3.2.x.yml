@@ -51,7 +51,7 @@
             - { name: net.ipv4.conf.all.accept_redirects, value: 0 }
             - { name: net.ipv4.conf.default.accept_redirects, value: 0 }
 
-      - name: "3.2.2 | L1 | PATCH | Ensure ICMP redirects are not accepted | Set ICMP redirects IPv6"
+      - name: "3.2.2 | L1 | Ensure ICMP redirects are not accepted | Set ICMP redirects IPv6"
         sysctl:
             name: '{{ item.name }}'
             value: '{{ item.value }}'

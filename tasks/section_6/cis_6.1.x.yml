@@ -12,12 +12,12 @@
 
       - name: "6.1.1 | L2 | Audit system file permissions | Create list and warning"
         block:
-            - name: "NOTSCORED | 6.1.1 | AUDIT | Audit system file permissions | Add file discrepancy list to system"
+            - name: "6.1.1 | L2 | Audit system file permissions | Add file discrepancy list to system"
               copy:
                   dest: "{{ rhel8cis_rpm_audit_file }}"
                   content: "{{ rhel8cis_6_1_1_packages_rpm.stdout }}"
 
-            - name: "NOTSCORED | 6.1.1 | AUDIT | Audit system file permissions | Message out alert for package descrepancies"
+            - name: "6.1.1 | L2 | Audit system file permissions | Message out alert for package descrepancies"
               debug:
                   msg: |
                      "Warning! You have some package descrepancies issues.
@@ -264,7 +264,7 @@
 
 - name: "6.1.14 | L1 | Audit SGID executables"
   block:
-      - name: "NOTSCORED | 6.1.14 | AUDIT | Audit SGID executables | Find all SGID executables"
+      - name: "6.1.14 | L1 | Audit SGID executables | Find all SGID executables"
         shell: df {{ item.mount }} -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -2000
         failed_when: false
         changed_when: false

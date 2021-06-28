@@ -47,7 +47,7 @@
             jump: ACCEPT
             ip_version: ipv6
 
-      - name: "3.4.4.2.2 | L1 | PATCH | Ensure IPv6 loopback traffic is configured | INPUT Loopback 127.0.0.0/8"
+      - name: "3.4.4.2.2 | L1 | Ensure IPv6 loopback traffic is configured | INPUT Loopback 127.0.0.0/8"
         iptables:
             action: append
             chain: INPUT
