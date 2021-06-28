@@ -1,5 +1,14 @@
 # Changes to rhel8CIS
 
+## 1.2.3
+
+- Synced up with CIS 1.0.1
+- extentions to LE audit capability
+- #117 su group enhancements
+- #112 use of dnf module not shell
+- more lint and layout changes
+
+
 ## 1.2.2
 
 - #33 mkgrub missing variable issues - efi and bios path resolution
