@@ -12,10 +12,11 @@
       - name: "1.5.1 | L1 | Ensure permissions on bootloader config are configured | UEFI"
         mount:
             name: /boot/efi
-            src: "{{ item.device }}"
+            src: "UUID={{ item.uuid }}"
             fstype: vfat
             state: present
-            opts: defaults,umask=0027,fmask=0077,uid=0,gid=0 0 0
+            opts: defaults,umask=0027,fmask=0077,uid=0,gid=0
+            passno: '0'
         loop: "{{ ansible_mounts }}"
         when:
             - not rhel8cis_legacy_boot
