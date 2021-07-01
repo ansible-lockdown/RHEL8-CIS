@@ -20,13 +20,33 @@
   assert:
       that: rhel8cis_crypto_policy in rhel8cis_allowed_crypto_policies
 
-- name: Check rhel7cis_bootloader_password_hash variable has been changed
+- name: Check rhel8cis_bootloader_password_hash variable has been changed
   assert:
       that: rhel8cis_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'
       msg: "This role will not be able to run single user password commands as rhel8cis_bootloader_password_hash variable has not been set"
   when:
   - rhel8cis_set_boot_pass
   - rhel8cis_rule_1_5_2
+
+- name: "check sugroup exists if used"
+  block:
+  - name: "Check su group exists if defined"
+    shell: grep -w "{{ rhel8cis_sugroup }}" /etc/group
+    register: sugroup_exists
+    changed_when: false
+    failed_when: sugroup_exists.rc >= 2
+    tags:
+    - skip_ansible_lint
+
+  - name: Check sugroup if defined exists before continuing
+    assert:
+      that: sugroup_exists.rc == 0
+      msg: "The variable rhel8cis_sugroup is defined but does not exist please rectify" 
+  when:
+  - rhel8cis_sugroup is defined
+  - rhel8cis_rule_5_7
+  tags:
+  - rule_5.7
 
 - include: prelim.yml
   become: yes
@@ -89,6 +109,6 @@
 
 - name: Show Audit Summary
   debug:
-      msg: "{{ Audit_results.split('\n') }}"
+      msg: "{{ audit_results.split('\n') }}"
   when:
   - rhel8cis_run_audit

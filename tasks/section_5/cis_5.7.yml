@@ -2,7 +2,7 @@
 
 - name: "5.7 | L1 | PATCH | Ensure access to the su command is restricted"
   block:
-      - name: "5.7 | L1 | PATCH | Ensure access to the su command is restricted | Setting pm_wheel to use_uid"
+      - name: "5.7 | L1 | PATCH | Ensure access to the su command is restricted | Setting pam_wheel to use_uid"
         lineinfile:
             state: present
             dest: /etc/pam.d/su
