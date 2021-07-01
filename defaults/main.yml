@@ -1,5 +1,5 @@
 ---
-# defaults file for rhel8-CIS
+# defaults file for rhel8-cis
 
 rhel8cis_skip_for_travis: false
 rhel8cis_system_is_container: false
@@ -450,7 +450,7 @@ rhel8cis_nft_tables_autonewtable: true
 rhel8cis_nft_tables_tablename: filter
 
 # 3.4.3.3 Set nftables new chain create
-rhel8cis_nft_tables_autoChainCreate: true
+rhel8cis_nft_tables_autochaincreate: true
 
 # Warning Banner Content (issue, issue.net, motd)
 rhel8cis_warning_banner: |
@@ -528,7 +528,7 @@ rhel8cis_pass:
     warn_age: 7
 # Syslog system - either rsyslog or syslog-ng
 rhel8cis_syslog: rsyslog
-rhel8cis_rsyslog_ansibleManaged: true
+rhel8cis_rsyslog_ansiblemanaged: true
 
 rhel8cis_vartmp:
     source: /tmp
@@ -566,7 +566,8 @@ rhel8cis_rpm_audit_file: /var/tmp/rpm_file_check
 # RHEL-08_6.1.10 Allow ansible to adjust world-writable files. False will just display world-writable files, True will remove world-writable
 rhel8cis_no_world_write_adjust: true
 rhel8cis_passwd_label: "{{ (this_item | default(item)).id }}: {{ (this_item | default(item)).dir }}"
-rhel8cis_dotperm_ansibleManaged: true
+# 6.2.9
+rhel8cis_dotperm_ansiblemanaged: true
 #### Goss Configuration Settings ####
 
 ### Goss binary settings ###
@@ -575,7 +576,7 @@ goss_version:
     checksum: 'sha256:827e354b48f93bce933f5efcd1f00dc82569c42a179cf2d384b040d8a80bfbfb'
 goss_path: /usr/local/bin/
 goss_bin: "{{ goss_path }}goss"
-goss_format: documentation
+goss_format: json
 
 # if get_goss_file == download change accordingly
 goss_url: "https://github.com/aelsabbahy/goss/releases/download/{{ goss_version.release }}/goss-linux-amd64"
@@ -610,7 +611,7 @@ post_audit_outfile: "{{ goss_out_dir }}/{{ ansible_hostname }}_post_scan_{{ ansi
 ## The following should not need changing
 goss_file: "{{ goss_audit_dir }}goss.yml"
 goss_vars_path: "{{ goss_audit_dir }}/vars/{{ ansible_hostname }}.yml"
-Audit_results: |
+audit_results: |
       The pre remediation results are: {{ pre_audit_summary }}.
       The post remediation results are: {{ post_audit_summary }}.
       Full breakdown can be found in {{ goss_out_dir }}

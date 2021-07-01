@@ -217,7 +217,7 @@
         with_items: "{{ rhel8cis_6_2_9_audit.stdout_lines }}"
         when:
             - rhel8cis_6_2_9_audit.stdout is defined
-            - rhel8cis_dotperm_ansibleManaged
+            - rhel8cis_dotperm_ansiblemanaged
   when:
       - rhel8cis_rule_6_2_9
   tags:

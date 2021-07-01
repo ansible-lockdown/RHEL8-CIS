@@ -13,6 +13,6 @@ galaxy_info:
     galaxy_tags:
         - system
         - security
-        - CIS
+        - cis
         - hardening
 dependencies: []
