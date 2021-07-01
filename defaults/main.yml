@@ -509,6 +509,7 @@ rhel8cis_inactivelock:
     lock_days: 30
 
 # 5.3.1/5.3.2 Custom authselect profile settings. Settings in place now will fail, they are place holders from the control example
+# Due to the way many multiple options and ways to configure this control needs to be enabled and settings adjusted to minimise risk
 rhel8cis_use_authconfig: false
 rhel8cis_authselect:
     custom_profile_name: custom-profile
