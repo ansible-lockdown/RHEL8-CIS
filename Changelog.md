@@ -5,6 +5,7 @@
 - CIS 1.0.1
 - extentions to LE audit capability
 - more lint and layout changes
+- sugroup assertion added 5.7
 - added extra logic variable to authselect/config section 5.3 related
 
 ## 1.2.3
