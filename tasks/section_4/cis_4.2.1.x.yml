@@ -68,7 +68,7 @@
               mail.err                                                /var/log/mail.err
             insertafter: '# Log all the mail messages in one place.'
         notify: restart rsyslog
-        when: rhel8cis_rsyslog_ansibleManaged
+        when: rhel8cis_rsyslog_ansiblemanaged
 
       - name: "4.2.1.4 | L1 | PATCH | Ensure logging is configured | news.crit log setting"
         blockinfile:
@@ -81,7 +81,7 @@
               news.notice                                             -/var/log/news/news.crit
             insertafter: '# Save news errors of level crit and higher in a special file.'
         notify: restart rsyslog
-        when: rhel8cis_rsyslog_ansibleManaged
+        when: rhel8cis_rsyslog_ansiblemanaged
 
       - name: "4.2.1.4 | L1 | PATCH | Ensure logging is configured | Misc. log setting"
         blockinfile:
@@ -95,7 +95,7 @@
               *.*;mail.none;news.none                                  /var/log/messages
             insertafter: '#### RULES ####'
         notify: restart rsyslog
-        when: rhel8cis_rsyslog_ansibleManaged
+        when: rhel8cis_rsyslog_ansiblemanaged
 
       - name: "4.2.1.4 | L1 | PATCH | Ensure logging is configured | Local log settings"
         blockinfile:
