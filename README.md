@@ -21,12 +21,12 @@ To use release version please point to main branch
 Documentation
 -------------
 
-[Getting Started](https://www.lockdownenterprise.com/docs/getting-started-with-lockdown)<br>
-[Customizing Roles](https://www.lockdownenterprise.com/docs/customizing-lockdown-enterprise)<br>
-[Per-Host Configuration](https://www.lockdownenterprise.com/docs/per-host-lockdown-enterprise-configuration)<br>
-[Getting the Most Out of the Role](https://www.lockdownenterprise.com/docs/get-the-most-out-of-lockdown-enterprise)<br>
-[Wiki](https://github.com/ansible-lockdown/RHEL8-CIS/wiki)<br>
-[Repo GitHub Page](https://ansible-lockdown.github.io/RHEL8-CIS/)<br>
+- [Getting Started](https://www.lockdownenterprise.com/docs/getting-started-with-lockdown)
+- [Customizing Roles](https://www.lockdownenterprise.com/docs/customizing-lockdown-enterprise)
+- [Per-Host Configuration](https://www.lockdownenterprise.com/docs/per-host-lockdown-enterprise-configuration)
+- [Getting the Most Out of the Role](https://www.lockdownenterprise.com/docs/get-the-most-out-of-lockdown-enterprise)
+- [Wiki](https://github.com/ansible-lockdown/RHEL8-CIS/wiki)
+- [Repo GitHub Page](https://ansible-lockdown.github.io/RHEL8-CIS/)
 
 Auditing (new)
 --------------
@@ -53,7 +53,7 @@ Access to download or add the goss binary and content to the system if using aud
   - [Ansible Getting Started](https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html)
   - [Tower User Guide](https://docs.ansible.com/ansible-tower/latest/html/userguide/index.html)
   - [Ansible Community Info](https://docs.ansible.com/ansible/latest/community/index.html)
-- Functioning Ansible and/or Tower Installed, configured, and running. This includes all of the base Ansible/Tower configurations, needed packages installed, and infrastructure setup. 
+- Functioning Ansible and/or Tower Installed, configured, and running. This includes all of the base Ansible/Tower configurations, needed packages installed, and infrastructure setup.
 - Please read through the tasks in this role to gain an understanding of what each control is doing. Some of the tasks are disruptive and can have unintended consiquences in a live production system. Also familiarize yourself with the variables in the defaults/main.yml file or the [Main Variables Wiki Page](https://github.com/ansible-lockdown/RHEL8-CIS/wiki/Main-Variables).
 
 Dependencies
@@ -74,7 +74,7 @@ Tags
 
 There are many tags available for added control precision. Each control has it's own set of tags noting what level, if it's scored/notscored, what OS element it relates to, if it's a patch or audit, and the rule number.
 
-Below is an example of the tag section from a control within this role. Using this example if you set your run to skip all controls with the tag services, this task will be skipped. The opposite can also happen where you run only controls tagged with services. 
+Below is an example of the tag section from a control within this role. Using this example if you set your run to skip all controls with the tag services, this task will be skipped. The opposite can also happen where you run only controls tagged with services.
 
 ```txt
       tags:

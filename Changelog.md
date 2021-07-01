@@ -7,6 +7,7 @@
 - more lint and layout changes
 - sugroup assertion added 5.7
 - added extra logic variable to authselect/config section 5.3 related
+- Rocky tested (comments in readme)
 
 ## 1.2.3
 
@@ -23,7 +24,6 @@
   - thanks to RosarioVinoth
 - #107 Idempotence improvement for 4.1.1.3 and 4.1.1.4
   - thanks to andreyzher
-
 - lint changes and updates to sync with ansible-galaxy
 
 ## v1.2.1
