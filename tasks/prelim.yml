@@ -55,6 +55,7 @@
       name: authconfig
       state: present
   when:
+      - rhel8cis_use_authconfig
       - rhel8cis_rule_5_3_1 or
         rhel8cis_rule_5_3_2 or
         rhel8cis_rule_5_3_3
