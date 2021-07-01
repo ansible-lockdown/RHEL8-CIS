@@ -571,8 +571,8 @@ rhel8cis_dotperm_ansibleManaged: true
 
 ### Goss binary settings ###
 goss_version:
-  release: v0.3.16
-  checksum: 'sha256:827e354b48f93bce933f5efcd1f00dc82569c42a179cf2d384b040d8a80bfbfb'
+    release: v0.3.16
+    checksum: 'sha256:827e354b48f93bce933f5efcd1f00dc82569c42a179cf2d384b040d8a80bfbfb'
 goss_path: /usr/local/bin/
 goss_bin: "{{ goss_path }}goss"
 goss_format: documentation

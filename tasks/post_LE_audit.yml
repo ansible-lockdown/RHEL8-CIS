@@ -9,7 +9,7 @@
       output_file: "{{ post_audit_outfile }}"
   failed_when: false
   environment:
-    GOSS_FMT_OPTIONS: Pretty
+      GOSS_FMT_OPTIONS: Pretty
 
 - name: ensure audit files readable by users
   file:
