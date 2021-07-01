@@ -1,13 +1,16 @@
 # Changes to rhel8CIS
 
+## 1.3
+
+- CIS 1.0.1
+- extentions to LE audit capability
+- more lint and layout changes
+- added extra logic variable to authselect/config section 5.3 related
+
 ## 1.2.3
 
-- Synced up with CIS 1.0.1
-- extentions to LE audit capability
 - #117 su group enhancements
 - #112 use of dnf module not shell
-- more lint and layout changes
-
 
 ## 1.2.2
 
