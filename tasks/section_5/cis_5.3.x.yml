@@ -6,6 +6,7 @@
         shell: 'authselect current | grep "Profile ID: custom/"'
         failed_when: false
         changed_when: false
+        check_mode: no
         register: rhel8cis_5_3_1_profiles
 
       - name: "SCORED | 5.3.1 | AUDIT | Create custom authselect profile | Show profiles"
@@ -16,6 +17,8 @@
 
       - name: "SCORED | 5.3.1 | PATCH | Create custom authselect profile | Create custom profiles"
         shell: authselect create-profile {{ rhel8cis_authselect['custom_profile_name'] }} -b {{ rhel8cis_authselect['default_file_to_copy'] }}
+        args:
+            warn: no
         when: rhel8cis_authselect_custom_profile_create
   when:
       - rhel8cis_rule_5_3_1
@@ -30,8 +33,11 @@
   block:
       - name: "SCORED | 5.3.2 | AUDIT | Select authselect profile | Gather profiles and enabled features"
         shell: "authselect current"
+        args:
+            warn: no
         failed_when: false
         changed_when: false
+        check_mode: no
         register: rhel8cis_5_3_2_profiles
 
       - name: "SCORED | 5.3.2 | AUDIT | Select authselect profile | Show profiles"
@@ -42,6 +48,8 @@
 
       - name: "SCORED | 5.3.2 | PATCH | Select authselect profile | Create custom profiles"
         shell: "authselect select custom/{{ rhel8cis_authselect['custom_profile_name'] }} {{ rhel8cis_authselect['options'] }}"
+        args:
+            warn: no
         when: rhel8cis_authselect_custom_profile_select
   when:
       - rhel8cis_rule_5_3_2
@@ -58,6 +66,7 @@
         shell: "authselect current | grep with-faillock"
         failed_when: false
         changed_when: false
+        check_mode: no
         register: rhel8cis_5_3_3_profiles_faillock
 
       - name: "SCORED | 5.3.3 | AUDIT | Ensure authselect includes with-faillock| Show profiles"
@@ -68,6 +77,8 @@
 
       - name: "SCORED | 5.3.3 | PATCH | Ensure authselect includes with-faillock | Create custom profiles"
         shell: "authselect select custom/{{ rhel8cis_authselect['custom_profile_name'] }} with-faillock"
+        args:
+            warn: no
         when: rhel8cis_authselect_custom_profile_select
   when:
       - rhel8cis_rule_5_3_3

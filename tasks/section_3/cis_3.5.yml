@@ -6,8 +6,9 @@
         command: rpm -q NetworkManager
         changed_when: false
         failed_when: false
+        check_mode: no
         args:
-          warn: no
+            warn: no
         register: rhel_08_nmcli_available
 
       - name: "SCORED | 3.5 | AUDIT | Ensure wireless interfaces are disabled | Check if wifi is enabled"

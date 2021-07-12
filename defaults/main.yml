@@ -15,7 +15,11 @@ rhel8cis_section4: true
 rhel8cis_section5: true
 rhel8cis_section6: true
 
+rhel8cis_level_1: true
+rhel8cis_level_2: true
+
 rhel8cis_selinux_disable: false
+rhel8cis_legacy_boot: false
 
 ## Python Binary
 ## This is used for python3 Installations where python2 OS modules are used in ansible
@@ -199,7 +203,7 @@ rhel8cis_rule_4_1_17: true
 rhel8cis_rule_4_2_1_1: true
 rhel8cis_rule_4_2_1_2: true
 rhel8cis_rule_4_2_1_3: true
-rhel8cis_rule_4_2_1_4: false
+rhel8cis_rule_4_2_1_4: true
 rhel8cis_rule_4_2_1_5: true
 rhel8cis_rule_4_2_1_6: true
 rhel8cis_rule_4_2_2_1: true
@@ -358,7 +362,7 @@ rhel8cis_set_boot_pass: false
 
 # 1.10/1.11 Set crypto policy (LEGACY, DEFAULT, FUTURE, FIPS)
 # Control 1.10 sates not ot use LEGACY and control 1.11 says to use FUTURE or FIPS.
-rhel8cis_crypto_policy: "FIPS"
+rhel8cis_crypto_policy: "FUTURE"
 
 # System network parameters (host only OR host and router)
 rhel8cis_is_router: false
@@ -517,7 +521,7 @@ rhel8cis_vartmp:
     opts: "defaults,nodev,nosuid,noexec,bind"
     enabled: no
 ## PAM
-rhel8cis_pam_password: 
+rhel8cis_pam_password:
     minlen: "14"
     minclass: "4"
 
@@ -533,13 +537,16 @@ rhel8cis_shell_session_timeout:
 # RHEL-08-5.4.1.5 Allow ansible to expire password for account with a last changed date in the future. False will just display users in violation, true will expire those users passwords
 rhel8cis_futurepwchgdate_autofix: true
 
+# 5.7
+# rhel8cis_sugroup: sugroup  # change accordingly wheel is default
+
 # wheel users list
-rhel8cis_wheel_users: "root"
+rhel8cis_sugroup_users: "root"
 
 ## Section6 vars
 
-# RHEL-08_6.1.1 Allow ansible to adjust package descrepancies . False will just display packages with descrepancies, True will correct descrepancies
-rhelcis_rpm_descrep_autofixes: true
+# RHEL-08_6.1.1
+rhel8cis_rpm_audit_file: /var/tmp/rpm_file_check
 
 # RHEL-08_6.1.10 Allow ansible to adjust world-writable files. False will just display world-writable files, True will remove world-writable
 rhel8cis_no_world_write_adjust: true
@@ -556,19 +563,19 @@ rhel8cis_audit_file_git: "https://github.com/ansible-lockdown/{{ benchmark }}-Au
 rhel8cis_audit_git_version: main
 
 # copy:
-#rhel8cis_audit_local_copy: "some path to copy from"
+# rhel8cis_audit_local_copy: "some path to copy from"
 
 # get_url:
-#rhel8cis_audit_files_url: "some url maybe s3?"
+# rhel8cis_audit_files_url: "some url maybe s3?"
 
 
 ## audit controls ##
 goss_version:
-  release: v0.3.16
-  checksum: 'sha256:827e354b48f93bce933f5efcd1f00dc82569c42a179cf2d384b040d8a80bfbfb'
+    release: v0.3.16
+    checksum: 'sha256:827e354b48f93bce933f5efcd1f00dc82569c42a179cf2d384b040d8a80bfbfb'
 
 ### Audit Settings ###
-#goss_checksum: "checksum_{{ goss_version }}"
+# goss_checksum: "checksum_{{ goss_version }}"
 goss_path: /usr/local/bin/
 goss_bin: "{{ goss_path }}goss"
 goss_format: documentation
@@ -579,8 +586,8 @@ goss_audit_dir: "/var/tmp/{{ benchmark }}-Audit/"
 goss_file: "{{ goss_audit_dir }}goss.yml"
 goss_vars_path: "{{ goss_audit_dir }}/vars/{{ ansible_hostname }}.yml"
 goss_out_dir: '/var/tmp'
-pre_audit_outfile: "{{ goss_out_dir }}/pre_remediation_scan"
-post_audit_outfile: "{{ goss_out_dir }}/post_remediation_scan"
+pre_audit_outfile: "{{ goss_out_dir }}/{{ ansible_hostname }}_pre_scan_{{ ansible_date_time.epoch }}"
+post_audit_outfile: "{{ goss_out_dir }}/{{ ansible_hostname }}_post_scan_{{ ansible_date_time.epoch }}"
 
 Audit_results: |
       The pre remediation results are: {{ pre_audit_summary }}.

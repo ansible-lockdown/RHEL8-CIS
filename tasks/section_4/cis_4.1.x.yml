@@ -159,6 +159,7 @@
         shell: for i in  $(df | grep '^/dev' | awk '{ print $NF }'); do find $i -xdev -type f -perm -4000 -o -type f -perm -2000 2>/dev/null; done
         changed_when: false
         failed_when: false
+        check_mode: no
         register: priv_procs
 
       - name: "SCORED | 4.1.12 | PATCH | Ensure successful file system mounts are collected"

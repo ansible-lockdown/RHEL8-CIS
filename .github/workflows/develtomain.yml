@@ -1,13 +1,13 @@
 ---
 # This is a basic workflow to help you get started with Actions
 
-name: CommunityToDevel
+name: DevelToMain
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the devel branch
 on:
     pull_request:
-        branches: [ devel ]
+        branches: [ main ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -22,7 +22,7 @@ jobs:
             - uses: actions/checkout@v2
 
             # Refactr pipeline for devel pull request/merge
-            - name: Refactr - Run Pipeline (to devel)
+            - name: Refactr - Run Pipeline (to main)
               # You may pin to the exact commit or the version.
               # uses: refactr/action-run-pipeline@be91e2796aa225268e4685c0e01a26d5f800cd53
               uses: refactr/action-run-pipeline@v0.1.2
@@ -32,8 +32,8 @@ jobs:
                   # Project ID
                   project_id: 5f47f0c4a13c7b18373e5556
                   # Job ID
-                  job_id: 5f933cbcf9c74e86b1609c00
+                  job_id: 5f90ad90f9c74e6d1e606e33
                   # Variables
-                  variables: '{ "gitrepo": "https://github.com/ansible-lockdown/RHEL8-CIS.git", "image": "ami-04483b15b4268d18d", "githubBranch": "${{ github.head_ref }}", "username": "centos" }'
+                  variables: '{ "gitrepo": "https://github.com/ansible-lockdown/RHEL8-CIS.git", "image": "ami-04483b15b4268d18d", "username": "centos" }'
                   # Refactr API base URL
                   api_url:  # optional

@@ -3,59 +3,88 @@
 # List users in order to look files inside each home directory
 - name: "PRELIM | List users accounts"
   command: "awk -F: '{print $1}' /etc/passwd"
-  register: users
+  args:
+      warn: no
   changed_when: no
   check_mode: no
-
-- name: "PRELIM | AUDIT | Ensure permissions on bootloader config are configured | Get grub config settings"
-  stat:
-      path: /etc/grub2.cfg
-  changed_when: false
-  register: grub_cfg
-
+  register: users
 
 - name: "PRELIM | Gather accounts with empty password fields"
   shell: "cat /etc/shadow | awk -F: '($2 == \"\" ) {j++;print $1; } END {exit j}'"
-  register: empty_password_accounts
+  args:
+      warn: no
   changed_when: no
   check_mode: no
+  register: empty_password_accounts
 
 - name: "PRELIM | Gather UID 0 accounts other than root"
   shell: "cat /etc/passwd | awk -F: '($3 == 0 && $1 != \"root\") {i++;print $1 } END {exit i}'"
-  register: uid_zero_accounts_except_root
+  args:
+      warn: no
   changed_when: no
   check_mode: no
+  register: uid_zero_accounts_except_root
+
+- name: "PRELIM | Gather system-wide crypto-policy"
+  shell: update-crypto-policies --show
+  args:
+      warn: no
+  changed_when: no
+  check_mode: no
+  register: system_wide_crypto_policy
 
 - name: "PRELIM | Section 4.1 | Configure System Accounting (auditd)"
   package:
-    name: audit
-    state: present
+      name: audit
+      state: present
 
 - name: "PRELIM | Section 5.1 | Configure cron"
   package:
-    name: cronie
-    state: present
+      name: cronie
+      state: present
 
 - name: "PRELIM | Install authconfig"
   package:
-    name: authconfig
-    state: present
+      name: authconfig
+      state: present
   when:
-  - rhel8cis_rule_5_3_1 or
-    rhel8cis_rule_5_3_2 or
-    rhel8cis_rule_5_3_3
+      - rhel8cis_rule_5_3_1 or
+        rhel8cis_rule_5_3_2 or
+        rhel8cis_rule_5_3_3
 
-- name: "Check whether machine is UEFI-based"
+- name: "PRELIM | Set facts based on boot type"
   block:
-  - name: "Check whether machine is UEFI-based"
-    stat:
-      path: /sys/firmware/efi
-    register: rhel_08_efi_boot
-        
-  - name: set fact for legacy or uefi boot
-    set_fact:
-      rhel8cis_legacy_boot: 'true'
-    when: not rhel_08_efi_boot.stat.exists
+      - name: "PRELIM | Check whether machine is UEFI-based"
+        stat:
+            path: /sys/firmware/efi
+        register: rhel_08_efi_boot
+
+      - name: "PRELIM | AUDIT | set legacy boot and grub path | Bios"
+        set_fact:
+            rhel8cis_legacy_boot: true
+            grub2_path: /etc/grub2.cfg
+        when: not rhel_08_efi_boot.stat.exists
+
+      - name: "PRELIM | set grub fact | UEFI"
+        set_fact:
+            grub2_path: /etc/grub2-efi.cfg
+        when: rhel_08_efi_boot.stat.exists
+
+# - name: debug legacy boot var
+#   debug:
+#       msg: |
+#           legacy_boot={{ rhel8cis_legacy_boot }}
+#           grub2_path={{ grub2_path }}
+
+- name: "PRELIM | AUDIT | Ensure permissions on bootloader config are configured | Get grub config file stats"
+  stat:
+      path: "{{ grub2_path }}"
+  changed_when: false
+  register: grub_cfg
+
+# - name: debug grub stat
+#   debug:
+#       var: grub_cfg.stat
 
 - name: "PRELIM | Check for rhnsd service"
   shell: "systemctl show rhnsd | grep LoadState | cut -d = -f 2"

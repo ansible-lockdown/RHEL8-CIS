@@ -25,7 +25,7 @@
             msg:
                 - "Below are the current nft tables, please review"
                 - "{{ rhel8cis_3_4_3_2_nft_tables.stdout_lines }}"
-        when: rhel8cis_3_4_3_2_nft_tables.stdout != ""
+        when: rhel8cis_3_4_3_2_nft_tables.stdout | length > 0
 
       - name: "SCORED | 3.4.3.2 | AUDIT | Ensure a table exists | Alert on no tables"
         debug:
@@ -33,7 +33,7 @@
                 - "Warning! You currently have no nft tables, please review your setup"
                 - 'Use the command "nft create table inet <table name>" to create a new table'
         when:
-            - rhel8cis_3_4_3_2_nft_tables.stdout == ""
+            - rhel8cis_3_4_3_2_nft_tables.stdout | length == 0
             - not rhel8cis_nft_tables_autonewtable
 
       - name: "SCORED | 3.4.3.2 | PATCH | Ensure a table exists | Create table if needed"
@@ -82,6 +82,8 @@
 
       - name: "SCORED | 3.4.3.3 | PATCH | Ensure base chains exist | Create chains if needed"
         shell: "{{ item }}"
+        args:
+            warn: no
         failed_when: no
         with_items:
             - nft create chain inet "{{ rhel8cis_nft_tables_tablename }}" input { type filter hook input priority 0 \; }

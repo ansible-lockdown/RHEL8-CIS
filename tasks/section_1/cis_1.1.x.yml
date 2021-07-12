@@ -91,7 +91,7 @@
       - level1-workstation
       - scored
       - patch
-      - mounts  
+      - mounts
 
 - name: "SCORED | 1.1.11 | PATCH | Ensure separate partition exists for /var/log"
   mount:
@@ -151,7 +151,7 @@
       - scored
       - audit
       - mounts
-      - rule_1.1.13 
+      - rule_1.1.13
       - skip_ansible_lint
 
 - name: |
@@ -203,11 +203,14 @@
 
 - name: "SCORED | 1.1.21 | PATCH | Ensure sticky bit is set on all world-writable directories"
   shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d -perm -0002 2>/dev/null | xargs chmod a+t
+  args:
+      warn: no
   changed_when: false
   failed_when: false
   when:
       - rhel8cis_rule_1_1_21
   tags:
+      - skip_ansible_lint
       - level1-server
       - level1-workstation
       - patch
@@ -239,6 +242,10 @@
             regexp: "^(#)?install usb-storage(\\s|$)"
             line: "install usb-storage /bin/true"
             create: yes
+            owner: root
+            group: root
+            mode: 0640
+
       - name: "SCORED | 1.1.23 | PATCH | Disable USB Storage | Edit modprobe config"
         modprobe:
             name: usb-storage
