@@ -6,3 +6,8 @@
       autoremove: yes
   changed_when: no
   ignore_errors: yes
+
+- name: Reboot host
+  reboot:
+  when:
+  - not rhel8cis_skip_reboot
