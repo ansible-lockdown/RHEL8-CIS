@@ -29,22 +29,25 @@ python2_bin: /bin/python2.7
 # The audit variable found at the base
 benchmark: RHEL8-CIS
 
+# Whether to skip the reboot
+rhel8cis_skip_reboot: true
+
 #### Basic external goss audit enablement settings ####
 #### Precise details - per setting can be found at the bottom of this file ####
 
 ### Goss is required on the remote host
-rhel8cis_setup_audit: false
+setup_audit: false
 # How to retrive goss
 # Options are copy or download - detailed settings at the bottom of this file
 # you will need to access to either github or the file already dowmloaded
 get_goss_file: download
 
 # how to get audit files onto host options
-# options are git/copy/get_url
+# options are git/copy/get_url - use local if already available to to the host (adjust paths accordingly)
 rhel8cis_audit_content: git
 
 # enable audits to run - this  runs the audit and get the latest content
-rhel8cis_run_audit: false
+run_audit: false
 
 ### End Goss enablements ####
 #### Detailed settings found at the end of this document ####
@@ -574,8 +577,8 @@ rhel8cis_dotperm_ansiblemanaged: true
 goss_version:
     release: v0.3.16
     checksum: 'sha256:827e354b48f93bce933f5efcd1f00dc82569c42a179cf2d384b040d8a80bfbfb'
-goss_path: /usr/local/bin/
-goss_bin: "{{ goss_path }}goss"
+audit_bin_path: /usr/local/bin/
+audit_bin: "{{ audit_bin_path }}goss"
 audit_format: json
 
 # if get_goss_file == download change accordingly
@@ -603,15 +606,15 @@ rhel8cis_audit_files: "/var/tmp/{{ benchmark }}-Audit/"
 
 ## Goss configuration information
 # Where the goss configs and outputs are stored
-goss_out_dir: '/var/tmp'
-goss_audit_dir: "{{ goss_out_dir }}/{{ benchmark }}-Audit/"
-pre_audit_outfile: "{{ goss_out_dir }}/{{ ansible_hostname }}_pre_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
-post_audit_outfile: "{{ goss_out_dir }}/{{ ansible_hostname }}_post_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
+audit_out_dir: '/var/tmp'
+audit_conf_dir: "{{ audit_out_dir }}/{{ benchmark }}-Audit/"
+pre_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}_pre_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
+post_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}_post_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
 
 ## The following should not need changing
-goss_file: "{{ goss_audit_dir }}goss.yml"
-goss_vars_path: "{{ goss_audit_dir }}/vars/{{ ansible_hostname }}.yml"
+goss_file: "{{ audit_conf_dir }}goss.yml"
+audit_vars_path: "{{ audit_conf_dir }}/vars/{{ ansible_hostname }}.yml"
 audit_results: |
       The pre remediation results are: {{ pre_audit_summary }}.
       The post remediation results are: {{ post_audit_summary }}.
-      Full breakdown can be found in {{ goss_out_dir }}
+      Full breakdown can be found in {{ audit_out_dir }}

@@ -54,9 +54,9 @@
   - prelim_tasks
   - always
 
-- import_tasks: pre_LE_audit.yml
+- import_tasks: pre_remediation_audit.yml
   when:
-  - rhel8cis_run_audit
+  - run_audit
 
 - name: Gather the package facts
   package_facts:
@@ -103,12 +103,12 @@
 - name: flush handlers
   meta: flush_handlers
 
-- import_tasks: post_LE_audit.yml
+- import_tasks: post_remediation_audit.yml
   when:
-  - rhel8cis_run_audit
+  - run_audit
 
 - name: Show Audit Summary
   debug:
       msg: "{{ audit_results.split('\n') }}"
   when:
-  - rhel8cis_run_audit
+  - run_audit
