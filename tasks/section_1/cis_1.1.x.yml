@@ -137,6 +137,7 @@
       src: "{{ item.device }}"
       fstype: "{{ item.fstype }}"
       state: present
+      opts: defaults,{% if rhel8cis_rule_1_1_14 %}nodev{% endif %}
   loop: "{{ ansible_mounts }}"
   when:
       - item.mount == "/home"
