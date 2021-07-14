@@ -44,6 +44,7 @@
   package:
       name: audit
       state: present
+  when: rhel8cis_level_2
 
 - name: "PRELIM | Section 5.1 | Configure cron"
   package:
