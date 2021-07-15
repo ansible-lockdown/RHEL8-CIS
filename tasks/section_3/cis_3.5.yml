@@ -12,7 +12,7 @@
         register: rhel_08_nmcli_available
 
       - name: "3.5 | L1 | AUDIT | Ensure wireless interfaces are disabled | Check if wifi is enabled"
-        command: nmcli radio all
+        command: nmcli radio wifi
         register: rhel_08_wifi_enabled
         changed_when: rhel_08_wifi_enabled.stdout != "disabled"
         failed_when: false
