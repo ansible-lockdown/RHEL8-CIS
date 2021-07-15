@@ -7,6 +7,9 @@
   changed_when: no
   ignore_errors: yes
 
+- name: flush handlers
+  meta: flush_handlers
+
 - name: Reboot host
   reboot:
   when:
