@@ -100,11 +100,6 @@
   - post_tasks
   - always
 
-- name: flush handlers if not rebooting
-  meta: flush_handlers
-  when:
-  - rhel8cis_skip_reboot
-
 - import_tasks: post_remediation_audit.yml
   when:
   - run_audit
