@@ -8,7 +8,7 @@
 - sugroup assertion added 5.7
 - added extra logic variable to authselect/config section 5.3 related
 - Rocky tested (comments in readme not rsyslog intsalled at build or will fail)
-- section 1.1 mount work has been rewritten
+- section 1.1 mount work has been rewritten and systemd tmp mount options added
 
 ## 1.2.3
 
