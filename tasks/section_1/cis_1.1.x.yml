@@ -54,6 +54,7 @@
       - rule_1.1.3
       - rule_1.1.4
       - rule_1.1.5
+      - skip_ansible_lint
 
 - name: "1.1.6 | L2 | AUDIT | Ensure separate partition exists for /var"
   block:
@@ -131,6 +132,7 @@
       - scored
       - patch
       - mounts
+      - skip_ansible_lint
 
 - name: "1.1.11 | L2 | AUDIT | Ensure separate partition exists for /var/log | skip if not present"
   block:
@@ -158,7 +160,6 @@
       - mounts
       - rule_1.1.11
       - skip_ansible_lint
-  
 
 - name: "1.1.12 | L2 | AUDIT | Ensure separate partition exists for /var/log/audit"
   block:
@@ -212,6 +213,7 @@
       - audit
       - mounts
       - rule_1.1.13
+      - skip_ansible_lint
 
 - name: "1.1.14 | L1 | PATCH | Ensure nodev option set on /home partition | skips if not present"
   mount:
@@ -232,6 +234,7 @@
       - patch
       - mounts
       - rule_1.1.13
+      - skip_ansible_lint
 
 - name: |
          "1.1.15 | L1 | PATCH | Ensure nodev option set on /dev/shm partition | skips if not present

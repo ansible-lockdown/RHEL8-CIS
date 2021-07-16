@@ -17,6 +17,7 @@
       - notscored
       - patch
       - rule_1.2.1
+      - skip_ansible_lint  # Added as no_log still errors on ansuible-lint
 
 - name: "1.2.2 | L1 | PATCH | Disable the rhnsd Daemon"
   service:

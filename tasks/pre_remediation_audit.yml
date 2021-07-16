@@ -1,3 +1,5 @@
+---
+
 - name: Setup the audit
   include_tasks: LE_audit_setup.yml
   when:
@@ -7,46 +9,46 @@
 
 - name: "Ensure {{ audit_conf_dir }} exists"
   file:
-    path: "{{ audit_conf_dir }}"
-    state: directory
-    mode: '0755'
+      path: "{{ audit_conf_dir }}"
+      state: directory
+      mode: '0755'
 
 - name: If using git for content set up
   block:
   - name: Install git (rh8 python3)
     package:
-      name: git
-      state: present
+        name: git
+        state: present
     when: ansible_distribution_major_version == 8
-  
+
   - name: Install git (rh7 python2)
     package:
-      name: git
-      state: present
+        name: git
+        state: present
     vars:
-      ansible_python_interpreter: "{{ python2_bin }}"
+        ansible_python_interpreter: "{{ python2_bin }}"
     when: ansible_distribution_major_version == 7
 
   - name: retrieve audit content files from git
     git:
-      repo: "{{ rhel8cis_audit_file_git }}"
-      dest: "{{ audit_conf_dir }}"
-      version: "{{ rhel8cis_audit_git_version }}"
+        repo: "{{ rhel8cis_audit_file_git }}"
+        dest: "{{ audit_conf_dir }}"
+        version: "{{ rhel8cis_audit_git_version }}"
   when:
   - rhel8cis_audit_content == 'git'
 
 - name: copy to audit content files to server
   copy:
-    src: "{{ rhel8cis_audit_local_copy }}"
-    dest: "{{ audit_conf_dir }}"
-    mode: 0644
+      src: "{{ rhel8cis_audit_local_copy }}"
+      dest: "{{ audit_conf_dir }}"
+      mode: 0644
   when:
   - rhel8cis_audit_content == 'copy'
 
 - name: get audit content from url
   get_url:
-    url: "{{ rhel8cis_audit_files_url }}"
-    dest: "{{ audit_conf_dir }}"
+      url: "{{ rhel8cis_audit_files_url }}"
+      dest: "{{ audit_conf_dir }}"
   when:
   - rhel8cis_audit_content == 'get_url'
 
@@ -54,34 +56,34 @@
   block:
   - name: Check for goss file
     stat:
-      path: "{{ audit_bin }}"
+        path: "{{ audit_bin }}"
     register: goss_available
-  
+
   - name: If audit ensure goss is available
     assert:
-      msg: "Audit has been selected: unable to find goss binary at {{ audit_bin }}"
-    when: 
+        msg: "Audit has been selected: unable to find goss binary at {{ audit_bin }}"
+    when:
     - not goss_available.stat.exists
   when:
   - run_audit
 
 - name: "Check whether machine is UEFI-based"
   stat:
-    path: /sys/firmware/efi
+      path: /sys/firmware/efi
   register: rhel8_efi_boot
   tags:
   - goss_template
 
 - name: Copy ansible default vars values to test audit
   template:
-    src: ansible_vars_goss.yml.j2
-    dest: "{{ audit_vars_path }}"
-    mode: 0600
+      src: ansible_vars_goss.yml.j2
+      dest: "{{ audit_vars_path }}"
+      mode: 0600
   when:
   - run_audit
   tags:
   - goss_template
-  
+
 - name: "Run pre_remediation {{ benchmark }} audit"
   goss:
       goss_path: "{{ audit_bin }}"
@@ -98,13 +100,13 @@
   - name: "capture data {{ pre_audit_outfile }}"
     command: "cat {{ pre_audit_outfile }}"
     register: pre_audit
-    changed_when: false 
-    
+    changed_when: false
+
   - name: Capture pre-audit result
-    set_fact: 
-      pre_audit_summary: "{{ pre_audit.stdout | from_json |json_query(summary) }}"
+    set_fact:
+        pre_audit_summary: "{{ pre_audit.stdout | from_json |json_query(summary) }}"
     vars:
-      summary: 'summary."summary-line"'
+        summary: 'summary."summary-line"'
   when:
   - audit_format == "json"
 
@@ -117,6 +119,6 @@
 
   - name: Capture pre-audit result
     set_fact:
-      pre_audit_summary: "{{ pre_audit.stdout_lines }}"
+        pre_audit_summary: "{{ pre_audit.stdout_lines }}"
   when:
   - audit_format == "documentation"
