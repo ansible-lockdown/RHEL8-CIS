@@ -35,7 +35,7 @@
             create: yes
             mode: 0600
 
-      - name: " 1.1.1.2 | L2 | PATCH | Ensure mounting of vFAT filesystems is limited | Disable vFAT"
+      - name: "1.1.1.2 | L2 | PATCH | Ensure mounting of vFAT filesystems is limited | Disable vFAT"
         modprobe:
             name: vfat
             state: absent
