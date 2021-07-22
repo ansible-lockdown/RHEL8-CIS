@@ -49,6 +49,9 @@ rhel8cis_audit_content: git
 # enable audits to run - this  runs the audit and get the latest content
 run_audit: false
 
+# Timeout for those cmds that take longer to run where timeout set
+audit_cmd_timeout: 30000
+
 ### End Goss enablements ####
 #### Detailed settings found at the end of this document ####
 
