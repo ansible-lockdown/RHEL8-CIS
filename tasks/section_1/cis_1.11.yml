@@ -12,3 +12,4 @@
       - level2-workstation
       - patch
       - rule_1.11
+  ignoreerrors: yes
