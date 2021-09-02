@@ -44,7 +44,7 @@ get_goss_file: download
 
 # how to get audit files onto host options
 # options are git/copy/get_url - use local if already available to to the host (adjust paths accordingly)
-rhel8cis_audit_content: git
+audit_content: git
 
 # enable audits to run - this  runs the audit and get the latest content
 run_audit: false

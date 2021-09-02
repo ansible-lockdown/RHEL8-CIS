@@ -35,7 +35,7 @@
         dest: "{{ audit_conf_dir }}"
         version: "{{ rhel8cis_audit_git_version }}"
   when:
-  - rhel8cis_audit_content == 'git'
+  - audit_content == 'git'
 
 - name: copy to audit content files to server
   copy:
@@ -43,14 +43,14 @@
       dest: "{{ audit_conf_dir }}"
       mode: 0644
   when:
-  - rhel8cis_audit_content == 'copy'
+  - audit_content == 'copy'
 
 - name: get audit content from url
   get_url:
       url: "{{ rhel8cis_audit_files_url }}"
       dest: "{{ audit_conf_dir }}"
   when:
-  - rhel8cis_audit_content == 'get_url'
+  - audit_content == 'get_url'
 
 - name: Check Goss is available
   block:
