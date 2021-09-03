@@ -1,11 +1,26 @@
 ---
 
-- name: "SCORED | 1.5.1 | PATCH | Ensure permissions on bootloader config are configured"
-  file:
-      path: "{{ grub_cfg.stat.lnk_source }}"
-      owner: root
-      group: root
-      mode: 0600
+- name: "1.5.1 | L1 | PATCH | Ensure permissions on bootloader config are configured"
+  block:
+      - name: "1.5.1 | L1 | PATCH | Ensure permissions on bootloader config are configured"
+        file:
+            path: "{{ grub_cfg.stat.lnk_source }}"
+            owner: root
+            group: root
+            mode: 0600
+
+      - name: "1.5.1 | L1 | PATCH | Ensure permissions on bootloader config are configured | UEFI"
+        mount:
+            name: /boot/efi
+            src: "UUID={{ item.uuid }}"
+            fstype: vfat
+            state: present
+            opts: defaults,umask=0027,fmask=0077,uid=0,gid=0
+            passno: '0'
+        loop: "{{ ansible_mounts }}"
+        when:
+            - not rhel8cis_legacy_boot
+            - item.mount == "/boot/efi"
   when:
       - rhel8cis_rule_1_5_1
       - grub_cfg.stat.exists
@@ -18,7 +33,7 @@
       - patch
       - rule_1.5.1
 
-- name: "SCORED | 1.5.2 | PATCH | Ensure bootloader password is set"
+- name: "1.5.2 | L1 | PATCH | Ensure bootloader password is set"
   copy:
       dest: /boot/grub2/user.cfg
       content: "GRUB2_PASSWORD={{ rhel8cis_bootloader_password_hash }}"
@@ -39,22 +54,21 @@
       - patch
       - rule_1.5.2
 
-- name: "NOTSCORED | 1.5.3 | PATCH | Ensure authentication required for single user mode"
+- name: "1.5.3 | L1 | PATCH | Ensure authentication required for single user mode"
   block:
-      - name: "NOTSCORED | 1.5.3 | PATCH | Ensure authentication required for single user mode | Emergency service"
+      - name: "1.5.3 | L1 | PATCH | Ensure authentication required for single user mode | Emergency service"
         lineinfile:
             dest: /usr/lib/systemd/system/emergency.service
             regexp: '/sbin/sulogin'
             line: 'ExecStart=-/usr/lib/systemd/systemd-sulogin-shell emergency'
 
-      - name: "NOTSCORED | 1.5.3 | PATCH | Ensure authentication required for single user mode | Rescue service"
+      - name: "1.5.3 | L1 | PATCH | Ensure authentication required for single user mode | Rescue service"
         lineinfile:
             dest: /usr/lib/systemd/system/rescue.service
             regexp: '/sbin/sulogin'
             line: 'ExecStart=-/usr/lib/systemd/systemd-sulogin-shell rescue'
   when:
       - rhel8cis_rule_1_5_3
-      - ansible_distribution_major_version == 8
   tags:
       - level1-server
       - level1-workstation

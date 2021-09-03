@@ -2,12 +2,14 @@
 
 - name: "Run post_remediation {{ benchmark }} audit"
   goss:
-      goss_path: "{{ goss_bin }}"
+      goss_path: "{{ audit_bin }}"
       path: "{{ goss_file }}"
-      vars_path: "{{ goss_vars_path }}"
-      format: "{{ goss_format }}"
+      vars_path: "{{ audit_vars_path }}"
+      format: "{{ audit_format }}"
       output_file: "{{ post_audit_outfile }}"
   failed_when: false
+  environment:
+      GOSS_FMT_OPTIONS: Pretty
 
 - name: ensure audit files readable by users
   file:
@@ -31,7 +33,7 @@
         vars:
             summary: 'summary."summary-line"'
   when:
-      - goss_format == "json"
+      - audit_format == "json"
 
 - name: Capture audit data if documentation format
   block:
@@ -44,4 +46,4 @@
         set_fact:
             post_audit_summary: "{{ post_audit.stdout_lines }}"
   when:
-      - goss_format == "documentation"
+      - audit_format == "documentation"

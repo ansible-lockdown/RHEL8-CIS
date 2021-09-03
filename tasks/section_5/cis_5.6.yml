@@ -1,27 +1,27 @@
 ---
 
 # this will just display the list of consoles. The site will need to confirm the allowed consoles are correct and change manually if needed.
-- name: "NOTSCORED | 5.6 | AUDIT | Ensure root login is restricted to system console"
+- name: "5.6 | L1 | AUDIT | Ensure root login is restricted to system console"
   block:
-      - name: "NOTSCORED | 5.6 | AUDIT | Ensure root login is restricted to system console | Check if securetty file exists"
+      - name: "5.6 | L1 | AUDIT | Ensure root login is restricted to system console | Check if securetty file exists"
         stat:
             path: /etc/securetty
         register: rhel8cis_securetty_check
 
-      - name: "NOTSCORED | 5.6 | AUDIT | Ensure root login is restricted to system console | Capture consoles"
+      - name: "5.6 | L1 | AUDIT | Ensure root login is restricted to system console | Capture consoles"
         command: cat /etc/securetty
         changed_when: false
         register: rhel_08_5_6_audit
         when: rhel8cis_securetty_check.stat.exists
 
-      - name: "NOTSCORED | 5.6 | AUDIT | Ensure root login is restricted to system console | Display Console"
+      - name: "5.6 | L1 | AUDIT |Ensure root login is restricted to system console | Display Console"
         debug:
             msg:
                 - "These are the consoles with root login access, please review:"
                 - "{{ rhel_08_5_6_audit.stdout_lines }}"
         when: rhel8cis_securetty_check.stat.exists
 
-      - name: "NOTSCORED | 5.6 | AUDIT | Ensure root login is restricted to system console | Display that no securetty file exists"
+      - name: "5.6 | L1 | AUDIT | Ensure root login is restricted to system console | Display that no securetty file exists"
         debug:
             msg:
                 - "There is no /etc/securetty file, this has been removed by default in RHEL8"

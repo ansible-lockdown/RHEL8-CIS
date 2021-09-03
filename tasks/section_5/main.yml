@@ -8,6 +8,8 @@
 
 - name: "SECTION | 5.3 | Configure Profiles"
   include: cis_5.3.x.yml
+  when:
+  - rhel8cis_use_authconfig
 
 - name: "SECTION | 5.4 | Configure PAM "
   include: cis_5.4.x.yml

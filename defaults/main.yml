@@ -1,5 +1,5 @@
 ---
-# defaults file for rhel8-CIS
+# defaults file for rhel8-cis
 
 rhel8cis_skip_for_travis: false
 rhel8cis_system_is_container: false
@@ -29,14 +29,31 @@ python2_bin: /bin/python2.7
 # The audit variable found at the base
 benchmark: RHEL8-CIS
 
-# Enable goss binary download
-rhel8cis_setup_audit: false
-# Options are downoad from github or copy from pre downloaded location
-# copy or download
+# Whether to skip the reboot
+rhel8cis_skip_reboot: true
+
+#### Basic external goss audit enablement settings ####
+#### Precise details - per setting can be found at the bottom of this file ####
+
+### Goss is required on the remote host
+setup_audit: false
+# How to retrive goss
+# Options are copy or download - detailed settings at the bottom of this file
+# you will need to access to either github or the file already dowmloaded
 get_goss_file: download
 
-# Enable audits to run
-rhel8cis_run_audit: false
+# how to get audit files onto host options
+# options are git/copy/get_url - use local if already available to to the host (adjust paths accordingly)
+audit_content: git
+
+# enable audits to run - this  runs the audit and get the latest content
+run_audit: false
+
+# Timeout for those cmds that take longer to run where timeout set
+audit_cmd_timeout: 30000
+
+### End Goss enablements ####
+#### Detailed settings found at the end of this document ####
 
 # These variables correspond with the CIS rule IDs or paragraph numbers defined in
 # the CIS benchmark documents.
@@ -170,10 +187,12 @@ rhel8cis_rule_3_4_4_1_1: true
 rhel8cis_rule_3_4_4_1_2: true
 rhel8cis_rule_3_4_4_1_3: true
 rhel8cis_rule_3_4_4_1_4: true
+rhel8cis_rule_3_4_4_1_5: true
 rhel8cis_rule_3_4_4_2_1: true
 rhel8cis_rule_3_4_4_2_2: true
 rhel8cis_rule_3_4_4_2_3: true
 rhel8cis_rule_3_4_4_2_4: true
+rhel8cis_rule_3_4_4_2_5: true
 rhel8cis_rule_3_5: true
 rhel8cis_rule_3_6: true
 
@@ -437,7 +456,7 @@ rhel8cis_nft_tables_autonewtable: true
 rhel8cis_nft_tables_tablename: filter
 
 # 3.4.3.3 Set nftables new chain create
-rhel8cis_nft_tables_autoChainCreate: true
+rhel8cis_nft_tables_autochaincreate: true
 
 # Warning Banner Content (issue, issue.net, motd)
 rhel8cis_warning_banner: |
@@ -495,16 +514,18 @@ rhel8cis_ssh_maxsessions: 4
 rhel8cis_inactivelock:
     lock_days: 30
 
-# 5.3.1/5.3.2 Custon authselect profile settings. Settings in place now will fail, they are place holders from the control example
+# 5.3.1/5.3.2 Custom authselect profile settings. Settings in place now will fail, they are place holders from the control example
+# Due to the way many multiple options and ways to configure this control needs to be enabled and settings adjusted to minimise risk
+rhel8cis_use_authconfig: false
 rhel8cis_authselect:
     custom_profile_name: custom-profile
     default_file_to_copy: "sssd --symlink-meta"
     options: with-sudo with-faillock without-nullok
 
-# 5.3.1 Enable automation to creat custom profile settings, using the setings above
+# 5.3.1 Enable automation to create custom profile settings, using the settings above
 rhel8cis_authselect_custom_profile_create: false
 
-# 5.3.2 Enable autmoation to select custom profile options, using the settings above
+# 5.3.2 Enable automation to select custom profile options, using the settings above
 rhel8cis_authselect_custom_profile_select: false
 
 rhel8cis_pass:
@@ -513,7 +534,7 @@ rhel8cis_pass:
     warn_age: 7
 # Syslog system - either rsyslog or syslog-ng
 rhel8cis_syslog: rsyslog
-rhel8cis_rsyslog_ansibleManaged: true
+rhel8cis_rsyslog_ansiblemanaged: true
 
 rhel8cis_vartmp:
     source: /tmp
@@ -551,45 +572,52 @@ rhel8cis_rpm_audit_file: /var/tmp/rpm_file_check
 # RHEL-08_6.1.10 Allow ansible to adjust world-writable files. False will just display world-writable files, True will remove world-writable
 rhel8cis_no_world_write_adjust: true
 rhel8cis_passwd_label: "{{ (this_item | default(item)).id }}: {{ (this_item | default(item)).dir }}"
-rhel8cis_dotperm_ansibleManaged: true
+# 6.2.9
+rhel8cis_dotperm_ansiblemanaged: true
+#### Goss Configuration Settings ####
 
-# Goss Audit Variables
-# how to get audit files onto host options
-# options are git/copy/get_url
-rhel8cis_audit_content: git
+### Goss binary settings ###
+goss_version:
+    release: v0.3.16
+    checksum: 'sha256:827e354b48f93bce933f5efcd1f00dc82569c42a179cf2d384b040d8a80bfbfb'
+audit_bin_path: /usr/local/bin/
+audit_bin: "{{ audit_bin_path }}goss"
+audit_format: json
 
+# if get_goss_file == download change accordingly
+goss_url: "https://github.com/aelsabbahy/goss/releases/download/{{ goss_version.release }}/goss-linux-amd64"
+
+## if get_goss_file - copy the following needs to be updated for your environment
+## it is expected that it will be copied from somewhere accessible to the control node
+## e.g copy from ansible control node to remote host
+copy_goss_from_path: /some/accessible/path
+
+### Goss Audit Benchmark file ###
+## managed by the control rhel8cis_audit_content
 # git
 rhel8cis_audit_file_git: "https://github.com/ansible-lockdown/{{ benchmark }}-Audit.git"
 rhel8cis_audit_git_version: main
 
 # copy:
-# rhel8cis_audit_local_copy: "some path to copy from"
+rhel8cis_audit_local_copy: "some path to copy from"
 
 # get_url:
-# rhel8cis_audit_files_url: "some url maybe s3?"
+rhel8cis_audit_files_url: "some url maybe s3?"
 
+# Where the goss audit configuration will be stored
+rhel8cis_audit_files: "/var/tmp/{{ benchmark }}-Audit/"
 
-## audit controls ##
-goss_version:
-    release: v0.3.16
-    checksum: 'sha256:827e354b48f93bce933f5efcd1f00dc82569c42a179cf2d384b040d8a80bfbfb'
+## Goss configuration information
+# Where the goss configs and outputs are stored
+audit_out_dir: '/var/tmp'
+audit_conf_dir: "{{ audit_out_dir }}/{{ benchmark }}-Audit/"
+pre_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}_pre_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
+post_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}_post_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
 
-### Audit Settings ###
-# goss_checksum: "checksum_{{ goss_version }}"
-goss_path: /usr/local/bin/
-goss_bin: "{{ goss_path }}goss"
-goss_format: documentation
-goss_url: "https://github.com/aelsabbahy/goss/releases/download/{{ goss_version.release }}/goss-linux-amd64"
-
-## Goss tests information
-goss_audit_dir: "/var/tmp/{{ benchmark }}-Audit/"
-goss_file: "{{ goss_audit_dir }}goss.yml"
-goss_vars_path: "{{ goss_audit_dir }}/vars/{{ ansible_hostname }}.yml"
-goss_out_dir: '/var/tmp'
-pre_audit_outfile: "{{ goss_out_dir }}/{{ ansible_hostname }}_pre_scan_{{ ansible_date_time.epoch }}"
-post_audit_outfile: "{{ goss_out_dir }}/{{ ansible_hostname }}_post_scan_{{ ansible_date_time.epoch }}"
-
-Audit_results: |
+## The following should not need changing
+goss_file: "{{ audit_conf_dir }}goss.yml"
+audit_vars_path: "{{ audit_conf_dir }}/vars/{{ ansible_hostname }}.yml"
+audit_results: |
       The pre remediation results are: {{ pre_audit_summary }}.
       The post remediation results are: {{ post_audit_summary }}.
-      Full breakdown can be found in {{ goss_out_dir }}
+      Full breakdown can be found in {{ audit_out_dir }}

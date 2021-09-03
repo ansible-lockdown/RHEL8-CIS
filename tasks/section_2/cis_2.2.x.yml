@@ -1,8 +1,8 @@
 ---
 
-- name: "SCORED | 2.2.2 | PATCH | Ensure X Window System is not installed"
+- name: "2.2.2 | L1 | PATCH | Ensure X Window System is not installed"
   block:
-      - name: "SCORED | 2.2.2 | AUDIT | Ensure X Window System is not installed | capture xorg-x11 packages"
+      - name: "2.2.2 | L1 | AUDIT | Ensure X Window System is not installed | capture xorg-x11 packages"
         shell: rpm -qa | grep xorg-x11
         args:
             warn: no
@@ -11,7 +11,7 @@
         changed_when: false
         register: xorg_x11_installed
 
-      - name: "SCORED | 2.2.2 | PATCH | Ensure X Window System is not installed | remove packages if found"
+      - name: "2.2.2 | L1 | PATCH | Ensure X Window System is not installed | remove packages if found"
         shell: "dnf remove {{ item }}"
         args:
             warn: no
@@ -28,7 +28,7 @@
       - patch
       - rule_2.2.2
 
-- name: "SCORED | 2.2.3 | PATCH | Ensure rsync service is not enabled "
+- name: "2.2.3 | L1 | PATCH | Ensure rsync service is not enabled "
   service:
       name: rsyncd
       state: stopped
@@ -43,7 +43,7 @@
       - patch
       - rule_2.2.3
 
-- name: "SCORED | 2.2.4 | PATCH | Ensure Avahi Server is not enabled"
+- name: "2.2.4 | L1 | PATCH | Ensure Avahi Server is not enabled"
   service:
       name: avahi-daemon
       state: stopped
@@ -61,7 +61,7 @@
       - patch
       - rule_2.2.4
 
-- name: "SCORED | 2.2.5 | PATCH | Ensure SNMP Server is not enabled"
+- name: "2.2.5 | L1 | PATCH | Ensure SNMP Server is not enabled"
   service:
       name: snmpd
       state: stopped
@@ -76,7 +76,7 @@
       - patch
       - rule_2.2.5
 
-- name: "SCORED | 2.2.6 | PATCH | Ensure HTTP Proxy Server is not enabled"
+- name: "2.2.6 | L1 | PATCH | Ensure HTTP Proxy Server is not enabled"
   service:
       name: squid
       state: stopped
@@ -91,7 +91,7 @@
       - patch
       - rule_2.2.6
 
-- name: "SCORED | 2.2.7 | PATCH | Ensure Samba is not enabled"
+- name: "2.2.7 | L1 | PATCH | Ensure Samba is not enabled"
   service:
       name: smb
       state: stopped
@@ -106,7 +106,7 @@
       - patch
       - rule_2.2.7
 
-- name: "SCORED | 2.2.8 | PATCH | Ensure IMAP and POP3 server is not enabled"
+- name: "2.2.8 | L1 | PATCH | Ensure IMAP and POP3 server is not enabled"
   service:
       name: dovecot
       state: stopped
@@ -121,7 +121,7 @@
       - patch
       - rule_2.2.8
 
-- name: "SCORED | 2.2.9 | PATCH | Ensure HTTP server is not enabled"
+- name: "2.2.9 | L1 | PATCH | Ensure HTTP server is not enabled"
   service:
       name: httpd
       state: stopped
@@ -136,7 +136,7 @@
       - patch
       - rule_2.2.9
 
-- name: "SCORED | 2.2.10 | PATCH | Ensure FTP Server is not enabled"
+- name: "2.2.10 | L1 | PATCH | Ensure FTP Server is not enabled"
   service:
       name: vsftpd
       state: stopped
@@ -151,7 +151,7 @@
       - patch
       - rule_2.2.10
 
-- name: "SCORED | 2.2.11 | PATCH | Ensure DNS Server is not enabled"
+- name: "2.2.11 | L1 | PATCH | Ensure DNS Server is not enabled"
   service:
       name: named
       state: stopped
@@ -166,7 +166,7 @@
       - patch
       - rule_2.2.11
 
-- name: "SCORED | 2.2.12 | PATCH | Ensure NFS is not enabled"
+- name: "2.2.12 | L1 | PATCH | Ensure NFS is not enabled"
   service:
       name: nfs-server
       state: stopped
@@ -184,7 +184,7 @@
       - patch
       - rule_2.2.12
 
-- name: "SCORED | 2.2.13 | PATCH | Ensure RPC is not enabled"
+- name: "2.2.13 | L1 | PATCH | Ensure RPC is not enabled"
   service:
       name: rpcbind
       state: stopped
@@ -202,7 +202,7 @@
       - patch
       - rule_2.2.7
 
-- name: "SCORED | 2.2.14 | PATCH | Ensure LDAP server is not enabled"
+- name: "2.2.14 | L1 | PATCH | Ensure LDAP server is not enabled"
   service:
       name: slapd
       state: stopped
@@ -220,7 +220,7 @@
       - patch
       - rule_2.2.6
 
-- name: "SCORED | 2.2.15 | PATCH | Ensure DHCP Server is not enabled"
+- name: "2.2.15 | L1 | PATCH | Ensure DHCP Server is not enabled"
   service:
       name: dhcpd
       state: stopped
@@ -238,7 +238,7 @@
       - patch
       - rule_2.2.15
 
-- name: "SCORED | 2.2.16 | PATCH | Ensure CUPS is not enabled"
+- name: "2.2.16 | L1 | PATCH | Ensure CUPS is not enabled"
   service:
       name: cups
       state: stopped
@@ -256,7 +256,7 @@
       - patch
       - rule_2.2.16
 
-- name: "SCORED | 2.2.17 | PATCH | Ensure NIS Server is not enabled"
+- name: "2.2.17 | L1 | PATCH | Ensure NIS Server is not enabled"
   service:
       name: ypserv
       state: stopped
@@ -271,7 +271,7 @@
       - patch
       - rule_2.2.17
 
-- name: "SCORED | 2.2.18 | PATCH | Ensure mail transfer agent is configured for local-only mode"
+- name: "2.2.18 | L1 | PATCH | Ensure mail transfer agent is configured for local-only mode"
   lineinfile:
       dest: /etc/postfix/main.cf
       regexp: "^(#)?inet_interfaces"

@@ -1,6 +1,6 @@
 ---
 
-- name: "SCORED | 1.8.2 | PATCH | Ensure GDM login banner is configured"
+- name: "1.8.2 | L1 | PATCH | Ensure GDM login banner is configured"
   lineinfile:
       dest: "{{ item.file }}"
       regexp: "{{ item.regexp }}"

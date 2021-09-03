@@ -33,10 +33,22 @@
   check_mode: no
   register: system_wide_crypto_policy
 
+- name: "PRELIM | if systemd coredump"
+  stat:
+      path: /etc/systemd/coredump.conf
+  register: systemd_coredump
+  when:
+      - rhel8cis_rule_1_6_1
+
+- name: "PRELIM | Section 1.1 | Create list of mount points"
+  set_fact:
+      mount_names: "{{ ansible_mounts | map(attribute='mount') | list }}"
+
 - name: "PRELIM | Section 4.1 | Configure System Accounting (auditd)"
   package:
       name: audit
       state: present
+  when: rhel8cis_level_2
 
 - name: "PRELIM | Section 5.1 | Configure cron"
   package:
@@ -48,6 +60,7 @@
       name: authconfig
       state: present
   when:
+      - rhel8cis_use_authconfig
       - rhel8cis_rule_5_3_1 or
         rhel8cis_rule_5_3_2 or
         rhel8cis_rule_5_3_3

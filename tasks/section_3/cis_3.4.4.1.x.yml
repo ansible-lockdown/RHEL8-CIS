@@ -1,15 +1,15 @@
 ---
 
-- name: "SCORED | 3.4.4.1.1 | PATCH | Ensure default deny firewall policy"
+- name: "3.4.4.1.1 | L1 | PATCH | Ensure iptables default deny firewall policy"
   block:
-      - name: "SCORED | 3.4.4.1.1 | PATCH | Ensure default deny firewall policy | Configure ssh to be allowed"
+      - name: "3.4.4.1.1 | L1 |  PATCH |  Ensure iptables default deny firewall policy | Configure ssh to be allowed"
         iptables:
             chain: INPUT
             protocol: tcp
             destination_port: "22"
             jump: ACCEPT
 
-      - name: "SCORED | 3.4.4.1.1 | PATCH | Ensure default deny firewall policy | Set drop items"
+      - name: "3.4.4.1.1 | L1 | PATCH | Ensure iptables default deny firewall policy | Set drop items"
         iptables:
             policy: DROP
             chain: "{{ item }}"
@@ -26,23 +26,23 @@
       - patch
       - rule_3.4.4.1.1
 
-- name: "SCORED | 3.4.4.1.2 | PATCH | Ensure loopback traffic is configured"
+- name: "3.4.4.1.2 | L1 | PATCH | Ensure iptables loopback traffic is configured"
   block:
-      - name: "SCORED | 3.4.4.1.2 | PATCH | Ensure loopback traffic is configured | INPUT Loopback ACCEPT"
+      - name: "3.4.4.1.2 | L1 | Ensure iptables loopback traffic is configured | INPUT Loopback ACCEPT"
         iptables:
             action: append
             chain: INPUT
             in_interface: lo
             jump: ACCEPT
 
-      - name: "SCORED | 3.4.4.1.2 | PATCH | Ensure loopback traffic is configured | OUTPUT Loopback ACCEPT"
+      - name: "3.4.4.1.2 | L1 | PATCH | Ensure iptables loopback traffic is configured | OUTPUT Loopback ACCEPT"
         iptables:
             action: append
             chain: OUTPUT
             out_interface: lo
             jump: ACCEPT
 
-      - name: "SCORED | 3.4.4.1.2 | PATCH | Ensure loopback traffic is configured | INPUT Loopback 127.0.0.0/8"
+      - name: "3.4.4.1.2 | L1 | PATCH | Ensure iptables loopback traffic is configured | INPUT Loopback 127.0.0.0/8"
         iptables:
             action: append
             chain: INPUT
@@ -57,7 +57,7 @@
       - patch
       - rule_3.4.4.1.2
 
-- name: "NOTSCORED | 3.4.4.1.3 | PATCH | Ensure outbound and established connections are configured"
+- name: "3.4.4.1.3 | L1 | PATCH | Ensure iptables outbound and established connections are configured"
   iptables:
       action: append
       chain: '{{ item.chain }}'
@@ -81,21 +81,21 @@
       - patch
       - rule_3.4.4.1.3
 
-- name: "SCORED | 3.4.4.1.4 | PATCH | Ensure firewall rules exist for all open ports"
+- name: "3.4.4.1.4 | L1 | PATCH | Ensure iptables firewall rules exist for all open ports"
   block:
-      - name: "SCORED | 3.4.4.1.4 | AUDIT | Ensure firewall rules exist for all open ports | Get list of TCP open ports"
+      - name: "3.4.4.1.4 | L1 | AUDIT | Ensure iptables firewall rules exist for all open ports | Get list of TCP open ports"
         shell: netstat -ant |grep "tcp.*LISTEN" | awk '{ print $4 }'| sed 's/.*://'
         changed_when: false
         failed_when: false
         register: rhel8cis_3_4_4_1_4_otcp
 
-      - name: "SCORED | 3.4.4.1.4| AUDIT | Ensure firewall rules exist for all open ports | Get the list of udp open ports"
+      - name: "3.4.4.1.4 | L1 | AUDIT | Ensure iptables firewall rules exist for all open ports | Get the list of udp open ports"
         shell: netstat -ant |grep "udp.*LISTEN" | awk '{ print $4 }'| sed 's/.*://'
         changed_when: false
         failed_when: false
         register: rhel8cis_3_4_4_1_4_oudp
 
-      - name: "SCORED | 3.4.4.1.4 | PATCH | Ensure firewall rules exist for all open ports| Adjust open tcp ports"
+      - name: "3.4.4.1.4 | L1 | PATCH | Ensure iptables firewall rules exist for all open ports | Adjust open tcp ports"
         iptables:
             action: append
             chain: INPUT
@@ -108,7 +108,7 @@
             - "{{ rhel8cis_3_4_4_1_4_otcp.stdout_lines }}"
         when: rhel8cis_3_4_4_1_4_otcp.stdout is defined
 
-      - name: "SCORED | 3.4.4.1.4 | PATCH | Ensure firewall rules exist for all open ports | Adjust open udp ports"
+      - name: "3.4.4.1.4 | L1 | PATCH | Ensure iptables firewall rules exist for all open ports | Adjust open udp ports"
         iptables:
             action: append
             chain: INPUT
@@ -128,3 +128,17 @@
       - level1-workstation
       - patch
       - rule_3.4.4.1.4
+
+- name: "3.4.4.1.5 | L1 | PATCH | Ensure iptables service is enabled and active | Check if iptables is enabled"
+  service:
+      name: iptables
+      enabled: yes
+      state: started
+  when:
+      - rhel8cis_firewall == "iptables"
+      - rhel8cis_rule_3_4_4_1_5
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_3.4.4.1.5
