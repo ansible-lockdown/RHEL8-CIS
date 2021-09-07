@@ -6,6 +6,7 @@
         package:
             name: aide
             state: present
+            ignore_errors: true
 
       - name: "SCORED | 1.4.1 | PATCH | Ensure AIDE is installed | Configure AIDE"
         command: /usr/sbin/aide --init -B 'database_out=file:/var/lib/aide/aide.db.gz'
@@ -48,3 +49,4 @@
       - file_integrity
       - patch
       - rule_1.4.2
+  
