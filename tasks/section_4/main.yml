@@ -18,5 +18,5 @@
 - name: "SECTION | 4.2.3 | Configure logile perms"
   include: cis_4.2.3.yml
 
-- name: "SECTION | 4.3 | Configure logrotate"
-  include: cis_4.3.yml
+#- name: "SECTION | 4.3 | Configure logrotate"
+#  include: cis_4.3.yml
