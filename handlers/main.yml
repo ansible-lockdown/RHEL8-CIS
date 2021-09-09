@@ -43,6 +43,7 @@
   command: mount -o remount /tmp
   args:
       warn: false
+  ignore_errors: true
 
 - name: restart firewalld
   become: yes
