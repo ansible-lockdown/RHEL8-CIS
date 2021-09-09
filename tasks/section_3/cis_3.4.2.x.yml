@@ -1,10 +1,11 @@
 ---
 
-- name: "SCORED | 3.4.2.1 | PATCH | Ensure firewalld service is enabled and running"
+- name: "SCORED | 3.4.2.1 | PATCH | Ensure firewalld service is stopped and disabled at boot"
+  become: true
   service:
       name: firewalld
-      state: started
-      enabled: yes
+      state: stopped
+      enabled: no
   when:
       - rhel8cis_firewall == "firewalld"
       - rhel8cis_rule_3_4_2_1
@@ -15,6 +16,7 @@
       - rule_3_4_2_1
 
 - name: "SCORED | 3.4.2.3 | PATCH | Ensure nftables is not enabled"
+  become: true
   systemd:
       name: nftables
       enabled: false
@@ -29,6 +31,7 @@
       - rule_3_4_2_3
 
 - name: "SCORED | 3.4.2.6 | AUDIT | Ensure unnecessary services and ports are not accepted"
+  become: true
   block:
       - name: "SCORED | 3.4.2.6 | AUDIT | Ensure unnecessary services and ports are not accepted | Get list of services and ports"
         shell: "firewall-cmd --get-active-zones | awk '!/:/ {print $1}' | while read ZN; do firewall-cmd --list-all --zone=$ZN; done"
