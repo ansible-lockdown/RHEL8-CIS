@@ -16,7 +16,7 @@
 - name: "SCORED | 1.7.1.2 | PATCH | Ensure SELinux is not disabled in bootloader configuration"
   replace:
       dest: /etc/default/grub
-      regexp: '(selinux|enforcing)\s*=\s*0\s*'
+      regexp: '(selinux|permissive)\s*=\s*0\s*'
       replace: ''
   register: selinux_grub_patch
   ignore_errors: yes
@@ -34,7 +34,7 @@
   selinux:
       conf: /etc/selinux/config
       policy: "{{ rhel8cis_selinux_pol }}"
-      state: enforcing
+      state: permissive
   when:
       - not rhel8cis_selinux_disable
       - rhel8cis_rule_1_7_1_3
@@ -46,11 +46,11 @@
       - patch
       - rule_1.7.1.3
 
-- name: "SCORED | 1.7.1.4 | PATCH | Ensure the SELinux state is enforcing"
+- name: "SCORED | 1.7.1.4 | PATCH | Ensure the SELinux state is permissive"
   selinux:
       conf: /etc/selinux/config
       policy: "{{ rhel8cis_selinux_pol }}"
-      state: enforcing
+      state: permissive
   when:
       - not rhel8cis_selinux_disable
       - rhel8cis_rule_1_7_1_4
