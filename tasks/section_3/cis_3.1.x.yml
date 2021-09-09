@@ -1,6 +1,7 @@
 ---
 
 - name: "SCORED | 3.1.1 | PATCH | Ensure IP forwarding is disabled"
+  become: true
   block:
       - name: "SCORED | 3.1.1 | PATCH | Ensure IP forwarding is disabled | Disable IPv4 forwarding"
         sysctl:
@@ -31,6 +32,7 @@
       - rule_3.1.1
 
 - name: "SCORED | 3.1.2 | PATCH | Ensure packet redirect sending is disabled"
+  become: true
   sysctl:
       name: '{{ item.name }}'
       value: '{{ item.value }}'
