@@ -1,8 +1,5 @@
 ---
 
-- name: "SECTION | 3.1.x | Packet and IP redirection"
-  include: cis_3.1.x.yml
-
 - name: "SECTION | 3.2.x | Network Parameters (Host Only)"
   include: cis_3.2.x.yml
 
