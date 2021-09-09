@@ -1,7 +1,7 @@
 ---
 
-- name: "SECTION | 3.2.x | Network Parameters (Host Only)"
-  include: cis_3.2.x.yml
+#- name: "SECTION | 3.2.x | Network Parameters (Host Only)"
+#  include: cis_3.2.x.yml
 
 - name: "SECTION | 3.3.x | Uncommon Network Protocols"
   include: cis_3.3.x.yml
