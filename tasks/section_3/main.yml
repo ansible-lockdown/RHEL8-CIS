@@ -3,8 +3,8 @@
 #- name: "SECTION | 3.2.x | Network Parameters (Host Only)"
 #  include: cis_3.2.x.yml
 
-- name: "SECTION | 3.3.x | Uncommon Network Protocols"
-  include: cis_3.3.x.yml
+#- name: "SECTION | 3.3.x | Uncommon Network Protocols"
+# include: cis_3.3.x.yml
 
 - name: "SECTION | 3.4.1.x | firewall defined"
   include: cis_3.4.1.1.yml
