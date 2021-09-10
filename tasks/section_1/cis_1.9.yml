@@ -4,6 +4,11 @@
   package:
       name: "*"
       state: latest
+      exclude:
+        - systemd
+        - systemd-libs
+        - systemd-pam
+        - systemd-udev
   when:
       - rhel8cis_rule_1_9
       - not system_is_ec2
