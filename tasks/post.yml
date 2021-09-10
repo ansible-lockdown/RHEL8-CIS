@@ -1,11 +1,9 @@
 ---
 # Post tasks
----
-
 - name: "SCORED | POST | PATCH | Ensure updates, patches, and additional security software are installed"
   package:
-      name: "*"
-      state: latest
+    name: "*"
+    state: latest
   ignore_errors: yes
     
 - name: Perform DNF package cleanup
