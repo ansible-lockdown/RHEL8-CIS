@@ -104,3 +104,8 @@
   service:
       name: syslog-ng
       state: restarted
+- name: "SCORED | POST | PATCH | Ensure updates, patches, and additional security software are installed"
+  package:
+    name: "*"
+    state: latest
+  ignore_errors: yes
