@@ -9,6 +9,11 @@
         - systemd-libs
         - systemd-pam
         - systemd-udev
+        - dracut
+        - dracut-config-rescue
+        - dracut-network
+        - dracut-squash
+        - kexec-tools
   when:
       - rhel8cis_rule_1_9
       - not system_is_ec2
