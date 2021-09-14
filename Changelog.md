@@ -1,8 +1,22 @@
 # Changes to rhel8CIS
 
+## 1.3.1
+- CIS 1.0.1 updates
+- Added Issue and PR templates
+- Added better reboot logic
+- Added options to ensure idempotence
+- Enhanced flush handlers
+- Typo fixes
+- mount check improvements
+- Linting fixes
+- Added systemd tmp mount
+- Added systemd tmpfs block
+- #110 tmp.mount support
+    - thanks to @erpadmin
+
+
 ## 1.3
 
-- CIS 1.0.1
 - extentions to LE audit capability
 - more lint and layout changes
 - sugroup assertion added 5.7
