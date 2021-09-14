@@ -246,15 +246,28 @@
          "1.1.15 | L1 | PATCH | Ensure nodev option set on /dev/shm partition | skips if mount absent
           1.1.16 | L1 | PATCH | Ensure nosuid option set on /dev/shm partition | skips if mount absent
           1.1.17 | L1 | PATCH | Ensure noexec option set on /dev/shm partition | skips if mount absent"
-  mount:
-      name: /dev/shm
-      src: "{{ item.device }}"
-      fstype: tmpfs
-      state: present
-      opts: defaults,{% if rhel8cis_rule_1_1_17 %}noexec,{% endif %}{% if rhel8cis_rule_1_1_15 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_16 %}nosuid{% endif %}
-  loop: "{{ ansible_mounts }}"
+  block:
+      - name: |
+         "1.1.15 | L1 | AUDIT | Ensure nodev option set on /dev/shm partition | Check for /dev/shm existence
+          1.1.16 | L1 | AUDIT | Ensure nosuid option set on /dev/shm partition | Check for /dev/shm existence
+          1.1.17 | L1 | AUDIT | Ensure noexec option set on /dev/shm partition | Check for /dev/shm existence"
+        shell: mount | grep -E '\s/dev/shm\s'
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_1_1_15_dev_shm_status
+
+      - name: |
+              "1.1.15 | L1 | PATCH | Ensure nodev option set on /dev/shm partition | skips if mount absent
+               1.1.16 | L1 | PATCH | Ensure nosuid option set on /dev/shm partition | skips if mount absent
+               1.1.17 | L1 | PATCH | Ensure noexec option set on /dev/shm partition | skips if mount absent"
+        mount:
+            name: /dev/shm
+            src: tmpfs
+            fstype: tmpfs
+            state: mounted
+            opts: defaults,{% if rhel8cis_rule_1_1_17 %}noexec,{% endif %}{% if rhel8cis_rule_1_1_15 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_16 %}nosuid{% endif %}
+        when: "'dev/shm' in rhel8cis_1_1_15_dev_shm_status.stdout"
   when:
-      - item.mount == "/dev/shm"
       - rhel8cis_rule_1_1_15 or
         rhel8cis_rule_1_1_16 or
         rhel8cis_rule_1_1_17
