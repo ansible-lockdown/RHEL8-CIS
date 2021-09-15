@@ -23,6 +23,18 @@
     state: restarted
   when: ssh_config.changed
 
+- name: "Register to Satellite"  # noqa 301
+  command: '/usr/bin/subscription-manager register --org Default_Organization --activationkey 1-rhel8-vm-non-production-x86_64 --force'
+  ignore_errors: true
+
+- name: "Refresh Subscriptions From Satellite"  # noqa 301
+  command: '/usr/bin/subscription-manager refresh'
+  ignore_errors: true
+
+- name: "Attach to one of the available VDC Subscriptions From Satellite"  # noqa 301
+  command: '/usr/bin/subscription-manager attach --auto'
+  ignore_errors: true
+
 - name: Check ansible version
   fail:
       msg: You must use ansible 2.9 or greater
