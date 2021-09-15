@@ -1,6 +1,6 @@
 ---
 
-- name: "NOTSCORED | 2.2.1.1 | PATCH | Ensure time synchronization is in use - service install"
+- name: "2.2.1.1 | L1 | PATCH | Ensure time synchronization is in use - service install"
   package:
       name: "{{ rhel8cis_time_synchronization }}"
       state: present
@@ -13,9 +13,9 @@
       - patch
       - rule_2.2.1.1
 
-- name: "SCORED | 2.2.1.2 | PATCH | Ensure chrony is configured"
+- name: "2.2.1.2 | L1 | PATCH | Ensure chrony is configured"
   block:
-      - name: "SCORED | 2.2.1.2 | PATCH | Ensure chrony is configured | Set configuration"
+      - name: "2.2.1.2 | L1 | PATCH | Ensure chrony is configured | Set configuration"
         template:
             src: chrony.conf.j2
             dest: /etc/chrony.conf
@@ -23,7 +23,7 @@
             group: root
             mode: 0644
 
-      - name: "SCORED | 2.2.1.2 | PATCH | Ensure chrony is configured | modify /etc/sysconfig/chronyd | 1"
+      - name: "2.2.1.2 | L1 | PATCH | Ensure chrony is configured | modify /etc/sysconfig/chronyd | 1"
         lineinfile:
             dest: /etc/sysconfig/chronyd
             regexp: "^(#)?OPTIONS"

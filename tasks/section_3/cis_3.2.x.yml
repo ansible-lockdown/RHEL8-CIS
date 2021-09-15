@@ -1,8 +1,8 @@
 ---
 
-- name: "SCORED | 3.2.1 | PATCH | Ensure source routed packets are not accepted"
+- name: "3.2.1 | L1 | PATCH | Ensure source routed packets are not accepted"
   block:
-      - name: "SCORED | 3.2.1 | PATCH | Ensure source routed packets are not accepted | Set routed packets IPv4"
+      - name: "3.2.1 | L1 | PATCH | Ensure source routed packets are not accepted | Set routed packets IPv4"
         sysctl:
             name: '{{ item.name }}'
             value: '{{ item.value }}'
@@ -15,7 +15,7 @@
             - { name: net.ipv4.conf.all.accept_source_route, value: 0 }
             - { name: net.ipv4.conf.default.accept_source_route, value: 0 }
 
-      - name: "SCORED | 3.2.1 | PATCH | Ensure source routed packets are not accepted | Set routed packets IPv6"
+      - name: "3.2.1 | L1 | PATCH | Ensure source routed packets are not accepted | Set routed packets IPv6"
         sysctl:
             name: '{{ item.name }}'
             value: '{{ item.value }}'
@@ -36,9 +36,9 @@
       - patch
       - rule_3.2.1
 
-- name: "SCORED | 3.2.2 | PATCH | Ensure ICMP redirects are not accepted"
+- name: "3.2.2 | L1 | PATCH | Ensure ICMP redirects are not accepted"
   block:
-      - name: "SCORED | 3.2.2 | PATCH | Ensure ICMP redirects are not accepted | Set ICMP redirects IPv4"
+      - name: "3.2.2 | L1 | PATCH | Ensure ICMP redirects are not accepted | Set ICMP redirects IPv4"
         sysctl:
             name: '{{ item.name }}'
             value: '{{ item.value }}'
@@ -51,7 +51,7 @@
             - { name: net.ipv4.conf.all.accept_redirects, value: 0 }
             - { name: net.ipv4.conf.default.accept_redirects, value: 0 }
 
-      - name: "SCORED | 3.2.2 | PATCH | Ensure ICMP redirects are not accepted | Set ICMP redirects IPv6"
+      - name: "3.2.2 | L1 | PATCH | Ensure ICMP redirects are not accepted | Set ICMP redirects IPv6"
         sysctl:
             name: '{{ item.name }}'
             value: '{{ item.value }}'
@@ -59,7 +59,7 @@
             state: present
             reload: yes
             ignoreerrors: yes
-        notify: sysctl flush ipv4 route table
+        notify: sysctl flush ipv6 route table
         with_items:
             - { name: net.ipv6.conf.all.accept_redirects, value: 0 }
             - { name: net.ipv6.conf.default.accept_redirects, value: 0 }
@@ -73,7 +73,7 @@
       - patch
       - rule_3.2.2
 
-- name: "SCORED | 3.2.3 | PATCH | Ensure secure ICMP redirects are not accepted"
+- name: "3.2.3 | L1 | PATCH | Ensure secure ICMP redirects are not accepted"
   sysctl:
       name: '{{ item.name }}'
       value: '{{ item.value }}'
@@ -94,7 +94,7 @@
       - patch
       - rule_3.2.3
 
-- name: "SCORED | 3.2.4 | PATCH | Ensure suspicious packets are logged"
+- name: "3.2.4 | L1 | PATCH | Ensure suspicious packets are logged"
   sysctl:
       name: '{{ item.name }}'
       value: '{{ item.value }}'
@@ -115,7 +115,7 @@
       - patch
       - rule_3.2.4
 
-- name: "SCORED | 3.2.5 | PATCH | Ensure broadcast ICMP requests are ignored"
+- name: "3.2.5 | L1 | PATCH | Ensure broadcast ICMP requests are ignored"
   sysctl:
       name: net.ipv4.icmp_echo_ignore_broadcasts
       value: '1'
@@ -132,7 +132,7 @@
       - patch
       - rule_3.2.5
 
-- name: "SCORED | 3.2.6 | PATCH | Ensure bogus ICMP responses are ignored"
+- name: "3.2.6 | L1 | PATCH | Ensure bogus ICMP responses are ignored"
   sysctl:
       name: net.ipv4.icmp_ignore_bogus_error_responses
       value: '1'
@@ -149,7 +149,7 @@
       - patch
       - rule_3.2.6
 
-- name: "SCORED | 3.2.7 | PATCH | Ensure Reverse Path Filtering is enabled"
+- name: "3.2.7 | L1 | PATCH | Ensure Reverse Path Filtering is enabled"
   sysctl:
       name: net.ipv4.conf.default.rp_filter
       value: '1'
@@ -167,7 +167,7 @@
       - patch
       - rule_3.2.7
 
-- name: "SCORED | 3.2.8 | PATCH | Ensure TCP SYN Cookies is enabled"
+- name: "3.2.8 | L1 | PATCH | Ensure TCP SYN Cookies is enabled"
   sysctl:
       name: net.ipv4.tcp_syncookies
       value: '1'
@@ -184,7 +184,7 @@
       - patch
       - rule_3.2.8
 
-- name: "SCORED | 3.2.9 | PATCH | Ensure IPv6 router advertisements are not accepted"
+- name: "3.2.9 | L2 | PATCH | Ensure IPv6 router advertisements are not accepted"
   sysctl:
       name: '{{ item.name }}'
       value: '{{ item.value }}'

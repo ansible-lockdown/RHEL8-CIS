@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-    author: "Sam Doran, Josh Springer, Daniel Shepherd, Bas Meijeri, James Cassell, Mike Renfro, DFed, George Nalen"
+    author: "Sam Doran, Josh Springer, Daniel Shepherd, Bas Meijeri, James Cassell, Mike Renfro, DFed, George Nalen, Mark Bolwell"
     description: "Apply the DISA RHEL 8 CIS"
     company: "MindPoint Group"
     license: MIT
@@ -13,6 +13,6 @@ galaxy_info:
     galaxy_tags:
         - system
         - security
-        - CIS
+        - cis
         - hardening
 dependencies: []

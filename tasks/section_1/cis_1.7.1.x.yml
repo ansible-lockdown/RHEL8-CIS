@@ -1,6 +1,6 @@
 ---
 
-- name: "SCORED | 1.7.1.1 | PATCH | Ensure SELinux is installed"
+- name: "1.7.1.1 | L2 | PATCH | Ensure SELinux is installed"
   package:
       name: libselinux
       state: present
@@ -13,7 +13,7 @@
       - patch
       - rule_1.7.1.1
 
-- name: "SCORED | 1.7.1.2 | PATCH | Ensure SELinux is not disabled in bootloader configuration"
+- name: "1.7.1.2 | L2 | PATCH | Ensure SELinux is not disabled in bootloader configuration"
   replace:
       dest: /etc/default/grub
       regexp: '(selinux|enforcing)\s*=\s*0\s*'
@@ -30,7 +30,7 @@
       - patch
       - rule_1.7.1.2
 
-- name: "SCORED | 1.7.1.3 | PATCH | Ensure SELinux policy is configured"
+- name: "1.7.1.3 | L2 | PATCH | Ensure SELinux policy is configured"
   selinux:
       conf: /etc/selinux/config
       policy: "{{ rhel8cis_selinux_pol }}"
@@ -46,7 +46,7 @@
       - patch
       - rule_1.7.1.3
 
-- name: "SCORED | 1.7.1.4 | PATCH | Ensure the SELinux state is enforcing"
+- name: "1.7.1.4 | L2 | PATCH | Ensure the SELinux state is enforcing"
   selinux:
       conf: /etc/selinux/config
       policy: "{{ rhel8cis_selinux_pol }}"
@@ -62,20 +62,20 @@
       - patch
       - rule_1.7.1.4
 
-- name: "SCORED | 1.7.1.5 | AUDIT | Ensure no unconfined daemons exist"
+- name: "1.7.1.5 | L2 | AUDIT | Ensure no unconfined daemons exist"
   block:
-      - name: "SCORED | 1.7.1.5 | AUDIT | Ensure no unconfined daemons exist | Find the unconfined daemons"
+      - name: "1.7.1.5 | L2 | AUDIT | Ensure no unconfined daemons exist | Find the unconfined daemons"
         shell: ps -eZ | grep unconfined_service_t | egrep -vw "tr|ps|egrep|bash|awk" | tr ':' ' ' | awk '{ print $NF }'
         register: rhelcis_1_7_1_5_unconf_daemons
         failed_when: false
         changed_when: false
 
-      - name: "SCORED | 1.7.1.5 | AUDIT | Ensure no unconfined daemons exist | Message on no unconfined daemones"
+      - name: "1.7.1.5 | L2 | AUDIT | Ensure no unconfined daemons exist | Message on no unconfined daemones"
         debug:
             msg: "Good News! There are no unconfined daemons found on your system"
         when: rhelcis_1_7_1_5_unconf_daemons.stdout | length == 0
 
-      - name: "SCORED | 1.7.1.5 | AUDIT | Ensure no unconfined daemons exist | Message on unconfined daemones"
+      - name: "1.7.1.5 | L2 | AUDIT | Ensure no unconfined daemons exist | Message on unconfined daemones"
         debug:
             msg: "Warning! You have unconfined daemons: {{ rhelcis_1_7_1_5_unconf_daemons.stdout_lines }}"
         when: rhelcis_1_7_1_5_unconf_daemons.stdout | length > 0
@@ -87,7 +87,7 @@
       - audit
       - rule_1.7.1.5
 
-- name: "SCORED | 1.7.1.6 | PATCH | Ensure SETroubleshoot is not installed"
+- name: "1.7.1.6 | L2 | PATCH | Ensure SETroubleshoot is not installed"
   package:
       name: setroubleshoot
       state: absent
@@ -101,7 +101,7 @@
       - patch
       - rule_1.7.1.6
 
-- name: "SCORED | 1.7.1.7 | PATCH | Ensure the MCS Translation Service (mcstrans) is not installed"
+- name: "1.7.1.7 | L2 | PATCH | Ensure the MCS Translation Service (mcstrans) is not installed"
   package:
       name: mcstrans
       state: absent

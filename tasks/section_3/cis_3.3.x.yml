@@ -1,6 +1,6 @@
 ---
 
-- name: "SCORED | 3.3.1 | PATCH | Ensure DCCP is disabled"
+- name: "3.3.1 | L2 | PATCH | Ensure DCCP is disabled"
   lineinfile:
       dest: /etc/modprobe.d/CIS.conf
       regexp: "^(#)?install dccp(\\s|$)"
@@ -15,7 +15,7 @@
       - patch
       - rule_3.3.1
 
-- name: "SCORED | 3.3.2 | PATCH | Ensure SCTP is disabled"
+- name: "3.3.2 | L2 | PATCH | Ensure SCTP is disabled"
   lineinfile:
       dest: /etc/modprobe.d/CIS.conf
       regexp: "^(#)?install sctp(\\s|$)"
@@ -30,7 +30,7 @@
       - patch
       - rule_3.3.2
 
-- name: "SCORED | 3.3.3 | PATCH | Ensure RDS is disabled"
+- name: "3.3.3 | L2 | PATCH | Ensure RDS is disabled"
   lineinfile:
       dest: /etc/modprobe.d/CIS.conf
       regexp: "^(#)?install rds(\\s|$)"
@@ -45,7 +45,7 @@
       - patch
       - rule_3.3.3
 
-- name: "SCORED | 3.3.4 | PATCH | Ensure TIPC is disabled"
+- name: "3.3.4 | L2 | PATCH | Ensure TIPC is disabled"
   lineinfile:
       dest: /etc/modprobe.d/CIS.conf
       regexp: "^(#)?install tipc(\\s|$)"

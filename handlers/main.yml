@@ -100,3 +100,7 @@
   service:
       name: syslog-ng
       state: restarted
+
+- name: systemd_daemon_reload
+  systemd:
+      daemon-reload: yes
