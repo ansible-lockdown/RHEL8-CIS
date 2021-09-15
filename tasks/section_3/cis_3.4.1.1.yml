@@ -13,3 +13,4 @@
       - level1-workstation
       - patch
       - rule_3.4.1.1
+  ignore_errors: true
