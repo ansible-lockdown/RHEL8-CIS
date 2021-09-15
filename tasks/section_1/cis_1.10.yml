@@ -2,7 +2,7 @@
 
 - name: "SCORED | 1.10 | PATCH | Ensure system-wide crypto policy is not legacy"
   shell: |
-      update-crypto-policies --set "{{ rhel8cis_crypto_policy }}"
+      update-crypto-policies --set FUTURE
       update-crypto-policies
   when:
       - rhel8cis_rule_1_10
