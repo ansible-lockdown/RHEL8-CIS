@@ -441,7 +441,7 @@ rhel8cis_nft_tables_autoChainCreate: true
 
 # Warning Banner Content (issue, issue.net, motd)
 rhel8cis_warning_banner: |
-    Authorized uses only. All activity may be monitored and reported.
+    All activities performed on this system will be monitored.
 # End Banner
 
 ## Section4 vars
