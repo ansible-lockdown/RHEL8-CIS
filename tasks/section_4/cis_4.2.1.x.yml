@@ -4,6 +4,7 @@
   package:
       name: "{{ rhel8cis_syslog }}"
       state: present
+      ignore_errors: true
   when:
       - rhel8cis_rule_4_2_1_1
   tags:
@@ -16,6 +17,7 @@
   service:
       name: rsyslog
       enabled: yes
+      ignore_errors: true
   when:
       - rhel8cis_rule_4_2_1_2
       - rhel8cis_syslog == 'rsyslog'
@@ -32,6 +34,7 @@
       regexp: '^\$FileCreateMode'
       line: '$FileCreateMode 0640'
   notify: restart rsyslog
+  ignore_errors: true
   when:
       - rhel8cis_rule_4_2_1_3
   tags:
@@ -47,6 +50,7 @@
         become: yes
         changed_when: false
         failed_when: no
+        ignore_errors: true
         register: rhel_08_4_2_1_4_audit
 
       - name: "NOTSCORED | 4.2.1.4 | AUDIT | Ensure logging is configured | rsyslog current config message out"
@@ -68,6 +72,7 @@
               mail.err                                                /var/log/mail.err
             insertafter: '# Log all the mail messages in one place.'
         notify: restart rsyslog
+        ignore_errors: true
         when: rhel8cis_rsyslog_ansibleManaged
 
       - name: "NOTSCORED | 4.2.1.4 | PATCH | Ensure logging is configured | news.crit log setting"
@@ -81,6 +86,7 @@
               news.notice                                             -/var/log/news/news.crit
             insertafter: '# Save news errors of level crit and higher in a special file.'
         notify: restart rsyslog
+        ignore_errors: true
         when: rhel8cis_rsyslog_ansibleManaged
 
       - name: "NOTSCORED | 4.2.1.4 | PATCH | Ensure logging is configured | Misc. log setting"
@@ -95,6 +101,7 @@
               *.*;mail.none;news.none                                  /var/log/messages
             insertafter: '#### RULES ####'
         notify: restart rsyslog
+        ignore_errors: true
         when: rhel8cis_rsyslog_ansibleManaged
 
       - name: "NOTSCORED | 4.2.1.4 | PATCH | Ensure logging is configured | Local log settings"
@@ -111,6 +118,7 @@
               *.emrg                                                    :omusrmsg:*
             insertafter: '#### RULES ####'
         notify: restart rsyslog
+        ignore_errors: true
   when:
       - rhel8cis_rule_4_2_1_4
   tags:
@@ -129,6 +137,7 @@
         *.* @@{{ rhel8cis_remote_log_server }}
       insertafter: EOF
   register: result
+  ignore_errors: true
   failed_when:
       - result is failed
       - result.rc != 257
@@ -154,6 +163,7 @@
         with_items:
             - '^(\$ModLoad imtcp)'
             - '^(\$InputTCPServerRun)'
+        ignore_errors: true
         when: not rhel8cis_system_is_log_server
 
       - name: "NOTSCORED | 4.2.1.6 | PATCH | Ensure remote rsyslog messages are only accepted on designated log hosts. | When log host"
@@ -165,6 +175,7 @@
         with_items:
             - 'ModLoad imtcp'
             - 'InputTCPServerRun'
+        ignore_errors: true
         when: rhel8cis_system_is_log_server
   when:
       - rhel8cis_rule_4_2_1_6
