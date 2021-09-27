@@ -457,61 +457,35 @@
       - audit
       - rule_6.2.19
 
-- name: "6.2.20 | L1 | PATCH | Ensure users home directories permissions are 750 or more restrictive"
+- name: "6.2.20 | L1 | PATCH | Ensure all users' home directories exist"
   block:
-      - name: "6.2.20 | L1 | AUDIT | Ensure users home directories permissions are 750 or more restrictive"
+      - name: "6.2.20 | L1 | AUDIT | Ensure all users' home directories exist"
         stat:
-            path: "{{ item }}"
+            path: "{{ item.dir }}"
         register: rhel_08_6_2_20_audit
-        with_items: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8cis_int_gid) | selectattr('uid', '!=', 65534) | map(attribute='dir') | list }}"
+        with_items: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8cis_int_gid) | selectattr('uid', '!=', 65534) | list }}"
 
-      - name: "6.2.20 | L1 | AUDIT | Ensure users home directories permissions are 750 or more restrictive"
-        command: find -H {{ item.0 | quote }} -not -type l -perm /027
-        check_mode: false
-        changed_when: rhel_08_6_2_20_patch_audit.stdout "| length > 0"
-        register: rhel_08_6_2_20_patch_audit
-        when:
-            - ansible_check_mode
-            - item.1.exists
-        with_together:
-            - "{{ rhel_08_6_2_20_audit.results | map(attribute='item') | list }}"
-            - "{{ rhel_08_6_2_20_audit.results | map(attribute='stat') | list }}"
-        loop_control:
-            label: "{{ item.0 }}"
-
-      - name: "6.2.20 | L1 | PATCH | Ensure users home directories permissions are 750 or more restrictive"
+      - name: Debug
+        debug:
+          msg: "rhel_08_6_2_20_audit = {{ rhel_08_6_2_20_audit }}"
+      - name: "6.2.20 | L1 | PATCH | Ensure all users' home directories exist"
         file:
             path: "{{ item.0 }}"
-            recurse: yes
             mode: a-st,g-w,o-rwx
+            owner: "{{ item.1 }}"
+            group: "{{ item.2 }}"
+            state: directory
         register: rhel_08_6_2_20_patch
         when:
             - not ansible_check_mode
-            - item.1.exists
+            - not item.3.exists
         with_together:
-            - "{{ rhel_08_6_2_20_audit.results | map(attribute='item') | list }}"
+            - "{{ rhel_08_6_2_20_audit.results | map(attribute='item.dir') | list }}"
+            - "{{ rhel_08_6_2_20_audit.results | map(attribute='item.id') | list }}"
+            - "{{ rhel_08_6_2_20_audit.results | map(attribute='item.gid') | list }}"
             - "{{ rhel_08_6_2_20_audit.results | map(attribute='stat') | list }}"
         loop_control:
             label: "{{ item.0 }}"
-
-      # set default ACLs so the homedir has an effective umask of 0027
-      - name: "6.2.20 | L1 | PATCH | Ensure users home directories permissions are 750 or more restrictive"
-        acl:
-            path: "{{ item.0 }}"
-            default: yes
-            state: present
-            recursive: yes
-            etype: "{{ item.1.etype }}"
-            permissions: "{{ item.1.mode }}"
-        when: not rhel8cis_system_is_container
-        with_nested:
-            - "{{ (ansible_check_mode | ternary(rhel_08_6_2_20_patch_audit, rhel_08_6_2_20_patch)).results |
-              rejectattr('skipped', 'defined') | map(attribute='item') | map('first') | list }}"
-            -
-                - etype: group
-                  mode: rx
-                - etype: other
-                  mode: '0'
   when:
       - rhel8cis_rule_6_2_20
   tags:
