@@ -1,6 +1,13 @@
 # Changes to rhel8CIS
 
+## 1.3.2
+
+- issues with crypto policies on ec2 - added skip for rules if system_is_ec2 variable
+  - cis_1.10  ## Change crypto breaks installing products
+  - cis_1.11  ## Change crypto breaks installing products
+
 ## 1.3.1
+
 - CIS 1.0.1 updates
 - Added Issue and PR templates
 - Added better reboot logic
@@ -12,8 +19,7 @@
 - Added systemd tmp mount
 - Added systemd tmpfs block
 - #110 tmp.mount support
-    - thanks to @erpadmin
-
+  - thanks to @erpadmin
 
 ## 1.3
 
