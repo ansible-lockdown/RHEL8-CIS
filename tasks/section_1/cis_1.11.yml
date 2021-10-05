@@ -10,5 +10,6 @@
   tags:
       - level2-server
       - level2-workstation
+      - not system_is_ec2
       - patch
       - rule_1.11

@@ -33,6 +33,10 @@
 
 - name: "SECTION | 1.10 | Crypto policies"
   include: cis_1.10.yml
+  when:
+  - not system_is_ec2
 
 - name: "SECTION | 1.11 | FIPS/FUTURE Crypto policies"
   include: cis_1.11.yml
+  when:
+  - not system_is_ec2
