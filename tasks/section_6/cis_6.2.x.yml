@@ -468,7 +468,7 @@
       - name: "6.2.20 | L1 | AUDIT | Ensure all users' home directories exist"
         command: find -H {{ item.0 | quote }} -not -type l -perm /027
         check_mode: false
-        changed_when: rhel_08_6_2_20_patch_audit.stdout "| length > 0"
+        changed_when: rhel_08_6_2_20_patch_audit.stdout | length > 0
         register: rhel_08_6_2_20_patch_audit
         when:
             - ansible_check_mode
