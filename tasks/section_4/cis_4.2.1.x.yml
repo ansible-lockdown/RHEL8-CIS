@@ -47,6 +47,7 @@
         become: yes
         changed_when: false
         failed_when: no
+        check_mode: no
         register: rhel_08_4_2_1_4_audit
 
       - name: "4.2.1.4 | L1 | AUDIT | Ensure logging is configured | rsyslog current config message out"
