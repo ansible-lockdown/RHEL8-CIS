@@ -49,9 +49,9 @@
       block: |
         # Set session timeout - CIS ID RHEL-08-5.4.5
         TMOUT={{ rhel8cis_shell_session_timeout.timeout }}
-        readonly TMOUT
         export TMOUT
-  with_items:
+        readonly TMOUT
+with_items:
       - { dest: "{{ rhel8cis_shell_session_timeout.file }}", state: present }
       - { dest: /etc/profile, state: "{{ (rhel8cis_shell_session_timeout.file == '/etc/profile') | ternary('present', 'absent') }}" }
   when:
