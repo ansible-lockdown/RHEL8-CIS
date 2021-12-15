@@ -254,6 +254,7 @@
         shell: mount -l | grep -E '\s/dev/shm\s'
         changed_when: false
         failed_when: false
+        check_mode: no
         register: rhel8cis_1_1_15_dev_shm_status
 
       - name: |
