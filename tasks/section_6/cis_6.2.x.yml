@@ -181,8 +181,6 @@
       path: "{{ item.dir }}"
       owner: "{{ item.id }}"
       state: directory
-  args:
-      warn: no
   with_items: "{{ rhel8cis_passwd }}"
   loop_control:
       label: "{{ rhel8cis_passwd_label }}"
