@@ -487,7 +487,7 @@ rhel8cis_system_is_log_server: false
 ## Section5 vars
 
 rhel8cis_sshd:
-    clientalivecountmax: 3
+    clientalivecountmax: 0
     clientaliveinterval: 300
     ciphers: "aes256-ctr,aes192-ctr,aes128-ctr"
     macs: "hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com"
