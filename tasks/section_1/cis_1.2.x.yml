@@ -8,7 +8,7 @@
       auto_attach: true
       no_log: true
   when:
-      - ansible_distribution == "RedHat"
+      - is_redhat_os
       - rhel8cis_rhnsd_required
       - rhel8cis_rule_1_2_1
   tags:
