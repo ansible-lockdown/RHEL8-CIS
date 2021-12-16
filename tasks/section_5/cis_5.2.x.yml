@@ -196,7 +196,7 @@
       - patch
       - rule_5.2.10
 
-- name: "5.2.11 | PATCH | Ensure SSH PermitEmptyPasswords is disabled"
+- name: "5.2.11 | L1 | PATCH | Ensure SSH PermitEmptyPasswords is disabled"
   lineinfile:
       state: present
       dest: /etc/ssh/sshd_config
