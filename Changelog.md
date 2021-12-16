@@ -7,15 +7,17 @@
   - removal of included library module (not required)
 
 - Issues included
-  - #138
-  - #139
+  - #135 - running levels - upadted tags
+  - #138 - auditd immutable
+  - #139 - 5.2.13 valus updated
   - #140
-  - #141
+  - #141 - check mode update
   - #142
-  - #143
+  - #143 - labels added
   - #144
-  - #146
-  - #147
+  - #146 - undefined variable added
+  - #147 - removed warn statement
+  - #149 - shell timeout
 
 ## 1.3.2
 
