@@ -69,7 +69,8 @@
   when:
       - rhel8cis_rule_5_5_4
   tags:
-      - level1
+      - level1-server
+      - level1-workstation
       - patch
       - rule_5.5.4
 
