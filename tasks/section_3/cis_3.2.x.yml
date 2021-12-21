@@ -200,8 +200,8 @@
       - rhel8cis_ipv6_required
       - rhel8cis_rule_3_2_9
   tags:
-      - level1-server
-      - level1-workstation
+      - level2-server
+      - level2-workstation
       - sysctl
       - patch
       - rule_3.2.9

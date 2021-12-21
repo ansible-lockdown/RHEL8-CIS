@@ -1,10 +1,8 @@
 ## metadata for Audit benchmark
-rhel8cis_benchmark:
-- "type: CIS"
-- "version: '1.0.1'"
-- "os: RHEL 8"
-- "epoch: {{ ansible_date_time.epoch }}"
-- "hostname: {{ ansible_hostname }}"
+benchmark_version: '1.0.1'
+
+# Set if genuine RHEL (subscription manager check) not for derivatives e.g. CentOS
+is_redhat_os: {% if ansible_distribution == "RedHat" %}true{% else %}false{% endif %}
 
 rhel8cis_os_distribution: {{ ansible_distribution | lower }}
 

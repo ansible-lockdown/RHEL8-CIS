@@ -487,8 +487,8 @@ rhel8cis_system_is_log_server: false
 ## Section5 vars
 
 rhel8cis_sshd:
-    clientalivecountmax: 3
-    clientaliveinterval: 300
+    clientalivecountmax: 0
+    clientaliveinterval: 900
     ciphers: "aes256-ctr,aes192-ctr,aes128-ctr"
     macs: "hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com"
     logingracetime: 60
@@ -592,19 +592,19 @@ goss_url: "https://github.com/aelsabbahy/goss/releases/download/{{ goss_version.
 copy_goss_from_path: /some/accessible/path
 
 ### Goss Audit Benchmark file ###
-## managed by the control rhel8cis_audit_content
+## managed by the control audit_content
 # git
-rhel8cis_audit_file_git: "https://github.com/ansible-lockdown/{{ benchmark }}-Audit.git"
-rhel8cis_audit_git_version: main
+audit_file_git: "https://github.com/ansible-lockdown/{{ benchmark }}-Audit.git"
+audit_git_version: main
 
 # copy:
-rhel8cis_audit_local_copy: "some path to copy from"
+audit_local_copy: "some path to copy from"
 
 # get_url:
-rhel8cis_audit_files_url: "some url maybe s3?"
+audit_files_url: "some url maybe s3?"
 
 # Where the goss audit configuration will be stored
-rhel8cis_audit_files: "/var/tmp/{{ benchmark }}-Audit/"
+audit_files: "/var/tmp/{{ benchmark }}-Audit/"
 
 ## Goss configuration information
 # Where the goss configs and outputs are stored

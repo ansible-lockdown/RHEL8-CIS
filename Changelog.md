@@ -1,5 +1,24 @@
 # Changes to rhel8CIS
 
+## 1.3.3
+
+- update to audit script
+  - variable for audit OS agnostic
+  - removal of included library module (not required)
+
+- Issues included
+  - #135 - running levels - upadted tags
+  - #138 - auditd immutable
+  - #139 - 5.2.13 valus updated
+  - #140
+  - #141 - check mode update
+  - #142
+  - #143 - labels added
+  - #144
+  - #146 - undefined variable added
+  - #147 - removed warn statement
+  - #149 - shell timeout
+
 ## 1.3.2
 
 - issues with crypto policies on ec2 - added skip for rules if system_is_ec2 variable
