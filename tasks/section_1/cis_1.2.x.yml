@@ -24,6 +24,7 @@
       name: rhnsd
       state: stopped
       enabled: no
+      masked: true
   when:
       - ansible_distribution == "RedHat"
       - rhnsd_service_status.stdout == "loaded" and not rhel8cis_rhnsd_required
