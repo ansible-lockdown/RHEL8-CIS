@@ -100,6 +100,10 @@
   become: yes
   when: rhel8cis_section6
 
+- include: section_7/main.yml
+  become: yes
+  when: rhel8cis_section7
+
 - include: post.yml
   become: yes
   tags:

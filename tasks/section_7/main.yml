@@ -1,0 +1,4 @@
+---
+
+- name: "SECTION | 7.1 | RHEL 8 CIS from CustomizeVM"
+  include: cis_7.1.x.yml

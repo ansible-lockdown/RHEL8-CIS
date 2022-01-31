@@ -1,0 +1,598 @@
+---
+
+- name: "SCORED | 7.1.1 | PATCH | Install bind-utils, rpcbind, vim packages"
+  become: true
+  become_method: sudo
+  yum:
+    name: ['bind-utils', 'rpcbind', 'vim']
+    state: present
+  when:
+      - rhel8cis_rule_7_1_1
+  tags:
+      - rule_7.1.1
+
+- name: "SCORED | 7.1.2 | PATCH | Create the var--tmp Logical Volume"
+  become: true
+  become_method: sudo
+  lvol:
+    vg: "systemvg"
+    lv: "lv_var-tmp"
+    size: "1G"
+    active: true
+    force: false
+    state: present
+  when:
+      - rhel8cis_rule_7_1_2
+  tags:
+      - rule_7.1.2
+
+- name: "SCORED | 7.1.3 | PATCH | Create a xfs filesystem for var--tmp LV"
+  become: true
+  become_method: sudo
+  filesystem:
+    fstype: "xfs"
+    dev: "/dev/mapper/systemvg-lv_var--tmp"
+  when:
+      - rhel8cis_rule_7_1_3
+  tags:
+      - rule_7.1.3
+
+- name: "SCORED | 7.1.4 | PATCH | Mount var--tmp logical volume"
+  become: true
+  become_method: sudo
+  mount:
+    name: "/var/tmp"
+    src: "/dev/mapper/systemvg-lv_var--tmp"
+    fstype: xfs
+    opts: "nodev,nosuid,noexec"
+    state: mounted
+  when:
+      - rhel8cis_rule_7_1_4
+  tags:
+      - rule_7.1.4
+
+- name: "SCORED | 7.1.5 | PATCH | Fix shm noexec"
+  become: true
+  become_method: sudo
+  command: "/usr/bin/mount -o remount,noexec /dev/shm"
+  when:
+      - rhel8cis_rule_7_1_5
+  tags:
+      - rule_7.1.5
+
+- name: "SCORED | 7.1.6 | PATCH | Add shm entry to fstab"
+  become: true
+  become_method: sudo
+  lineinfile:
+    state: present
+    dest: /etc/fstab
+    line: 'tmpfs /dev/shm tmpfs defaults,nodev,nosuid,noexec 0 0'
+  when:
+      - rhel8cis_rule_7_1_6
+  tags:
+      - rule_7.1.6
+
+- name: "SCORED | 7.1.7 | PATCH | Add tmp correct entry to fstab"
+  become: true
+  become_method: sudo
+  lineinfile:
+    state: present
+    dest: /etc/fstab
+    line: 'tmpfs /tmp tmpfs defaults,rw,nosuid,nodev,noexec,relatime 0 0'
+  when:
+      - rhel8cis_rule_7_1_7
+  tags:
+      - rule_7.1.7
+
+- name: "SCORED | 7.1.8 | PATCH | Exclude systemd RPMs from upgrade"
+  become: true
+  become_method: sudo
+  lineinfile:
+    state: present
+    dest: /etc/yum.conf
+    line: 'exclude=systemd, systemd-libs, systemd-pam, systemd-udev'
+  when:
+      - rhel8cis_rule_7_1_8
+  tags:
+      - rule_7.1.8
+
+- name: "SCORED | 7.1.9 | PATCH | Add NTP servers to chrony conf"
+  become: true
+  become_method: sudo
+  replace:
+    path: /etc/chrony.conf
+    regexp: 'pool 2.rhel.pool.ntp.org iburst'
+    replace: 'server 10.20.0.254'
+  lineinfile:
+    state: present
+    dest: /etc/chrony.conf
+    line: 'server 10.24.0.254'
+  when:
+      - rhel8cis_rule_7_1_9
+  tags:
+      - rule_7.1.9
+
+- name: "SCORED | 7.1.10 | PATCH | Set selinux to permissive to allow chrnonyd restart"
+  become: true
+  become_method: sudo
+  command: setenforce 0
+  when:
+      - rhel8cis_rule_7_1_10
+  tags:
+      - rule_7.1.10
+
+- name: "SCORED | 7.1.11 | PATCH | Configure selinux to permissive"
+  become: true
+  become_method: sudo 
+  replace:
+    path: /etc/selinux/config
+    regexp: 'SELINUX=enforcing'
+    replace: 'SELINUX=permissive'
+  when:
+      - rhel8cis_rule_7_1_11
+  tags:
+      - rule_7.1.11
+
+- name: "SCORED | 7.1.12 | PATCH | Ensure chronyd service is started and enabled at boot"
+  become: true
+  become_method: sudo
+  service:
+    name: chronyd
+    state: restarted
+    enabled: yes
+  when:
+      - rhel8cis_rule_7_1_12
+  tags:
+      - rule_7.1.12
+
+- name: "SCORED | 7.1.13 | PATCH | Ensure audit_backlog_limit is sufficient"
+  become: true
+  become_method: sudo
+  replace:
+    path: /etc/default/grub
+    regexp: '^(GRUB_CMDLINE_LINUX=(?:(?![" ]{{ option | regex_escape }}=).)*)(?:[" ]{{ option | regex_escape }}=\S+)?(.*")$'
+    replace: '\1 {{ option }}={{ value }}\2'
+  vars:
+    option: audit_backlog_limit
+    value: 8192
+  when:
+      - rhel8cis_rule_7_1_13
+  tags:
+      - rule_7.1.13
+
+- name: "SCORED | 7.1.14 | PATCH | Ensure audit log storage size is configured"
+  become: true
+  become_method: sudo
+  replace:
+    path: /etc/audit/auditd.conf
+    regexp: 'max_log_file = 10'
+    replace: 'max_log_file = 32'
+  when:
+      - rhel8cis_rule_7_1_14
+  tags:
+      - rule_7.1.14
+
+- name: "SCORED | 7.1.15 | PATCH | Ensure audit is configured to suspend instead of hald at fs full"
+  become: true
+  become_method: sudo
+  replace:
+    path: /etc/audit/auditd.conf
+    regexp: 'admin_space_left_action = halt'
+    replace: 'admin_space_left_action = suspend'
+  when:
+      - rhel8cis_rule_7_1_15
+  tags:
+      - rule_7.1.15
+
+- name: "SCORED | 7.1.16 | PATCH | Modify auditd service to allow restarts"
+  replace:
+    path: /usr/lib/systemd/system/auditd.service
+    regexp: "RefuseManualStop=yes"
+    replace: "#RefuseManualStop=yes"
+  when:
+      - rhel8cis_rule_7_1_16
+  tags:
+      - rule_7.1.16
+
+- name: "SCORED | 7.1.17 | PATCH | Reload systemd"
+  become: true
+  become_method: sudo
+  command: systemctl daemon-reload
+  when:
+      - rhel8cis_rule_7_1_17
+  tags:
+      - rule_7.1.17
+
+- name: "SCORED | 7.1.18 | PATCH | Create auditd logins config file"
+  file:
+    path: "/etc/audit/rules.d/50-logins.rules"
+    state: touch
+  when:
+      - rhel8cis_rule_7_1_18
+  tags:
+      - rule_7.1.18
+
+- name: "SCORED | 7.1.19 | PATCH | Configure auditd daemon"
+  lineinfile:
+    dest: /etc/audit/rules.d/50-logins.rules
+    line: '{{ item }}'
+  with_items:
+    - '-D'
+    - '-b 8192'
+    - '-f 1'
+    - '-w /etc/selinux/ -p wa -k MAC-policy'
+    - '-w /usr/share/selinux/ -p wa -k MAC-policy'
+    - '-w /etc/group -p wa -k identity'
+    - '-w /etc/passwd -p wa -k identity'
+    - '-w /etc/gshadow -p wa -k identity'
+    - '-w /etc/shadow -p wa -k identity'
+    - '-w /etc/security/opasswd -p wa -k identity'
+    - '-w /var/log/lastlog -p wa -k logins'
+    - '-w /var/run/faillock/ -p wa -k logins'
+    - '-w /var/log/faillock/ -p wa -k logins'
+    - '-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k access'
+    - '-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k access'
+    - '-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access'
+    - '-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access'
+    - '-a always,exit -F arch=b64 -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=4294967295 -k delete'
+    - '-a always,exit -F arch=b32 -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=4294967295 -k delete'
+    - '-w /sbin/insmod -p x -k modules'
+    - '-w /sbin/rmmod -p x -k modules'
+    - '-w /sbin/modprobe -p x -k modules'
+    - '-a always,exit -F arch=b64 -S init_module -S delete_module -k modules'
+    - '-a always,exit -F arch=b32 -S init_module -S delete_module -k modules'
+    - '-w /var/log/sudo.log -p wa -k actions'
+    - '-a always,exit -F arch=b64 -S mount -F auid>=1000 -F auid!=4294967295 -k mounts'
+    - '-a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=4294967295 -k mounts'
+    - '-a always,exit -F arch=b64 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=4294967295 -k perm_mod'
+    - '-a always,exit -F arch=b32 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=4294967295 -k perm_mod'
+    - '-a always,exit -F arch=b64 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=4294967295 -k perm_mod'
+    - '-a always,exit -F arch=b32 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=4294967295 -k perm_mod'
+    - '-a always,exit -F arch=b64 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=4294967295 -k perm_mod'
+    - '-a always,exit -F arch=b32 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=4294967295 -k perm_mod'
+    - '-a always,exit -F arch=b32 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=4294967295 -k perm_mod'
+    - '-a always,exit -F arch=b32 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=4294967295 -k perm_mod'
+    - '-a always,exit -F arch=b32 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=4294967295 -k perm_mod'
+    - '-w /var/run/utmp -p wa -k session'
+    - '-w /var/log/wtmp -p wa -k logins'
+    - '-w /var/log/btmp -p wa -k logins'
+    - '-w /etc/sudoers -p wa -k scope'
+    - '-w /etc/sudoers.d/ -p wa -k scope'
+    - '-a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale'
+    - '-a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale'
+    - '-w /etc/issue -p wa -k system-locale'
+    - '-w /etc/issue.net -p wa -k system-locale'
+    - '-w /etc/hosts -p wa -k system-locale'
+    - '-w /etc/sysconfig/network -p wa -k system-locale'
+    - '-a always,exit -F arch=b64 -S adjtimex -S settimeofday -k time-change'
+    - '-a always,exit -F arch=b32 -S adjtimex -S settimeofday -S stime -k time-change'
+    - '-a always,exit -F arch=b64 -S clock_settime -k time-change'
+    - '-a always,exit -F arch=b32 -S clock_settime -k time-change'
+    - '-w /etc/localtime -p wa -k time-change'
+    - '-a always,exit -F arch=b32 -S adjtimex -S settimeofday -S stime -k time-change'
+    - '-a always,exit -F arch=b32 -S clock_settime -k time-change'
+    - '-w /etc/localtime -p wa -k time-change'
+    - '--backlog_wait_time 60000'
+    - '-e 2'
+  when:
+      - rhel8cis_rule_7_1_19
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_7.1.19
+
+- name: "SCORED | 7.1.20 | PATCH | Load audit rules"
+  command: /usr/sbin/auditctl -R /etc/audit/rules.d/50-logins.rules
+  when:
+      - rhel8cis_rule_7_1_20
+  tags:
+      - rule_7.1.20
+
+- name: "SCORED | 7.1.21 | PATCH | Fix password system-auth retry interval"
+  become: true
+  become_method: sudo
+  lineinfile:
+    state: present
+    dest: /etc/pam.d/system-auth
+    line: '{{ item }}'
+  with_items:
+    - 'password required pam_pwquality.so retry=3'
+    - 'auth        required      pam_faillock.so preauth silent audit deny=3 unlock_time=600'
+    - 'auth        [default=die] pam_faillock.so authfail audit deny=3 unlock_time=600'
+    - 'account     required      pam_faillock.so'
+    - 'password required pam_pwhistory.so remember=n use_authtok'
+  when:
+      - rhel8cis_rule_7_1_21
+  tags:
+      - rule_7.1.21
+
+- name: "SCORED | 7.1.22 | PATCH | Fix password system-auth retry interval"
+  become: true
+  become_method: sudo
+  lineinfile:
+    state: present
+    dest: /etc/pam.d/password-auth
+    line: '{{ item }}'
+  with_items:
+    - 'password required pam_pwquality.so retry=3'
+    - 'auth        required      pam_faillock.so preauth silent audit deny=3 unlock_time=600'
+    - 'auth        [default=die] pam_faillock.so authfail audit deny=3 unlock_time=600'
+    - 'account     required      pam_faillock.so'
+  when:
+      - rhel8cis_rule_7_1_22
+  tags:
+      - rule_7.1.22
+
+- name: "SCORED | 7.1.23 | PATCH | Create the umask 027 file and Populate umask 027 file with correct line"
+  file:
+    path: "/etc/profile.d/umask027.sh"
+    state: touch
+  lineinfile:
+    dest: /etc/profile.d/umask027.sh
+    line: '{{ item }}'
+  with_items:
+    - 'umask 027'
+  when:
+      - rhel8cis_rule_7_1_23
+  tags:
+      - rule_7.1.23
+
+- name: "SCORED | 7.1.24 | PATCH | Create rsyslog config file and Configure rsyslog daemon"
+  file:
+    path: "/etc/rsyslog.d/client.conf"
+    state: touch
+  lineinfile:
+    dest: /etc/rsyslog.d/client.conf
+    line: '{{ item }}'
+  with_items:
+    - '*.* @@10.20.135.221:514'
+    - '*.emerg                                  :omusrmsg:*'
+    - 'auth,authpriv.*                          /var/log/secure'
+    - 'mail.*                                  -/var/log/mail'
+    - 'mail.info                               -/var/log/mail.info'
+    - 'mail.warning                            -/var/log/mail.warn'
+    - 'mail.err                                 /var/log/mail.err'
+    - 'news.crit                               -/var/log/news/news.crit'
+    - 'news.err                                -/var/log/news/news.err'
+    - 'news.notice                             -/var/log/news/news.notice'
+    - '*.=warning;*.=err                       -/var/log/warn'
+    - '*.crit                                   /var/log/warn'
+    - '*.*;mail.none;news.none                 -/var/log/messages'
+    - 'local0,local1.*                         -/var/log/localmessages'
+    - 'local2,local3.*                         -/var/log/localmessages'
+    - 'local4,local5.*                         -/var/log/localmessages'
+    - 'local6,local7.*                         -/var/log/localmessages'
+  when:
+      - rhel8cis_rule_7_1_24
+  tags:
+      - rule_7.1.24
+
+- name: "SCORED | 7.1.25 | PATCH | Create custom authselect profile"
+  command: authselect create-profile test-profile -b sssd --symlink-meta
+  when:
+      - rhel8cis_rule_7_1_25
+  tags:
+      - rule_7.1.25
+
+- name: "SCORED | 7.1.26 | PATCH | Ensure authselect profile includes with-faillock"
+  command: authselect select custom/test-profile with-sudo with-faillock without-nullok --force
+  when:
+      - rhel8cis_rule_7_1_26
+  tags:
+      - rule_7.1.26
+
+- name: "SCORED | 7.1.27 | PATCH | Fix /etc/shadow permissions"
+  command: chmod 0000 /etc/shadow
+  ignore_errors: true
+  when:
+      - rhel8cis_rule_7_1_27
+  tags:
+      - rule_7.1.27
+
+- name: "SCORED | 7.1.28 | PATCH | Fix /etc/shadow~ permissions"
+  command: chmod 0000 /etc/shadow~
+  ignore_errors: true
+  when:
+      - rhel8cis_rule_7_1_28
+  tags:
+      - rule_7.1.28
+
+- name: "SCORED | 7.1.29 | PATCH | Fix /etc/gshadow permissions"
+  command: chmod 0000 /etc/gshadow
+  ignore_errors: true
+  when:
+      - rhel8cis_rule_7_1_29
+  tags:
+      - rule_7.1.29
+
+- name: "SCORED | 7.1.30 | PATCH | Fix /etc/gshadow~ permissions"
+  command: chmod 0000 /etc/gshadow~
+  ignore_errors: true
+  when:
+      - rhel8cis_rule_7_1_30
+  tags:
+      - rule_7.1.30
+
+- name: "SCORED | 7.1.31 | PATCH | Ensure rsyslog default file permissions configured"
+  become: true
+  become_method: sudo
+  lineinfile:
+    state: present
+    dest:  /etc/rsyslog.conf
+    line: '$FileCreateMode 0640'
+  when:
+      - rhel8cis_rule_7_1_31
+  tags:
+      - rule_7.1.31
+
+- name: "SCORED | 7.1.32 | PATCH | Ensure packet redirect is disabled and disable ipv6"
+  become: true
+  become_method: sudo
+  lineinfile:
+    state: present
+    dest:  /etc/sysctl.d/99-sysctl.conf
+    line: '{{ item }}'
+  with_items:
+    - 'net.ipv4.conf.all.send_redirects = 0'
+    - 'net.ipv4.conf.default.send_redirects = 0'
+    - 'net.ipv6.conf.all.disable_ipv6 = 1'
+    - 'net.ipv6.conf.default.disable_ipv6 = 1'
+  when:
+      - rhel8cis_rule_7_1_32
+  tags:
+      - rule_7.1.32
+
+- name: "SCORED | 7.1.33 | PATCH | Kill term 1 to fix permission denied error"
+  become: true
+  become_method: sudo
+  command: /usr/bin/kill -TERM 1
+  when:
+      - rhel8cis_rule_7_1_33
+  tags:
+      - rule_7.1.33
+
+- name: "SCORED | 7.1.34 | PATCH | Ensure rsyslog service is started and enabled at boot"
+  become: true
+  become_method: sudo
+  service: 
+    name: rsyslog
+    state: restarted
+    enabled: yes
+  when:
+      - rhel8cis_rule_7_1_34
+  tags:
+      - rule_7.1.34
+
+- name: "SCORED | 7.1.35 | PATCH | Ensure rpcbind service is started and enabled at boot"
+  become: true
+  become_method: sudo
+  service: 
+    name: rpcbind
+    state: started
+    enabled: yes
+  when:
+      - rhel8cis_rule_7_1_35
+  tags:
+      - rule_7.1.35
+
+- name: "SCORED | 7.1.36 | PATCH | Ensure permissions on all logfiles are configured"
+  become: true
+  become_method: sudo
+  command: /usr/bin/find /var/log/ -type f -perm /g+wx,o+rwx -exec chmod g-wx,o-rwx '{}' +
+  when:
+      - rhel8cis_rule_7_1_36
+  tags:
+      - rule_7.1.36
+
+- name: "SCORED | 7.1.37 | PATCH | Ensure password expiration is 365 days or less - users"
+  become: true
+  become_method: sudo
+  command: /usr/bin/chage -M 365 root
+  when:
+      - rhel8cis_rule_7_1_37
+  tags:
+      - rule_7.1.37
+
+- name: "SCORED | 7.1.38 | PATCH | Ensure minimum days between password changes is 7 or more - users"
+  become: true
+  become_method: sudo
+  command: /usr/bin/chage --mindays 7 root
+  when:
+      - rhel8cis_rule_7_1_38
+  tags:
+      - rule_7.1.38
+
+- name: "SCORED | 7.1.39 | PATCH | Ensure system-wide crypto policy disable"
+  become: true
+  command: update-crypto-policies --set DEFAULT
+  ignore_errors: true
+  when:
+      - rhel8cis_rule_7_1_39
+  tags:
+      - rule_7.1.39
+
+- name: "SCORED | 7.1.40 | PATCH | Load auditd rules"
+  become: true
+  command: augenrules --load
+  ignore_errors: true
+  when:
+      - rhel8cis_rule_7_1_40
+  tags:
+      - rule_7.1.40
+
+- name: "SCORED | 7.1.41 | PATCH | Update grub2 configuration"
+  become: true
+  become_method: sudo
+  command: grub2-mkconfig -o /boot/grub2/grub.cfg
+  ignore_errors: true
+  when:
+      - rhel8cis_rule_7_1_41
+  tags:
+      - rule_7.1.41
+
+- name: "SCORED | 7.1.42 | PATCH | Set bootloader password"
+  expect:
+    command: grub2-setpassword
+    responses:
+      Enter password: '{{ grub.pbkdf2.sha512.10000.23279B6B4BE3FF39DE947E34056F4B3321A9DA0A4F4E5404124AD5D50CB21794B410120D6FAFABF64E971FD21A5A47ADC26197E806605464D857E206937FCF72.7C708C11458B2340141EA70030E984718BC3DA0DC2B95294F8FAF75F4BD327885F674C6E4ED7E38A1EF7E54AD044369CCD1D7A939FA80CAE13149C9CEDE8F4E3 }}'
+      Confirm password: '{{ grub.pbkdf2.sha512.10000.23279B6B4BE3FF39DE947E34056F4B3321A9DA0A4F4E5404124AD5D50CB21794B410120D6FAFABF64E971FD21A5A47ADC26197E806605464D857E206937FCF72.7C708C11458B2340141EA70030E984718BC3DA0DC2B95294F8FAF75F4BD327885F674C6E4ED7E38A1EF7E54AD044369CCD1D7A939FA80CAE13149C9CEDE8F4E3 }}'
+  ignore_errors: true
+  when:
+      - rhel8cis_rule_7_1_42
+  tags:
+      - rule_7.1.42
+
+- name: "SCORED | 7.1.43 | PATCH | Dettach Local repositories for Alert Logic rpm"
+  command: '/usr/bin/subscription-manager repos --disable=Default_Organization_Local-repositories_Alert_Logic_Agent'
+  ignore_errors: true
+  when:
+      - rhel8cis_rule_7_1_43
+  tags:
+      - rule_7.1.43
+
+- name: "SCORED | 7.1.44 | PATCH | Ensure gpgcheck is globally activated"
+  become: true
+  become_method: sudo
+  replace:
+    path: /etc/yum.repos.d/redhat.repo
+    regexp: 'gpgcheck=0'
+    replace: 'gpgcheck=1'
+  when:
+      - rhel8cis_rule_7_1_44
+  tags:
+      - rule_7.1.44
+
+- name: "SCORED | 7.1.45 | PATCH | Ensure permissions on all logfiles are configured"
+  become: true
+  become_method: sudo
+  command: /usr/bin/find /var/log/ -type f -perm /g+wx,o+rwx -exec chmod g-wx,o-rwx '{}' +
+  when:
+      - rhel8cis_rule_7_1_45
+  tags:
+      - rule_7.1.45
+
+- name: "SCORED | 7.1.46 | PATCH | Remove old RHEL8CIS files"
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - '/etc/audit/rules.d/rhel8cis_rule_4_1_10.rules'
+    - '/etc/audit/rules.d/rhel8cis_rule_4_1_11.rules'
+    - '/etc/audit/rules.d/rhel8cis_rule_4_1_12.rules'
+    - '/etc/audit/rules.d/rhel8cis_rule_4_1_13.rules'
+    - '/etc/audit/rules.d/rhel8cis_rule_4_1_14.rules'
+    - '/etc/audit/rules.d/rhel8cis_rule_4_1_15.rules'
+    - '/etc/audit/rules.d/rhel8cis_rule_4_1_16.rules'
+    - '/etc/audit/rules.d/rhel8cis_rule_4_1_17.rules'
+    - '/etc/audit/rules.d/rhel8cis_rule_4_1_3.rules'
+    - '/etc/audit/rules.d/rhel8cis_rule_4_1_4.rules'
+    - '/etc/audit/rules.d/rhel8cis_rule_4_1_5.rules'
+    - '/etc/audit/rules.d/rhel8cis_rule_4_1_6.rules'
+    - '/etc/audit/rules.d/rhel8cis_rule_4_1_7.rules'
+    - '/etc/audit/rules.d/rhel8cis_rule_4_1_8.rules'
+    - '/etc/audit/rules.d/rhel8cis_rule_4_1_9.rules'
+  when:
+      - rhel8cis_rule_7_1_46
+  tags:
+      - rule_7.1.46

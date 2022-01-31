@@ -14,6 +14,7 @@ rhel8cis_section3: true
 rhel8cis_section4: true
 rhel8cis_section5: true
 rhel8cis_section6: true
+rhel8cis_section7: true
 
 rhel8cis_level_1: true
 rhel8cis_level_2: true
@@ -296,6 +297,54 @@ rhel8cis_rule_6_2_17: true
 rhel8cis_rule_6_2_18: true
 rhel8cis_rule_6_2_19: true
 rhel8cis_rule_6_2_20: true
+
+# Section 7 rules
+rhel8cis_rule_7_1_1: true
+rhel8cis_rule_7_1_2: true
+rhel8cis_rule_7_1_3: true
+rhel8cis_rule_7_1_4: true
+rhel8cis_rule_7_1_5: true
+rhel8cis_rule_7_1_6: true
+rhel8cis_rule_7_1_7: true
+rhel8cis_rule_7_1_8: true
+rhel8cis_rule_7_1_9: true
+rhel8cis_rule_7_1_10: true
+rhel8cis_rule_7_1_11: true
+rhel8cis_rule_7_1_12: true
+rhel8cis_rule_7_1_13: true
+rhel8cis_rule_7_1_14: true
+rhel8cis_rule_7_1_15: true
+rhel8cis_rule_7_1_16: true
+rhel8cis_rule_7_1_17: true
+rhel8cis_rule_7_1_18: true
+rhel8cis_rule_7_1_19: true
+rhel8cis_rule_7_1_20: true
+rhel8cis_rule_7_1_21: true
+rhel8cis_rule_7_1_22: true
+rhel8cis_rule_7_1_23: true
+rhel8cis_rule_7_1_24: true
+rhel8cis_rule_7_1_25: true
+rhel8cis_rule_7_1_26: true
+rhel8cis_rule_7_1_27: true
+rhel8cis_rule_7_1_28: true
+rhel8cis_rule_7_1_29: true
+rhel8cis_rule_7_1_30: true
+rhel8cis_rule_7_1_31: true
+rhel8cis_rule_7_1_32: true
+rhel8cis_rule_7_1_33: true
+rhel8cis_rule_7_1_34: true
+rhel8cis_rule_7_1_35: true
+rhel8cis_rule_7_1_36: true
+rhel8cis_rule_7_1_37: true
+rhel8cis_rule_7_1_38: true
+rhel8cis_rule_7_1_39: true
+rhel8cis_rule_7_1_40: true
+rhel8cis_rule_7_1_41: true
+rhel8cis_rule_7_1_42: true
+rhel8cis_rule_7_1_43: true
+rhel8cis_rule_7_1_44: true
+rhel8cis_rule_7_1_45: true
+rhel8cis_rule_7_1_46: true
 
 # Service configuration booleans set true to keep service
 rhel8cis_avahi_server: false
