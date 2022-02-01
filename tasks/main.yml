@@ -4,8 +4,11 @@
 - name: Check OS version and family
   assert:
       that: (ansible_os_family == 'RedHat' or ansible_os_family == "Rocky") and ansible_distribution_major_version is version_compare('8', '==')
-      fail_msg: "This role can only be run against RHEL/CENTOS 8. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
+      fail_msg: "This role can only be run against RHEL8 family OSs. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
       success_msg: "This role is running against a supported OS {{ ansible_distribution }} {{ ansible_distribution_major_version }}"
+  when: 
+    - os_check
+    - not system_is_ec2
   tags:
       - always
 
