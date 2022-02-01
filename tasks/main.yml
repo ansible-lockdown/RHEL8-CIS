@@ -1,20 +1,21 @@
 ---
 # tasks file for RHEL8-CIS
+
 - name: Check OS version and family
-  fail:
-      msg: "This role can only be run against RHEL 8. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
-  when:
-  - ansible_os_family == 'RedHat'
-  - ansible_distribution_major_version is version_compare('8', '!=')
+  assert:
+      that: (ansible_os_family == 'RedHat' or ansible_os_family == "Rocky") and ansible_distribution_major_version is version_compare('8', '==')
+      fail_msg: "This role can only be run against RHEL/CENTOS 8. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
+      success_msg: "This role is running against a supported OS {{ ansible_distribution }} {{ ansible_distribution_major_version }}"
   tags:
-  - always
+      - always
 
 - name: Check ansible version
-  fail:
-      msg: You must use ansible 2.9 or greater
-  when: not ansible_version.full is version_compare('2.9', '>=')
+  assert:
+      that: ansible_version.full is version_compare(min_ansible_version, '>=')
+      fail_msg: "You must use Ansible {{ min_ansible_version }} or greater"
+      success_msg: "This role is running a supported version of ansible {{ ansible_version.full }} >= {{ min_ansible_version }}"
   tags:
-  - always
+      - always
 
 - name: Check crypto-policy input
   assert:
