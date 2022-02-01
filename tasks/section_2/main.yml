@@ -1,13 +1,13 @@
 ---
 
 - name: "SECTION | 2.1 | xinetd"
-  include_tasks: cis_2.1.1.yml
+  import_tasks: cis_2.1.1.yml
 
 - name: "SECTION | 2.2.1 | Time Synchronization"
-  include_tasks: cis_2.2.1.x.yml
+  import_tasks: cis_2.2.1.x.yml
 
 - name: "SECTION | 2.2 | Special Purpose Services"
-  include_tasks: cis_2.2.x.yml
+  import_tasks: cis_2.2.x.yml
 
 - name: "SECTION | 2.3 | Service Clients"
-  include_tasks: cis_2.3.x.yml
+  import_tasks: cis_2.3.x.yml
