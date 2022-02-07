@@ -24,7 +24,7 @@
             dest: /etc/pam.d/system-auth
             state: present
             regexp: '^password    requisite                                    pam_pwquality.so'
-            line: "password    requisite                                    pam_pwquality.so try_first_pass local_users_only enforce-for-root retry=3 remember={{ rhel8cis_pam_faillock.remember }}"
+            line: "password    requisite                                    pam_pwquality.so try_first_pass local_users_only enforce_for_root retry=3 remember={{ rhel8cis_pam_faillock.remember }}"
             insertbefore: '^#?password ?'
         when:
             - rhel8cis_rule_5_4_1 or
@@ -35,7 +35,7 @@
             dest: /etc/pam.d/password-auth
             state: present
             regexp: '^password    requisite                                    pam_pwquality.so'
-            line: "password    requisite                                    pam_pwquality.so try_first_pass local_users_only enforce-for-root retry=3"
+            line: "password    requisite                                    pam_pwquality.so try_first_pass local_users_only enforce_for_root retry=3"
             insertbefore: '^#?password ?'
         when: rhel8cis_rule_5_4_1
 
