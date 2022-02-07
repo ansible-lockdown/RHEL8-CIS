@@ -5,7 +5,7 @@ RHEL 8 CIS
 ![Build Status](https://img.shields.io/github/workflow/status/ansible-lockdown/RHEL8-CIS/DevelToMain?label=Main%20Build%20Status&style=plastic)
 ![Release](https://img.shields.io/github/v/release/ansible-lockdown/RHEL8-CIS?style=plastic)
 
-Configure RHEL/Centos 8 machine to be [CIS](https://www.cisecurity.org/cis-benchmarks/) compliant
+Configure RHEL/Rocky/AlmaLinux machine to be [CIS](https://www.cisecurity.org/cis-benchmarks/) compliant
 
 Based on [CIS RedHat Enterprise Linux 8 Benchmark v1.0.1 - 05-19-2021 ](https://www.cisecurity.org/cis-benchmarks/)
 
@@ -43,7 +43,7 @@ Refer to [RHEL8-CIS-Audit](https://github.com/ansible-lockdown/RHEL8-CIS-Audit).
 Requirements
 ------------
 
-RHEL/AlmaLinux/CentOS/Rocky 8 - Other versions are not supported.
+RHEL/AlmaLinux/Rocky 8 - Other versions are not supported.
 
 - AlmaLinux/Rocky Has been tested on 8.4(enabling crypto (sections 1.10&1.11) breaks updating or installs 01Jul2021
 - Access to download or add the goss binary and content to the system if using auditing (other options are available on how to get the content to the system.)
@@ -63,7 +63,7 @@ Dependencies
 
 - Python3
 - Ansible 2.9+
-- python-def (should be included in RHEL/CentOS 8)
+- python-def (should be included in RHEL 8)
 - libselinux-python
 
 Role Variables

@@ -1,20 +1,24 @@
 ---
 # tasks file for RHEL8-CIS
+
 - name: Check OS version and family
-  fail:
-      msg: "This role can only be run against RHEL 8. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
-  when:
-  - ansible_os_family == 'RedHat'
-  - ansible_distribution_major_version is version_compare('8', '!=')
+  assert:
+      that: (ansible_distribution != 'CentOS' and ansible_os_family == 'RedHat' or ansible_os_family == "Rocky") and ansible_distribution_major_version is version_compare('8', '==')
+      fail_msg: "This role can only be run against Supported OSs. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
+      success_msg: "This role is running against a supported OS {{ ansible_distribution }} {{ ansible_distribution_major_version }}"
+  when: 
+    - os_check
+    - not system_is_ec2
   tags:
-  - always
+      - always
 
 - name: Check ansible version
-  fail:
-      msg: You must use ansible 2.9 or greater
-  when: not ansible_version.full is version_compare('2.9', '>=')
+  assert:
+      that: ansible_version.full is version_compare(min_ansible_version, '>=')
+      fail_msg: "You must use Ansible {{ min_ansible_version }} or greater"
+      success_msg: "This role is running a supported version of ansible {{ ansible_version.full }} >= {{ min_ansible_version }}"
   tags:
-  - always
+      - always
 
 - name: Check crypto-policy input
   assert:
@@ -48,59 +52,82 @@
   tags:
   - rule_5.7
 
-- include: prelim.yml
-  become: yes
+- name: Include preliminary steps
+  import_tasks: prelim.yml
   tags:
   - prelim_tasks
   - always
 
-- import_tasks: pre_remediation_audit.yml
+- name: run pre_remediation audit
+  include_tasks: pre_remediation_audit.yml
   when:
   - run_audit
 
-- name: Gather the package facts
+- name: Gather the package facts after prelim
   package_facts:
       manager: auto
   tags:
   - always
 
-- include: parse_etc_password.yml
-  become: yes
-  when: rhel8cis_section6
+- name: Include OS specific variables
+  include_vars: "{{ ansible_distribution }}.yml"
+  tags:
+  - always
 
-- include: section_1/main.yml
-  become: yes
+- name: capture /etc/password variables
+  include_tasks: parse_etc_password.yml
+  when: 
+  - rhel8cis_section5 or 
+    rhel8cis_section6
+  tags:
+  - rule_5.5.2
+  - rule_6.2.7
+  - rule_6.2.8
+  - rule_6.2.20
+  - rhel9cis_section5
+  - rhel9cis_section6
+
+- name: run Section 1 tasks
+  import_tasks: section_1/main.yml
+  become: true
   when: rhel8cis_section1
   tags:
   - rhel8cis_section1
 
-- include: section_2/main.yml
-  become: yes
+- name: run Section 2 tasks
+  import_tasks: section_2/main.yml
+  become: true
   when: rhel8cis_section2
 
-- include: section_3/main.yml
-  become: yes
+- name: run Section 3 tasks
+  import_tasks: section_3/main.yml
+  become: true
   when: rhel8cis_section3
 
-- include: section_4/main.yml
-  become: yes
+- name: run Section 4 tasks
+  import_tasks: section_4/main.yml
+  become: true
   when: rhel8cis_section4
 
-- include: section_5/main.yml
-  become: yes
+- name: run Section 5 tasks
+  import_tasks: section_5/main.yml
+  become: true
   when: rhel8cis_section5
 
-- include: section_6/main.yml
-  become: yes
+- name: run Section 6 tasks
+  import_tasks: section_6/main.yml
+  become: true
   when: rhel8cis_section6
 
-- include: post.yml
-  become: yes
+- name: run post remediation tasks
+  import_tasks: post.yml
+  become: true
   tags:
   - post_tasks
   - always
 
-- import_tasks: post_remediation_audit.yml
+- name: run post_remediation audit
+  import_tasks: post_remediation_audit.yml
   when:
   - run_audit
 

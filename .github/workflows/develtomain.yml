@@ -35,6 +35,6 @@ jobs:
                   # Job ID
                   job_id: 5f90ad90f9c74e6d1e606e33
                   # Variables
-                  variables: '{ "gitrepo": "https://github.com/ansible-lockdown/RHEL8-CIS.git", "image": "ami-04483b15b4268d18d", "username": "centos" }'
+                  variables: '{ "gitrepo": "https://github.com/ansible-lockdown/RHEL8-CIS.git", "image": "ami-0335e1660e1197d63", "username": "rocky" }'
                   # Refactr API base URL
                   api_url:  # optional
