@@ -3,6 +3,7 @@
 
 rhel8cis_skip_for_travis: false
 rhel8cis_system_is_container: false
+os_check: true
 # rhel8cis is left off the front of this var for consistency in testing pipeline
 # system_is_ec2 toggle will disable tasks that fail on Amazon EC2 instances. Set true to skip and false to run tasks
 system_is_ec2: false

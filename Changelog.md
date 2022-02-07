@@ -1,5 +1,12 @@
 # Changes to rhel8CIS
 
+## 1.3.4
+
+- CentOS no longer supported due to moving to Stream updates
+- Rocky and AlmaLinux tested and working
+- #155 thanks to RayMcAdmin
+- #156 thanks to Thulium-Drake
+
 ## 1.3.3
 
 - update to audit script

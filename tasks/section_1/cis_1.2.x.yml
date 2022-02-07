@@ -37,10 +37,11 @@
       - rule_1.2.2
 
 - name: "1.2.3 | L1 | AUDIT | Ensure GPG keys are configured"
-  command: gpg --quiet --with-fingerprint /etc/pki/rpm-gpg/RPM-GPG-KEY-{{ ansible_distribution|lower }}-release
+  command: gpg --quiet --with-fingerprint "{{ rpm_gpg_key }}"
   when:
       - rhel8cis_rule_1_2_3
-      - ansible_distribution == "RedHat"
+      - ansible_distribution == "RedHat" or
+        ansible_distribution == "Rocky"
   tags:
       - level1-server
       - level1-workstation

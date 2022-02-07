@@ -1,0 +1,4 @@
+---
+# OS Specific Settings
+
+rpm_gpg_key: RPM-GPG-KEY-AlmaLinux
