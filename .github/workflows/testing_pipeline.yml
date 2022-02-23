@@ -6,7 +6,7 @@ name: testing_pipeline
 # Triggers the workflow on push or pull request
 # events but only for the devel branch
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - devel
       - main
@@ -53,6 +53,8 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, 
       # so your job can access it
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Add_ssh_key
         working-directory: .github/workflows
