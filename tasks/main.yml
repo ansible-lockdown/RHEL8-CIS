@@ -7,8 +7,8 @@
       fail_msg: "This role can only be run against Supported OSs. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
       success_msg: "This role is running against a supported OS {{ ansible_distribution }} {{ ansible_distribution_major_version }}"
   when: 
-    - os_check
-    - not system_is_ec2
+      - os_check
+      - not system_is_ec2
   tags:
       - always
 
@@ -29,8 +29,8 @@
       that: rhel8cis_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'
       msg: "This role will not be able to run single user password commands as rhel8cis_bootloader_password_hash variable has not been set"
   when:
-  - rhel8cis_set_boot_pass
-  - rhel8cis_rule_1_5_2
+      - rhel8cis_set_boot_pass
+      - rhel8cis_rule_1_5_2
 
 - name: "check sugroup exists if used"
   block:
@@ -40,59 +40,61 @@
     changed_when: false
     failed_when: sugroup_exists.rc >= 2
     tags:
-    - skip_ansible_lint
+        - skip_ansible_lint
 
   - name: Check sugroup if defined exists before continuing
     assert:
         that: sugroup_exists.rc == 0
         msg: "The variable rhel8cis_sugroup is defined but does not exist please rectify"
   when:
-  - rhel8cis_sugroup is defined
-  - rhel8cis_rule_5_7
+      - rhel8cis_sugroup is defined
+      - rhel8cis_rule_5_7
   tags:
-  - rule_5.7
+      - rule_5.7
 
 - name: Include preliminary steps
   import_tasks: prelim.yml
   tags:
-  - prelim_tasks
-  - always
+      - prelim_tasks
+      - always
 
 - name: run pre_remediation audit
   include_tasks: pre_remediation_audit.yml
   when:
-  - run_audit
+      - run_audit
+  tags:
+      - run_audit
 
 - name: Gather the package facts after prelim
   package_facts:
       manager: auto
   tags:
-  - always
+      - always
 
 - name: Include OS specific variables
   include_vars: "{{ ansible_distribution }}.yml"
   tags:
-  - always
+      - always
 
 - name: capture /etc/password variables
   include_tasks: parse_etc_password.yml
   when: 
-  - rhel8cis_section5 or 
-    rhel8cis_section6
+      - rhel8cis_section5 or 
+        rhel8cis_section6
   tags:
-  - rule_5.5.2
-  - rule_6.2.7
-  - rule_6.2.8
-  - rule_6.2.20
-  - rhel9cis_section5
-  - rhel9cis_section6
+      - rule_5.5.2
+      - rule_6.2.7
+      - rule_6.2.8
+      - rule_6.2.20
+      - rhel9cis_section5
+      - rhel9cis_section6
 
 - name: run Section 1 tasks
   import_tasks: section_1/main.yml
   become: true
   when: rhel8cis_section1
   tags:
-  - rhel8cis_section1
+      - rhel8cis_section1
 
 - name: run Section 2 tasks
   import_tasks: section_2/main.yml
@@ -123,18 +125,18 @@
   import_tasks: post.yml
   become: true
   tags:
-  - post_tasks
-  - always
+      - post_tasks
+      - always
 
 - name: run post_remediation audit
   import_tasks: post_remediation_audit.yml
   when:
-  - run_audit
+      - run_audit
 
 - name: Show Audit Summary
   debug:
       msg: "{{ audit_results.split('\n') }}"
   when:
-  - run_audit
+      - run_audit
   tags:
-  - run_audit
+      - run_audit
