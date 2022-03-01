@@ -132,6 +132,8 @@
   import_tasks: post_remediation_audit.yml
   when:
       - run_audit
+  tags:
+      - run_audit
 
 - name: Show Audit Summary
   debug:
