@@ -5,11 +5,11 @@
       - name: "5.5.1 | PATCH | Ensure password creation requirements are configured | Set pwquality config settings"
         lineinfile:
             path: /etc/security/pwquality.conf
-            regexp: ^{{ item.name }}
-            line: “{{ item.name }} = {{ item.value }}”
+            regexp: "{{ item.regexp }}"
+            line: "{{ item.line }}"
         with_items:
-            - { name: minlen, value: “{{ rhel8cis_pam_password.minlen }}” }
-            - { name: minclass, value: “{{ rhel8cis_pam_password.minclass }}” }
+            - { regexp: '^minlen', line: 'minlen = {{ rhel8cis_pam_password.minlen }}' }
+            - { regexp: '^minclass', line: 'minclass = {{ rhel8cis_pam_password.minclass }}' }
 
       - name: "5.5.1 | PATCH | Ensure password creation requirements are configured | Set system-auth and password-auth retry settings"
         lineinfile:
