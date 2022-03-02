@@ -40,6 +40,7 @@
       job: "{{ rhel8cis_aide_cron['aide_job'] }}"
   when:
       - rhel8cis_rule_1_4_2
+      - not system_is_ec2
   tags:
       - level1-server
       - level1-workstation
