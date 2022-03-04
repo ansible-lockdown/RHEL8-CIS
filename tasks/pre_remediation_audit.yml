@@ -19,7 +19,7 @@
     package:
         name: git
         state: present
-    when: ansible_distribution_major_version == 8
+    when: ansible_distribution_major_version == '8'
 
   - name: Pre Audit | Install git (rh7 python2)
     package:
@@ -27,7 +27,7 @@
         state: present
     vars:
         ansible_python_interpreter: "{{ python2_bin }}"
-    when: ansible_distribution_major_version == 7
+    when: ansible_distribution_major_version == '7'
 
   - name: Pre Audit | retrieve audit content files from git
     git:
