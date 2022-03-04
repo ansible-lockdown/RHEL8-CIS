@@ -13,7 +13,7 @@
             - item.id != "sync"
             - item.id != "shutdown"
             - item.id != "halt"
-            - rhel8cis_int_gid | int < item.gid
+            - rhel8cis_int_gid | int > item.gid
             - item.shell != "      /bin/false"
             - item.shell != "      /usr/sbin/nologin"
 
@@ -28,7 +28,7 @@
             - item.id != "shutdown"
             - item.id != "sync"
             - item.id != "root"
-            - rhel8cis_int_gid | int < item.gid
+            - rhel8cis_int_gid | int > item.gid
             - item.shell != "      /bin/false"
             - item.shell != "      /usr/sbin/nologin"
   when:
