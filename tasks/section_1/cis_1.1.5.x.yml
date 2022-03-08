@@ -53,6 +53,6 @@
       - patch
       - mounts
       - skip_ansible_lint
-      - rule_1.1.4.2
-      - rule_1.1.4.3
-      - rule_1.1.4.4
+      - rule_1.1.5.2
+      - rule_1.1.5.3
+      - rule_1.1.6.4

@@ -15,6 +15,9 @@
 - name: "SECTION | 1.1.5.x | Configure /var/log"
   import_tasks: cis_1.1.5.x.yml
 
+- name: "SECTION | 1.1.6.x | Configure /var/log/audit"
+  import_tasks: cis_1.1.6.x.yml
+
 - name: "SECTION | 1.2 | Configure Software Updates"
   import_tasks: cis_1.2.x.yml
 
