@@ -79,11 +79,19 @@ rhel8cis_rule_1_1_3_1: true
 rhel8cis_rule_1_1_3_2: true
 rhel8cis_rule_1_1_3_3: true
 rhel8cis_rule_1_1_3_4: true
-rhel8cis_rule_1_1_7: true
-rhel8cis_rule_1_1_8: true
-rhel8cis_rule_1_1_9: true
-rhel8cis_rule_1_1_10: true
-rhel8cis_rule_1_1_11: true
+rhel8cis_rule_1_1_4_1: true
+rhel8cis_rule_1_1_4_2: true
+rhel8cis_rule_1_1_4_3: true
+rhel8cis_rule_1_1_4_4: true
+# rhel8cis_rule_1_1_7: true
+# rhel8cis_rule_1_1_8: true
+# rhel8cis_rule_1_1_9: true
+# rhel8cis_rule_1_1_10: true
+rhel8cis_rule_1_1_5_1: true
+# rhel8cis_rule_1_1_11: true
+rhel8cis_rule_1_1_5_2: true
+rhel8cis_rule_1_1_5_3: true
+rhel8cis_rule_1_1_5_4: true
 rhel8cis_rule_1_1_12: true
 rhel8cis_rule_1_1_13: true
 rhel8cis_rule_1_1_14: true

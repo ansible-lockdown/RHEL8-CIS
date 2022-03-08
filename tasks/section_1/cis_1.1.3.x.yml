@@ -13,6 +13,7 @@
       - name: "1.1.3.1 | AUDIT | Ensure separate partition exists for /var | Present"
         debug:
             msg: "Congratulations: {{ required_mount }} exists."
+        register: var_mount_present
         when:
             - required_mount in mount_names
   vars:
@@ -40,7 +41,7 @@
       opts: defaults,{% if rhel8cis_rule_1_1_3_3 %}noexec,{% endif %}{% if rhel8cis_rule_1_1_3_2 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_3_4 %}nosuid{% endif %}
   loop: "{{ ansible_mounts }}"
   when:
-      - var_mount_absent is defined
+      - var_mount_present is defined
       - item.mount == "/var"
       - rhel8cis_rule_1_1_3_1  # This is required so the check takes place
       - rhel8cis_rule_1_1_3_2 or

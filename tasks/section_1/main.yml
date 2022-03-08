@@ -9,6 +9,12 @@
 - name: "SECTION | 1.1.3.x | Configure /var"
   import_tasks: cis_1.1.3.x.yml
 
+- name: "SECTION | 1.1.4.x | Configure /var/tmp"
+  import_tasks: cis_1.1.4.x.yml
+
+- name: "SECTION | 1.1.5.x | Configure /var/log"
+  import_tasks: cis_1.1.5.x.yml
+
 - name: "SECTION | 1.2 | Configure Software Updates"
   import_tasks: cis_1.2.x.yml
 
