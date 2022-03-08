@@ -74,7 +74,11 @@ rhel8cis_rule_1_1_2_4: true
 # rhel8cis_rule_1_1_3: true
 # rhel8cis_rule_1_1_4: true
 # rhel8cis_rule_1_1_5: true
-rhel8cis_rule_1_1_6: true
+rhel8cis_rule_1_1_3_1: true
+# rhel8cis_rule_1_1_6: true
+rhel8cis_rule_1_1_3_2: true
+rhel8cis_rule_1_1_3_3: true
+rhel8cis_rule_1_1_3_4: true
 rhel8cis_rule_1_1_7: true
 rhel8cis_rule_1_1_8: true
 rhel8cis_rule_1_1_9: true
