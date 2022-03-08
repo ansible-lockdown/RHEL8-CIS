@@ -1,9 +1,10 @@
 ---
 
-- name: "SECTION | 1.1 | FileSystem Configurations\n
-         SECTION | 1.1.1.x | Disable unused filesystems"
+- name: |
+        "SECTION | 1.1.1.x | Disable unused filesystems
+         SECTION | 1.1.2.x | Configure /tmp"
   import_tasks: cis_1.1.1.x.yml
-- import_tasks: cis_1.1.x.yml
+- import_tasks: cis_1.1.2.x.yml
 
 - name: "SECTION | 1.2 | Configure Software Updates"
   import_tasks: cis_1.2.x.yml
