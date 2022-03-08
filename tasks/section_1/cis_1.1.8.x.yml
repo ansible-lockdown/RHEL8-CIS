@@ -1,0 +1,42 @@
+---
+
+# Skips if mount is absent
+- name: |
+         "1.1.8.1 | PATCH | Ensure nodev option set on /dev/shm partition
+          1.1.8.2 | PATCH | Ensure nosuid option set on /dev/shm partition
+          1.1.8.3 | PATCH | Ensure noexec option set on /dev/shm partition"
+  block:
+      - name: |
+         "1.1.8.1 | AUDIT | Ensure nodev option set on /dev/shm partition | Check for /dev/shm existence
+          1.1.8.2 | AUDIT | Ensure nosuid option set on /dev/shm partition | Check for /dev/shm existence
+          1.1.8.3 | AUDIT | Ensure noexec option set on /dev/shm partition | Check for /dev/shm existence"
+        shell: mount -l | grep -E '\s/dev/shm\s'
+        changed_when: false
+        failed_when: false
+        check_mode: no
+        register: rhel8cis_1_1_8_x_dev_shm_status
+
+      - name: |
+              "1.1.8.1 | PATCH | Ensure nodev option set on /dev/shm partition | Set nodev option
+               1.1.8.2 | PATCH | Ensure noexec option set on /dev/shm partition | Set nosuid option
+               1.1.8.3 | PATCH | Ensure nosuid option set on /dev/shm partition | Set noexec option"
+        mount:
+            name: /dev/shm
+            src: tmpfs
+            fstype: tmpfs
+            state: mounted
+            opts: defaults,{% if rhel8cis_rule_1_1_8_2 %}noexec,{% endif %}{% if rhel8cis_rule_1_1_8_1 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_8_3 %}nosuid{% endif %}
+        when: "'dev/shm' in rhel8cis_1_1_8_x_dev_shm_status.stdout"
+  when:
+      - rhel8cis_rule_1_1_8_1 or
+        rhel8cis_rule_1_1_8_2 or
+        rhel8cis_rule_1_1_8_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - mounts
+      - rule_1.1.8.1
+      - rule_1.1.8.2
+      - rule_1.1.8.3

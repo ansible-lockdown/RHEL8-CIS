@@ -21,6 +21,9 @@
 - name: "SECTION | 1.1.7.x | Configure /home"
   import_tasks: cis_1.1.7.x.yml
 
+- name: "SECTION | 1.1.8.x | Configure /dev/shm"
+  import_tasks: cis_1.1.8.x.yml
+
 - name: "SECTION | 1.2 | Configure Software Updates"
   import_tasks: cis_1.2.x.yml
 
