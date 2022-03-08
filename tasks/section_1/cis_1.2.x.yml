@@ -1,6 +1,6 @@
 ---
 
-- name: "1.2.1 | L1 | PATCH | Ensure Red Hat Subscription Manager connection is configured"
+- name: "1.2.1 | PATCH | Ensure Red Hat Subscription Manager connection is configured"
   redhat_subscription:
       state: present
       username: "{{ rhel8cis_rh_sub_user }}"
@@ -14,51 +14,51 @@
   tags:
       - level1-server
       - level1-workstation
-      - notscored
+      - manual
       - patch
       - rule_1.2.1
       - skip_ansible_lint  # Added as no_log still errors on ansuible-lint
 
-- name: "1.2.2 | L1 | PATCH | Disable the rhnsd Daemon"
-  service:
-      name: rhnsd
-      state: stopped
-      enabled: no
-      masked: true
-  when:
-      - ansible_distribution == "RedHat"
-      - rhnsd_service_status.stdout == "loaded" and not rhel8cis_rhnsd_required
-      - rhel8cis_rule_1_2_2
-  tags:
-      - level1-server
-      - level1-workstation
-      - notscored
-      - patch
-      - rule_1.2.2
+# - name: "1.2.2 | PATCH | Disable the rhnsd Daemon"
+#   service:
+#       name: rhnsd
+#       state: stopped
+#       enabled: no
+#       masked: true
+#   when:
+#       - ansible_distribution == "RedHat"
+#       - rhnsd_service_status.stdout == "loaded" and not rhel8cis_rhnsd_required
+#       - rhel8cis_rule_1_2_2
+#   tags:
+#       - level1-server
+#       - level1-workstation
+#       - manual
+#       - patch
+#       - rule_1.2.2
 
-- name: "1.2.3 | L1 | AUDIT | Ensure GPG keys are configured"
+- name: "1.2.2 | AUDIT | Ensure GPG keys are configured"
   command: gpg --quiet --with-fingerprint "{{ rpm_gpg_key }}"
   when:
-      - rhel8cis_rule_1_2_3
+      - rhel8cis_rule_1_2_2
       - ansible_distribution == "RedHat" or
         ansible_distribution == "Rocky"
   tags:
       - level1-server
       - level1-workstation
-      - notscored
+      - manual
       - patch
-      - rule_1.2.3
+      - rule_1.2.2
 
-- name: "1.2.4 | L1 | PATCH | Ensure gpgcheck is globally activated"
+- name: "1.2.3| PATCH | Ensure gpgcheck is globally activated"
   block:
-      - name: "1.2.4 | L1 | AUDIT | Ensure gpgcheck is globally activated | Find repos"
+      - name: "1.2.3 | AUDIT | Ensure gpgcheck is globally activated | Find repos"
         find:
             paths: /etc/yum.repos.d
             patterns: "*.repo"
         register: yum_repos
         changed_when: false
 
-      - name: "1.2.4 | L1 | PATCH | Ensure gpgcheck is globally activated | Update yum.repos"
+      - name: "1.2.3 | PATCH | Ensure gpgcheck is globally activated | Update yum.repos"
         replace:
             name: "{{ item.path }}"
             regexp: "^gpgcheck=0"
@@ -66,17 +66,17 @@
         with_items:
             - "{{ yum_repos.files }}"
   when:
-      - rhel8cis_rule_1_2_4
+      - rhel8cis_rule_1_2_3
   tags:
       - level1-server
       - level1-workstation
-      - scored
+      - automated
       - patch
-      - rule_1.2.4
+      - rule_1.2.3
 
-- name: "1.2.5 | L1 | Ensure package manager repositories are configured"
+- name: "1.2.4 | AUDIT | Ensure package manager repositories are configured"
   block:
-      - name: "1.2.5 | L1 | AUDIT | Ensure package manager repositories are configured | Get repo list"
+      - name: "1.2.4 | AUDIT | Ensure package manager repositories are configured | Get repo list"
         command: dnf repolist
         changed_when: false
         failed_when: false
@@ -85,17 +85,17 @@
         args:
             warn: false
 
-      - name: "1.2.5 | L1 | AUDIT | Ensure package manager repositories are configured | Display repo list"
+      - name: "1.2.4 | AUDIT | Ensure package manager repositories are configured | Display repo list"
         debug:
             msg:
                 - "Alert! Below are the configured repos. Please review and make sure all align with site policy"
                 - "{{ dnf_configured.stdout_lines }}"
   when:
-      - rhel8cis_rule_1_2_5
+      - rhel8cis_rule_1_2_4
   tags:
       - level1-server
       - level1-workstation
-      - notscored
-      - patch
-      - rule_1.2.5
+      - manual
+      - audit
+      - rule_1.2.4
       - skip_ansible_lint
