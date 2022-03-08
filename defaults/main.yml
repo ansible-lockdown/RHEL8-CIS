@@ -125,7 +125,7 @@ rhel8cis_rule_1_2_4: true
 # rhel8cis_rule_1_2_5: true
 rhel8cis_rule_1_3_1: true
 rhel8cis_rule_1_3_2: true
-rhel8cis_rule_1_3_3: true
+# rhel8cis_rule_1_3_3: true
 rhel8cis_rule_1_4_1: true
 rhel8cis_rule_1_4_2: true
 rhel8cis_rule_1_5_1: true
@@ -379,7 +379,9 @@ rhel8cis_allow_autofs: false
 
 ## Section 1 vars
 
-# 1.1.2
+# 1.1.2.2
+# 1.1.2.3
+# 1.1.2.4
 # These settings go into the /etc/fstab file for the /tmp mount settings
 # The value must contain nosuid,nodev,noexec to conform to CIS standards
 # rhel8cis_tmp_tmpfs_settings: "defaults,rw,nosuid,nodev,noexec,relatime 0 0"

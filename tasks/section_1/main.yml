@@ -30,7 +30,10 @@
 - name: "SECTION | 1.2 | Configure Software Updates"
   import_tasks: cis_1.2.x.yml
 
-- name: "SECTION | 1.3 | Configure sudo"
+# - name: "SECTION | 1.3 | Configure sudo"
+#   import_tasks: cis_1.3.x.yml
+
+- name: "SECTION | 1.3 | Filesystem Integrity Checking"
   import_tasks: cis_1.3.x.yml
 
 - name: "SECTION | 1.4 | Filesystem Integrity"
