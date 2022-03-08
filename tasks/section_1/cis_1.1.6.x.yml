@@ -37,7 +37,8 @@
       fstype: "{{ item.fstype }}"
       state: present
       opts: defaults,{% if rhel8cis_rule_1_1_6_2 %}noexec,{% endif %}{% if rhel8cis_rule_1_1_6_3 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_6_4 %}nosuid{% endif %}
-  loop: "{{ ansible_mounts }}"
+  with_items:
+      - "{{ ansible_mounts }}"
   when:
       - var_log_audit_mount_present is defined
       - item.mount == "/var/log/audit"

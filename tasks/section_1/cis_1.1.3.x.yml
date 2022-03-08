@@ -39,7 +39,8 @@
       fstype: "{{ item.fstype }}"
       state: present
       opts: defaults,{% if rhel8cis_rule_1_1_3_3 %}noexec,{% endif %}{% if rhel8cis_rule_1_1_3_2 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_3_4 %}nosuid{% endif %}
-  loop: "{{ ansible_mounts }}"
+  with_items:
+      - "{{ ansible_mounts }}"
   when:
       - var_mount_present is defined
       - item.mount == "/var"
