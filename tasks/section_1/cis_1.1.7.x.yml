@@ -31,13 +31,14 @@
 - name: |
     "1.1.7.2 | PATCH | Ensure nodev option set on /home partition
      1.1.7.3 | PATCH | Ensure nosuid option set on /home partition
-     1.1.7.4 | PATCH | Ensure usrquota option set on /home partition"
+     1.1.7.4 | PATCH | Ensure usrquota option set on /home partition
+     1.1.7.5 | PATCH | Ensure grpquota option set on /home partition"
   mount:
       name: /home
       src: "{{ item.device }}"
       fstype: "{{ item.fstype }}"
       state: present
-      opts: defaults,{% if rhel8cis_rule_1_1_7_2 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_7_3 %}nosuid,{% endif %}{% if rhel8cis_rule_1_1_7_4 %}usrquota{% endif %}
+      opts: defaults,{% if rhel8cis_rule_1_1_7_2 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_7_3 %}nosuid,{% endif %}{% if rhel8cis_rule_1_1_7_4 %}usrquota,{% endif %}{% if rhel8cis_rule_1_1_7_5 %}grpquota{% endif %}
   with_items:
       - "{{ ansible_mounts }}"
   when:
@@ -46,7 +47,8 @@
       - rhel8cis_rule_1_1_7_1
       - rhel8cis_rule_1_1_7_2 or
         rhel8cis_rule_1_1_7_3 or
-        rhel8cis_rule_1_1_7_4
+        rhel8cis_rule_1_1_7_4 or
+        rhel8cis_rule_1_1_7_5
   tags:
       - level1-server
       - level1-workstation
