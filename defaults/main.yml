@@ -128,6 +128,7 @@ rhel8cis_rule_1_3_2: true
 # rhel8cis_rule_1_3_3: true
 rhel8cis_rule_1_4_1: true
 rhel8cis_rule_1_4_2: true
+rhel8cis_rule_1_4_3: true
 rhel8cis_rule_1_5_1: true
 rhel8cis_rule_1_5_2: true
 rhel8cis_rule_1_5_3: true
@@ -406,7 +407,7 @@ rhel8cis_varlog_location: "/var/log/sudo.log"
 # xinetd required
 rhel8cis_xinetd_required: false
 
-# 1.4.2 Bootloader password
+# 1.4.1 Bootloader password
 rhel8cis_bootloader_password_hash: 'grub.pbkdf2.sha512.changethispassword'
 rhel8cis_bootloader_password: random
 rhel8cis_set_boot_pass: false
