@@ -21,7 +21,7 @@ After=swap.target
 What=tmpfs
 Where=/tmp
 Type=tmpfs
-Options=mode=1777,strictatime,{% if rhel8cis_rule_1_1_3 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_4 %}nosuid,{% endif %}{% if rhel8cis_rule_1_1_5 %}noexec{% endif %}
+Options=mode=1777,strictatime,{% if rhel8cis_rule_1_1_2_2 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_2_4 %}nosuid,{% endif %}{% if rhel8cis_rule_1_1_2_3 %}noexec{% endif %}
 
 # Make 'systemctl enable tmp.mount' work:
 [Install]
