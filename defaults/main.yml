@@ -168,7 +168,7 @@ rhel8cis_rule_1_8_4: true
 rhel8cis_rule_1_8_5: true
 rhel8cis_rule_1_9: true
 rhel8cis_rule_1_10: true
-rhel8cis_rule_1_11: true
+# rhel8cis_rule_1_11: true
 
 # Section 2 rules
 rhel8cis_rule_2_1_1: true

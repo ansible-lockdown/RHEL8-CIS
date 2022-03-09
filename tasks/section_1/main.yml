@@ -70,7 +70,7 @@
 # - name: "SECTION | 1.8 | Warning Banners"
 #   import_tasks: cis_1.8.1.x.yml
 
-- name: "SECTION | 1.9 | Updated and Patches"
+- name: "SECTION | 1.9 | Updates and Patches"
   import_tasks: cis_1.9.yml
 
 - name: "SECTION | 1.10 | Crypto policies"
