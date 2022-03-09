@@ -61,8 +61,11 @@
 #   include_tasks: cis_1.7.1.x.yml
 #   when: not rhel8cis_selinux_disable
 
-- name: "SECTION | 1.8 | Warning Banners"
-  import_tasks: cis_1.8.1.x.yml
+- name: "SECTION | 1.7 | Command Line Warning Banners"
+  import_tasks: cis_1.7.1.x.yml
+
+# - name: "SECTION | 1.8 | Warning Banners"
+#   import_tasks: cis_1.8.1.x.yml
 
 - name: "SECTION | 1.9 | Updated and Patches"
   import_tasks: cis_1.9.yml
