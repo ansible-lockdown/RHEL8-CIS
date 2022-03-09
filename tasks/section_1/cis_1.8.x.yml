@@ -25,7 +25,7 @@
       owner: root
       group: root
       mode: 0644
-  notify: dconf update
+  notify: reload dconf
   with_items:
       - { file: '/etc/dconf/profile/gdm', regexp: 'user-db', line: 'user-db:user' }
       - { file: '/etc/dconf/profile/gdm', regexp: 'system-db', line: 'system-db:gdm' }
@@ -54,7 +54,7 @@
       owner: root
       group: root
       mode: 0644
-  notify: dconf update
+  notify: reload dconf
   with_items:
       - { file: '/etc/dconf/profile/gdm', regexp: 'user-db', line: 'user-db:user' }
       - { file: '/etc/dconf/profile/gdm', regexp: 'system-db', line: 'system-db:gdm' }
@@ -79,6 +79,7 @@
       state: absent
   when:
       - rhel8cis_rule_1_8_4
+      - rhel8cis_gui
   tags:
       - level1-server
       - level1-workstation
@@ -92,13 +93,15 @@
       path: /etc/dconf/db/local.d/00-media-automount
       regex: "{{ item.regex }}"
       line: "{{ item.line }}"
-  notify: dconf update
+      create: yes
+  notify: reload dconf
   with_items:
       - { regex: '\[org\/gnome\/desktop\/media-handling\]', line: '[org/gnome/desktop/media-handling]' }
       - { regex: 'automount=', line: 'automount=false' }
       - { regex: 'automount-open=', line: 'automount-open=false'}
   when:
       - rhel8cis_rule_1_8_5
+      - rhel8cis_gui
   tags:
       - level1-server
       - level2-workstation

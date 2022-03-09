@@ -44,6 +44,16 @@
   set_fact:
       mount_names: "{{ ansible_mounts | map(attribute='mount') | list }}"
 
+- name: "PRELIM | Install dconf"
+  package:
+      name: dconf
+      state: present
+  when:
+      - "'dconf' not in ansible_facts.packages"
+      - rhel8cis_rule_1_8_2 or
+        rhel8cis_rule_1_8_3 or
+        rhel8cis_rule_1_8_5
+
 - name: "PRELIM | Section 4.1 | Configure System Accounting (auditd)"
   package:
       name: audit

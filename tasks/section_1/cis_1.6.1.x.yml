@@ -84,7 +84,7 @@
   block:
       - name: "1.6.1.6 | AUDIT | Ensure no unconfined services exist | Find the unconfined services"
         shell: ps -eZ | grep unconfined_service_t | egrep -vw "tr|ps|egrep|bash|awk" | tr ':' ' ' | awk '{ print $NF }'
-        register: rhelcis_1_7_1_5_unconf_services
+        register: rhelcis_1_6_1_6_unconf_services
         failed_when: false
         changed_when: false
 

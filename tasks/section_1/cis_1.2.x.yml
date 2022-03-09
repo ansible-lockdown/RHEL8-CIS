@@ -65,6 +65,8 @@
             replace: "gpgcheck=1"
         with_items:
             - "{{ yum_repos.files }}"
+        loop_control:
+            label: "{{ item.path }}"
   when:
       - rhel8cis_rule_1_2_3
   tags:

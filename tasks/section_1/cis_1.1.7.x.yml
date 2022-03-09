@@ -41,6 +41,8 @@
       opts: defaults,{% if rhel8cis_rule_1_1_7_2 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_7_3 %}nosuid,{% endif %}{% if rhel8cis_rule_1_1_7_4 %}usrquota,{% endif %}{% if rhel8cis_rule_1_1_7_5 %}grpquota{% endif %}
   with_items:
       - "{{ ansible_mounts }}"
+  loop_control:
+      label: "{{ item.device }}"
   when:
       - home_mount_present is defined
       - item.mount == "/home"

@@ -28,6 +28,8 @@
   notify: remount tmp
   with_items:
       - "{{ ansible_mounts }}"
+  loop_control:
+      label: "{{ item.device }}"
   when:
       - item.mount == "/tmp"
       - not rhel8cis_tmp_svc
