@@ -47,8 +47,11 @@
 # - name: "SECTION | 1.5 | Secure Boot Settings"
 #   import_tasks: cis_1.5.x.yml
 
-- name: "SECTION | 1.6 | Additional Process Hardening"
-  import_tasks: cis_1.6.x.yml
+- name: "SECTION | 1.5 | Additional Process Hardening"
+  import_tasks: cis_1.5.x.yml
+
+# - name: "SECTION | 1.6 | Additional Process Hardening"
+#   import_tasks: cis_1.6.x.yml
 
 - name: "SECTION | 1.7 | bootloader and Mandatory Access Control"
   include_tasks: cis_1.7.1.x.yml
