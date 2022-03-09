@@ -173,14 +173,14 @@ rhel8cis_rule_1_11: true
 # Section 2 rules
 rhel8cis_rule_2_1_1: true
 rhel8cis_rule_2_1_2: true
-rhel8cis_rule_2_1_3: true
-rhel8cis_rule_2_1_4: true
-rhel8cis_rule_2_1_5: true
-rhel8cis_rule_2_1_6: true
-rhel8cis_rule_2_1_7: true
-rhel8cis_rule_2_2_1_1: true
-rhel8cis_rule_2_2_1_2: true
-rhel8cis_rule_2_2_1_3: true
+# rhel8cis_rule_2_1_3: true
+# rhel8cis_rule_2_1_4: true
+# rhel8cis_rule_2_1_5: true
+# rhel8cis_rule_2_1_6: true
+# rhel8cis_rule_2_1_7: true
+# rhel8cis_rule_2_2_1_1: true
+# rhel8cis_rule_2_2_1_2: true
+# rhel8cis_rule_2_2_1_3: true
 rhel8cis_rule_2_2_2: true
 rhel8cis_rule_2_2_3: true
 rhel8cis_rule_2_2_4: true
@@ -468,7 +468,7 @@ rhel8cis_talk_required: false
 rhel8cis_rsh_required: false
 rhel8cis_ypbind_required: false
 
-# 2.2.1.1 Time Synchronization - Either chrony or ntp
+# 2.1.1 Time Synchronization - Either chrony or ntp
 rhel8cis_time_synchronization: chrony
 
 # 2.2.1.2 Time Synchronization servers - used in template file chrony.conf.j2

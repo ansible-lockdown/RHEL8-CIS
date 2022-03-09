@@ -1,10 +1,13 @@
 ---
 
-- name: "SECTION | 2.1 | xinetd"
-  import_tasks: cis_2.1.1.yml
+- name: "SECTION | 2.1 | Time Synchronization"
+  import_tasks: cis_2.1.x.yml
 
-- name: "SECTION | 2.2.1 | Time Synchronization"
-  import_tasks: cis_2.2.1.x.yml
+# - name: "SECTION | 2.1 | xinetd"
+#   import_tasks: cis_2.1.1.yml
+
+# - name: "SECTION | 2.2.1 | Time Synchronization"
+#   import_tasks: cis_2.2.1.x.yml
 
 - name: "SECTION | 2.2 | Special Purpose Services"
   import_tasks: cis_2.2.x.yml
