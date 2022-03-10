@@ -14,3 +14,6 @@
 
 - name: "SECTION | 2.3 | Service Clients"
   import_tasks: cis_2.3.x.yml
+
+- name: "SECTION | 2.4 | Nonessential services removed"
+  import_tasks: cis_2.4.yml
