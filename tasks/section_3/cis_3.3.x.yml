@@ -15,20 +15,20 @@
       - patch
       - rule_3.3.1
 
-- name: "3.3.2 | L2 | PATCH | Ensure SCTP is disabled"
-  lineinfile:
-      dest: /etc/modprobe.d/CIS.conf
-      regexp: "^(#)?install sctp(\\s|$)"
-      line: "install sctp /bin/true"
-      create: yes
-      mode: 0600
-  when:
-      - rhel8cis_rule_3_3_2
-  tags:
-      - level2-server
-      - level2-workstation
-      - patch
-      - rule_3.3.2
+# - name: "3.3.2 | L2 | PATCH | Ensure SCTP is disabled"
+#   lineinfile:
+#       dest: /etc/modprobe.d/CIS.conf
+#       regexp: "^(#)?install sctp(\\s|$)"
+#       line: "install sctp /bin/true"
+#       create: yes
+#       mode: 0600
+#   when:
+#       - rhel8cis_rule_3_3_2
+#   tags:
+#       - level2-server
+#       - level2-workstation
+#       - patch
+#       - rule_3.3.2
 
 - name: "3.3.3 | L2 | PATCH | Ensure RDS is disabled"
   lineinfile:

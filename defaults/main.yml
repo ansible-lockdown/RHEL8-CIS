@@ -212,15 +212,17 @@ rhel8cis_rule_2_4: true
 # Section 3 rules
 rhel8cis_rule_3_1_1: true
 rhel8cis_rule_3_1_2: true
+rhel8cis_rule_3_1_3: true
+rhel8cis_rule_3_1_4: true
 rhel8cis_rule_3_2_1: true
 rhel8cis_rule_3_2_2: true
-rhel8cis_rule_3_2_3: true
-rhel8cis_rule_3_2_4: true
-rhel8cis_rule_3_2_5: true
-rhel8cis_rule_3_2_6: true
-rhel8cis_rule_3_2_7: true
-rhel8cis_rule_3_2_8: true
-rhel8cis_rule_3_2_9: true
+# rhel8cis_rule_3_2_3: true
+# rhel8cis_rule_3_2_4: true
+# rhel8cis_rule_3_2_5: true
+# rhel8cis_rule_3_2_6: true
+# rhel8cis_rule_3_2_7: true
+# rhel8cis_rule_3_2_8: true
+# rhel8cis_rule_3_2_9: true
 rhel8cis_rule_3_3_1: true
 rhel8cis_rule_3_3_2: true
 rhel8cis_rule_3_3_3: true
