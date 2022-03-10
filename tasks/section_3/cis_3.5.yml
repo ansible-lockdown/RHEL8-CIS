@@ -1,32 +1,32 @@
 ---
 
-- name: "3.5 | L1 | PATCH | Ensure wireless interfaces are disabled"
-  block:
-      - name: "3.5 | L1 | AUDIT |  Ensure wireless interfaces are disabled | Check if nmcli command is available"
-        command: rpm -q NetworkManager
-        changed_when: false
-        failed_when: false
-        check_mode: no
-        args:
-            warn: no
-        register: rhel_08_nmcli_available
+# - name: "3.5 | L1 | PATCH | Ensure wireless interfaces are disabled"
+#   block:
+#       - name: "3.5 | L1 | AUDIT |  Ensure wireless interfaces are disabled | Check if nmcli command is available"
+#         command: rpm -q NetworkManager
+#         changed_when: false
+#         failed_when: false
+#         check_mode: no
+#         args:
+#             warn: no
+#         register: rhel_08_nmcli_available
 
-      - name: "3.5 | L1 | AUDIT | Ensure wireless interfaces are disabled | Check if wifi is enabled"
-        command: nmcli radio wifi
-        register: rhel_08_wifi_enabled
-        changed_when: rhel_08_wifi_enabled.stdout != "disabled"
-        failed_when: false
-        when: rhel_08_nmcli_available.rc == 0
+#       - name: "3.5 | L1 | AUDIT | Ensure wireless interfaces are disabled | Check if wifi is enabled"
+#         command: nmcli radio wifi
+#         register: rhel_08_wifi_enabled
+#         changed_when: rhel_08_wifi_enabled.stdout != "disabled"
+#         failed_when: false
+#         when: rhel_08_nmcli_available.rc == 0
 
-      - name: "3.5 | L1 | PATCH | Ensure wireless interfaces are disabled | Disable wifi if enabled"
-        command: nmcli radio all off
-        changed_when: false
-        failed_when: false
-        when: rhel_08_wifi_enabled is changed
-  when:
-      - rhel8cis_rule_3_5
-  tags:
-      - level1-server
-      - level2-workstation
-      - patch
-      - rule_3.5
+#       - name: "3.5 | L1 | PATCH | Ensure wireless interfaces are disabled | Disable wifi if enabled"
+#         command: nmcli radio all off
+#         changed_when: false
+#         failed_when: false
+#         when: rhel_08_wifi_enabled is changed
+#   when:
+#       - rhel8cis_rule_3_5
+#   tags:
+#       - level1-server
+#       - level2-workstation
+#       - patch
+#       - rule_3.5

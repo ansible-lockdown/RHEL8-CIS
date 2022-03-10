@@ -233,6 +233,14 @@ rhel8cis_rule_3_3_7: true
 rhel8cis_rule_3_3_8: true
 rhel8cis_rule_3_3_9: true
 rhel8cis_rule_3_4_1_1: true
+rhel8cis_rule_3_4_1_2: true
+rhel8cis_rule_3_4_1_3: true
+rhel8cis_rule_3_4_1_4: true
+rhel8cis_rule_3_4_1_5: true
+rhel8cis_rule_3_4_1_6: true
+rhel8cis_rule_3_4_1_7: true
+
+
 rhel8cis_rule_3_4_2_1: true
 rhel8cis_rule_3_4_2_2: true
 rhel8cis_rule_3_4_2_3: true
@@ -514,7 +522,7 @@ rhel8cis_host_allow:
 # Firewall Service - either firewalld, iptables, or nftables
 rhel8cis_firewall: firewalld
 
-# 3.4.2.4 Default zone setting
+# 3.4.1.5 Default zone setting
 rhel8cis_default_zone: public
 
 # 3.4.2.5 Zone and Interface setting
