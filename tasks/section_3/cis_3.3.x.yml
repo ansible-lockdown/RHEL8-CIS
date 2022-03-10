@@ -1,19 +1,94 @@
 ---
 
-- name: "3.3.1 | L2 | PATCH | Ensure DCCP is disabled"
-  lineinfile:
-      dest: /etc/modprobe.d/CIS.conf
-      regexp: "^(#)?install dccp(\\s|$)"
-      line: "install dccp /bin/true"
-      create: yes
-      mode: 0600
+- name: "3.3.1 | PATCH | Ensure source routed packets are not accepted"
+  block:
+      - name: "3.3.1 | PATCH | Ensure source routed packets are not accepted | Set routed packets IPv4"
+        sysctl:
+            name: '{{ item.name }}'
+            value: '{{ item.value }}'
+            sysctl_set: yes
+            state: present
+            reload: yes
+            ignoreerrors: yes
+        notify: sysctl flush ipv4 route table
+        with_items:
+            - { name: net.ipv4.conf.all.accept_source_route, value: 0 }
+            - { name: net.ipv4.conf.default.accept_source_route, value: 0 }
+
+      - name: "3.3.1 | PATCH | Ensure source routed packets are not accepted | Set routed packets IPv6"
+        sysctl:
+            name: '{{ item.name }}'
+            value: '{{ item.value }}'
+            sysctl_set: yes
+            reload: yes
+            ignoreerrors: yes
+        notify: sysctl flush ipv6 route table
+        with_items:
+            - { name: net.ipv6.conf.all.accept_source_route, value: 0}
+            - { name: net.ipv6.conf.default.accept_source_route, value: 0 }
+        when: rhel8cis_ipv6_required
   when:
       - rhel8cis_rule_3_3_1
   tags:
-      - level2-server
-      - level2-workstation
+      - level1-server
+      - level1-workstation
+      - automated
       - patch
+      - sysctl
       - rule_3.3.1
+
+# - name: "3.3.1 | L2 | PATCH | Ensure DCCP is disabled"
+#   lineinfile:
+#       dest: /etc/modprobe.d/CIS.conf
+#       regexp: "^(#)?install dccp(\\s|$)"
+#       line: "install dccp /bin/true"
+#       create: yes
+#       mode: 0600
+#   when:
+#       - rhel8cis_rule_3_3_1
+#   tags:
+#       - level2-server
+#       - level2-workstation
+#       - patch
+#       - rule_3.3.1
+
+- name: "3.3.2 | PATCH | Ensure ICMP redirects are not accepted"
+  block:
+      - name: "3.3.2 | PATCH | Ensure ICMP redirects are not accepted | Set ICMP redirects IPv4"
+        sysctl:
+            name: '{{ item.name }}'
+            value: '{{ item.value }}'
+            sysctl_set: yes
+            state: present
+            reload: yes
+            ignoreerrors: yes
+        notify: sysctl flush ipv4 route table
+        with_items:
+            - { name: net.ipv4.conf.all.accept_redirects, value: 0 }
+            - { name: net.ipv4.conf.default.accept_redirects, value: 0 }
+
+      - name: "3.3.2 | PATCH | Ensure ICMP redirects are not accepted | Set ICMP redirects IPv6"
+        sysctl:
+            name: '{{ item.name }}'
+            value: '{{ item.value }}'
+            sysctl_set: yes
+            state: present
+            reload: yes
+            ignoreerrors: yes
+        notify: sysctl flush ipv6 route table
+        with_items:
+            - { name: net.ipv6.conf.all.accept_redirects, value: 0 }
+            - { name: net.ipv6.conf.default.accept_redirects, value: 0 }
+        when: rhel8cis_ipv6_required
+  when:
+      - rhel8cis_rule_3_3_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - sysctl
+      - rule_3.3.2
 
 # - name: "3.3.2 | L2 | PATCH | Ensure SCTP is disabled"
 #   lineinfile:
@@ -30,32 +105,172 @@
 #       - patch
 #       - rule_3.3.2
 
-- name: "3.3.3 | L2 | PATCH | Ensure RDS is disabled"
-  lineinfile:
-      dest: /etc/modprobe.d/CIS.conf
-      regexp: "^(#)?install rds(\\s|$)"
-      line: "install rds /bin/true"
-      create: yes
-      mode: 0600
+- name: "3.3.3 | PATCH | Ensure secure ICMP redirects are not accepted"
+  sysctl:
+      name: '{{ item.name }}'
+      value: '{{ item.value }}'
+      sysctl_set: yes
+      state: present
+      reload: yes
+      ignoreerrors: yes
+  notify: sysctl flush ipv4 route table
+  with_items:
+      - { name: net.ipv4.conf.all.secure_redirects, value: 0 }
+      - { name: net.ipv4.conf.default.secure_redirects, value: 0 }
   when:
       - rhel8cis_rule_3_3_3
   tags:
-      - level2-server
-      - level2-workstation
+      - level1-server
+      - level1-workstation
+      - automated
       - patch
+      - sysctl
       - rule_3.3.3
 
-- name: "3.3.4 | L2 | PATCH | Ensure TIPC is disabled"
-  lineinfile:
-      dest: /etc/modprobe.d/CIS.conf
-      regexp: "^(#)?install tipc(\\s|$)"
-      line: "install tipc /bin/true"
-      create: yes
-      mode: 0600
+# - name: "3.3.3 | L2 | PATCH | Ensure RDS is disabled"
+#   lineinfile:
+#       dest: /etc/modprobe.d/CIS.conf
+#       regexp: "^(#)?install rds(\\s|$)"
+#       line: "install rds /bin/true"
+#       create: yes
+#       mode: 0600
+#   when:
+#       - rhel8cis_rule_3_3_3
+#   tags:
+#       - level2-server
+#       - level2-workstation
+#       - patch
+#       - rule_3.3.3
+
+- name: "3.3.4 | PATCH | Ensure suspicious packets are logged"
+  sysctl:
+      name: '{{ item.name }}'
+      value: '{{ item.value }}'
+      sysctl_set: yes
+      state: present
+      reload: yes
+      ignoreerrors: yes
+  notify: sysctl flush ipv4 route table
+  with_items:
+      - { name: net.ipv4.conf.all.log_martians, value: 1 }
+      - { name: net.ipv4.conf.default.log_martians, value: 1 }
   when:
       - rhel8cis_rule_3_3_4
   tags:
-      - level2-server
-      - level2-workstation
+      - level1-server
+      - level1-workstation
+      - automated
       - patch
+      - sysctl
       - rule_3.3.4
+
+# - name: "3.3.4 | L2 | PATCH | Ensure TIPC is disabled"
+#   lineinfile:
+#       dest: /etc/modprobe.d/CIS.conf
+#       regexp: "^(#)?install tipc(\\s|$)"
+#       line: "install tipc /bin/true"
+#       create: yes
+#       mode: 0600
+#   when:
+#       - rhel8cis_rule_3_3_4
+#   tags:
+#       - level2-server
+#       - level2-workstation
+#       - patch
+#       - rule_3.3.4
+
+- name: "3.3.5 | PATCH | Ensure broadcast ICMP requests are ignored"
+  sysctl:
+      name: net.ipv4.icmp_echo_ignore_broadcasts
+      value: '1'
+      state: present
+      reload: yes
+      ignoreerrors: yes
+  notify: sysctl flush ipv4 route table
+  when:
+      - rhel8cis_rule_3_3_5
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - sysctl
+      - rule_3.3.5
+
+- name: "3.3.6 | PATCH | Ensure bogus ICMP responses are ignored"
+  sysctl:
+      name: net.ipv4.icmp_ignore_bogus_error_responses
+      value: '1'
+      state: present
+      reload: yes
+      ignoreerrors: yes
+  notify: sysctl flush ipv4 route table
+  when:
+      - rhel8cis_rule_3_3_6
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - sysctl
+      - rule_3.3.6
+
+- name: "3.3.7 | PATCH | Ensure Reverse Path Filtering is enabled"
+  sysctl:
+      name: net.ipv4.conf.default.rp_filter
+      value: '1'
+      sysctl_set: yes
+      state: present
+      reload: yes
+      ignoreerrors: yes
+  notify: sysctl flush ipv4 route table
+  when:
+      - rhel8cis_rule_3_3_7
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - sysctl
+      - rule_3.3.7
+
+- name: "3.3.8 | PATCH | Ensure TCP SYN Cookies is enabled"
+  sysctl:
+      name: net.ipv4.tcp_syncookies
+      value: '1'
+      state: present
+      reload: yes
+      ignoreerrors: yes
+  notify: sysctl flush ipv4 route table
+  when:
+      - rhel8cis_rule_3_3_8
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - sysctl
+      - rule_3.3.8
+
+- name: "3.3.9 | PATCH | Ensure IPv6 router advertisements are not accepted"
+  sysctl:
+      name: '{{ item.name }}'
+      value: '{{ item.value }}'
+      sysctl_set: yes
+      state: present
+      reload: yes
+      ignoreerrors: yes
+  notify: sysctl flush ipv6 route table
+  with_items:
+      - { name: net.ipv6.conf.all.accept_ra, value: 0 }
+      - { name: net.ipv6.conf.default.accept_ra, value: 0 }
+  when:
+      - rhel8cis_ipv6_required
+      - rhel8cis_rule_3_3_9
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - sysctl
+      - rule_3.3.9

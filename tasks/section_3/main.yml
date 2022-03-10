@@ -8,8 +8,11 @@
 - name: "SECTION | 3.2.x | Network Parameters (Host Only)"
   import_tasks: cis_3.2.x.yml
 
-- name: "SECTION | 3.3.x | Uncommon Network Protocols"
+- name: "SECTION | 3.3.x | Network Parameters (Host and Router)"
   import_tasks: cis_3.3.x.yml
+
+# - name: "SECTION | 3.3.x | Uncommon Network Protocols"
+#   import_tasks: cis_3.3.x.yml
 
 - name: "SECTION | 3.4.1.x | firewall defined"
   import_tasks: cis_3.4.1.1.yml

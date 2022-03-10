@@ -227,6 +227,11 @@ rhel8cis_rule_3_3_1: true
 rhel8cis_rule_3_3_2: true
 rhel8cis_rule_3_3_3: true
 rhel8cis_rule_3_3_4: true
+rhel8cis_rule_3_3_5: true
+rhel8cis_rule_3_3_6: true
+rhel8cis_rule_3_3_7: true
+rhel8cis_rule_3_3_8: true
+rhel8cis_rule_3_3_9: true
 rhel8cis_rule_3_4_1_1: true
 rhel8cis_rule_3_4_2_1: true
 rhel8cis_rule_3_4_2_2: true
