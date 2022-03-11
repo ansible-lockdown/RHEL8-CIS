@@ -247,26 +247,34 @@ rhel8cis_rule_3_4_2_3: true
 rhel8cis_rule_3_4_2_4: true
 rhel8cis_rule_3_4_2_5: true
 rhel8cis_rule_3_4_2_6: true
-rhel8cis_rule_3_4_3_1: true
-rhel8cis_rule_3_4_3_2: true
-rhel8cis_rule_3_4_3_3: true
-rhel8cis_rule_3_4_3_4: true
-rhel8cis_rule_3_4_3_5: true
-rhel8cis_rule_3_4_3_6: true
-rhel8cis_rule_3_4_3_7: true
-rhel8cis_rule_3_4_3_8: true
-rhel8cis_rule_3_4_4_1_1: true
-rhel8cis_rule_3_4_4_1_2: true
-rhel8cis_rule_3_4_4_1_3: true
-rhel8cis_rule_3_4_4_1_4: true
-rhel8cis_rule_3_4_4_1_5: true
-rhel8cis_rule_3_4_4_2_1: true
-rhel8cis_rule_3_4_4_2_2: true
-rhel8cis_rule_3_4_4_2_3: true
-rhel8cis_rule_3_4_4_2_4: true
-rhel8cis_rule_3_4_4_2_5: true
-rhel8cis_rule_3_5: true
-rhel8cis_rule_3_6: true
+rhel8cis_rule_3_4_2_7: true
+rhel8cis_rule_3_4_2_8: true
+rhel8cis_rule_3_4_2_9: true
+rhel8cis_rule_3_4_2_10: true
+rhel8cis_rule_3_4_2_11: true
+rhel8cis_rule_3_4_3_1_1: true
+rhel8cis_rule_3_4_3_1_2: true
+rhel8cis_rule_3_4_3_1_3: true
+# rhel8cis_rule_3_4_3_1: true
+# rhel8cis_rule_3_4_3_2: true
+# rhel8cis_rule_3_4_3_3: true
+# rhel8cis_rule_3_4_3_4: true
+# rhel8cis_rule_3_4_3_5: true
+# rhel8cis_rule_3_4_3_6: true
+# rhel8cis_rule_3_4_3_7: true
+# rhel8cis_rule_3_4_3_8: true
+# rhel8cis_rule_3_4_4_1_1: true
+# rhel8cis_rule_3_4_4_1_2: true
+# rhel8cis_rule_3_4_4_1_3: true
+# rhel8cis_rule_3_4_4_1_4: true
+# rhel8cis_rule_3_4_4_1_5: true
+# rhel8cis_rule_3_4_4_2_1: true
+# rhel8cis_rule_3_4_4_2_2: true
+# rhel8cis_rule_3_4_4_2_3: true
+# rhel8cis_rule_3_4_4_2_4: true
+# rhel8cis_rule_3_4_4_2_5: true
+# rhel8cis_rule_3_5: true
+# rhel8cis_rule_3_6: true
 
 # Section 4 rules
 rhel8cis_rule_4_1_1_1: true

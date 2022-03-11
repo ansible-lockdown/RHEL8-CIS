@@ -32,6 +32,11 @@
 #   when:
 #   - rhel8cis_firewall == "firewalld"
 
+- name: "SECTION | 3.4.3.1.x | Configure iptables software"
+  include_tasks: cis_3.4.3.1.x.yml
+  when:
+  - rhel8cis_firewall == "iptables"
+
 # - name: "SECTION | 3.4.3.x | Configure nftables firewall"
 #   include_tasks: cis_3.4.3.x.yml
 #   when:
