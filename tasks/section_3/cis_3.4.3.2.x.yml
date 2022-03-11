@@ -1,0 +1,165 @@
+---
+
+- name: "3.4.3.2.1 | PATCH | Ensure iptables loopback traffic is configured"
+  block:
+      - name: "3.4.3.2.1 | Ensure iptables loopback traffic is configured | INPUT and OUTPUTLoopback ACCEPT"
+        iptables:
+            action: append
+            chain: "{{ item }}"
+            in_interface: lo
+            jump: ACCEPT
+        with_items:
+            - INPUT
+            - OUTPUT
+
+      - name: "3.4.3.2.1 | L1 | PATCH | Ensure iptables loopback traffic is configured | INPUT Loopback 127.0.0.0/8"
+        iptables:
+            action: append
+            chain: INPUT
+            source: 127.0.0.0/8
+            jump: DROP
+  when:
+      - rhel8cis_firewall == "iptables"
+      - rhel8cis_rule_3_4_3_2_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - iptables
+      - rule_3.4.3.2.1
+
+- name: "3.4.3.2.2 | PATCH | Ensure iptables outbound and established connections are configured"
+  iptables:
+      action: append
+      chain: '{{ item.chain }}'
+      protocol: '{{ item.protocol }}'
+      match: state
+      ctstate: '{{ item.ctstate }}'
+      jump: ACCEPT
+  with_items:
+      - { chain: OUTPUT, protocol: tcp, ctstate: 'NEW,ESTABLISHED' }
+      - { chain: OUTPUT, protocol: udp, ctstate: 'NEW,ESTABLISHED' }
+      - { chain: OUTPUT, protocol: icmp, ctstate: 'NEW,ESTABLISHED' }
+      - { chain: INPUT, protocol: tcp, ctstate: ESTABLISHED }
+      - { chain: INPUT, protocol: udp, ctstate: ESTABLISHED }
+      - { chain: INPUT, protocol: icmp, ctstate: ESTABLISHED }
+  when:
+      - rhel8cis_firewall == "iptables"
+      - rhel8cis_rule_3_4_3_2_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - manual
+      - patch
+      - iptables
+      - rule_3.4.3.2.2
+
+- name: "3.4.3.2.3 | PATCH | Ensure iptables rules exist for all open ports"
+  block:
+      - name: "3.4.3.2.3 | AUDIT | Ensure iptables rules exist for all open ports | Get list of TCP open ports"
+        shell: netstat -ant |grep "tcp.*LISTEN" | awk '{ print $4 }'| sed 's/.*://'
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_3_4_3_2_3_otcp
+
+      - name: "3.4.3.2.3 | AUDIT | Ensure iptables rules exist for all open ports | Get the list of udp open ports"
+        shell: netstat -ant |grep "udp.*LISTEN" | awk '{ print $4 }'| sed 's/.*://'
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_3_4_3_2_3_oudp
+
+      - name: "3.4.3.2.3 | PATCH | Ensure iptables rules exist for all open ports | Adjust open tcp ports"
+        iptables:
+            action: append
+            chain: INPUT
+            protocol: tcp
+            destination_port: "{{ item }}"
+            match: state
+            ctstate: NEW
+            jump: ACCEPT
+        with_items:
+            - "{{ rhel8cis_3_4_3_2_3_otcp.stdout_lines }}"
+        when: rhel8cis_3_4_3_2_3_otcp.stdout is defined
+
+      - name: "3.4.3.2.3 | PATCH | Ensure iptables rules exist for all open ports | Adjust open udp ports"
+        iptables:
+            action: append
+            chain: INPUT
+            protocol: udp
+            destination_port: "{{ item }}"
+            match: state
+            ctstate: NEW
+            jump: ACCEPT
+        with_items:
+            - "{{ rhel8cis_3_4_3_2_3_oudp.stdout_lines }}"
+        when: rhel8cis_3_4_3_2_3_otcp.stdout is defined
+  when:
+      - rhel8cis_firewall == "iptables"
+      - rhel8cis_rule_3_4_3_2_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - iptables
+      - rule_3.4.3.2.3
+
+- name: "3.4.3.2.4 | PATCH | Ensure iptables default deny firewall policy"
+  block:
+      - name: "3.4.3.2.4 | PATCH |  Ensure iptables default deny firewall policy | Configure ssh to be allowed"
+        iptables:
+            chain: INPUT
+            protocol: tcp
+            destination_port: "22"
+            jump: ACCEPT
+
+      - name: "3.4.3.2.4 | PATCH | Ensure iptables default deny firewall policy | Set drop items"
+        iptables:
+            policy: DROP
+            chain: "{{ item }}"
+        with_items:
+            - INPUT
+            - FORWARD
+            - OUTPUT
+  when:
+      - rhel8cis_rule_3_4_3_2_4
+      - rhel8cis_firewall == "iptables"
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - iptables
+      - rule_3.4.3.2.4
+
+- name: "3.4.3.2.5 | PATCH | Ensure iptables rules are saved"
+  iptables_state:
+      state: saved
+      path: /etc/sysconfig/iptables
+  when:
+      - rhel8cis_rule_3_4_3_2_5
+      - rhel8cis_firewall == "iptables"
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - iptables
+      - rule_3.4.3.2.5
+
+- name: "3.4.3.2.6 | PATCH | Ensure iptables service is enabled and active"
+  service:
+      name: iptables
+      enabled: yes
+      state: started
+  when:
+      - rhel8cis_firewall == "iptables"
+      - rhel8cis_rule_3_4_3_2_6
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - iptables
+      - rule_3.4.3.2.6
