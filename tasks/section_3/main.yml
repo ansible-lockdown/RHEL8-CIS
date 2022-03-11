@@ -15,7 +15,7 @@
 #   import_tasks: cis_3.3.x.yml
 
 - name: "SECTION | 3.4.1.x | Configure firewalld"
-  import_tasks: cis_3.4.1.1.yml
+  import_tasks: cis_3.4.1.x.yml
   when:
       - rhel8cis_firewall == "firewalld"
 
@@ -25,7 +25,7 @@
 - name: "SECTION | 3.4.2.x | Configure nftables"
   include_tasks: cis_3.4.2.x.yml
   when:
-  - rhel8cis_firewall == "nftables"
+      - rhel8cis_firewall == "nftables"
 
 # - name: "SECTION | 3.4.2.x | firewalld firewall"
 #   include_tasks: cis_3.4.2.x.yml
@@ -35,12 +35,17 @@
 - name: "SECTION | 3.4.3.1.x | Configure iptables software"
   include_tasks: cis_3.4.3.1.x.yml
   when:
-  - rhel8cis_firewall == "iptables"
+      - rhel8cis_firewall == "iptables"
 
 - name: "SECTION | 3.4.3.2.x | Configure IPv4 iptables"
   include_tasks: cis_3.4.3.2.x.yml
   when:
-  - rhel8cis_firewall == "iptables"
+      - rhel8cis_firewall == "iptables"
+
+- name: "SECTION | 3.4.3.3.x | Configure IPv6 iptables"
+  include_tasks: cis_3.4.3.3.x.yml
+  when:
+      - ( rhel8cis_firewall == "iptables" and rhel8cis_ipv6_required )
 
 # - name: "SECTION | 3.4.3.x | Configure nftables firewall"
 #   include_tasks: cis_3.4.3.x.yml
