@@ -533,11 +533,16 @@ rhel8cis_firewall_services:
     - ssh
     - dhcpv6-client
 
-# 3.4.3.2 Set nftables new table create
+# 3.4.2.5 Set nftables new table create
+# 3.4.2.6
+# 3.4.2.7
+# 3.4.2.8
+# 3.4.2.9
+# 3.4.2.11
 rhel8cis_nft_tables_autonewtable: true
 rhel8cis_nft_tables_tablename: filter
 
-# 3.4.3.3 Set nftables new chain create
+# 3.4.2.6 Set nftables new chain create
 rhel8cis_nft_tables_autochaincreate: true
 
 # Warning Banner Content (issue, issue.net, motd)
