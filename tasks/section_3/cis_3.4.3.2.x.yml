@@ -2,15 +2,19 @@
 
 - name: "3.4.3.2.1 | PATCH | Ensure iptables loopback traffic is configured"
   block:
-      - name: "3.4.3.2.1 | Ensure iptables loopback traffic is configured | INPUT and OUTPUTLoopback ACCEPT"
+      - name: "3.4.3.2.1 | PATCH | Ensure iptables loopback traffic is configured | INPUT Loopback ACCEPT"
         iptables:
             action: append
-            chain: "{{ item }}"
+            chain: INPUT
             in_interface: lo
             jump: ACCEPT
-        with_items:
-            - INPUT
-            - OUTPUT
+
+      - name: "3.4.3.2.1 | PATCH | Ensure iptables loopback traffic is configured | OUTPUT Loopback ACCEPT"
+        iptables:
+            action: append
+            chain: OUTPUT
+            out_interface: lo
+            jump: ACCEPT
 
       - name: "3.4.3.2.1 | L1 | PATCH | Ensure iptables loopback traffic is configured | INPUT Loopback 127.0.0.0/8"
         iptables:
