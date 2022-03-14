@@ -91,13 +91,22 @@
       - rule_4.1.3.5
 
 - name: "4.1.3.6 | PATCH | Ensure use of privileged commands is collected"
-  template:
-      src: audit/rhel8cis_rule_4_1_3_6.rules.j2
-      dest: /etc/audit/rules.d/rhel8cis_rule_4_1_3_6.rules
-      owner: root
-      group: root
-      mode: 0600
-  notify: restart auditd
+  block:
+      - name: "4.1.3.6 | PATCH | Ensure use of privileged commands is collected"
+        shell: for i in  $(df | grep '^/dev' | awk '{ print $NF }'); do find $i -xdev -type f -perm -4000 -o -type f -perm -2000 2>/dev/null; done
+        changed_when: false
+        failed_when: false
+        check_mode: no
+        register: priv_procs
+
+      - name: "4.1.3.6 | PATCH | Ensure use of privileged commands is collected"
+        template:
+            src: audit/rhel8cis_rule_4_1_3_6.rules.j2
+            dest: /etc/audit/rules.d/rhel8cis_rule_4_1_3_6.rules
+            owner: root
+            group: root
+            mode: 0600
+        notify: restart auditd
   when:
       - rhel8cis_rule_4_1_3_6
   tags:
@@ -163,22 +172,13 @@
       - rule_4.1.3.9
 
 - name: "4.1.3.10 | PATCH | Ensure successful file system mounts are collected"
-  block:
-      - name: "4.1.3.10 | AUDIT | Ensure successful file system mounts are collected"
-        shell: for i in  $(df | grep '^/dev' | awk '{ print $NF }'); do find $i -xdev -type f -perm -4000 -o -type f -perm -2000 2>/dev/null; done
-        changed_when: false
-        failed_when: false
-        check_mode: no
-        register: priv_procs
-
-      - name: "4.1.3.10 | PATCH | Ensure successful file system mounts are collected"
-        template:
-            src: audit/rhel8cis_rule_4_1_3_10.rules.j2
-            dest: /etc/audit/rules.d/rhel8cis_rule_4_1_3_10.rules
-            owner: root
-            group: root
-            mode: 0600
-        notify: restart auditd
+  template:
+      src: audit/rhel8cis_rule_4_1_3_10.rules.j2
+      dest: /etc/audit/rules.d/rhel8cis_rule_4_1_3_10.rules
+      owner: root
+      group: root
+      mode: 0600
+  notify: restart auditd
   when:
       - rhel8cis_rule_4_1_3_10
   tags:
