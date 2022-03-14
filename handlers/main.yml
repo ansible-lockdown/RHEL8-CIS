@@ -84,6 +84,11 @@
   tags:
       - skip_ansible_lint
 
+- name: restart systemd_journal_upload
+  service:
+      name: systemd-journal-upload
+      state: restarted
+
 - name: grub2cfg
   command: "grub2-mkconfig -o {{ grub_cfg.stat.lnk_source }}"
   ignore_errors: True

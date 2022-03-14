@@ -336,9 +336,19 @@ rhel8cis_rule_4_2_1_3: true
 rhel8cis_rule_4_2_1_4: true
 rhel8cis_rule_4_2_1_5: true
 rhel8cis_rule_4_2_1_6: true
-rhel8cis_rule_4_2_2_1: true
+rhel8cis_rule_4_2_2_1_1: true
+rhel8cis_rule_4_2_2_1_2: true
+rhel8cis_rule_4_2_2_1_3: true
+rhel8cis_rule_4_2_2_1_4: true
 rhel8cis_rule_4_2_2_2: true
 rhel8cis_rule_4_2_2_3: true
+rhel8cis_rule_4_2_2_4: true
+rhel8cis_rule_4_2_2_5: true
+rhel8cis_rule_4_2_2_6: true
+rhel8cis_rule_4_2_2_7: true
+# rhel8cis_rule_4_2_2_1: true
+# rhel8cis_rule_4_2_2_2: true
+# rhel8cis_rule_4_2_2_3: true
 rhel8cis_rule_4_2_3: true
 rhel8cis_rule_4_3: true
 
@@ -608,8 +618,27 @@ rhel8cis_max_log_file_size: 10
 # RHEL-08-4.2.1.4/4.2.1.5 remote and destation log server name
 rhel8cis_remote_log_server: logagg.example.com
 
-# RHEL-08-4.2.1.5
+# 4.2.1.5
 rhel8cis_system_is_log_server: false
+
+# 4.2.2.1.2
+# rhel8cis_journal_upload_url is the ip address to upload the journal entries to
+rhel8cis_journal_upload_url: 192.168.50.42
+# The paths below have the default paths/files, but allow user to create custom paths/filenames
+rhel8cis_journal_upload_serverkeyfile: "/etc/ssl/private/journal-upload.pem"
+rhel8cis_journal_servercertificatefile: "/etc/ssl/certs/journal-upload.pem"
+rhel8cis_journal_trustedcertificatefile: "/etc/ssl/ca/trusted.pem"
+
+# 4.2.2.1
+# The variables below related to journald, please set these to your site specific values
+# rhel8cis_journald_systemmaxuse is the max amount of disk space the logs will use
+rhel8cis_journald_systemmaxuse: 10M
+# rhel8cis_journald_systemkeepfree is the amount of disk space to keep free
+rhel8cis_journald_systemkeepfree: 100G
+rhel8cis_journald_runtimemaxuse: 10M
+rhel8cis_journald_runtimekeepfree: 100G
+# rhel8cis_journald_MaxFileSec is how long in time to keep log files. Values are Xm, Xh, Xday, Xweek, Xmonth, Xyear, for example 2week is two weeks
+rhel8cis_journald_maxfilesec: 1month
 
 ## Section5 vars
 
