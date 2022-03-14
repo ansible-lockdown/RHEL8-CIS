@@ -1,16 +1,20 @@
 ---
 
-# Configure System Accounting (auditd)
+# 4.1 Configure System Accounting (auditd)
 - name: "SECTION | 4.1| Ensure auditing is enabled"
   import_tasks: cis_4.1.1.x.yml
 
 - name: "SECTION | 4.1.2.x| Configure Data Retention"
   import_tasks: cis_4.1.2.x.yml
 
-- name: "SECTION | 4.1.x| Auditd rules"
-  import_tasks: cis_4.1.x.yml
+- name: "SECTION | 4.1.3.x| Configure auditd rules"
+  import_tasks: cis_4.1.3.x.yml
 
-- name: "SECTION | 4.2.x| Configure Logging"
+# - name: "SECTION | 4.1.x| Auditd rules"
+#   import_tasks: cis_4.1.x.yml
+
+# 4.2 Configure Logging
+- name: "SECTION | 4.2.1.x| Configure rsyslog"
   include_tasks: cis_4.2.1.x.yml
   when: rhel8cis_syslog == 'rsyslog'
 

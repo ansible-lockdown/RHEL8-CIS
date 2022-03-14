@@ -294,21 +294,42 @@ rhel8cis_rule_4_1_1_4: true
 rhel8cis_rule_4_1_2_1: true
 rhel8cis_rule_4_1_2_2: true
 rhel8cis_rule_4_1_2_3: true
-rhel8cis_rule_4_1_3: true
-rhel8cis_rule_4_1_4: true
-rhel8cis_rule_4_1_5: true
-rhel8cis_rule_4_1_6: true
-rhel8cis_rule_4_1_7: true
-rhel8cis_rule_4_1_8: true
-rhel8cis_rule_4_1_9: true
-rhel8cis_rule_4_1_10: true
-rhel8cis_rule_4_1_11: true
-rhel8cis_rule_4_1_12: true
-rhel8cis_rule_4_1_13: true
-rhel8cis_rule_4_1_14: true
-rhel8cis_rule_4_1_15: true
-rhel8cis_rule_4_1_16: true
-rhel8cis_rule_4_1_17: true
+rhel8cis_rule_4_1_3_1: true
+rhel8cis_rule_4_1_3_2: true
+rhel8cis_rule_4_1_3_3: true
+rhel8cis_rule_4_1_3_4: true
+rhel8cis_rule_4_1_3_5: true
+rhel8cis_rule_4_1_3_6: true
+rhel8cis_rule_4_1_3_7: true
+rhel8cis_rule_4_1_3_8: true
+rhel8cis_rule_4_1_3_9: true
+rhel8cis_rule_4_1_3_10: true
+rhel8cis_rule_4_1_3_11: true
+rhel8cis_rule_4_1_3_12: true
+rhel8cis_rule_4_1_3_13: true
+rhel8cis_rule_4_1_3_14: true
+rhel8cis_rule_4_1_3_15: true
+rhel8cis_rule_4_1_3_16: true
+rhel8cis_rule_4_1_3_17: true
+rhel8cis_rule_4_1_3_18: true
+rhel8cis_rule_4_1_3_19: true
+rhel8cis_rule_4_1_3_20: true
+rhel8cis_rule_4_1_3_21: true
+# rhel8cis_rule_4_1_3: true
+# rhel8cis_rule_4_1_4: true
+# rhel8cis_rule_4_1_5: true
+# rhel8cis_rule_4_1_6: true
+# rhel8cis_rule_4_1_7: true
+# rhel8cis_rule_4_1_8: true
+# rhel8cis_rule_4_1_9: true
+# rhel8cis_rule_4_1_10: true
+# rhel8cis_rule_4_1_11: true
+# rhel8cis_rule_4_1_12: true
+# rhel8cis_rule_4_1_13: true
+# rhel8cis_rule_4_1_14: true
+# rhel8cis_rule_4_1_15: true
+# rhel8cis_rule_4_1_16: true
+# rhel8cis_rule_4_1_17: true
 rhel8cis_rule_4_2_1_1: true
 rhel8cis_rule_4_2_1_2: true
 rhel8cis_rule_4_2_1_3: true
