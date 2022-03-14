@@ -1,6 +1,7 @@
 ---
 
-- name: "SECTION | 4.1| Configure System Accounting (auditd)"
+# Configure System Accounting (auditd)
+- name: "SECTION | 4.1| Ensure auditing is enabled"
   import_tasks: cis_4.1.1.x.yml
 
 - name: "SECTION | 4.1.2.x| Configure Data Retention"
