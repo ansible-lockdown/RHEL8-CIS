@@ -666,8 +666,8 @@ rhel8cis_pam_faillock:
 # 5.2.5 SSH LogLevel setting. Options are INFO or VERBOSE
 rhel8cis_ssh_loglevel: INFO
 
-# 5.2.19 SSH MaxSessions setting. Must be 4 our less
-rhel8cis_ssh_maxsessions: 4
+# 5.2.19 SSH MaxSessions setting. Must be 10 or less
+rhel8cis_ssh_maxsessions: 10
 rhel8cis_inactivelock:
     lock_days: 30
 
