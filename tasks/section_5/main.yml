@@ -10,13 +10,19 @@
   when:
       - "'openssh-server' in ansible_facts.packages"
 
-- name: "SECTION | 5.3 | Configure Profiles"
+- name: "SECTION | 5.3 | Configure privilege escalation"
   include_tasks: cis_5.3.x.yml
-  when:
-  - rhel8cis_use_authconfig
 
-- name: "SECTION | 5.4 | Configure PAM "
+# - name: "SECTION | 5.3 | Configure Profiles"
+#   include_tasks: cis_5.3.x.yml
+#   when:
+#   - rhel8cis_use_authconfig
+
+- name: "SECTION | 5.4 | Configure authselect"
   import_tasks: cis_5.4.x.yml
+
+- name: "SECTION | 5.5 | Configure PAM "
+  import_tasks: cis_5.5.x.yml
 
 - name: "SECTION | 5.5.1.x | Passwords and Accounts"
   import_tasks: cis_5.5.1.x.yml

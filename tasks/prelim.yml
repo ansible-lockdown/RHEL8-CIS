@@ -65,6 +65,16 @@
       name: cronie
       state: present
 
+- name: "PRELIM | Find all sudoers files."
+  command: "find /etc/sudoers /etc/sudoers.d/ -type f ! -name '*~' ! -name '*.*'"
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  register: rhel8cis_sudoers_files
+  when:
+      - rhel8cis_rule_5_3_4 or
+        rhel8cis_rule_5_3_5
+
 - name: "PRELIM | Install authconfig"
   package:
       name: authconfig

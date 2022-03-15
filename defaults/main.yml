@@ -386,21 +386,29 @@ rhel8cis_rule_5_2_20: true
 rhel8cis_rule_5_3_1: true
 rhel8cis_rule_5_3_2: true
 rhel8cis_rule_5_3_3: true
+rhel8cis_rule_5_3_4: true
+rhel8cis_rule_5_3_5: true
+rhel8cis_rule_5_3_6: true
+rhel8cis_rule_5_3_7: true
 rhel8cis_rule_5_4_1: true
 rhel8cis_rule_5_4_2: true
-rhel8cis_rule_5_4_3: true
-rhel8cis_rule_5_4_4: true
-rhel8cis_rule_5_5_1_1: true
-rhel8cis_rule_5_5_1_2: true
-rhel8cis_rule_5_5_1_3: true
-rhel8cis_rule_5_5_1_4: true
-rhel8cis_rule_5_5_1_5: true
+# rhel8cis_rule_5_4_3: true
+# rhel8cis_rule_5_4_4: true
+rhel8cis_rule_5_5_1: true
 rhel8cis_rule_5_5_2: true
 rhel8cis_rule_5_5_3: true
 rhel8cis_rule_5_5_4: true
-rhel8cis_rule_5_5_5: true
-rhel8cis_rule_5_6: true
-rhel8cis_rule_5_7: true
+# rhel8cis_rule_5_5_1_1: true
+# rhel8cis_rule_5_5_1_2: true
+# rhel8cis_rule_5_5_1_3: true
+# rhel8cis_rule_5_5_1_4: true
+# rhel8cis_rule_5_5_1_5: true
+# rhel8cis_rule_5_5_2: true
+# rhel8cis_rule_5_5_3: true
+# rhel8cis_rule_5_5_4: true
+# rhel8cis_rule_5_5_5: true
+# rhel8cis_rule_5_6: true
+# rhel8cis_rule_5_7: true
 
 # Section 6 rules
 rhel8cis_rule_6_1_1: true
@@ -671,19 +679,29 @@ rhel8cis_ssh_maxsessions: 10
 rhel8cis_inactivelock:
     lock_days: 30
 
-# 5.3.1/5.3.2 Custom authselect profile settings. Settings in place now will fail, they are place holders from the control example
+# 5.3.1 Enable automation to create custom profile settings, using the settings above
+rhel8cis_authselect_custom_profile_create: false
+
+# 5.3.2 Enable automation to select custom profile options, using the settings above
+rhel8cis_authselect_custom_profile_select: false
+
+# 5.3.6 rhel8cis_sudo_timestamp_timeout is the timeout set to authentication in minutes
+# To conform to CIS standards this needs to be 15 minutes or less
+rhel8cis_sudo_timestamp_timeout: 15
+
+# 5.3.7
+# rhel8cis_sugroup: sugroup  # change accordingly wheel is default
+
+# wheel users list
+rhel8cis_sugroup_users: "root"
+
+# 5.4.1/5.4.2 Custom authselect profile settings. Settings in place now will fail, they are place holders from the control example
 # Due to the way many multiple options and ways to configure this control needs to be enabled and settings adjusted to minimise risk
 rhel8cis_use_authconfig: false
 rhel8cis_authselect:
     custom_profile_name: custom-profile
     default_file_to_copy: "sssd --symlink-meta"
     options: with-sudo with-faillock without-nullok
-
-# 5.3.1 Enable automation to create custom profile settings, using the settings above
-rhel8cis_authselect_custom_profile_create: false
-
-# 5.3.2 Enable automation to select custom profile options, using the settings above
-rhel8cis_authselect_custom_profile_select: false
 
 rhel8cis_pass:
     max_days: 365
@@ -714,12 +732,6 @@ rhel8cis_shell_session_timeout:
     timeout: 600
 # RHEL-08-5.4.1.5 Allow ansible to expire password for account with a last changed date in the future. False will just display users in violation, true will expire those users passwords
 rhel8cis_futurepwchgdate_autofix: true
-
-# 5.7
-# rhel8cis_sugroup: sugroup  # change accordingly wheel is default
-
-# wheel users list
-rhel8cis_sugroup_users: "root"
 
 ## Section6 vars
 
