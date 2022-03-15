@@ -407,6 +407,11 @@ rhel8cis_rule_5_5_4: true
 # rhel8cis_rule_5_5_3: true
 # rhel8cis_rule_5_5_4: true
 # rhel8cis_rule_5_5_5: true
+rhel8cis_rule_5_6_1_1: true
+rhel8cis_rule_5_6_1_2: true
+rhel8cis_rule_5_6_1_3: true
+rhel8cis_rule_5_6_1_4: true
+rhel8cis_rule_5_6_1_5: true
 # rhel8cis_rule_5_6: true
 # rhel8cis_rule_5_7: true
 
@@ -676,8 +681,7 @@ rhel8cis_ssh_loglevel: INFO
 
 # 5.2.19 SSH MaxSessions setting. Must be 10 or less
 rhel8cis_ssh_maxsessions: 10
-rhel8cis_inactivelock:
-    lock_days: 30
+
 
 # 5.3.1 Enable automation to create custom profile settings, using the settings above
 rhel8cis_authselect_custom_profile_create: false
@@ -703,6 +707,9 @@ rhel8cis_authselect:
     default_file_to_copy: "sssd --symlink-meta"
     options: with-sudo with-faillock without-nullok
 
+# 5.6.1.1
+# 5.6.1.2
+# 5.6.1.3
 rhel8cis_pass:
     max_days: 365
     min_days: 7
@@ -710,6 +717,13 @@ rhel8cis_pass:
 # Syslog system - either rsyslog or syslog-ng
 rhel8cis_syslog: rsyslog
 rhel8cis_rsyslog_ansiblemanaged: true
+
+# 5.6.1.4
+rhel8cis_inactivelock:
+    lock_days: 30
+
+# 5.6.1.5 Allow ansible to expire password for account with a last changed date in the future. False will just display users in violation, true will expire those users passwords
+rhel8cis_futurepwchgdate_autofix: true
 
 rhel8cis_vartmp:
     source: /tmp
@@ -730,8 +744,6 @@ rhel8cis_int_gid: 1000
 rhel8cis_shell_session_timeout:
     file: /etc/profile.d/tmout.sh
     timeout: 600
-# RHEL-08-5.4.1.5 Allow ansible to expire password for account with a last changed date in the future. False will just display users in violation, true will expire those users passwords
-rhel8cis_futurepwchgdate_autofix: true
 
 ## Section6 vars
 
