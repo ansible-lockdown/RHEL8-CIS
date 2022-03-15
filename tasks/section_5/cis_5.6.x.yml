@@ -1,8 +1,8 @@
 ---
 
-- name: "5.5.2 | L1 | PATCH | Ensure system accounts are secured"
+- name: "5.6.2 | PATCH | Ensure system accounts are secured"
   block:
-      - name: "5.5.2 | L1 | Ensure system accounts are secured | Set nologin"
+      - name: "5.6.2 | Ensure system accounts are secured | Set nologin"
         user:
             name: "{{ item.id }}"
             shell: /usr/sbin/nologin
@@ -17,7 +17,7 @@
             - item.shell != "      /bin/false"
             - item.shell != "      /usr/sbin/nologin"
 
-      - name: "5.5.2 | L1 | PATCH | Ensure system accounts are secured | Lock accounts"
+      - name: "5.6.2 | PATCH | Ensure system accounts are secured | Lock accounts"
         user:
             name: "{{ item.id }}"
             password_lock: true
@@ -32,14 +32,16 @@
             - item.shell != "      /bin/false"
             - item.shell != "      /usr/sbin/nologin"
   when:
-      - rhel8cis_rule_5_5_2
+      - rhel8cis_rule_5_6_2
   tags:
       - level1-server
       - level1-workstation
+      - automated
       - patch
-      - rule_5.5.2
+      - accounts
+      - rule_5.6.2
 
-- name: "5.5.3 | L1 | PATCH | Ensure default user shell timeout is 900 seconds or less"
+- name: "5.6.3 | PATCH | Ensure default user shell timeout is 900 seconds or less"
   blockinfile:
       create: yes
       mode: 0644
@@ -55,42 +57,48 @@
       - { dest: "{{ rhel8cis_shell_session_timeout.file }}", state: present }
       - { dest: /etc/profile, state: "{{ (rhel8cis_shell_session_timeout.file == '/etc/profile') | ternary('present', 'absent') }}" }
   when:
-      - rhel8cis_rule_5_5_3
+      - rhel8cis_rule_5_6_3
   tags:
       - level1-server
       - level1-workstation
+      - automated
       - patch
-      - rule_5.5.3
+      - accounts
+      - rule_5.6.3
 
-- name: "5.5.4 | L1 | PATCH | Ensure default group for the root account is GID 0"
+- name: "5.6.4 | PATCH | Ensure default group for the root account is GID 0"
   command: usermod -g 0 root
   changed_when: false
   failed_when: false
   when:
-      - rhel8cis_rule_5_5_4
+      - rhel8cis_rule_5_6_4
   tags:
       - level1-server
       - level1-workstation
+      - automated
       - patch
-      - rule_5.5.4
+      - accounts
+      - rule_5.6.4
 
-- name: "5.5.5 | L1 | PATCH | Ensure default user umask is 027 or more restrictive"
+- name: "5.6.5 | PATCH | Ensure default user umask is 027 or more restrictive"
   block:
-      - name: "5.5.5 | L1 | PATCH | Ensure default user umask is 027 or more restrictive | Set umask for /etc/bashrc"
+      - name: "5.6.5 | PATCH | Ensure default user umask is 027 or more restrictive | Set umask for /etc/bashrc"
         replace:
             path: /etc/bashrc
             regexp: '(^\s+umask) 0[012][0-6]'
             replace: '\1 027'
 
-      - name: "5.5.5 | L1 | PATCH | Ensure default user umask is 027 or more restrictive | Set umask for /etc/profile"
+      - name: "5.6.5 | PATCH | Ensure default user umask is 027 or more restrictive | Set umask for /etc/profile"
         replace:
             path: /etc/profile
             regexp: '(^\s+umask) 0[012][0-6]'
             replace: '\1 027'
   when:
-      - rhel8cis_rule_5_5_5
+      - rhel8cis_rule_5_6_5
   tags:
       - level1-server
       - level1-workstation
+      - automated
       - patch
-      - rule_5.5.5
+      - accounts
+      - rule_5.6.5
