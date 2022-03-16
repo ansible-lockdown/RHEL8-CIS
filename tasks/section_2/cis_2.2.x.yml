@@ -29,34 +29,6 @@
       - x11
       - rule_2.2.2
 
-# - name: "2.2.2 | L1 | PATCH | Ensure X Window System is not installed"
-#   block:
-#       - name: "2.2.2 | L1 | AUDIT | Ensure X Window System is not installed | capture xorg-x11 packages"
-#         shell: rpm -qa | grep xorg-x11
-#         args:
-#             warn: no
-#         failed_when: xorg_x11_installed.rc >=2
-#         check_mode: no
-#         changed_when: false
-#         register: xorg_x11_installed
-
-#       - name: "2.2.2 | L1 | PATCH | Ensure X Window System is not installed | remove packages if found"
-#         shell: "dnf remove {{ item }}"
-#         args:
-#             warn: no
-#         with_items:
-#             - xorg_x11_installed.stdout_lines
-#         when: xorg_x11_installed.stdout | length > 0
-#   when:
-#       - not rhel8cis_xwindows_required
-#       - rhel8cis_rule_2_2_2
-#   tags:
-#       - level1-server
-#       - scored
-#       - xwindows
-#       - patch
-#       - rule_2.2.2
-
 - name: "2.2.3 | PATCH | Ensure Avahi Server is not installed"
   package:
       name:
@@ -75,21 +47,6 @@
       - avahi
       - rule_2.2.3
 
-# - name: "2.2.3 | L1 | PATCH | Ensure rsync service is not enabled "
-#   service:
-#       name: rsyncd
-#       state: stopped
-#       enabled: no
-#   when:
-#       - not rhel8cis_rsyncd_server
-#       - "'rsyncd' in ansible_facts.packages"
-#       - rhel8cis_rule_2_2_3
-#   tags:
-#       - level1-server
-#       - level1-workstation
-#       - patch
-#       - rule_2.2.3
-
 - name: "2.2.4 | PATCH | Ensure CUPS is not installed"
   package:
       name: cups
@@ -104,24 +61,6 @@
       - patch
       - cups
       - rule_2.2.3
-
-# - name: "2.2.4 | L1 | PATCH | Ensure Avahi Server is not enabled"
-#   service:
-#       name: avahi-daemon
-#       state: stopped
-#       enabled: no
-#   when:
-#       - not rhel8cis_avahi_server
-#       - "'avahi' in ansible_facts.packages"
-#       - rhel8cis_rule_2_2_4
-#   tags:
-#       - level1-server
-#       - level1-workstation
-#       - scored
-#       - avahi
-#       - services
-#       - patch
-#       - rule_2.2.4
 
 - name: "2.2.5 | PATCH | Ensure DHCP Server is not installed"
   package:
@@ -139,21 +78,6 @@
       - dhcp
       - rule_2.2.5
 
-# - name: "2.2.5 | L1 | PATCH | Ensure SNMP Server is not enabled"
-#   service:
-#       name: snmpd
-#       state: stopped
-#       enabled: no
-#   when:
-#       - not rhel8cis_snmp_server
-#       - "'net-snmp' in ansible_facts.packages"
-#       - rhel8cis_rule_2_2_5
-#   tags:
-#       - level1-server
-#       - level1-workstation
-#       - patch
-#       - rule_2.2.5
-
 - name: "2.2.6 | PATCH | Ensure DNS Server is not installed"
   package:
       name: bind
@@ -169,21 +93,6 @@
       - patch
       - dns
       - rule_2.2.6
-
-# - name: "2.2.6 | L1 | PATCH | Ensure HTTP Proxy Server is not enabled"
-#   service:
-#       name: squid
-#       state: stopped
-#       enabled: no
-#   when:
-#       - not rhel8cis_squid_server
-#       - "'squid' in ansible_facts.packages"
-#       - rhel8cis_rule_2_2_6
-#   tags:
-#       - level1-server
-#       - level1-workstation
-#       - patch
-#       - rule_2.2.6
 
 - name: "2.2.7 | PATCH | Ensure FTP Server is not installed"
   package:
@@ -201,22 +110,6 @@
       - ftp
       - rule_2.2.7
 
-# - name: "2.2.7 | L1 | PATCH | Ensure Samba is not enabled"
-#   service:
-#       name: smb
-#       state: stopped
-#       enabled: no
-#   when:
-#       - not rhel8cis_smb_server
-#       - "'samba' in ansible_facts.packages"
-#       - rhel8cis_rule_2_2_7
-#   tags:
-#       - level1-server
-#       - level1-workstation
-#       - patch
-#       - rule_2.2.7
-
-
 - name: "2.2.8 | PATCH | Ensure VSFTP Server is not installed"
   package:
       name: vsftpd
@@ -233,21 +126,6 @@
       - vsftpd
       - rule_2.2.8
 
-# - name: "2.2.8 | L1 | PATCH | Ensure IMAP and POP3 server is not enabled"
-#   service:
-#       name: dovecot
-#       state: stopped
-#       enabled: no
-#   when:
-#       - not rhel8cis_dovecot_server
-#       - "'dovecot' in ansible_facts.packages"
-#       - rhel8cis_rule_2_2_8
-#   tags:
-#       - level1-server
-#       - level1-workstation
-#       - patch
-#       - rule_2.2.8
-
 - name: "2.2.9 | PACH | Ensure TFTP Server is not installed"
   package:
       name: tftp-server
@@ -263,21 +141,6 @@
       - patch
       - tftp
       - rule_2.2.9
-
-# - name: "2.2.9 | L1 | PATCH | Ensure HTTP server is not enabled"
-#   service:
-#       name: httpd
-#       state: stopped
-#       enabled: no
-#   when:
-#       - not rhel8cis_httpd_server
-#       - "'httpd' in ansible_facts.packages"
-#       - rhel8cis_rule_2_2_9
-#   tags:
-#       - level1-server
-#       - level1-workstation
-#       - patch
-#       - rule_2.2.9
 
 - name: "2.2.10 | PATCH | Ensure a web server is not installed"
   block:
@@ -308,21 +171,6 @@
       - webserver
       - rule_2.2.9
 
-# - name: "2.2.10 | L1 | PATCH | Ensure FTP Server is not enabled"
-#   service:
-#       name: vsftpd
-#       state: stopped
-#       enabled: no
-#   when:
-#       - not rhel8cis_vsftpd_server
-#       - "'vsftpd' in ansible_facts.packages"
-#       - rhel8cis_rule_2_2_10
-#   tags:
-#       - level1-server
-#       - level1-workstation
-#       - patch
-#       - rule_2.2.10
-
 - name: "2.2.11 | PATCH | Ensure IMAP and POP3 server is not installed"
   package:
       name:
@@ -343,21 +191,6 @@
       - pop3
       - rule_2.2.11
 
-# - name: "2.2.11 | L1 | PATCH | Ensure DNS Server is not enabled"
-#   service:
-#       name: named
-#       state: stopped
-#       enabled: no
-#   when:
-#       - not rhel8cis_named_server
-#       - "'bind' in ansible_facts.packages"
-#       - rhel8cis_rule_2_2_11
-#   tags:
-#       - level1-server
-#       - level1-workstation
-#       - patch
-#       - rule_2.2.11
-
 - name: "2.2.12 | PATCH | Ensure Samba is not enabled"
   package:
       name: samba
@@ -373,24 +206,6 @@
       - patch
       - samba
       - rule_2.2.12
-
-# - name: "2.2.12 | L1 | PATCH | Ensure NFS is not enabled"
-#   service:
-#       name: nfs-server
-#       state: stopped
-#       enabled: no
-#   when:
-#       - not rhel8cis_nfs_rpc_server
-#       - "'nfs-utils' in ansible_facts.packages"
-#       - rhel8cis_rule_2_2_12
-#   tags:
-#       - level1-server
-#       - level1-workstation
-#       - scored
-#       - nfs
-#       - services
-#       - patch
-#       - rule_2.2.12
 
 - name: "2.2.13 | PATCH | Ensure HTTP Proxy Server is not installed"
   package:
@@ -408,25 +223,6 @@
       - squid
       - rule_2.2.13
 
-
-# - name: "2.2.13 | L1 | PATCH | Ensure RPC is not enabled"
-#   service:
-#       name: rpcbind
-#       state: stopped
-#       enabled: no
-#   when:
-#       - not rhel8cis_nfs_rpc_server
-#       - "'rpcbind' in ansible_facts.packages"
-#       - rhel8cis_rule_2_2_13
-#   tags:
-#       - level1-server
-#       - level1-workstation
-#       - scored
-#       - rpc
-#       - services
-#       - patch
-#       - rule_2.2.7
-
 - name: "2.2.14 | PATCH | Ensure net-snmp is not installed"
   package:
       name: net-snmp
@@ -442,24 +238,6 @@
       - patch
       - snmp
       - rule_2.2.14
-
-# - name: "2.2.14 | L1 | PATCH | Ensure LDAP server is not enabled"
-#   service:
-#       name: slapd
-#       state: stopped
-#       enabled: no
-#   when:
-#       - not rhel8cis_ldap_server
-#       - "'openldap-servers' in ansible_facts.packages"
-#       - rhel8cis_rule_2_2_14
-#   tags:
-#       - level1-server
-#       - level1-workstation
-#       - scored
-#       - ldap
-#       - services
-#       - patch
-#       - rule_2.2.6
 
 - name: "2.2.15 | PATCH | Ensure NIS Server is not installed"
   package:
@@ -477,24 +255,6 @@
       - nis
       - rule_2.2.17
 
-# - name: "2.2.15 | L1 | PATCH | Ensure DHCP Server is not enabled"
-#   service:
-#       name: dhcpd
-#       state: stopped
-#       enabled: no
-#   when:
-#       - not rhel8cis_dhcp_server
-#       - "'dhcp' in ansible_facts.packages"
-#       - rhel8cis_rule_2_2_15
-#   tags:
-#       - level1-server
-#       - level1-workstation
-#       - scored
-#       - dhcp
-#       - services
-#       - patch
-#       - rule_2.2.15
-
 - name: "2.2.16 | PATCH | Ensure telnet-server is not installed"
   package:
       name: telnet-server
@@ -510,24 +270,6 @@
       - patch
       - telnet
       - rule_2.2.16
-
-# - name: "2.2.16 | L1 | PATCH | Ensure CUPS is not enabled"
-#   service:
-#       name: cups
-#       state: stopped
-#       enabled: no
-#   when:
-#       - not rhel8cis_cups_server
-#       - "'cups' in ansible_facts.packages"
-#       - rhel8cis_rule_2_2_16
-#   tags:
-#       - level1-server
-#       - level2-workstation
-#       - scored
-#       - cups
-#       - services
-#       - patch
-#       - rule_2.2.16
 
 - name: "2.2.17 | PATCH | Ensure mail transfer agent is configured for local-only mode"
   lineinfile:
@@ -547,21 +289,6 @@
       - postfix
       - rule_2.2.17
 
-# - name: "2.2.17 | L1 | PATCH | Ensure NIS Server is not enabled"
-#   service:
-#       name: ypserv
-#       state: stopped
-#       enabled: no
-#   when:
-#       - not rhel8cis_nis_server
-#       - "'ypserv' in ansible_facts.packages"
-#       - rhel8cis_rule_2_2_17
-#   tags:
-#       - level1-server
-#       - level1-workstation
-#       - patch
-#       - rule_2.2.17
-
 # The name title of the service says mask the service, but the fix allows for both options
 # We went with removing to remove the security/update overhead with having the package installed
 - name: "2.2.18 | PATCH | Ensure nfs-utils is not installed or the nfs-server service is masked"
@@ -580,22 +307,6 @@
       - nfs
       - services
       - rule_2.2.18
-
-# - name: "2.2.18 | L1 | PATCH | Ensure mail transfer agent is configured for local-only mode"
-#   lineinfile:
-#       dest: /etc/postfix/main.cf
-#       regexp: "^(#)?inet_interfaces"
-#       line: "inet_interfaces = loopback-only"
-#   notify: restart postfix
-#   when:
-#       - not rhel8cis_is_mail_server
-#       - "'postfix' in ansible_facts.packages"
-#       - rhel8cis_rule_2_2_18
-#   tags:
-#       - level1-server
-#       - level1-workstation
-#       - patch
-#       - rule_2.2.1
 
 # The name title of the service says mask the service, but the fix allows for both options
 # We went with removing to remove the security/update overhead with having the package installed

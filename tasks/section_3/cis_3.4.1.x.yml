@@ -17,18 +17,6 @@
       - firewalld
       - rule_3.4.1.1
 
-# - name: "3.4.1.1 | L1 | PATCH | Ensure a Firewall package is installed"
-#   package:
-#       name: "{{ rhel8cis_firewall }}"
-#       state: present
-#   when:
-#       - rhel8cis_rule_3_4_1_1
-#   tags:
-#       - level1-server
-#       - level1-workstation
-#       - patch
-#       - rule_3.4.1.1
-
 - name: "3.4.1.2 | PATCH | Ensure iptables-services not installed with firewalld"
   block:
       - name: "3.4.1.2 | PATCH | Ensure iptables-services not installed with firewalld | Stop running services"

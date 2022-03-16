@@ -13,11 +13,6 @@
 - name: "SECTION | 5.3 | Configure privilege escalation"
   include_tasks: cis_5.3.x.yml
 
-# - name: "SECTION | 5.3 | Configure Profiles"
-#   include_tasks: cis_5.3.x.yml
-#   when:
-#   - rhel8cis_use_authconfig
-
 - name: "SECTION | 5.4 | Configure authselect"
   import_tasks: cis_5.4.x.yml
 
@@ -29,12 +24,3 @@
 
 - name: "SECTION | 5.6.x | Misc. User Account Settings"
   import_tasks: cis_5.6.x.yml
-
-# - name: "SECTION | 5.5.x | System Accounts and User Settings"
-#   import_tasks: cis_5.5.x.yml
-
-# - name: "SECTION | 5.6 | Root Login"
-#   import_tasks: cis_5.6.yml
-
-# - name: Section | 5.7 | su Command Restriction
-#   import_tasks: cis_5.7.yml
