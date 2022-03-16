@@ -222,11 +222,13 @@
   block:
       - name: "6.1.12 | AUDIT | Ensure no unowned files or directories exist | Finding all unowned files or directories"
         command: find "{{ item.mount }}" -xdev -nouser
-        check_mode: false
-        failed_when: false
         changed_when: false
-        with_items: "{{ ansible_mounts }}"
+        failed_when: false
+        check_mode: false
         register: rhel_08_6_1_12_audit
+        with_items: "{{ ansible_mounts }}"
+        loop_control:
+            label: "{{ item.mount }}"
         when: item['device'].startswith('/dev') and not 'bind' in item['options']
 
       - name: "6.1.12 | AUDIT | Ensure no unowned files or directories exist | Displaying any unowned files or directories"
@@ -256,6 +258,8 @@
         changed_when: false
         register: rhel_08_6_1_13_audit
         with_items: "{{ ansible_mounts }}"
+        loop_control:
+            label: "{{ item.mount }}"
         when: item['device'].startswith('/dev') and not 'bind' in item['options']
 
       - name: "6.1.13 | AUDIT | Ensure no ungrouped files or directories exist | Displaying all ungrouped files or directories"
@@ -284,6 +288,8 @@
         changed_when: false
         register: rhel_08_6_1_14_perms_results
         with_items: "{{ ansible_mounts }}"
+        loop_control:
+            label: "{{ item.mount }}"
 
       - name: "6.1.14 | AUDIT | Audit SUID executables |  Alert no SUID executables exist"
         debug:
@@ -317,6 +323,8 @@
         changed_when: false
         register: rhel_08_6_1_15_perms_results
         with_items: "{{ ansible_mounts }}"
+        loop_control:
+            label: "{{ item.mount }}"
 
       - name: "6.1.15 | AUDIT | Audit SGID executables |  Alert no SGID executables exist"
         debug:
