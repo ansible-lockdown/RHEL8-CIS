@@ -536,11 +536,6 @@ rhel8cis_pass:
 rhel8cis_syslog: rsyslog
 rhel8cis_rsyslog_ansiblemanaged: true
 
-rhel8cis_vartmp:
-    source: /tmp
-    fstype: none
-    opts: "defaults,nodev,nosuid,noexec,bind"
-    enabled: no
 ## PAM
 rhel8cis_pam_password:
     minlen: "14"
