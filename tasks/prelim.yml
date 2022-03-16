@@ -23,7 +23,7 @@
       warn: no
   changed_when: no
   check_mode: no
-  register: uid_zero_accounts_except_root
+  register: rhel8cis_uid_zero_accounts_except_root
 
 - name: "PRELIM | Gather system-wide crypto-policy"
   shell: update-crypto-policies --show

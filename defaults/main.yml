@@ -451,10 +451,10 @@ rhel8cis_rule_6_2_13: true
 rhel8cis_rule_6_2_14: true
 rhel8cis_rule_6_2_15: true
 rhel8cis_rule_6_2_16: true
-rhel8cis_rule_6_2_17: true
-rhel8cis_rule_6_2_18: true
-rhel8cis_rule_6_2_19: true
-rhel8cis_rule_6_2_20: true
+# rhel8cis_rule_6_2_17: true
+# rhel8cis_rule_6_2_18: true
+# rhel8cis_rule_6_2_19: true
+# rhel8cis_rule_6_2_20: true
 
 # Service configuration booleans set true to keep service
 rhel8cis_xinetd_server: false
@@ -758,7 +758,8 @@ rhel8cis_rpm_audit_file: /var/tmp/rpm_file_check
 # RHEL-08_6.1.11 Allow ansible to adjust world-writable files. False will just display world-writable files, True will remove world-writable
 rhel8cis_no_world_write_adjust: true
 rhel8cis_passwd_label: "{{ (this_item | default(item)).id }}: {{ (this_item | default(item)).dir }}"
-# 6.2.9
+
+# 6.2.12
 rhel8cis_dotperm_ansiblemanaged: true
 #### Goss Configuration Settings ####
 
