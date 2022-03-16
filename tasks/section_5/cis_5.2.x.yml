@@ -36,6 +36,8 @@
             mode: 0600
         with_items:
             - "{{ rhel8cis_5_2_2_ssh_private_host_key.files }}"
+        loop_control:
+            label: "{{ item.path }}"
   when:
       - rhel8cis_rule_5_2_2
   tags:
@@ -65,6 +67,8 @@
             mode: 0644
         with_items:
             - "{{ rhel8cis_5_2_3_ssh_public_host_key.files }}"
+        loop_control:
+            label: "{{ item.path }}"
   when:
       - rhel8cis_rule_5_2_3
   tags:
