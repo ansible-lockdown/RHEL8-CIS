@@ -27,7 +27,7 @@
 - name: "SECTION | 5.6.1.x | Shadow Password Suite Parameters"
   import_tasks: cis_5.6.1.x.yml
 
-- name: "SECTION | 5.6.x | ******FILLIN******"
+- name: "SECTION | 5.6.x | Misc. User Account Settings"
   import_tasks: cis_5.6.x.yml
 
 # - name: "SECTION | 5.5.x | System Accounts and User Settings"

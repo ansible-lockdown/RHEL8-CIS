@@ -434,6 +434,7 @@ rhel8cis_rule_6_1_11: true
 rhel8cis_rule_6_1_12: true
 rhel8cis_rule_6_1_13: true
 rhel8cis_rule_6_1_14: true
+rhel8cis_rule_6_1_15: true
 rhel8cis_rule_6_2_1: true
 rhel8cis_rule_6_2_2: true
 rhel8cis_rule_6_2_3: true
@@ -754,7 +755,7 @@ rhel8cis_shell_session_timeout:
 # RHEL-08_6.1.1
 rhel8cis_rpm_audit_file: /var/tmp/rpm_file_check
 
-# RHEL-08_6.1.10 Allow ansible to adjust world-writable files. False will just display world-writable files, True will remove world-writable
+# RHEL-08_6.1.11 Allow ansible to adjust world-writable files. False will just display world-writable files, True will remove world-writable
 rhel8cis_no_world_write_adjust: true
 rhel8cis_passwd_label: "{{ (this_item | default(item)).id }}: {{ (this_item | default(item)).dir }}"
 # 6.2.9
