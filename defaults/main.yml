@@ -625,11 +625,6 @@ rhel8cis_inactivelock:
 # 5.6.1.5 Allow ansible to expire password for account with a last changed date in the future. False will just display users in violation, true will expire those users passwords
 rhel8cis_futurepwchgdate_autofix: true
 
-rhel8cis_vartmp:
-    source: /tmp
-    fstype: none
-    opts: "defaults,nodev,nosuid,noexec,bind"
-    enabled: no
 ## PAM
 rhel8cis_pam_password:
     minlen: "14"
