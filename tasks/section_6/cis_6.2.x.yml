@@ -379,7 +379,7 @@
 - name: "6.2.12 | PATCH | Ensure users' dot files are not group or world-writable"
   block:
       - name: "6.2.12 | AUDIT | Ensure users' dot files are not group or world-writable | Check for files"
-        shell: find /home/ -name "\.*" -perm /g+w,o+w
+        shell: find /home/ -maxdepth 2 -name "\.*" -perm /g+w,o+w
         changed_when: false
         failed_when: false
         register: rhel8cis_6_2_12_audit
