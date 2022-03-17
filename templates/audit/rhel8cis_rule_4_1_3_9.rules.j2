@@ -1,7 +1,0 @@
--a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=perm_mod
--a always,exit -F arch=b64 -S chown,fchown,lchown,fchownat -F auid>={{ rhel8cis_int_gid }} -F auid!=uns4294967295et -F key=perm_mod
--a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=perm_mod
--a always,exit -F arch=b32 -S lchown,fchown,chown,fchownat -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=perm_mod
--a always,exit -F arch=b64 -S setxattr,lsetxattr,fsetxattr,removexattr,lremovexattr,fremovexattr -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=perm_mod
--a always,exit -F arch=b32 -S setxattr,lsetxattr,fsetxattr,removexattr,lremovexattr,fremovexattr -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=perm_mod
-
