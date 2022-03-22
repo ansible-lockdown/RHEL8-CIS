@@ -1,6 +1,6 @@
 ---
 
-# The STIG Control wants IPv6 disabled if not in use. 
+# The CIS Control wants IPv6 disabled if not in use. 
 # We are using the rhel8cis_ipv6_required to specify if you have IPv6 in use
 - name: "3.1.1 | PATCH | Verify if IPv6 is enabled on the system"
   sysctl:
