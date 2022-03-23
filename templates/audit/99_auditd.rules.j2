@@ -78,7 +78,7 @@
 -a always,exit -F path=/usr/bin/setfacl -F perm=x -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -k perm_chng
 {% endif %}
 {% if rhel8cis_rule_4_1_3_17 %}
--a always,exit -F path=/usr/bin/chacl -F perm=x -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -k perm_chng
+-a always,exit -F path=/usr/bin/chacl -F perm=x -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -k priv_cmd
 {% endif %}
 {% if rhel8cis_rule_4_1_3_18 %}
 -a always,exit -F path=/usr/sbin/usermod -F perm=x -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -k usermod
