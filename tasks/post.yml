@@ -12,4 +12,4 @@
 - name: Reboot host
   reboot:
   when:
-  - not rhel8cis_skip_reboot
+  - not skip_reboot
