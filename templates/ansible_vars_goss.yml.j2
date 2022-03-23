@@ -1,13 +1,11 @@
 ## metadata for Audit benchmark
-benchmark_version: '1.0.1'
-
-# Set if genuine RHEL (subscription manager check) not for derivatives e.g. CentOS
-is_redhat_os: {% if ansible_distribution == "RedHat" %}true{% else %}false{% endif %}
+benchmark_version: '2.0.0'
 
 # Set if pre version 8.2
 is_pre82_release: {% if ansible_distribution_version >= "8.2" %}false{% else %}true{% endif %}
 
-rhel8cis_os_distribution: {{ ansible_distribution | lower }}
+# Set if genuine RHEL (subscription manager check) not for derivatives e.g. CentOS
+host_os_distribution: {{ ansible_distribution }}
 
 # timeout for each command to run where set - default = 10seconds/10000ms
 timeout_ms: {{ audit_cmd_timeout }}
@@ -122,6 +120,7 @@ rhel8cis_rule_1_10: {{ rhel8cis_rule_1_10 }}
 rhel8cis_rule_2_1_1: {{ rhel8cis_rule_2_1_1 }}
 rhel8cis_rule_2_1_2: {{ rhel8cis_rule_2_1_2 }}
 
+rhel8cis_rule_2_2_1: {{ rhel8cis_rule_2_2_1 }}
 rhel8cis_rule_2_2_2: {{ rhel8cis_rule_2_2_2 }}
 rhel8cis_rule_2_2_3: {{ rhel8cis_rule_2_2_3 }}
 rhel8cis_rule_2_2_4: {{ rhel8cis_rule_2_2_4 }}
@@ -217,6 +216,7 @@ rhel8cis_rule_4_1_1_4: {{ rhel8cis_rule_4_1_1_4 }}
 
 rhel8cis_rule_4_1_2_1: {{ rhel8cis_rule_4_1_2_1 }}
 rhel8cis_rule_4_1_2_2: {{ rhel8cis_rule_4_1_2_2 }}
+rhel8cis_rule_4_1_2_3: {{ rhel8cis_rule_4_1_2_3 }}
 
 rhel8cis_rule_4_1_3_1: {{ rhel8cis_rule_4_1_3_1 }}
 rhel8cis_rule_4_1_3_2: {{ rhel8cis_rule_4_1_3_2 }}
@@ -238,6 +238,7 @@ rhel8cis_rule_4_1_3_17: {{ rhel8cis_rule_4_1_3_17 }}
 rhel8cis_rule_4_1_3_18: {{ rhel8cis_rule_4_1_3_18 }}
 rhel8cis_rule_4_1_3_19: {{ rhel8cis_rule_4_1_3_19 }}
 rhel8cis_rule_4_1_3_20: {{ rhel8cis_rule_4_1_3_20 }}
+rhel8cis_rule_4_1_3_21: {{ rhel8cis_rule_4_1_3_21 }}
 
 rhel8cis_rule_4_2_1_1: {{ rhel8cis_rule_4_2_1_1 }}
 rhel8cis_rule_4_2_1_2: {{ rhel8cis_rule_4_2_1_2 }}
@@ -251,6 +252,7 @@ rhel8cis_rule_4_2_2_1_1: {{ rhel8cis_rule_4_2_2_1_1 }}
 rhel8cis_rule_4_2_2_1_2: {{ rhel8cis_rule_4_2_2_1_2 }}
 rhel8cis_rule_4_2_2_1_3: {{ rhel8cis_rule_4_2_2_1_3 }}
 rhel8cis_rule_4_2_2_1_4: {{ rhel8cis_rule_4_2_2_1_4 }}
+
 
 rhel8cis_rule_4_2_2_2: {{ rhel8cis_rule_4_2_2_2 }}
 rhel8cis_rule_4_2_2_3: {{ rhel8cis_rule_4_2_2_3 }}
@@ -271,6 +273,7 @@ rhel8cis_rule_5_1_4: {{ rhel8cis_rule_5_1_4 }}
 rhel8cis_rule_5_1_5: {{ rhel8cis_rule_5_1_5 }}
 rhel8cis_rule_5_1_6: {{ rhel8cis_rule_5_1_6 }}
 rhel8cis_rule_5_1_7: {{ rhel8cis_rule_5_1_7 }}
+rhel8cis_rule_5_1_8: {{ rhel8cis_rule_5_1_8 }}
 
 
 rhel8cis_rule_5_2_1: {{ rhel8cis_rule_5_2_1 }}
@@ -304,8 +307,6 @@ rhel8cis_rule_5_3_7: {{ rhel8cis_rule_5_3_7 }}
 
 rhel8cis_rule_5_4_1: {{ rhel8cis_rule_5_4_1 }}
 rhel8cis_rule_5_4_2: {{ rhel8cis_rule_5_4_2 }}
-rhel8cis_rule_5_4_3: {{ rhel8cis_rule_5_4_3 }}
-rhel8cis_rule_5_4_4: {{ rhel8cis_rule_5_4_4 }}
 
 rhel8cis_rule_5_5_1: {{ rhel8cis_rule_5_5_1 }}
 rhel8cis_rule_5_5_2: {{ rhel8cis_rule_5_5_2 }}
@@ -369,27 +370,24 @@ rhel8cis_telnet_server: {{ rhel8cis_telnet_server }}
 rhel8cis_nfs_server: {{ rhel8cis_nfs_server }}
 rhel8cis_rpc_server: {{ rhel8cis_rpc_server }}
 rhel8cis_ntalk_server: {{ rhel8cis_ntalk_server }}
-rhel8cis_rsyncd_server: {{ rhel8cis_rsyncd_server }}
+rhel8cis_rsyncd_server: {{ rhel8cis_rsync_server }}
 rhel8cis_tftp_server: {{ rhel8cis_tftp_server }}
 rhel8cis_rsh_server: {{ rhel8cis_rsh_server }}
 rhel8cis_nis_server: {{ rhel8cis_nis_server }}
 rhel8cis_snmp_server: {{ rhel8cis_snmp_server }}
 rhel8cis_squid_server: {{ rhel8cis_squid_server }}
 rhel8cis_smb_server: {{ rhel8cis_smb_server }}
-rhel8cis_dovecot_server: {{ rhel8cis_dovecot_server }}
+rhel8cis_dovecot_server: {{ rhel8cis_dovecot_cyrus_server }}
 rhel8cis_httpd_server: {{ rhel8cis_httpd_server }}
-rhel8cis_imap_server: {{ rhel8cis_imap_server }}
+rhel8cis_imap_server: {{ rhel8cis_dovecot_cyrus_server }}
+rhel8cis_ftp_server: {{ rhel8cis_ftp_server }}
 rhel8cis_vsftpd_server: {{ rhel8cis_vsftpd_server }}
-rhel8cis_named_server: {{ rhel8cis_named_server }}
 rhel8cis_nfs_rpc_server: {{ rhel8cis_nfs_rpc_server }}
 rhel8cis_is_mail_server: {{ rhel8cis_is_mail_server }}
 rhel8cis_bind: {{ rhel8cis_bind }}
 rhel8cis_vsftpd: {{ rhel8cis_vsftpd }}
 rhel8cis_httpd: {{ rhel8cis_httpd }}
 rhel8cis_dovecot: {{ rhel8cis_dovecot }}
-rhel8cis_samba: {{ rhel8cis_samba }}
-rhel8cis_squid: {{ rhel8cis_squid }}
-rhel8cis_net_snmp: {{ rhel8cis_net_snmp}}
 rhel8cis_allow_autofs: {{ rhel8cis_allow_autofs }}
 
 # client services
