@@ -106,6 +106,7 @@
 - name: grub2cfg
   command: "grub2-mkconfig -o {{ grub_cfg.stat.lnk_source }}"
   ignore_errors: True
+  notify: change_requires_reboot
   tags:
       - skip_ansible_lint
 
@@ -124,3 +125,7 @@
 - name: systemd_daemon_reload
   systemd:
       daemon-reload: yes
+
+- name: change_requires_reboot
+  set_fact:
+      change_requires_reboot: true

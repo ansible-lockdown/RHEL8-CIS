@@ -33,6 +33,10 @@ benchmark: RHEL8-CIS
 # Whether to skip the reboot
 skip_reboot: true
 
+# default value will change to true but wont reboot if not enabled but will error
+change_requires_reboot: false
+
+
 #### Basic external goss audit enablement settings ####
 #### Precise details - per setting can be found at the bottom of this file ####
 

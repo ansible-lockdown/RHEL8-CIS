@@ -4,6 +4,7 @@
   package:
       name: "*"
       state: latest
+  notify: change_requires_reboot
   when:
       - rhel8cis_rule_1_9
       - not system_is_ec2

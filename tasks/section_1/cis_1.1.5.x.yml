@@ -42,6 +42,7 @@
       - "{{ ansible_mounts }}"
   loop_control:
       label: "{{ item.device }}"
+  notify: change_requires_reboot
   when:
       - var_log_mount_present is defined
       - item.mount == "/var/log"
