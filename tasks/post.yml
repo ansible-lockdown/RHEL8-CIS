@@ -26,6 +26,10 @@
             - skip_reboot
   tags:
       - grub
+      - level1-server
+      - level1-workstation
+      - level2-server
+      - level2-workstation
       - rhel8cis_section1
       - rhel8cis_section2
       - rhel8cis_section3
