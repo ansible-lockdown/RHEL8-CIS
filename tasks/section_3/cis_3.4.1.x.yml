@@ -24,8 +24,6 @@
             name: "{{ item }}"
             enabled: false
             masked: true
-           # state: stopped
-        register: iptables_service
         with_items:
             - iptables
             - ip6tables
