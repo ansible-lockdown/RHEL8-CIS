@@ -24,10 +24,12 @@
             name: "{{ item }}"
             enabled: false
             masked: true
-        ignore_errors: true
+           # state: stopped
+        register: iptables_service
         with_items:
             - iptables
             - ip6tables
+        when: item in ansible_facts.packages
 
       - name: "3.4.1.2 | PATCH | Ensure iptables-services not installed with firewalld | Remove IPTables"
         package:
