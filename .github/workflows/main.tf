@@ -44,7 +44,7 @@ resource "aws_instance" "testing_vm" {
   tags                        = var.instance_tags
   vpc_security_group_ids      = [aws_security_group.allow_ssh.id]
   root_block_device {
-        delete_on_termination = true
+    delete_on_termination = true
   }
 }
 // generate inventory file
