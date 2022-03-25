@@ -28,7 +28,7 @@ resource "aws_security_group" "github_actions" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
+  
   ingress {
     from_port   = 80
     to_port     = 80
@@ -44,7 +44,7 @@ resource "aws_security_group" "github_actions" {
   }
   tags = {
     Name = "${var.namespace}-SG"
-  }
+ }
 }
 
 // instance setup
@@ -57,16 +57,16 @@ resource "aws_instance" "testing_vm" {
   tags                        = var.instance_tags
   vpc_security_group_ids      = [aws_security_group.github_actions.id]
   root_block_device {
-    delete_on_termination = true
+        delete_on_termination = true
   }
 }
 
 // generate inventory file
 resource "local_file" "inventory" {
-  filename             = "./hosts.yml"
+  filename = "./hosts.yml"
   directory_permission = "0755"
   file_permission      = "0644"
-  content              = <<EOF
+  content  = <<EOF
     # benchmark host
     all:
       hosts:

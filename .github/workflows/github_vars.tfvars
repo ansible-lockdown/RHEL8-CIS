@@ -3,7 +3,7 @@
 // Declared in variables.tf
 // 
 
-namespace = "github_actions"
+namespace         = "github_actions"
 
 // Matching pair name found in AWS for keypairs PEM key
 ami_key_pair_name = "github_actions"
