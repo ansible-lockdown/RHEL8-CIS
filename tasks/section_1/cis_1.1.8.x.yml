@@ -27,7 +27,7 @@
             state: mounted
             opts: defaults,{% if rhel8cis_rule_1_1_8_2 %}noexec,{% endif %}{% if rhel8cis_rule_1_1_8_1 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_8_3 %}nosuid{% endif %}
         when: "'dev/shm' in rhel8cis_1_1_8_x_dev_shm_status.stdout"
-  notify: change_requires_reboot
+        notify: change_requires_reboot
   when:
       - rhel8cis_rule_1_1_8_1 or
         rhel8cis_rule_1_1_8_2 or
