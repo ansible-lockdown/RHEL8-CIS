@@ -1,6 +1,6 @@
 ---
 
-- name: "6.2.1 | L1 | AUDIT | Ensure password fields are not empty"
+- name: "6.2.1 | PATCH | Ensure password fields are not empty"
   command: passwd -l {{ item }}
   changed_when: false
   failed_when: false
@@ -11,147 +11,258 @@
   tags:
       - level1-server
       - level1-workstation
+      - automated
       - patch
+      - accounts
       - rule_6.2.1
 
-- name: "6.2.2 | L1 | PATCH | Ensure no legacy '+' entries exist in /etc/passwd"
-  command: sed -i '/^+/ d' /etc/passwd
-  changed_when: false
-  failed_when: false
+
+- name: "6.2.2 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group"
+  block:
+      - name: "6.2.2 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Check /etc/passwd entries"
+        shell: pwck -r | grep 'no group' | awk '{ gsub("[:\47]",""); print $2}'
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        register: rhel8cis_6_2_2_passwd_gid_check
+
+      - name: "6.2.2 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Print message that all groups match between passwd and group files"
+        debug:
+            msg: "Good News! There are no users that have non-existent GUIDs (Groups)"
+        when: rhel8cis_6_2_2_passwd_gid_check.stdout is not defined
+
+      - name: "6.2.2 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Print warning about users with invalid GIDs missing GID entries in /etc/group"
+        debug:
+            msg: "WARNING: The following users have non-existent GIDs (Groups): {{ rhel8cis_6_2_2_passwd_gid_check.stdout_lines | join (', ') }}"
+        when: rhel8cis_6_2_2_passwd_gid_check.stdout is defined
   when:
       - rhel8cis_rule_6_2_2
   tags:
       - level1-server
       - level1-workstation
-      - patch
+      - automated
+      - audit
+      - accounts
+      - groups
       - rule_6.2.2
-      - skip_ansible_lint
 
-- name: "6.2.3 | L1 | PATCH | Ensure root PATH Integrity"
+- name: "6.2.3 | AUDIT Ensure no duplicate UIDs exist"
   block:
-      - name: "6.2.3 | L1 | AUDIT | Ensure root PATH Integrity | Determine empty value"
+      - name: "6.2.3 | AUDIT | Ensure no duplicate UIDs exist | Check for duplicate UIDs"
+        shell: "pwck -r | awk -F: '{if ($3 in uid) print $1 ; else uid[$3]}' /etc/passwd"
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_6_2_3_user_uid_check
+
+      - name: "6.2.3 | AUDIT | Ensure no duplicate UIDs exist | Print message that no duplicate UIDs exist"
+        debug:
+            msg: "Good News! There are no duplicate UID's in the system"
+        when: rhel8cis_6_2_3_user_uid_check.stdout is not defined
+
+      - name: "6.2.3 | AUDIT| Ensure no duplicate UIDs exist | Print warning about users with duplicate UIDs"
+        debug:
+            msg: "Warning: The following users have UIDs that are duplicates: {{ rhel8cis_6_2_3_user_uid_check.stdout_lines }}"
+        when: rhel8cis_6_2_3_user_uid_check.stdout is defined
+  when:
+      - rhel8cis_rule_6_2_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - audit
+      - accounts
+      - users
+      - rule_6.2.3
+
+- name: "6.2.4 | AUDIT | Ensure no duplicate GIDs exist"
+  block:
+      - name: "6.2.4 | AUDIT | Ensure no duplicate GIDs exist | Check for duplicate GIDs"
+        shell: "pwck -r | awk -F: '{if ($3 in users) print $1 ; else users[$3]}' /etc/group"
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_6_2_4_user_user_check
+
+      - name: "6.2.4 | AUDIT | Ensure no duplicate GIDs exist | Print message that no duplicate GID's exist"
+        debug:
+            msg: "Good News! There are no duplicate GIDs in the system"
+        when: rhel8cis_6_2_4_user_user_check.stdout is not defined
+
+      - name: "6.2.4 | AUDIT | Ensure no duplicate GIDs exist | Print warning about users with duplicate GIDs"
+        debug:
+            msg: "Warning: The following groups have duplicate GIDs: {{ rhel8cis_6_2_4_user_user_check.stdout_lines }}"
+        when: rhel8cis_6_2_4_user_user_check.stdout is defined
+  when:
+      - rhel8cis_rule_6_2_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - audit
+      - accounts
+      - groups
+      - rule_6.2.4
+
+- name: "6.2.5 | AUDIT | Ensure no duplicate user names exist"
+  block:
+      - name: "6.2.5 | AUDIT | Ensure no duplicate user names exist | Check for duplicate User Names"
+        shell: "pwck -r | awk -F: '{if ($1 in users) print $1 ; else users[$1]}' /etc/passwd"
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_6_2_5_user_username_check
+
+      - name: "6.2.5 | AUDIT | Ensure no duplicate user names exist | Print message that no duplicate user names exist"
+        debug:
+            msg: "Good News! There are no duplicate user names in the system"
+        when: rhel8cis_6_2_5_user_username_check.stdout is not defined
+
+      - name: "6.2.5 | AUDIT | Ensure no duplicate user names exist | Print warning about users with duplicate User Names"
+        debug:
+            msg: "Warning: The following user names are duplicates: {{ rhel8cis_6_2_5_user_username_check.stdout_lines }}"
+        when: rhel8cis_6_2_5_user_username_check.stdout is defined
+  when:
+      - rhel8cis_rule_6_2_5
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - audit
+      - accounts
+      - users
+      - rule_6.2.5
+
+- name: "6.2.6 | AUDIT |Ensure no duplicate group names exist"
+  block:
+      - name: "6.2.6 | AUDIT | Ensure no duplicate group names exist | Check for duplicate group names"
+        shell: 'getent passwd | cut -d: -f1 | sort -n | uniq -d'
+        changed_when: false
+        failed_when: false
+        check_mode: no
+        register: rhel8cis_6_2_6_group_group_check
+
+      - name: "6.2.6 | AUDIT | Ensure no duplicate group names exist | Print message that no duplicate groups exist"
+        debug:
+            msg: "Good News! There are no duplicate group names in the system"
+        when: rhel8cis_6_2_6_group_group_check.stdout is defined
+
+      - name: "6.2.6 | AUDIT | Ensure no duplicate group names exist | Print warning about users with duplicate group names"
+        debug:
+            msg: "Warning: The following group names are duplicates: {{ rhel8cis_6_2_6_group_group_check.stdout_lines }}"
+        when: rhel8cis_6_2_6_group_group_check.stdout is not defined
+  when:
+      - rhel8cis_rule_6_2_6
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - audit
+      - accounts
+      - groups
+      - rule_6.2.6
+
+- name: "6.2.7 | PATCH | Ensure root PATH Integrity"
+  block:
+      - name: "6.2.7 | AUDIT | Ensure root PATH Integrity | Determine empty value"
         shell: 'echo $PATH | grep ::'
-        check_mode: no
-        register: path_colon
         changed_when: False
-        failed_when: path_colon.rc == 0
+        failed_when: rhel8cis_6_2_7_path_colon.rc == 0
+        check_mode: no
+        register: rhel8cis_6_2_7_path_colon
 
-      - name: "6.2.3 | L1 | AUDIT | Ensure root PATH Integrity | Determin colon end"
+      - name: "6.2.7 | AUDIT | Ensure root PATH Integrity | Determin colon end"
         shell: 'echo $PATH | grep :$'
-        check_mode: no
-        register: path_colon_end
         changed_when: False
-        failed_when: path_colon_end.rc == 0
+        failed_when: rhel8cis_6_2_7_path_colon_end.rc == 0
+        check_mode: no
+        register: rhel8cis_6_2_7_path_colon_end
 
-      - name: "6.2.3 | L1 | AUDIT | Ensure root PATH Integrity | Determine dot in path"
+      - name: "6.2.7 | AUDIT | Ensure root PATH Integrity | Determine dot in path"
         shell: "/bin/bash --login -c 'env | grep ^PATH=' | sed -e 's/PATH=//' -e 's/::/:/' -e 's/:$//' -e 's/:/\\n/g'"
-        check_mode: no
-        register: dot_in_path
         changed_when: False
-        failed_when: '"." in dot_in_path.stdout_lines'
+        failed_when: '"." in rhel8cis_6_2_7_dot_in_path.stdout_lines'
+        check_mode: no
+        register: rhel8cis_6_2_7_dot_in_path
 
-      - name: "6.2.3 | L1 | AUDIT | Ensure root PATH Integrity | Alert on empty value, colon end, and dot in path"
+      - name: "6.2.7 | AUDIT | Ensure root PATH Integrity | Alert on empty value, colon end, and dot in path"
         debug:
             msg:
-                - "The following paths have an empty value: {{ path_colon.stdout_lines }}"
-                - "The following paths have colon end: {{ path_colon_end.stdout_lines }}"
-                - "The following paths have a dot in the path: {{ dot_in_path.stdout_lines }}"
+                - "The following paths have an empty value: {{ rhel8cis_6_2_7_path_colon.stdout_lines }}"
+                - "The following paths have colon end: {{ rhel8cis_6_2_7_path_colon_end.stdout_lines }}"
+                - "The following paths have a dot in the path: {{ rhel8cis_6_2_7_dot_in_path.stdout_lines }}"
 
-      - name: "6.2.3 | L1 | PATCH | Ensure root PATH Integrity (Scored) | Determine rights and owner"
+      - name: "6.2.7 | PATCH | Ensure root PATH Integrity (Scored) | Determine rights and owner"
         file: >
           path='{{ item }}'
           follow=yes
           state=directory
           owner=root
           mode='o-w,g-w'
-        with_items: "{{ dot_in_path.stdout_lines }}"
+        with_items: "{{ rhel8cis_6_2_7_dot_in_path.stdout_lines }}"
   when:
-      - rhel8cis_rule_6_2_3
+      - rhel8cis_rule_6_2_7
   tags:
       - level1-server
       - level1-workstation
+      - automated
       - patch
-      - rule_6.2.3
+      - paths
+      - rule_6.2.7
 
-- name: "6.2.4 | L1 | PATCH | Ensure no legacy '+' entries exist in /etc/shadow"
-  command: sed -i '/^+/ d' /etc/shadow
-  changed_when: false
-  failed_when: false
-  when:
-      - rhel8cis_rule_6_2_4
-  tags:
-      - level1-server
-      - level1-workstation
-      - patch
-      - rule_6.2.4
-      - skip_ansible_lint
-
-- name: "6.2.5 | L1 | PATCH | Ensure no legacy '+' entries exist in /etc/group"
-  command: sed -i '/^+/ d' /etc/group
-  changed_when: false
-  failed_when: false
-  when:
-      - rhel8cis_rule_6_2_5
-  tags:
-      - level1-server
-      - level1-workstation
-      - patch
-      - rule_6.2.5
-      - skip_ansible_lint
-
-- name: "6.2.6 | L1 | PATCH | Ensure root is the only UID 0 account"
+- name: "6.2.8 | PATCH | Ensure root is the only UID 0 account"
   command: passwd -l {{ item }}
   changed_when: false
   failed_when: false
-  with_items: "{{ uid_zero_accounts_except_root.stdout_lines }}"
+  with_items: "{{ rhel8cis_uid_zero_accounts_except_root.stdout_lines }}"
   when:
-      - uid_zero_accounts_except_root.rc
-      - rhel8cis_rule_6_2_6
+      - rhel8cis_uid_zero_accounts_except_root.rc
+      - rhel8cis_rule_6_2_8
   tags:
       - level1-server
       - level1-workstation
+      - automated
       - patch
-      - rule_6.2.6
+      - accounts
+      - users
+      - rule_6.2.8
 
-- name: "6.2.7 | L1 | PATCH | Ensure users' home directories permissions are 750 or more restrictive"
+- name: "6.2.9 | PATCH | Ensure all users' home directories exist"
   block:
-      - name: "6.2.7 | L1 | AUDIT | Ensure users' home directories permissions are 750 or more restrictive"
+      - name: "6.2.9 | AUDIT | Ensure all users' home directories exist"
         stat:
             path: "{{ item }}"
+        register: rhel_08_6_2_9_audit
         with_items: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8cis_int_gid) | selectattr('uid', '!=', 65534) | map(attribute='dir') | list }}"
-        register: rhel_08_6_2_7_audit
 
-      - name: "6.2.7 | L1 | AUDIT | Ensure users' home directories permissions are 750 or more restrictive"
+      - name: "6.2.9 | AUDIT | Ensure all users' home directories exist"
         command: find -H {{ item.0 | quote }} -not -type l -perm /027
         check_mode: false
-        changed_when: rhel_08_6_2_7_patch_audit.stdout | length > 0
-        register: rhel_08_6_2_7_patch_audit
+        changed_when: rhel_08_6_2_9_patch_audit.stdout | length > 0
+        register: rhel_08_6_2_9_patch_audit
         when:
             - ansible_check_mode
             - item.1.exists
         with_together:
-            - "{{ rhel_08_6_2_7_audit.results | map(attribute='item') | list }}"
-            - "{{ rhel_08_6_2_7_audit.results | map(attribute='stat') | list }}"
+            - "{{ rhel_08_6_2_9_audit.results | map(attribute='item') | list }}"
+            - "{{ rhel_08_6_2_9_audit.results | map(attribute='stat') | list }}"
         loop_control:
             label: "{{ item.0 }}"
 
-      - name: "6.2.7 | L1 | PATCH | Ensure users' home directories permissions are 750 or more restrictive"
+      - name: "6.2.9 | PATCH | Ensure all users' home directories exist"
         file:
             path: "{{ item.0 }}"
             recurse: yes
             mode: a-st,g-w,o-rwx
-        register: rhel_08_6_2_7_patch
+        register: rhel_08_6_2_9_patch
         when:
             - not ansible_check_mode
             - item.1.exists
         with_together:
-            - "{{ rhel_08_6_2_7_audit.results | map(attribute='item') | list }}"
-            - "{{ rhel_08_6_2_7_audit.results | map(attribute='stat') | list }}"
+            - "{{ rhel_08_6_2_9_audit.results | map(attribute='item') | list }}"
+            - "{{ rhel_08_6_2_9_audit.results | map(attribute='stat') | list }}"
         loop_control:
             label: "{{ item.0 }}"
 
       # set default ACLs so the homedir has an effective umask of 0027
-      - name: "6.2.7 | L1 | PATCH | Ensure users' home directories permissions are 750 or more restrictive"
+      - name: "6.2.9 | PATCH | Ensure all users' home directories exist"
         acl:
             path: "{{ item.0 }}"
             default: yes
@@ -161,7 +272,7 @@
             permissions: "{{ item.1.mode }}"
         when: not rhel8cis_system_is_container
         with_nested:
-            - "{{ (ansible_check_mode | ternary(rhel_08_6_2_7_patch_audit, rhel_08_6_2_7_patch)).results |
+            - "{{ (ansible_check_mode | ternary(rhel_08_6_2_9_patch_audit, rhel_08_6_2_9_patch)).results |
               rejectattr('skipped', 'defined') | map(attribute='item') | map('first') | list }}"
             -
                 - etype: group
@@ -169,14 +280,17 @@
                 - etype: other
                   mode: '0'
   when:
-      - rhel8cis_rule_6_2_7
+      - rhel8cis_rule_6_2_9
   tags:
       - level1-server
       - level1-workstation
+      - automated
       - patch
-      - rule_6.2.7
+      - users
+      - rule_6.2.9
 
-- name: "6.2.8 | L1 | PATCH | Ensure users own their home directories"
+
+- name: "6.2.10 | PATCH | Ensure users own their home directories"
   file:
       path: "{{ item.dir }}"
       owner: "{{ item.id }}"
@@ -186,314 +300,55 @@
       label: "{{ rhel8cis_passwd_label }}"
   when:
       - item.uid >= rhel8cis_int_gid
-      - rhel8cis_rule_6_2_8
+      - rhel8cis_rule_6_2_10
   tags:
       - skip_ansible_lint  # settings found on 6_2_7
       - level1-server
       - level1-workstation
+      - autoamted
       - patch
-      - rule_6.2.8
-
-- name: "6.2.9 | L1 | PATCH | Ensure users' dot files are not group or world-writable"
-  block:
-      - name: "6.2.9 | L1 | AUDIT | Ensure users' dot files are not group or world-writable | Check for files"
-        shell: find /home/ -name "\.*" -perm /g+w,o+w
-        changed_when: false
-        failed_when: false
-        register: rhel8cis_6_2_9_audit
-
-      - name: "6.2.9 | L1 | AUDIT | Ensure users' dot files are not group or world-writable | Alert on files found"
-        debug:
-            msg: "Good news! We have not found any group or world-writable dot files on your sytem"
-        when:
-            - rhel8cis_6_2_9_audit.stdout is not defined
-
-      - name: "6.2.9 | L1 | PATCH | Ensure users' dot files are not group or world-writable | Changes files if configured"
-        file:
-            path: '{{ item }}'
-            mode: go-w
-        with_items: "{{ rhel8cis_6_2_9_audit.stdout_lines }}"
-        when:
-            - rhel8cis_6_2_9_audit.stdout is defined
-            - rhel8cis_dotperm_ansiblemanaged
-  when:
-      - rhel8cis_rule_6_2_9
-  tags:
-      - level1-server
-      - level1-workstation
-      - patch
-      - rule_6.2.9
-
-- name: "6.2.10 | L1 | PATCH | Ensure no users have .forward files"
-  file:
-      state: absent
-      dest: "~{{ item }}/.forward"
-  with_items: "{{ users.stdout_lines }}"
-  when:
-      - rhel8cis_rule_6_2_10
-  tags:
-      - level1-server
-      - level1-workstation
-      - patch
+      - users
       - rule_6.2.10
 
-- name: "6.2.11 | L1 | PATCH | Ensure no users have .netrc files"
-  file:
-      state: absent
-      dest: "~{{ item }}/.netrc"
-  with_items: "{{ users.stdout_lines }}"
-  when:
-      - rhel8cis_rule_6_2_11
-  tags:
-      - level1-server
-      - level1-workstation
-      - patch
-      - rule_6.2.11
-
-- name: "6.2.12 | L1 | PATCH | Ensure users' .netrc Files are not group or world accessible"
-  command: /bin/true
-  changed_when: false
-  failed_when: false
-  when:
-      - rhel8cis_rule_6_2_12
-  tags:
-      - level1-server
-      - level1-workstation
-      - patch
-      - rule_6.2.12
-
-- name: "6.2.13 | L1 | PATCH | Ensure no users have .rhosts files"
-  file:
-      state: absent
-      dest: "~{{ item }}/.rhosts"
-  with_items: "{{ users.stdout_lines }}"
-  when:
-      - rhel8cis_rule_6_2_13
-  tags:
-      - level1-server
-      - level1-workstation
-      - patch
-      - rule_6.2.13
-
-- name: "6.2.14 | L1 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group"
+- name: "6.2.11 | PATCH | Ensure users' home directories permissions are 750 or more restrictive"
   block:
-      - name: "6.2.14 | L1 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Check /etc/passwd entries"
-        shell: pwck -r | grep 'no group' | awk '{ gsub("[:\47]",""); print $2}'
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        register: passwd_gid_check
-
-      - name: "6.2.14 | L1 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Print message that all groups match between passwd and group files"
-        debug:
-            msg: "Good News! There are no users that have non-existent GUIDs (Groups)"
-        when: passwd_gid_check.stdout is not defined
-
-      - name: "6.2.14 | L1 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Print warning about users with invalid GIDs missing GID entries in /etc/group"
-        debug:
-            msg: "WARNING: The following users have non-existent GIDs (Groups): {{ passwd_gid_check.stdout_lines | join (', ') }}"
-        when: passwd_gid_check.stdout is defined
-  when:
-      - rhel8cis_rule_6_2_14
-  tags:
-      - level1-server
-      - level1-workstation
-      - audit
-      - rule_6.2.14
-
-- name: "6.2.15 | L1 | AUDIT Ensure no duplicate UIDs exist"
-  block:
-      - name: "6.2.15 | L1 | AUDIT | Ensure no duplicate UIDs exist | Check for duplicate UIDs"
-        shell: "pwck -r | awk -F: '{if ($3 in uid) print $1 ; else uid[$3]}' /etc/passwd"
-        changed_when: false
-        failed_when: false
-        register: user_uid_check
-
-      - name: "6.2.15 | L1 | AUDIT | Ensure no duplicate UIDs exist | Print message that no duplicate UIDs exist"
-        debug:
-            msg: "Good News! There are no duplicate UID's in the system"
-        when: user_uid_check.stdout is not defined
-
-      - name: "6.2.15 | L1 | AUDIT| Ensure no duplicate UIDs exist | Print warning about users with duplicate UIDs"
-        debug:
-            msg: "Warning: The following users have UIDs that are duplicates: {{ user_uid_check.stdout_lines }}"
-        when: user_uid_check.stdout is defined
-  when:
-      - rhel8cis_rule_6_2_15
-  tags:
-      - level1-server
-      - level1-workstation
-      - patch
-      - rule_6.2.15
-
-- name: "6.2.16 | L1 | AUDIT | Ensure no duplicate GIDs exist"
-  block:
-      - name: "6.2.16 | L1 | AUDIT | Ensure no duplicate GIDs exist | Check for duplicate GIDs"
-        shell: "pwck -r | awk -F: '{if ($3 in users) print $1 ; else users[$3]}' /etc/group"
-        changed_when: false
-        failed_when: false
-        register: user_user_check
-
-      - name: "6.2.16 | L1 | AUDIT | Ensure no duplicate GIDs exist | Print message that no duplicate GID's exist"
-        debug:
-            msg: "Good News! There are no duplicate GIDs in the system"
-        when: user_user_check.stdout is not defined
-
-      - name: "6.2.16 | L1 | AUDIT | Ensure no duplicate GIDs exist | Print warning about users with duplicate GIDs"
-        debug:
-            msg: "Warning: The following groups have duplicate GIDs: {{ user_user_check.stdout_lines }}"
-        when: user_user_check.stdout is defined
-  when:
-      - rhel8cis_rule_6_2_16
-  tags:
-      - level1-server
-      - level1-workstation
-      - audit
-      - rule_6.2.16
-
-- name: "6.2.17 | L1 | AUDIT | Ensure no duplicate user names exist"
-  block:
-      - name: "6.2.17 | L1 | AUDIT | Ensure no duplicate user names exist | Check for duplicate User Names"
-        shell: "pwck -r | awk -F: '{if ($1 in users) print $1 ; else users[$1]}' /etc/passwd"
-        changed_when: false
-        failed_when: false
-        register: user_username_check
-
-      - name: "6.2.17 | L1 | AUDIT | Ensure no duplicate user names exist | Print message that no duplicate user names exist"
-        debug:
-            msg: "Good News! There are no duplicate user names in the system"
-        when: user_username_check.stdout is not defined
-
-      - name: "6.2.17 | L1 | AUDIT | Ensure no duplicate user names exist | Print warning about users with duplicate User Names"
-        debug:
-            msg: "Warning: The following user names are duplicates: {{ user_username_check.stdout_lines }}"
-        when: user_username_check.stdout is defined
-  when:
-      - rhel8cis_rule_6_2_17
-  tags:
-      - level1-server
-      - level1-workstation
-      - audit
-      - rule_6.2.17
-
-- name: "6.2.18 | L1 | AUDIT |Ensure no duplicate group names exist"
-  block:
-      - name: "6.2.18 | L1 | AUDIT | Ensure no duplicate group names exist | Check for duplicate group names"
-        shell: 'getent passwd | cut -d: -f1 | sort -n | uniq -d'
-        changed_when: false
-        failed_when: false
-        check_mode: no
-        register: group_group_check
-
-      - name: "6.2.18 | L1 | AUDIT | Ensure no duplicate group names exist | Print message that no duplicate groups exist"
-        debug:
-            msg: "Good News! There are no duplicate group names in the system"
-        when: group_group_check.stdout is defined
-
-      - name: "6.2.18 | L1 | AUDIT | Ensure no duplicate group names exist | Print warning about users with duplicate group names"
-        debug:
-            msg: "Warning: The following group names are duplicates: {{ group_group_check.stdout_lines }}"
-        when: group_group_check.stdout is not defined
-  when:
-      - rhel8cis_rule_6_2_18
-  tags:
-      - level1-server
-      - level1-workstation
-      - audit
-      - rule_6.2.18
-
-- name: "6.2.19 | L1 | AUDIT | Ensure shadow group is empty"
-  block:
-      - name: "6.2.19 | L1 | AUDIT | Ensure shadow group is empty | Check for shadow group and pull group id"
-        shell: "getent group shadow | cut -d: -f3"
-        changed_when: false
-        failed_when: false
-        check_mode: no
-        register: rhel8cis_shadow_gid
-
-      - name: "6.2.19 | L1 | AUDIT | Ensure shadow group is empty | Check /etc/group for empty shadow group"
-        shell: grep ^shadow:[^:]*:[^:]*:[^:]+ /etc/group
-        changed_when: false
-        failed_when: false
-        check_mode: no
-        register: rhel8cis_empty_shadow
-
-      - name: "6.2.19 | L1 | AUDIT | Ensure shadow group is empty | Check for users assigned to shadow"
-        shell: "getent passwd | awk -F: '$4 == '{{ rhel8cis_shadow_gid.stdout }}' {print $1}'"
-        changed_when: false
-        failed_when: false
-        check_mode: no
-        register: rhel8cis_shadow_passwd
-
-      - name: "6.2.19 | L1 | AUDIT | Ensure shadow group is empty | Alert shadow group is empty and no users assigned"
-        debug:
-            msg:
-                - " Good News! The shadow group is empty and there are no users assigned to shadow"
-        when:
-            - rhel8cis_empty_shadow.stdout | length == 0
-            - rhel8cis_shadow_passwd.stdout | length == 0
-
-      - name: "6.2.19 | L1 | AUDIT | Ensure shadow group is empty | Alert shadow group is not empty"
-        debug:
-            msg:
-                - "Alert! The shadow group is not empty"
-        when:
-            - rhel8cis_empty_shadow.stdout | length > 0
-
-      - name: "6.2.19 | L1 | AUDIT | Ensure shadow group is empty | Alert users are using shadow group"
-        debug:
-            msg:
-                - "Alert! The following users are assigned to the shadow group, please assing them to the appropriate group"
-                - "{{ rhel8cis_shadow_passwd.stdout_lines }}"
-        when:
-            - rhel8cis_shadow_passwd.stdout | length > 0
-  when:
-      - rhel8cis_rule_6_2_19
-  tags:
-      - level1-server
-      - level1-workstation
-      - audit
-      - rule_6.2.19
-
-- name: "6.2.20 | L1 | PATCH | Ensure all users' home directories exist"
-  block:
-      - name: "6.2.20 | L1 | AUDIT | Ensure all users' home directories exist"
+      - name: "6.2.11 | AUDIT | Ensure users' home directories permissions are 750 or more restrictive"
         stat:
             path: "{{ item }}"
-        register: rhel_08_6_2_20_audit
         with_items: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8cis_int_gid) | selectattr('uid', '!=', 65534) | map(attribute='dir') | list }}"
+        register: rhel_08_6_2_11_audit
 
-      - name: "6.2.20 | L1 | AUDIT | Ensure all users' home directories exist"
+      - name: "6.2.11 | AUDIT | Ensure users' home directories permissions are 750 or more restrictive"
         command: find -H {{ item.0 | quote }} -not -type l -perm /027
         check_mode: false
-        changed_when: rhel_08_6_2_20_patch_audit.stdout | length > 0
-        register: rhel_08_6_2_20_patch_audit
+        changed_when: rhel_08_6_2_11_patch_audit.stdout | length > 0
+        register: rhel_08_6_2_11_patch_audit
         when:
             - ansible_check_mode
             - item.1.exists
         with_together:
-            - "{{ rhel_08_6_2_20_audit.results | map(attribute='item') | list }}"
-            - "{{ rhel_08_6_2_20_audit.results | map(attribute='stat') | list }}"
+            - "{{ rhel_08_6_2_11_audit.results | map(attribute='item') | list }}"
+            - "{{ rhel_08_6_2_11_audit.results | map(attribute='stat') | list }}"
         loop_control:
             label: "{{ item.0 }}"
 
-      - name: "6.2.20 | L1 | PATCH | Ensure all users' home directories exist"
+      - name: "6.2.11 | PATCH | Ensure users' home directories permissions are 750 or more restrictive"
         file:
             path: "{{ item.0 }}"
             recurse: yes
             mode: a-st,g-w,o-rwx
-        register: rhel_08_6_2_20_patch
+        register: rhel_08_6_2_11_patch
         when:
             - not ansible_check_mode
             - item.1.exists
         with_together:
-            - "{{ rhel_08_6_2_20_audit.results | map(attribute='item') | list }}"
-            - "{{ rhel_08_6_2_20_audit.results | map(attribute='stat') | list }}"
+            - "{{ rhel_08_6_2_11_audit.results | map(attribute='item') | list }}"
+            - "{{ rhel_08_6_2_11_audit.results | map(attribute='stat') | list }}"
         loop_control:
             label: "{{ item.0 }}"
 
       # set default ACLs so the homedir has an effective umask of 0027
-      - name: "6.2.20 | L1 | PATCH | Ensure all users' home directories exist"
+      - name: "6.2.11 | PATCH | Ensure users' home directories permissions are 750 or more restrictive"
         acl:
             path: "{{ item.0 }}"
             default: yes
@@ -503,7 +358,7 @@
             permissions: "{{ item.1.mode }}"
         when: not rhel8cis_system_is_container
         with_nested:
-            - "{{ (ansible_check_mode | ternary(rhel_08_6_2_20_patch_audit, rhel_08_6_2_20_patch)).results |
+            - "{{ (ansible_check_mode | ternary(rhel_08_6_2_11_patch_audit, rhel_08_6_2_11_patch)).results |
               rejectattr('skipped', 'defined') | map(attribute='item') | map('first') | list }}"
             -
                 - etype: group
@@ -511,9 +366,111 @@
                 - etype: other
                   mode: '0'
   when:
-      - rhel8cis_rule_6_2_20
+      - rhel8cis_rule_6_2_11
   tags:
       - level1-server
       - level1-workstation
+      - automated
       - patch
-      - rule_6.2.20
+      - users
+      - permissions
+      - rule_6.2.11
+
+- name: "6.2.12 | PATCH | Ensure users' dot files are not group or world-writable"
+  block:
+      - name: "6.2.12 | AUDIT | Ensure users' dot files are not group or world-writable | Check for files"
+        shell: find /home/ -maxdepth 2 -name "\.*" -perm /g+w,o+w
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_6_2_12_audit
+
+      - name: "6.2.12 | AUDIT | Ensure users' dot files are not group or world-writable | Alert on files found"
+        debug:
+            msg: "Good news! We have not found any group or world-writable dot files on your sytem"
+        when:
+            - rhel8cis_6_2_12_audit.stdout is not defined
+
+      - name: "6.2.12 | PATCH | Ensure users' dot files are not group or world-writable | Changes files if configured"
+        file:
+            path: '{{ item }}'
+            mode: go-w
+        with_items: "{{ rhel8cis_6_2_12_audit.stdout_lines }}"
+        when:
+            - rhel8cis_6_2_12_audit.stdout is defined
+            - rhel8cis_dotperm_ansiblemanaged
+  when:
+      - rhel8cis_rule_6_2_12
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - users
+      - permissions
+      - rule_6.2.12
+
+- name: "6.2.13 | PATCH | Ensure users' .netrc Files are not group or world accessible"
+  command: /bin/true
+  changed_when: false
+  failed_when: false
+  when:
+      - rhel8cis_rule_6_2_13
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - users
+      - permissions
+      - notimplemented
+      - rule_6.2.13
+
+- name: "6.2.14 | PATCH | Ensure no users have .forward files"
+  file:
+      state: absent
+      dest: "~{{ item }}/.forward"
+  with_items:
+      - "{{ users.stdout_lines }}"
+  when:
+      - rhel8cis_rule_6_2_14
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - users
+      - files
+      - rule_6.2.14
+
+- name: "6.2.15 | PATCH | Ensure no users have .netrc files"
+  file:
+      state: absent
+      dest: "~{{ item }}/.netrc"
+  with_items:
+      - "{{ users.stdout_lines }}"
+  when:
+      - rhel8cis_rule_6_2_15
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - users
+      - files
+      - rule_6.2.15
+
+- name: "6.2.16 | PATCH | Ensure no users have .rhosts files"
+  file:
+      state: absent
+      dest: "~{{ item }}/.rhosts"
+  with_items: "{{ users.stdout_lines }}"
+  when:
+      - rhel8cis_rule_6_2_16
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - users
+      - files
+      - rule_6.2.16

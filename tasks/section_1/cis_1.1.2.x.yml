@@ -1,0 +1,77 @@
+---
+
+- name: "1.1.2.1 | PATCH | Ensure /tmp is a separate partition"
+  debug:
+      msg: "WARNING!! /tmp is not mounted on a separate partition"
+  when:
+      - rhel8cis_rule_1_1_2_1
+      - ansible_mounts | selectattr('mount', 'match', '^/tmp$') | list | length == 0
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - audit
+      - mounts
+      - rule_1.1.2.1
+
+# via fstab
+- name: |
+        "1.1.2.2 | PATCH | Ensure nodev option set on /tmp partition"
+        "1.1.2.3 | PATCH | Ensure noexec option set on /tmp partition"
+        "1.1.2.4 | PATCH | Ensure nosuid option set on /tmp partition"
+  mount:
+      name: /tmp
+      src: "{{ item.device }}"
+      fstype: "{{ item.fstype }}"
+      state: present
+      opts: defaults,{% if rhel8cis_rule_1_1_2_2 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_2_3 %}noexec,{% endif %}{% if rhel8cis_rule_1_1_2_4 %}nosuid{% endif %}
+  notify: remount tmp
+  with_items:
+      - "{{ ansible_mounts }}"
+  loop_control:
+      label: "{{ item.device }}"
+  when:
+      - item.mount == "/tmp"
+      - not rhel8cis_tmp_svc
+      - rhel8cis_rule_1_1_2_2 or
+        rhel8cis_rule_1_1_2_3 or
+        rhel8cis_rule_1_1_2_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - mounts
+      - rule_1.1.2.2
+      - rule_1.1.2.3
+      - rule_1.1.2.4
+
+# via systemd
+- name: |
+        "1.1.2.1 | PATCH | Ensure /tmp is configured"
+        "1.1.2.2 | PATCH | Ensure nodev option set on /tmp partition"
+        "1.1.2.3 | PATCH | Ensure noexec option set on /tmp partition"
+        "1.1.2.4 | PATCH | Ensure nosuid option set on /tmp partition"
+  template:
+      src: etc/systemd/system/tmp.mount.j2
+      dest: /etc/systemd/system/tmp.mount
+      owner: root
+      group: root
+      mode: 0644
+  notify: systemd restart tmp.mount
+  when:
+      - rhel8cis_tmp_svc
+      - rhel8cis_rule_1_1_2_1 or
+        rhel8cis_rule_1_1_2_2 or
+        rhel8cis_rule_1_1_2_3 or
+        rhel8cis_rule_1_1_2_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - scored
+      - patch
+      - mounts
+      - rule_1.1.2.1
+      - rule_1.1.2.2
+      - rule_1.1.2.3
+      - rule_1.1.2.4

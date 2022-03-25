@@ -1,21 +1,22 @@
 ---
 
-- name: "2.2.1.1 | L1 | PATCH | Ensure time synchronization is in use - service install"
+- name: "2.1.1 | PATCH | Ensure time synchronization is in use"
   package:
       name: "{{ rhel8cis_time_synchronization }}"
       state: present
   when:
-      - rhel8cis_rule_2_2_1_1
+      - rhel8cis_rule_2_1_1
       - not rhel8cis_system_is_container
   tags:
       - level1-server
       - level1-workstation
+      - automated
       - patch
-      - rule_2.2.1.1
+      - rule_2.1.1
 
-- name: "2.2.1.2 | L1 | PATCH | Ensure chrony is configured"
+- name: "2.1.2 | PATCH | Ensure chrony is configured"
   block:
-      - name: "2.2.1.2 | L1 | PATCH | Ensure chrony is configured | Set configuration"
+      - name: "2.1.2 | PATCH | Ensure chrony is configured | Set configuration"
         template:
             src: chrony.conf.j2
             dest: /etc/chrony.conf
@@ -23,7 +24,7 @@
             group: root
             mode: 0644
 
-      - name: "2.2.1.2 | L1 | PATCH | Ensure chrony is configured | modify /etc/sysconfig/chronyd | 1"
+      - name: "2.1.2 | PATCH | Ensure chrony is configured | modify /etc/sysconfig/chronyd | 1"
         lineinfile:
             dest: /etc/sysconfig/chronyd
             regexp: "^(#)?OPTIONS"
@@ -33,10 +34,10 @@
             mode: 0644
   when:
       - rhel8cis_time_synchronization == "chrony"
-      - rhel8cis_rule_2_2_1_2
+      - rhel8cis_rule_2_1_2
       - not rhel8cis_system_is_container
   tags:
       - level1-server
       - level1-workstation
       - patch
-      - rule_2.2.1.2
+      - rule_2.1.2
