@@ -305,7 +305,7 @@
       - skip_ansible_lint  # settings found on 6_2_7
       - level1-server
       - level1-workstation
-      - autoamted
+      - automated
       - patch
       - users
       - rule_6.2.10
