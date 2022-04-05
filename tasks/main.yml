@@ -52,6 +52,12 @@
   tags:
       - rule_5.7
 
+- name: Gather the package facts before prelim
+  package_facts:
+      manager: auto
+  tags:
+      - always
+
 - name: Include preliminary steps
   import_tasks: prelim.yml
   tags:
@@ -120,6 +126,16 @@
   import_tasks: section_6/main.yml
   become: true
   when: rhel8cis_section6
+
+- name: flush handlers
+  meta: flush_handlers
+  tags:
+      - section1
+      - section2
+      - section3
+      - section4
+      - section5
+      - section6
 
 - name: run post remediation tasks
   import_tasks: post.yml

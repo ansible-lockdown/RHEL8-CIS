@@ -1,6 +1,6 @@
 ---
 
-- name: "4.1.2.1 | L2 | PATCH | Ensure audit log storage size is configured"
+- name: "4.1.2.1 | PATCH | Ensure audit log storage size is configured"
   lineinfile:
       dest: /etc/audit/auditd.conf
       regexp: "^max_log_file( |=)"
@@ -12,11 +12,12 @@
   tags:
       - level2-server
       - level2-workstation
-      - auditd
+      - automated
       - patch
+      - auditd
       - rule_4.1.2.1
 
-- name: "4.1.2.2 | L2 | PATCH | Ensure audit logs are not automatically deleted"
+- name: "4.1.2.2 | PATCH | Ensure audit logs are not automatically deleted"
   lineinfile:
       dest: /etc/audit/auditd.conf
       regexp: "^max_log_file_action"
@@ -28,11 +29,12 @@
   tags:
       - level2-server
       - level2-workstation
-      - auditd
+      - automated
       - patch
+      - auditd
       - rule_4.1.2.2
 
-- name: "4.1.2.3 | L2 | PATCH | Ensure system is disabled when audit logs are full"
+- name: "4.1.2.3 | PATCH | Ensure system is disabled when audit logs are full"
   lineinfile:
       dest: /etc/audit/auditd.conf
       regexp: "{{ item.regexp }}"
@@ -48,6 +50,7 @@
   tags:
       - level2-server
       - level2-workstation
-      - auditd
+      - automated
       - patch
+      - auditd
       - rule_4.1.2.3

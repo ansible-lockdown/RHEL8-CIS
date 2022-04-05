@@ -1,76 +1,50 @@
 ---
 
-- name: "1.5.1 | L1 | PATCH | Ensure permissions on bootloader config are configured"
-  block:
-      - name: "1.5.1 | L1 | PATCH | Ensure permissions on bootloader config are configured"
-        file:
-            path: "{{ grub_cfg.stat.lnk_source }}"
-            owner: root
-            group: root
-            mode: 0600
-
-      - name: "1.5.1 | L1 | PATCH | Ensure permissions on bootloader config are configured | UEFI"
-        mount:
-            name: /boot/efi
-            src: "UUID={{ item.uuid }}"
-            fstype: vfat
-            state: present
-            opts: defaults,umask=0027,fmask=0077,uid=0,gid=0
-            passno: '0'
-        loop: "{{ ansible_mounts }}"
-        when:
-            - not rhel8cis_legacy_boot
-            - item.mount == "/boot/efi"
+- name: "1.5.1 | PATCH | Ensure core dump storage is disabled"
+  lineinfile:
+      path: /etc/systemd/coredump.conf
+      regexp: 'Storage='
+      line: 'Storage=none'
+  notify: systemd_daemon_reload
   when:
       - rhel8cis_rule_1_5_1
-      - grub_cfg.stat.exists
-      - grub_cfg.stat.islnk
+      - systemd_coredump.stat.exists
   tags:
       - level1-server
       - level1-workstation
-      - scored
-      - grub
+      - automated
       - patch
       - rule_1.5.1
 
-- name: "1.5.2 | L1 | PATCH | Ensure bootloader password is set"
-  copy:
-      dest: /boot/grub2/user.cfg
-      content: "GRUB2_PASSWORD={{ rhel8cis_bootloader_password_hash }}"
-      owner: root
-      group: root
-      mode: 0600
-  notify: grub2cfg
+- name: "1.5.2 | PATCH | Ensure core dump backtraces are disabled"
+  lineinfile:
+      path: /etc/systemd/coredump.conf
+      regexp: 'ProcessSizeMax='
+      line: 'ProcessSizeMax=0'
   when:
-      - rhel8cis_set_boot_pass
-      - grub_pass is defined and grub_pass.passhash is defined
-      - grub_pass.passhash | length > 0
       - rhel8cis_rule_1_5_2
   tags:
       - level1-server
       - level1-workstation
-      - scored
-      - grub
+      - automated
       - patch
+      - sysctl
       - rule_1.5.2
 
-- name: "1.5.3 | L1 | PATCH | Ensure authentication required for single user mode"
-  block:
-      - name: "1.5.3 | L1 | PATCH | Ensure authentication required for single user mode | Emergency service"
-        lineinfile:
-            dest: /usr/lib/systemd/system/emergency.service
-            regexp: '/sbin/sulogin'
-            line: 'ExecStart=-/usr/lib/systemd/systemd-sulogin-shell emergency'
-
-      - name: "1.5.3 | L1 | PATCH | Ensure authentication required for single user mode | Rescue service"
-        lineinfile:
-            dest: /usr/lib/systemd/system/rescue.service
-            regexp: '/sbin/sulogin'
-            line: 'ExecStart=-/usr/lib/systemd/systemd-sulogin-shell rescue'
+- name: "1.5.3 | PATCH | Ensure address space layout randomization (ASLR) is enabled"
+  sysctl:
+      name: kernel.randomize_va_space
+      value: '2'
+      state: present
+      reload: yes
+      sysctl_set: yes
+      ignoreerrors: yes
   when:
       - rhel8cis_rule_1_5_3
   tags:
       - level1-server
       - level1-workstation
+      - automated
       - patch
+      - sysctl
       - rule_1.5.3

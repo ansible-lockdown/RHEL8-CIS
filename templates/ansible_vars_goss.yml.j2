@@ -1,10 +1,11 @@
 ## metadata for Audit benchmark
-benchmark_version: '1.0.1'
+benchmark_version: '2.0.0'
+
+# Set if pre version 8.2
+is_pre82_release: {% if ansible_distribution_version >= "8.2" %}false{% else %}true{% endif %}
 
 # Set if genuine RHEL (subscription manager check) not for derivatives e.g. CentOS
-is_redhat_os: {% if ansible_distribution == "RedHat" %}true{% else %}false{% endif %}
-
-rhel8cis_os_distribution: {{ ansible_distribution | lower }}
+host_os_distribution: {{ ansible_distribution }}
 
 # timeout for each command to run where set - default = 10seconds/10000ms
 timeout_ms: {{ audit_cmd_timeout }}
@@ -41,66 +42,85 @@ rhel8cis_set_boot_pass: {{ rhel8cis_set_boot_pass }}
 rhel8cis_rule_1_1_1_1: {{ rhel8cis_rule_1_1_1_1 }}
 rhel8cis_rule_1_1_1_2: {{ rhel8cis_rule_1_1_1_2 }}
 rhel8cis_rule_1_1_1_3: {{ rhel8cis_rule_1_1_1_3 }}
-rhel8cis_rule_1_1_1_4: {{ rhel8cis_rule_1_1_1_4 }}
-rhel8cis_rule_1_1_2: {{ rhel8cis_rule_1_1_2 }}
-rhel8cis_rule_1_1_3: {{ rhel8cis_rule_1_1_3 }}
-rhel8cis_rule_1_1_4: {{ rhel8cis_rule_1_1_4 }}
-rhel8cis_rule_1_1_5: {{ rhel8cis_rule_1_1_5 }}
-rhel8cis_rule_1_1_6: {{ rhel8cis_rule_1_1_6 }}
-rhel8cis_rule_1_1_7: {{ rhel8cis_rule_1_1_7 }}
-rhel8cis_rule_1_1_8: {{ rhel8cis_rule_1_1_8 }}
+rhel8cis_rule_1_1_2_1: {{ rhel8cis_rule_1_1_2_1 }}
+rhel8cis_rule_1_1_2_2: {{ rhel8cis_rule_1_1_2_2 }}
+rhel8cis_rule_1_1_2_3: {{ rhel8cis_rule_1_1_2_3 }}
+rhel8cis_rule_1_1_2_4: {{ rhel8cis_rule_1_1_2_4 }}
+rhel8cis_rule_1_1_3_1: {{ rhel8cis_rule_1_1_3_1 }}
+rhel8cis_rule_1_1_3_2: {{ rhel8cis_rule_1_1_3_2 }}
+rhel8cis_rule_1_1_3_3: {{ rhel8cis_rule_1_1_3_3 }}
+rhel8cis_rule_1_1_3_4: {{ rhel8cis_rule_1_1_3_4 }}
+rhel8cis_rule_1_1_4_1: {{ rhel8cis_rule_1_1_4_1 }}
+rhel8cis_rule_1_1_4_2: {{ rhel8cis_rule_1_1_4_2 }}
+rhel8cis_rule_1_1_4_3: {{ rhel8cis_rule_1_1_4_3 }}
+rhel8cis_rule_1_1_4_4: {{ rhel8cis_rule_1_1_4_4 }}
+rhel8cis_rule_1_1_5_1: {{ rhel8cis_rule_1_1_5_1 }}
+rhel8cis_rule_1_1_5_2: {{ rhel8cis_rule_1_1_5_2 }}
+rhel8cis_rule_1_1_5_3: {{ rhel8cis_rule_1_1_5_3 }}
+rhel8cis_rule_1_1_5_4: {{ rhel8cis_rule_1_1_5_4 }}
+rhel8cis_rule_1_1_6_1: {{ rhel8cis_rule_1_1_6_1 }}
+rhel8cis_rule_1_1_6_2: {{ rhel8cis_rule_1_1_6_2 }}
+rhel8cis_rule_1_1_6_3: {{ rhel8cis_rule_1_1_6_3 }}
+rhel8cis_rule_1_1_6_4: {{ rhel8cis_rule_1_1_6_4 }}
+rhel8cis_rule_1_1_7_1: {{ rhel8cis_rule_1_1_7_1 }}
+rhel8cis_rule_1_1_7_2: {{ rhel8cis_rule_1_1_7_2 }}
+rhel8cis_rule_1_1_7_3: {{ rhel8cis_rule_1_1_7_3 }}
+rhel8cis_rule_1_1_7_4: {{ rhel8cis_rule_1_1_7_4 }}
+rhel8cis_rule_1_1_7_5: {{ rhel8cis_rule_1_1_7_5 }}
+rhel8cis_rule_1_1_8_1: {{ rhel8cis_rule_1_1_8_1 }}
+rhel8cis_rule_1_1_8_2: {{ rhel8cis_rule_1_1_8_2 }}
+rhel8cis_rule_1_1_8_3: {{ rhel8cis_rule_1_1_8_3 }}
 rhel8cis_rule_1_1_9: {{ rhel8cis_rule_1_1_9 }}
 rhel8cis_rule_1_1_10: {{ rhel8cis_rule_1_1_10 }}
-rhel8cis_rule_1_1_11: {{ rhel8cis_rule_1_1_11 }}
-rhel8cis_rule_1_1_12: {{ rhel8cis_rule_1_1_12 }}
-rhel8cis_rule_1_1_13: {{ rhel8cis_rule_1_1_13 }}
-rhel8cis_rule_1_1_14: {{ rhel8cis_rule_1_1_14 }}
-rhel8cis_rule_1_1_15: {{ rhel8cis_rule_1_1_15 }}
-rhel8cis_rule_1_1_16: {{ rhel8cis_rule_1_1_16 }}
-rhel8cis_rule_1_1_17: {{ rhel8cis_rule_1_1_17 }}
-rhel8cis_rule_1_1_18: {{ rhel8cis_rule_1_1_18 }}
-rhel8cis_rule_1_1_19: {{ rhel8cis_rule_1_1_19 }}
-rhel8cis_rule_1_1_20: {{ rhel8cis_rule_1_1_20 }}
-rhel8cis_rule_1_1_21: {{ rhel8cis_rule_1_1_21 }}
-rhel8cis_rule_1_1_22: {{ rhel8cis_rule_1_1_22 }}
-rhel8cis_rule_1_1_23: {{ rhel8cis_rule_1_1_23 }}
+
 rhel8cis_rule_1_2_1: {% if ansible_distribution == "RedHat" %}True{% else %}False{% endif %}  # Only run if Redhat and Subscribed
 rhel8cis_rule_1_2_2: {{ rhel8cis_rule_1_2_2 }}
 rhel8cis_rule_1_2_3: {{ rhel8cis_rule_1_2_3 }}
 rhel8cis_rule_1_2_4: {{ rhel8cis_rule_1_2_4 }}
-rhel8cis_rule_1_2_5: {{ rhel8cis_rule_1_2_5 }}
+
 rhel8cis_rule_1_3_1: {{ rhel8cis_rule_1_3_1 }}
 rhel8cis_rule_1_3_2: {{ rhel8cis_rule_1_3_2 }}
-rhel8cis_rule_1_3_3: {{ rhel8cis_rule_1_3_3 }}
+
 rhel8cis_rule_1_4_1: {{ rhel8cis_rule_1_4_1 }}
 rhel8cis_rule_1_4_2: {{ rhel8cis_rule_1_4_2 }}
+rhel8cis_rule_1_4_3: {{ rhel8cis_rule_1_4_3 }}
+
 rhel8cis_rule_1_5_1: {{ rhel8cis_rule_1_5_1 }}
 rhel8cis_rule_1_5_2: {{ rhel8cis_rule_1_5_2 }}
 rhel8cis_rule_1_5_3: {{ rhel8cis_rule_1_5_3 }}
-rhel8cis_rule_1_6_1: {{ rhel8cis_rule_1_6_1 }}
-rhel8cis_rule_1_6_2: {{ rhel8cis_rule_1_6_2 }}
-rhel8cis_rule_1_7_1_1: {{ rhel8cis_rule_1_7_1_1 }}
-rhel8cis_rule_1_7_1_2: {{ rhel8cis_rule_1_7_1_2 }}
-rhel8cis_rule_1_7_1_3: {{ rhel8cis_rule_1_7_1_3 }}
-rhel8cis_rule_1_7_1_4: {{ rhel8cis_rule_1_7_1_4 }}
-rhel8cis_rule_1_7_1_5: {{ rhel8cis_rule_1_7_1_5 }}
-rhel8cis_rule_1_7_1_6: {{ rhel8cis_rule_1_7_1_6 }}
-rhel8cis_rule_1_7_1_7: {{ rhel8cis_rule_1_7_1_7 }}
-rhel8cis_rule_1_8_1_1: {{ rhel8cis_rule_1_8_1_1 }}
-rhel8cis_rule_1_8_1_2: {{ rhel8cis_rule_1_8_1_2 }}
-rhel8cis_rule_1_8_1_3: {{ rhel8cis_rule_1_8_1_3 }}
-rhel8cis_rule_1_8_1_4: {{ rhel8cis_rule_1_8_1_4 }}
-rhel8cis_rule_1_8_1_5: {{ rhel8cis_rule_1_8_1_5 }}
-rhel8cis_rule_1_8_1_6: {{ rhel8cis_rule_1_8_1_6 }}
+
+rhel8cis_rule_1_6_1_1: {{ rhel8cis_rule_1_6_1_1 }}
+rhel8cis_rule_1_6_1_2: {{ rhel8cis_rule_1_6_1_2 }}
+rhel8cis_rule_1_6_1_3: {{ rhel8cis_rule_1_6_1_3 }}
+rhel8cis_rule_1_6_1_4: {{ rhel8cis_rule_1_6_1_4 }}
+rhel8cis_rule_1_6_1_5: {{ rhel8cis_rule_1_6_1_5 }}
+rhel8cis_rule_1_6_1_6: {{ rhel8cis_rule_1_6_1_6 }}
+rhel8cis_rule_1_6_1_7: {{ rhel8cis_rule_1_6_1_7 }}
+rhel8cis_rule_1_6_1_8: {{ rhel8cis_rule_1_6_1_8 }}
+
+rhel8cis_rule_1_7_1: {{ rhel8cis_rule_1_7_1 }}
+rhel8cis_rule_1_7_2: {{ rhel8cis_rule_1_7_2 }}
+rhel8cis_rule_1_7_3: {{ rhel8cis_rule_1_7_3 }}
+rhel8cis_rule_1_7_4: {{ rhel8cis_rule_1_7_4 }}
+rhel8cis_rule_1_7_5: {{ rhel8cis_rule_1_7_5 }}
+rhel8cis_rule_1_7_6: {{ rhel8cis_rule_1_7_6 }}
+
+rhel8cis_rule_1_8_1: {{ rhel8cis_rule_1_8_1 }}
 rhel8cis_rule_1_8_2: {{ rhel8cis_rule_1_8_2 }}
+rhel8cis_rule_1_8_3: {{ rhel8cis_rule_1_8_3 }}
+rhel8cis_rule_1_8_4: {{ rhel8cis_rule_1_8_4 }}
+rhel8cis_rule_1_8_5: {{ rhel8cis_rule_1_8_5 }}
+
+
 rhel8cis_rule_1_9: {{ rhel8cis_rule_1_9 }}
 rhel8cis_rule_1_10: {{ rhel8cis_rule_1_10 }}
-rhel8cis_rule_1_11: {{ rhel8cis_rule_1_11 }}
+
 
 # section 2 rules
 rhel8cis_rule_2_1_1: {{ rhel8cis_rule_2_1_1 }}
-rhel8cis_rule_2_2_1_1: {{ rhel8cis_rule_2_2_1_1 }}
-rhel8cis_rule_2_2_1_2: {{ rhel8cis_rule_2_2_1_2 }}
+rhel8cis_rule_2_1_2: {{ rhel8cis_rule_2_1_2 }}
+
+rhel8cis_rule_2_2_1: {{ rhel8cis_rule_2_2_1 }}
 rhel8cis_rule_2_2_2: {{ rhel8cis_rule_2_2_2 }}
 rhel8cis_rule_2_2_3: {{ rhel8cis_rule_2_2_3 }}
 rhel8cis_rule_2_2_4: {{ rhel8cis_rule_2_2_4 }}
@@ -118,36 +138,74 @@ rhel8cis_rule_2_2_15: {{ rhel8cis_rule_2_2_15 }}
 rhel8cis_rule_2_2_16: {{ rhel8cis_rule_2_2_16 }}
 rhel8cis_rule_2_2_17: {{ rhel8cis_rule_2_2_17 }}
 rhel8cis_rule_2_2_18: {{ rhel8cis_rule_2_2_18 }}
+rhel8cis_rule_2_2_19: {{ rhel8cis_rule_2_2_19 }}
+rhel8cis_rule_2_2_20: {{ rhel8cis_rule_2_2_20 }}
+
 rhel8cis_rule_2_3_1: {{ rhel8cis_rule_2_3_1 }}
 rhel8cis_rule_2_3_2: {{ rhel8cis_rule_2_3_2 }}
 rhel8cis_rule_2_3_3: {{ rhel8cis_rule_2_3_3 }}
+rhel8cis_rule_2_3_4: {{ rhel8cis_rule_2_3_4 }}
+rhel8cis_rule_2_3_5: {{ rhel8cis_rule_2_3_5 }}
+rhel8cis_rule_2_3_6: {{ rhel8cis_rule_2_3_6 }}
 
+rhel8cis_rule_2_4: {{ rhel8cis_rule_2_4 }}
 
 # Section 3 rules
 rhel8cis_rule_3_1_1: {{ rhel8cis_rule_3_1_1 }}
 rhel8cis_rule_3_1_2: {{ rhel8cis_rule_3_1_2 }}
+rhel8cis_rule_3_1_3: {{ rhel8cis_rule_3_1_3 }}
+rhel8cis_rule_3_1_4: {{ rhel8cis_rule_3_1_4 }}
+
 rhel8cis_rule_3_2_1: {{ rhel8cis_rule_3_2_1 }}
 rhel8cis_rule_3_2_2: {{ rhel8cis_rule_3_2_2 }}
-rhel8cis_rule_3_2_3: {{ rhel8cis_rule_3_2_3 }}
-rhel8cis_rule_3_2_4: {{ rhel8cis_rule_3_2_4 }}
-rhel8cis_rule_3_2_5: {{ rhel8cis_rule_3_2_5 }}
-rhel8cis_rule_3_2_6: {{ rhel8cis_rule_3_2_6 }}
-rhel8cis_rule_3_2_7: {{ rhel8cis_rule_3_2_7 }}
-rhel8cis_rule_3_2_8: {{ rhel8cis_rule_3_2_8 }}
-rhel8cis_rule_3_2_9: {{ rhel8cis_rule_3_2_9 }}
+
 rhel8cis_rule_3_3_1: {{ rhel8cis_rule_3_3_1 }}
 rhel8cis_rule_3_3_2: {{ rhel8cis_rule_3_3_2 }}
 rhel8cis_rule_3_3_3: {{ rhel8cis_rule_3_3_3 }}
 rhel8cis_rule_3_3_4: {{ rhel8cis_rule_3_3_4 }}
+rhel8cis_rule_3_3_5: {{ rhel8cis_rule_3_3_5 }}
+rhel8cis_rule_3_3_6: {{ rhel8cis_rule_3_3_6 }}
+rhel8cis_rule_3_3_7: {{ rhel8cis_rule_3_3_7 }}
+rhel8cis_rule_3_3_8: {{ rhel8cis_rule_3_3_8 }}
+rhel8cis_rule_3_3_9: {{ rhel8cis_rule_3_3_9 }}
+
 rhel8cis_rule_3_4_1_1: {{ rhel8cis_rule_3_4_1_1 }}
+rhel8cis_rule_3_4_1_2: {{ rhel8cis_rule_3_4_1_2 }}
+rhel8cis_rule_3_4_1_3: {{ rhel8cis_rule_3_4_1_3 }}
+rhel8cis_rule_3_4_1_4: {{ rhel8cis_rule_3_4_1_4 }}
+rhel8cis_rule_3_4_1_5: {{ rhel8cis_rule_3_4_1_5 }}
+rhel8cis_rule_3_4_1_6: {{ rhel8cis_rule_3_4_1_6 }}
+rhel8cis_rule_3_4_1_7: {{ rhel8cis_rule_3_4_1_7 }}
+
 rhel8cis_rule_3_4_2_1: {{ rhel8cis_rule_3_4_2_1 }}
 rhel8cis_rule_3_4_2_2: {{ rhel8cis_rule_3_4_2_2 }}
 rhel8cis_rule_3_4_2_3: {{ rhel8cis_rule_3_4_2_3 }}
 rhel8cis_rule_3_4_2_4: {{ rhel8cis_rule_3_4_2_4 }}
 rhel8cis_rule_3_4_2_5: {{ rhel8cis_rule_3_4_2_5 }}
 rhel8cis_rule_3_4_2_6: {{ rhel8cis_rule_3_4_2_6 }}
-rhel8cis_rule_3_5: {{ rhel8cis_rule_3_5 }}
-rhel8cis_rule_3_6: {{ rhel8cis_rule_3_6 }}
+rhel8cis_rule_3_4_2_7: {{ rhel8cis_rule_3_4_2_7 }}
+rhel8cis_rule_3_4_2_8: {{ rhel8cis_rule_3_4_2_8 }}
+rhel8cis_rule_3_4_2_9: {{ rhel8cis_rule_3_4_2_9 }}
+rhel8cis_rule_3_4_2_10: {{ rhel8cis_rule_3_4_2_10 }}
+rhel8cis_rule_3_4_2_11: {{ rhel8cis_rule_3_4_2_11 }}
+
+rhel8cis_rule_3_4_3_1_1: {{ rhel8cis_rule_3_4_3_1_1 }}
+rhel8cis_rule_3_4_3_1_2: {{ rhel8cis_rule_3_4_3_1_2 }}
+rhel8cis_rule_3_4_3_1_3: {{ rhel8cis_rule_3_4_3_1_3 }}
+
+rhel8cis_rule_3_4_3_2_1: {{ rhel8cis_rule_3_4_3_2_1 }}
+rhel8cis_rule_3_4_3_2_2: {{ rhel8cis_rule_3_4_3_2_2 }}
+rhel8cis_rule_3_4_3_2_3: {{ rhel8cis_rule_3_4_3_2_3 }}
+rhel8cis_rule_3_4_3_2_4: {{ rhel8cis_rule_3_4_3_2_4 }}
+rhel8cis_rule_3_4_3_2_5: {{ rhel8cis_rule_3_4_3_2_5 }}
+rhel8cis_rule_3_4_3_2_6: {{ rhel8cis_rule_3_4_3_2_6 }}
+
+rhel8cis_rule_3_4_3_3_1: {{ rhel8cis_rule_3_4_3_3_1 }}
+rhel8cis_rule_3_4_3_3_2: {{ rhel8cis_rule_3_4_3_3_2 }}
+rhel8cis_rule_3_4_3_3_3: {{ rhel8cis_rule_3_4_3_3_3 }}
+rhel8cis_rule_3_4_3_3_4: {{ rhel8cis_rule_3_4_3_3_4 }}
+rhel8cis_rule_3_4_3_3_5: {{ rhel8cis_rule_3_4_3_3_5 }}
+rhel8cis_rule_3_4_3_3_6: {{ rhel8cis_rule_3_4_3_3_6 }}
 
 
 # Section 4 rules
@@ -155,34 +213,56 @@ rhel8cis_rule_4_1_1_1: {{ rhel8cis_rule_4_1_1_1 }}
 rhel8cis_rule_4_1_1_2: {{ rhel8cis_rule_4_1_1_2 }}
 rhel8cis_rule_4_1_1_3: {{ rhel8cis_rule_4_1_1_3 }}
 rhel8cis_rule_4_1_1_4: {{ rhel8cis_rule_4_1_1_4 }}
+
 rhel8cis_rule_4_1_2_1: {{ rhel8cis_rule_4_1_2_1 }}
 rhel8cis_rule_4_1_2_2: {{ rhel8cis_rule_4_1_2_2 }}
 rhel8cis_rule_4_1_2_3: {{ rhel8cis_rule_4_1_2_3 }}
-rhel8cis_rule_4_1_3: {{ rhel8cis_rule_4_1_3 }}
-rhel8cis_rule_4_1_4: {{ rhel8cis_rule_4_1_4 }}
-rhel8cis_rule_4_1_5: {{ rhel8cis_rule_4_1_5 }}
-rhel8cis_rule_4_1_6: {{ rhel8cis_rule_4_1_6 }}
-rhel8cis_rule_4_1_7: {{ rhel8cis_rule_4_1_7 }}
-rhel8cis_rule_4_1_8: {{ rhel8cis_rule_4_1_8 }}
-rhel8cis_rule_4_1_9: {{ rhel8cis_rule_4_1_9 }}
-rhel8cis_rule_4_1_10: {{ rhel8cis_rule_4_1_10 }}
-rhel8cis_rule_4_1_11: {{ rhel8cis_rule_4_1_11 }}
-rhel8cis_rule_4_1_12: {{ rhel8cis_rule_4_1_12 }}
-rhel8cis_rule_4_1_13: {{ rhel8cis_rule_4_1_13 }}
-rhel8cis_rule_4_1_14: {{ rhel8cis_rule_4_1_14 }}
-rhel8cis_rule_4_1_15: {{ rhel8cis_rule_4_1_15 }}
-rhel8cis_rule_4_1_16: {{ rhel8cis_rule_4_1_16 }}
-rhel8cis_rule_4_1_17: {{ rhel8cis_rule_4_1_17 }}
+
+rhel8cis_rule_4_1_3_1: {{ rhel8cis_rule_4_1_3_1 }}
+rhel8cis_rule_4_1_3_2: {{ rhel8cis_rule_4_1_3_2 }}
+rhel8cis_rule_4_1_3_3: {{ rhel8cis_rule_4_1_3_3 }}
+rhel8cis_rule_4_1_3_4: {{ rhel8cis_rule_4_1_3_4 }}
+rhel8cis_rule_4_1_3_5: {{ rhel8cis_rule_4_1_3_5 }}
+rhel8cis_rule_4_1_3_6: {{ rhel8cis_rule_4_1_3_6 }}
+rhel8cis_rule_4_1_3_7: {{ rhel8cis_rule_4_1_3_7 }}
+rhel8cis_rule_4_1_3_8: {{ rhel8cis_rule_4_1_3_8 }}
+rhel8cis_rule_4_1_3_9: {{ rhel8cis_rule_4_1_3_9 }}
+rhel8cis_rule_4_1_3_10: {{ rhel8cis_rule_4_1_3_10 }}
+rhel8cis_rule_4_1_3_11: {{ rhel8cis_rule_4_1_3_11 }}
+rhel8cis_rule_4_1_3_12: {{ rhel8cis_rule_4_1_3_12 }}
+rhel8cis_rule_4_1_3_13: {{ rhel8cis_rule_4_1_3_13 }}
+rhel8cis_rule_4_1_3_14: {{ rhel8cis_rule_4_1_3_14 }}
+rhel8cis_rule_4_1_3_15: {{ rhel8cis_rule_4_1_3_15 }}
+rhel8cis_rule_4_1_3_16: {{ rhel8cis_rule_4_1_3_16 }}
+rhel8cis_rule_4_1_3_17: {{ rhel8cis_rule_4_1_3_17 }}
+rhel8cis_rule_4_1_3_18: {{ rhel8cis_rule_4_1_3_18 }}
+rhel8cis_rule_4_1_3_19: {{ rhel8cis_rule_4_1_3_19 }}
+rhel8cis_rule_4_1_3_20: {{ rhel8cis_rule_4_1_3_20 }}
+rhel8cis_rule_4_1_3_21: {{ rhel8cis_rule_4_1_3_21 }}
+
 rhel8cis_rule_4_2_1_1: {{ rhel8cis_rule_4_2_1_1 }}
 rhel8cis_rule_4_2_1_2: {{ rhel8cis_rule_4_2_1_2 }}
 rhel8cis_rule_4_2_1_3: {{ rhel8cis_rule_4_2_1_3 }}
 rhel8cis_rule_4_2_1_4: {{ rhel8cis_rule_4_2_1_4 }}
 rhel8cis_rule_4_2_1_5: {{ rhel8cis_rule_4_2_1_5 }}
 rhel8cis_rule_4_2_1_6: {{ rhel8cis_rule_4_2_1_6 }}
-rhel8cis_rule_4_2_2_1: {{ rhel8cis_rule_4_2_2_1 }}
+rhel8cis_rule_4_2_1_7: {{ rhel8cis_rule_4_2_1_7 }}
+
+rhel8cis_rule_4_2_2_1_1: {{ rhel8cis_rule_4_2_2_1_1 }}
+rhel8cis_rule_4_2_2_1_2: {{ rhel8cis_rule_4_2_2_1_2 }}
+rhel8cis_rule_4_2_2_1_3: {{ rhel8cis_rule_4_2_2_1_3 }}
+rhel8cis_rule_4_2_2_1_4: {{ rhel8cis_rule_4_2_2_1_4 }}
+
+
 rhel8cis_rule_4_2_2_2: {{ rhel8cis_rule_4_2_2_2 }}
 rhel8cis_rule_4_2_2_3: {{ rhel8cis_rule_4_2_2_3 }}
+rhel8cis_rule_4_2_2_4: {{ rhel8cis_rule_4_2_2_4 }}
+rhel8cis_rule_4_2_2_5: {{ rhel8cis_rule_4_2_2_5 }}
+rhel8cis_rule_4_2_2_6: {{ rhel8cis_rule_4_2_2_6 }}
+rhel8cis_rule_4_2_2_7: {{ rhel8cis_rule_4_2_2_7 }}
+
 rhel8cis_rule_4_2_3: {{ rhel8cis_rule_4_2_3 }}
+
 rhel8cis_rule_4_3: {{ rhel8cis_rule_4_3 }}
 
 # Section 5
@@ -194,6 +274,7 @@ rhel8cis_rule_5_1_5: {{ rhel8cis_rule_5_1_5 }}
 rhel8cis_rule_5_1_6: {{ rhel8cis_rule_5_1_6 }}
 rhel8cis_rule_5_1_7: {{ rhel8cis_rule_5_1_7 }}
 rhel8cis_rule_5_1_8: {{ rhel8cis_rule_5_1_8 }}
+
 
 rhel8cis_rule_5_2_1: {{ rhel8cis_rule_5_2_1 }}
 rhel8cis_rule_5_2_2: {{ rhel8cis_rule_5_2_2 }}
@@ -219,25 +300,30 @@ rhel8cis_rule_5_2_20: {{ rhel8cis_rule_5_2_20 }}
 rhel8cis_rule_5_3_1: {{ rhel8cis_rule_5_3_1 }}
 rhel8cis_rule_5_3_2: {{ rhel8cis_rule_5_3_2 }}
 rhel8cis_rule_5_3_3: {{ rhel8cis_rule_5_3_3 }}
+rhel8cis_rule_5_3_4: {{ rhel8cis_rule_5_3_4 }}
+rhel8cis_rule_5_3_5: {{ rhel8cis_rule_5_3_5 }}
+rhel8cis_rule_5_3_6: {{ rhel8cis_rule_5_3_6 }}
+rhel8cis_rule_5_3_7: {{ rhel8cis_rule_5_3_7 }}
 
 rhel8cis_rule_5_4_1: {{ rhel8cis_rule_5_4_1 }}
 rhel8cis_rule_5_4_2: {{ rhel8cis_rule_5_4_2 }}
-rhel8cis_rule_5_4_3: {{ rhel8cis_rule_5_4_3 }}
-rhel8cis_rule_5_4_4: {{ rhel8cis_rule_5_4_4 }}
 
-rhel8cis_rule_5_5_1_1: {{ rhel8cis_rule_5_5_1_1 }}
-rhel8cis_rule_5_5_1_2: {{ rhel8cis_rule_5_5_1_2 }}
-rhel8cis_rule_5_5_1_3: {{ rhel8cis_rule_5_5_1_3 }}
-rhel8cis_rule_5_5_1_4: {{ rhel8cis_rule_5_5_1_4 }}
-rhel8cis_rule_5_5_1_5: {{ rhel8cis_rule_5_5_1_5 }}
-
+rhel8cis_rule_5_5_1: {{ rhel8cis_rule_5_5_1 }}
 rhel8cis_rule_5_5_2: {{ rhel8cis_rule_5_5_2 }}
 rhel8cis_rule_5_5_3: {{ rhel8cis_rule_5_5_3 }}
 rhel8cis_rule_5_5_4: {{ rhel8cis_rule_5_5_4 }}
-rhel8cis_rule_5_5_5: {{ rhel8cis_rule_5_5_5 }}
 
-rhel8cis_rule_5_6: {{ rhel8cis_rule_5_6 }}
-rhel8cis_rule_5_7: {{ rhel8cis_rule_5_7 }}
+rhel8cis_rule_5_6_1_1: {{ rhel8cis_rule_5_6_1_1 }}
+rhel8cis_rule_5_6_1_2: {{ rhel8cis_rule_5_6_1_2 }}
+rhel8cis_rule_5_6_1_3: {{ rhel8cis_rule_5_6_1_3 }}
+rhel8cis_rule_5_6_1_4: {{ rhel8cis_rule_5_6_1_4 }}
+rhel8cis_rule_5_6_1_5: {{ rhel8cis_rule_5_6_1_5 }}
+
+rhel8cis_rule_5_6_2: {{ rhel8cis_rule_5_6_2 }}
+rhel8cis_rule_5_6_3: {{ rhel8cis_rule_5_6_3 }}
+rhel8cis_rule_5_6_4: {{ rhel8cis_rule_5_6_4 }}
+rhel8cis_rule_5_6_5: {{ rhel8cis_rule_5_6_5 }}
+
 
 # Section 6
 rhel8cis_rule_6_1_1: {{ rhel8cis_rule_6_1_1 }}
@@ -254,6 +340,7 @@ rhel8cis_rule_6_1_11: {{ rhel8cis_rule_6_1_11 }}
 rhel8cis_rule_6_1_12: {{ rhel8cis_rule_6_1_12 }}
 rhel8cis_rule_6_1_13: {{ rhel8cis_rule_6_1_13 }}
 rhel8cis_rule_6_1_14: {{ rhel8cis_rule_6_1_14 }}
+rhel8cis_rule_6_1_15: {{ rhel8cis_rule_6_1_15 }}
 
 rhel8cis_rule_6_2_1: {{ rhel8cis_rule_6_2_1 }}
 rhel8cis_rule_6_2_2: {{ rhel8cis_rule_6_2_2 }}
@@ -271,10 +358,7 @@ rhel8cis_rule_6_2_13: {{ rhel8cis_rule_6_2_13 }}
 rhel8cis_rule_6_2_14: {{ rhel8cis_rule_6_2_14 }}
 rhel8cis_rule_6_2_15: {{ rhel8cis_rule_6_2_15 }}
 rhel8cis_rule_6_2_16: {{ rhel8cis_rule_6_2_16 }}
-rhel8cis_rule_6_2_17: {{ rhel8cis_rule_6_2_17 }}
-rhel8cis_rule_6_2_18: {{ rhel8cis_rule_6_2_18 }}
-rhel8cis_rule_6_2_19: {{ rhel8cis_rule_6_2_19 }}
-rhel8cis_rule_6_2_20: {{ rhel8cis_rule_6_2_20 }}
+
 
 
 # Service configuration booleans set true to keep service
@@ -286,26 +370,24 @@ rhel8cis_telnet_server: {{ rhel8cis_telnet_server }}
 rhel8cis_nfs_server: {{ rhel8cis_nfs_server }}
 rhel8cis_rpc_server: {{ rhel8cis_rpc_server }}
 rhel8cis_ntalk_server: {{ rhel8cis_ntalk_server }}
-rhel8cis_rsyncd_server: {{ rhel8cis_rsyncd_server }}
+rhel8cis_rsyncd_server: {{ rhel8cis_rsync_server }}
 rhel8cis_tftp_server: {{ rhel8cis_tftp_server }}
 rhel8cis_rsh_server: {{ rhel8cis_rsh_server }}
 rhel8cis_nis_server: {{ rhel8cis_nis_server }}
 rhel8cis_snmp_server: {{ rhel8cis_snmp_server }}
 rhel8cis_squid_server: {{ rhel8cis_squid_server }}
 rhel8cis_smb_server: {{ rhel8cis_smb_server }}
-rhel8cis_dovecot_server: {{ rhel8cis_dovecot_server }}
+rhel8cis_dovecot_server: {{ rhel8cis_dovecot_cyrus_server }}
 rhel8cis_httpd_server: {{ rhel8cis_httpd_server }}
+rhel8cis_imap_server: {{ rhel8cis_dovecot_cyrus_server }}
+rhel8cis_ftp_server: {{ rhel8cis_ftp_server }}
 rhel8cis_vsftpd_server: {{ rhel8cis_vsftpd_server }}
-rhel8cis_named_server: {{ rhel8cis_named_server }}
 rhel8cis_nfs_rpc_server: {{ rhel8cis_nfs_rpc_server }}
 rhel8cis_is_mail_server: {{ rhel8cis_is_mail_server }}
 rhel8cis_bind: {{ rhel8cis_bind }}
 rhel8cis_vsftpd: {{ rhel8cis_vsftpd }}
 rhel8cis_httpd: {{ rhel8cis_httpd }}
 rhel8cis_dovecot: {{ rhel8cis_dovecot }}
-rhel8cis_samba: {{ rhel8cis_samba }}
-rhel8cis_squid: {{ rhel8cis_squid }}
-rhel8cis_net_snmp: {{ rhel8cis_net_snmp}}
 rhel8cis_allow_autofs: {{ rhel8cis_allow_autofs }}
 
 # client services

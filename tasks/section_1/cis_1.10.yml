@@ -1,15 +1,17 @@
 ---
 
-- name: "1.10 | L1 | PATCH | Ensure system-wide crypto policy is not legacy"
+- name: "1.10 | PATCH | Ensure system-wide crypto policy is not legacy"
   shell: |
       update-crypto-policies --set "{{ rhel8cis_crypto_policy }}"
       update-crypto-policies
+  notify: change_requires_reboot
   when:
       - rhel8cis_rule_1_10
       - system_wide_crypto_policy['stdout'] == 'LEGACY'
   tags:
       - level1-server
       - level1-workstation
+      - automated
       - no system_is_ec2
       - patch
       - rule_1.10
