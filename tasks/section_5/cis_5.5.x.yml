@@ -3,10 +3,13 @@
 - name: "5.5.1 | PATCH | Ensure password creation requirements are configured"
   block:
       - name: "5.5.1 | PATCH | Ensure password creation requirements are configured | Set pwquality config settings"
-        blockinfile:
+        lineinfile:
             path: /etc/security/pwquality.conf
-            marker: "# {mark} CIS 5.5.1 ANSIBLE MANAGED BLOCK"
-            block: "{{ rhel8cis_pam_password }}"
+            regexp: ^{{ item.name }}
+            line: “{{ item.name }} = {{ item.value }}”
+        with_items:
+            - { name: minlen, value: “{{ rhel8cis_pam_password.minlen }}” }
+            - { name: minclass, value: “{{ rhel8cis_pam_password.minclass }}” }
 
       - name: "5.5.1 | PATCH | Ensure password creation requirements are configured | Set system-auth and password-auth retry settings"
         lineinfile:
