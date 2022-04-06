@@ -21,7 +21,7 @@
   block:
       - name: "1.1.10 | PATCH | Disable USB Storage | Edit modprobe config"
         lineinfile:
-            dest: /etc/modprobe.d/CIS.conf
+            path: /etc/modprobe.d/CIS.conf
             regexp: "^(#)?install usb-storage(\\s|$)"
             line: "install usb-storage /bin/true"
             create: yes

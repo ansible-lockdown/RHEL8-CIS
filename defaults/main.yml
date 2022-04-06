@@ -312,7 +312,6 @@ rhel8cis_rule_5_5_1: true
 rhel8cis_rule_5_5_2: true
 rhel8cis_rule_5_5_3: true
 rhel8cis_rule_5_5_4: true
-rhel8cis_rule_5_5_5: true
 rhel8cis_rule_5_6_1_1: true
 rhel8cis_rule_5_6_1_2: true
 rhel8cis_rule_5_6_1_3: true
@@ -631,9 +630,9 @@ rhel8cis_inactivelock:
 rhel8cis_futurepwchgdate_autofix: true
 
 ## PAM
-rhel8cis_pam_password:
-    minlen: "14"
-    minclass: "4"
+rhel8cis_pam_password: |
+    minlen = "14"
+    minclass = "4"
 
 # Starting GID for interactive users
 rhel8cis_int_gid: 1000

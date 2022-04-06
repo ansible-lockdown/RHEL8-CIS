@@ -32,10 +32,9 @@
 # This is counter to control 4.2.1.5??
 - name: "4.2.1.3 | PATCH | Ensure journald is configured to send logs to rsyslog"
   lineinfile:
-      dest: /etc/systemd/journald.conf
+      path: /etc/systemd/journald.conf
       regexp: "^#ForwardToSyslog=|^ForwardToSyslog="
       line: ForwardToSyslog=yes
-      state: present
   when:
       - rhel8cis_rule_4_2_1_3
   tags:
@@ -47,7 +46,7 @@
 
 - name: "4.2.1.4 | L1 | PATCH | Ensure rsyslog default file permissions configured"
   lineinfile:
-      dest: /etc/rsyslog.conf
+      path: /etc/rsyslog.conf
       regexp: '^\$FileCreateMode'
       line: '$FileCreateMode 0640'
   notify: restart rsyslog

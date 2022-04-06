@@ -17,10 +17,9 @@
 
 - name: "1.8.2 | PATCH | Ensure GDM login banner is configured"
   lineinfile:
-      dest: "{{ item.file }}"
+      path: "{{ item.file }}"
       regexp: "{{ item.regexp }}"
       line: "{{ item.line }}"
-      state: present
       create: yes
       owner: root
       group: root

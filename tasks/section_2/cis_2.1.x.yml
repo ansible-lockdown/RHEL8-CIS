@@ -26,10 +26,9 @@
 
       - name: "2.1.2 | PATCH | Ensure chrony is configured | modify /etc/sysconfig/chronyd | 1"
         lineinfile:
-            dest: /etc/sysconfig/chronyd
+            path: /etc/sysconfig/chronyd
             regexp: "^(#)?OPTIONS"
             line: "OPTIONS=\"-u chrony\""
-            state: present
             create: yes
             mode: 0644
   when:
