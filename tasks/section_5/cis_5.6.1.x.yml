@@ -2,8 +2,7 @@
 
 - name: "5.6.1.1 | PATCH | Ensure password expiration is 365 days or less"
   lineinfile:
-      state: present
-      dest: /etc/login.defs
+      path: /etc/login.defs
       regexp: '^PASS_MAX_DAYS'
       line: "PASS_MAX_DAYS {{ rhel8cis_pass['max_days'] }}"
   when:
@@ -18,8 +17,7 @@
 
 - name: "5.6.1.2 | PATCH | Ensure minimum days between password changes is 7 or more"
   lineinfile:
-      state: present
-      dest: /etc/login.defs
+      path: /etc/login.defs
       regexp: '^PASS_MIN_DAYS'
       line: "PASS_MIN_DAYS {{ rhel8cis_pass['min_days'] }}"
   when:
@@ -34,8 +32,7 @@
 
 - name: "5.6.1.3 | PATCH | Ensure password expiration warning days is 7 or more"
   lineinfile:
-      state: present
-      dest: /etc/login.defs
+      path: /etc/login.defs
       regexp: '^PASS_WARN_AGE'
       line: "PASS_WARN_AGE {{ rhel8cis_pass['warn_age'] }}"
   when:

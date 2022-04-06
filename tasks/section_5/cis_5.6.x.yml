@@ -30,6 +30,7 @@
             - item.id != "shutdown"
             - item.id != "sync"
             - item.id != "root"
+            - item.id != "nfsnobody"
             - rhel8cis_int_gid | int < item.gid
             - item.shell != "      /bin/false"
             - item.shell != "      /usr/sbin/nologin"
@@ -47,10 +48,10 @@
 
 - name: "5.6.3 | PATCH | Ensure default user shell timeout is 900 seconds or less"
   blockinfile:
+      path: "{{ item.path }}"
+      state: "{{ item.state }}"
       create: yes
       mode: 0644
-      dest: "{{ item.dest }}"
-      state: "{{ item.state }}"
       marker: "# {mark} ANSIBLE MANAGED"
       block: |
         # Set session timeout - CIS ID RHEL-08-5.4.5
@@ -58,8 +59,8 @@
         export TMOUT
         readonly TMOUT
   with_items:
-      - { dest: "{{ rhel8cis_shell_session_timeout.file }}", state: present }
-      - { dest: /etc/profile, state: "{{ (rhel8cis_shell_session_timeout.file == '/etc/profile') | ternary('present', 'absent') }}" }
+      - { path: "{{ rhel8cis_shell_session_timeout.file }}", state: present }
+      - { path: /etc/profile, state: "{{ (rhel8cis_shell_session_timeout.file == '/etc/profile') | ternary('present', 'absent') }}" }
   when:
       - rhel8cis_rule_5_6_3
   tags:
