@@ -15,4 +15,10 @@ galaxy_info:
         - security
         - cis
         - hardening
+
+collections:
+  - community.general
+  - community.crypto
+  - ansible.posix
+
 dependencies: []

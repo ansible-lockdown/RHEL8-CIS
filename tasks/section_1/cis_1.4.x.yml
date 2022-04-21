@@ -1,50 +1,76 @@
 ---
 
-- name: "1.4.1 | L1 | PATCH | Ensure AIDE is installed"
-  block:
-      - name: "1.4.1 | L1 | PATCH | Ensure AIDE is installed | Install AIDE"
-        package:
-            name: aide
-            state: present
-
-      - name: "1.4.1 | L1 | PATCH | Ensure AIDE is installed | Configure AIDE"
-        command: /usr/sbin/aide --init -B 'database_out=file:/var/lib/aide/aide.db.gz'
-        changed_when: false
-        failed_when: false
-        async: 45
-        poll: 0
-        args:
-            creates: /var/lib/aide/aide.db.gz
-        when: not ansible_check_mode
+- name: "1.4.1 | PATCH | Ensure bootloader password is set"
+  copy:
+      dest: /boot/grub2/user.cfg
+      content: "GRUB2_PASSWORD={{ rhel8cis_bootloader_password_hash }}"
+      owner: root
+      group: root
+      mode: 0600
+  notify: grub2cfg
   when:
-      - rhel8cis_config_aide
+      - rhel8cis_set_boot_pass
+      - grub_pass is defined and grub_pass.passhash is defined
+      - grub_pass.passhash | length > 0
       - rhel8cis_rule_1_4_1
   tags:
       - level1-server
       - level1-workstation
-      - scored
-      - aide
+      - automated
+      - grub
       - patch
       - rule_1.4.1
 
-- name: "1.4.2 | L1 | PATCH | Ensure filesystem integrity is regularly checked"
-  cron:
-      name: Run AIDE integrity check
-      cron_file: "{{ rhel8cis_aide_cron['cron_file'] }}"
-      user: "{{ rhel8cis_aide_cron['cron_user'] }}"
-      minute: "{{ rhel8cis_aide_cron['aide_minute'] | default('0') }}"
-      hour: "{{ rhel8cis_aide_cron['aide_hour'] | default('5') }}"
-      day: "{{ rhel8cis_aide_cron['aide_day'] | default('*') }}"
-      month: "{{ rhel8cis_aide_cron['aide_month'] | default('*') }}"
-      weekday: "{{ rhel8cis_aide_cron['aide_weekday'] | default('*') }}"
-      job: "{{ rhel8cis_aide_cron['aide_job'] }}"
+- name: "1.4.2 | PATCH | Ensure permissions on bootloader config are configured"
+  block:
+      - name: "1.4.2 | PATCH | Ensure permissions on bootloader config are configured"
+        file:
+            path: "{{ grub_cfg.stat.lnk_source }}"
+            owner: root
+            group: root
+            mode: 0600
+
+      - name: "1.4.2 | PATCH | Ensure permissions on bootloader config are configured | UEFI"
+        mount:
+            name: /boot/efi
+            src: "UUID={{ item.uuid }}"
+            fstype: vfat
+            state: present
+            opts: defaults,umask=0027,fmask=0077,uid=0,gid=0
+            passno: '0'
+        with_items:
+            - "{{ ansible_mounts }}"
+        loop_control:
+            label: "{{ item.mount }}"
+        when:
+            - not rhel8cis_legacy_boot
+            - item.mount == "/boot/efi"
   when:
       - rhel8cis_rule_1_4_2
+      - grub_cfg.stat.exists
+      - grub_cfg.stat.islnk
   tags:
       - level1-server
       - level1-workstation
-      - scored
-      - aide
-      - file_integrity
+      - automated
+      - grub
       - patch
       - rule_1.4.2
+
+- name: "1.4.3 | PATCH | Ensure authentication is required when booting into rescue mode"
+  lineinfile:
+      path: /etc/systemd/system/rescue.service.d/00-require-auth.conf
+      regexp: '^ExecStart='
+      line: "ExecStart=-/usr/lib/systemd/systemd-sulogin-shell rescue"
+      create: yes
+      owner: root
+      group: root
+      mode: 0644
+  when:
+      - rhel8cis_rule_1_4_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_1.4.3

@@ -3,6 +3,7 @@
 
 rhel8cis_skip_for_travis: false
 rhel8cis_system_is_container: false
+os_check: true
 # rhel8cis is left off the front of this var for consistency in testing pipeline
 # system_is_ec2 toggle will disable tasks that fail on Amazon EC2 instances. Set true to skip and false to run tasks
 system_is_ec2: false
@@ -30,7 +31,11 @@ python2_bin: /bin/python2.7
 benchmark: RHEL8-CIS
 
 # Whether to skip the reboot
-rhel8cis_skip_reboot: true
+skip_reboot: true
+
+# default value will change to true but wont reboot if not enabled but will error
+change_requires_reboot: false
+
 
 #### Basic external goss audit enablement settings ####
 #### Precise details - per setting can be found at the bottom of this file ####
@@ -63,59 +68,73 @@ audit_cmd_timeout: 30000
 rhel8cis_rule_1_1_1_1: true
 rhel8cis_rule_1_1_1_2: true
 rhel8cis_rule_1_1_1_3: true
-rhel8cis_rule_1_1_1_4: true
-rhel8cis_rule_1_1_1_5: true
-rhel8cis_rule_1_1_2: true
-rhel8cis_rule_1_1_3: true
-rhel8cis_rule_1_1_4: true
-rhel8cis_rule_1_1_5: true
-rhel8cis_rule_1_1_6: true
-rhel8cis_rule_1_1_7: true
-rhel8cis_rule_1_1_8: true
-rhel8cis_rule_1_1_9: true
-rhel8cis_rule_1_1_10: true
-rhel8cis_rule_1_1_11: true
-rhel8cis_rule_1_1_12: true
-rhel8cis_rule_1_1_13: true
-rhel8cis_rule_1_1_14: true
-rhel8cis_rule_1_1_15: true
-rhel8cis_rule_1_1_16: true
-rhel8cis_rule_1_1_17: true
+rhel8cis_rule_1_1_2_1: true
+rhel8cis_rule_1_1_2_2: true
+rhel8cis_rule_1_1_2_3: true
+rhel8cis_rule_1_1_2_4: true
+rhel8cis_rule_1_1_3_1: true
+rhel8cis_rule_1_1_3_2: true
+rhel8cis_rule_1_1_3_3: true
+rhel8cis_rule_1_1_3_4: true
+rhel8cis_rule_1_1_4_1: true
+rhel8cis_rule_1_1_4_2: true
+rhel8cis_rule_1_1_4_3: true
+rhel8cis_rule_1_1_4_4: true
+rhel8cis_rule_1_1_5_1: true
+rhel8cis_rule_1_1_5_2: true
+rhel8cis_rule_1_1_5_3: true
+rhel8cis_rule_1_1_5_4: true
+rhel8cis_rule_1_1_6_1: true
+rhel8cis_rule_1_1_6_2: true
+rhel8cis_rule_1_1_6_3: true
+rhel8cis_rule_1_1_6_4: true
+rhel8cis_rule_1_1_7_1: true
+rhel8cis_rule_1_1_7_2: true
+rhel8cis_rule_1_1_7_3: true
+rhel8cis_rule_1_1_7_4: true
+rhel8cis_rule_1_1_7_5: true
+rhel8cis_rule_1_1_8_1: true
+rhel8cis_rule_1_1_8_2: true
+rhel8cis_rule_1_1_8_3: true
 rhel8cis_rule_1_1_18: true
 rhel8cis_rule_1_1_19: true
 rhel8cis_rule_1_1_20: true
 rhel8cis_rule_1_1_21: true
-rhel8cis_rule_1_1_22: true
-rhel8cis_rule_1_1_23: true
+rhel8cis_rule_1_1_9: true
+rhel8cis_rule_1_1_10: true
 rhel8cis_rule_1_2_1: true
 rhel8cis_rule_1_2_2: true
 rhel8cis_rule_1_2_3: true
 rhel8cis_rule_1_2_4: true
-rhel8cis_rule_1_2_5: true
 rhel8cis_rule_1_3_1: true
 rhel8cis_rule_1_3_2: true
-rhel8cis_rule_1_3_3: true
 rhel8cis_rule_1_4_1: true
 rhel8cis_rule_1_4_2: true
+rhel8cis_rule_1_4_3: true
 rhel8cis_rule_1_5_1: true
 rhel8cis_rule_1_5_2: true
 rhel8cis_rule_1_5_3: true
 rhel8cis_rule_1_6_1: true
 rhel8cis_rule_1_6_2: true
-rhel8cis_rule_1_7_1_1: true
-rhel8cis_rule_1_7_1_2: true
-rhel8cis_rule_1_7_1_3: true
-rhel8cis_rule_1_7_1_4: true
-rhel8cis_rule_1_7_1_5: true
-rhel8cis_rule_1_7_1_6: true
-rhel8cis_rule_1_7_1_7: true
-rhel8cis_rule_1_8_1_1: true
-rhel8cis_rule_1_8_1_2: true
-rhel8cis_rule_1_8_1_3: true
-rhel8cis_rule_1_8_1_4: true
-rhel8cis_rule_1_8_1_5: true
-rhel8cis_rule_1_8_1_6: true
+rhel8cis_rule_1_6_1_1: true
+rhel8cis_rule_1_6_1_2: true
+rhel8cis_rule_1_6_1_3: true
+rhel8cis_rule_1_6_1_4: true
+rhel8cis_rule_1_6_1_5: true
+rhel8cis_rule_1_6_1_6: true
+rhel8cis_rule_1_6_1_7: true
+rhel8cis_rule_1_6_1_8: true
+rhel8cis_rule_1_7_1: true
+rhel8cis_rule_1_7_2: true
+rhel8cis_rule_1_7_3: true
+rhel8cis_rule_1_7_4: true
+rhel8cis_rule_1_7_5: true
+rhel8cis_rule_1_7_6: true
+rhel8cis_rule_1_8_1: true
 rhel8cis_rule_1_8_2: true
+rhel8cis_rule_1_8_3: true
+rhel8cis_rule_1_8_4: true
+rhel8cis_rule_1_8_5: true
 rhel8cis_rule_1_9: true
 rhel8cis_rule_1_10: true
 rhel8cis_rule_1_11: true
@@ -123,14 +142,7 @@ rhel8cis_rule_1_11: true
 # Section 2 rules
 rhel8cis_rule_2_1_1: true
 rhel8cis_rule_2_1_2: true
-rhel8cis_rule_2_1_3: true
-rhel8cis_rule_2_1_4: true
-rhel8cis_rule_2_1_5: true
-rhel8cis_rule_2_1_6: true
-rhel8cis_rule_2_1_7: true
-rhel8cis_rule_2_2_1_1: true
-rhel8cis_rule_2_2_1_2: true
-rhel8cis_rule_2_2_1_3: true
+rhel8cis_rule_2_2_1: true
 rhel8cis_rule_2_2_2: true
 rhel8cis_rule_2_2_3: true
 rhel8cis_rule_2_2_4: true
@@ -148,53 +160,65 @@ rhel8cis_rule_2_2_15: true
 rhel8cis_rule_2_2_16: true
 rhel8cis_rule_2_2_17: true
 rhel8cis_rule_2_2_18: true
+rhel8cis_rule_2_2_19: true
+rhel8cis_rule_2_2_20: true
 rhel8cis_rule_2_3_1: true
 rhel8cis_rule_2_3_2: true
 rhel8cis_rule_2_3_3: true
+rhel8cis_rule_2_3_4: true
+rhel8cis_rule_2_3_5: true
+rhel8cis_rule_2_3_6: true
+rhel8cis_rule_2_4: true
 
 # Section 3 rules
 rhel8cis_rule_3_1_1: true
 rhel8cis_rule_3_1_2: true
+rhel8cis_rule_3_1_3: true
+rhel8cis_rule_3_1_4: true
 rhel8cis_rule_3_2_1: true
 rhel8cis_rule_3_2_2: true
-rhel8cis_rule_3_2_3: true
-rhel8cis_rule_3_2_4: true
-rhel8cis_rule_3_2_5: true
-rhel8cis_rule_3_2_6: true
-rhel8cis_rule_3_2_7: true
-rhel8cis_rule_3_2_8: true
-rhel8cis_rule_3_2_9: true
 rhel8cis_rule_3_3_1: true
 rhel8cis_rule_3_3_2: true
 rhel8cis_rule_3_3_3: true
 rhel8cis_rule_3_3_4: true
+rhel8cis_rule_3_3_5: true
+rhel8cis_rule_3_3_6: true
+rhel8cis_rule_3_3_7: true
+rhel8cis_rule_3_3_8: true
+rhel8cis_rule_3_3_9: true
 rhel8cis_rule_3_4_1_1: true
+rhel8cis_rule_3_4_1_2: true
+rhel8cis_rule_3_4_1_3: true
+rhel8cis_rule_3_4_1_4: true
+rhel8cis_rule_3_4_1_5: true
+rhel8cis_rule_3_4_1_6: true
+rhel8cis_rule_3_4_1_7: true
 rhel8cis_rule_3_4_2_1: true
 rhel8cis_rule_3_4_2_2: true
 rhel8cis_rule_3_4_2_3: true
 rhel8cis_rule_3_4_2_4: true
 rhel8cis_rule_3_4_2_5: true
 rhel8cis_rule_3_4_2_6: true
-rhel8cis_rule_3_4_3_1: true
-rhel8cis_rule_3_4_3_2: true
-rhel8cis_rule_3_4_3_3: true
-rhel8cis_rule_3_4_3_4: true
-rhel8cis_rule_3_4_3_5: true
-rhel8cis_rule_3_4_3_6: true
-rhel8cis_rule_3_4_3_7: true
-rhel8cis_rule_3_4_3_8: true
-rhel8cis_rule_3_4_4_1_1: true
-rhel8cis_rule_3_4_4_1_2: true
-rhel8cis_rule_3_4_4_1_3: true
-rhel8cis_rule_3_4_4_1_4: true
-rhel8cis_rule_3_4_4_1_5: true
-rhel8cis_rule_3_4_4_2_1: true
-rhel8cis_rule_3_4_4_2_2: true
-rhel8cis_rule_3_4_4_2_3: true
-rhel8cis_rule_3_4_4_2_4: true
-rhel8cis_rule_3_4_4_2_5: true
-rhel8cis_rule_3_5: true
-rhel8cis_rule_3_6: true
+rhel8cis_rule_3_4_2_7: true
+rhel8cis_rule_3_4_2_8: true
+rhel8cis_rule_3_4_2_9: true
+rhel8cis_rule_3_4_2_10: true
+rhel8cis_rule_3_4_2_11: true
+rhel8cis_rule_3_4_3_1_1: true
+rhel8cis_rule_3_4_3_1_2: true
+rhel8cis_rule_3_4_3_1_3: true
+rhel8cis_rule_3_4_3_2_1: true
+rhel8cis_rule_3_4_3_2_2: true
+rhel8cis_rule_3_4_3_2_3: true
+rhel8cis_rule_3_4_3_2_4: true
+rhel8cis_rule_3_4_3_2_5: true
+rhel8cis_rule_3_4_3_2_6: true
+rhel8cis_rule_3_4_3_3_1: true
+rhel8cis_rule_3_4_3_3_2: true
+rhel8cis_rule_3_4_3_3_3: true
+rhel8cis_rule_3_4_3_3_4: true
+rhel8cis_rule_3_4_3_3_5: true
+rhel8cis_rule_3_4_3_3_6: true
 
 # Section 4 rules
 rhel8cis_rule_4_1_1_1: true
@@ -204,30 +228,44 @@ rhel8cis_rule_4_1_1_4: true
 rhel8cis_rule_4_1_2_1: true
 rhel8cis_rule_4_1_2_2: true
 rhel8cis_rule_4_1_2_3: true
-rhel8cis_rule_4_1_3: true
-rhel8cis_rule_4_1_4: true
-rhel8cis_rule_4_1_5: true
-rhel8cis_rule_4_1_6: true
-rhel8cis_rule_4_1_7: true
-rhel8cis_rule_4_1_8: true
-rhel8cis_rule_4_1_9: true
-rhel8cis_rule_4_1_10: true
-rhel8cis_rule_4_1_11: true
-rhel8cis_rule_4_1_12: true
-rhel8cis_rule_4_1_13: true
-rhel8cis_rule_4_1_14: true
-rhel8cis_rule_4_1_15: true
-rhel8cis_rule_4_1_16: true
-rhel8cis_rule_4_1_17: true
+rhel8cis_rule_4_1_3_1: true
+rhel8cis_rule_4_1_3_2: true
+rhel8cis_rule_4_1_3_3: true
+rhel8cis_rule_4_1_3_4: true
+rhel8cis_rule_4_1_3_5: true
+rhel8cis_rule_4_1_3_6: true
+rhel8cis_rule_4_1_3_7: true
+rhel8cis_rule_4_1_3_8: true
+rhel8cis_rule_4_1_3_9: true
+rhel8cis_rule_4_1_3_10: true
+rhel8cis_rule_4_1_3_11: true
+rhel8cis_rule_4_1_3_12: true
+rhel8cis_rule_4_1_3_13: true
+rhel8cis_rule_4_1_3_14: true
+rhel8cis_rule_4_1_3_15: true
+rhel8cis_rule_4_1_3_16: true
+rhel8cis_rule_4_1_3_17: true
+rhel8cis_rule_4_1_3_18: true
+rhel8cis_rule_4_1_3_19: true
+rhel8cis_rule_4_1_3_20: true
+rhel8cis_rule_4_1_3_21: true
 rhel8cis_rule_4_2_1_1: true
 rhel8cis_rule_4_2_1_2: true
 rhel8cis_rule_4_2_1_3: true
 rhel8cis_rule_4_2_1_4: true
 rhel8cis_rule_4_2_1_5: true
 rhel8cis_rule_4_2_1_6: true
-rhel8cis_rule_4_2_2_1: true
+rhel8cis_rule_4_2_1_7: true
+rhel8cis_rule_4_2_2_1_1: true
+rhel8cis_rule_4_2_2_1_2: true
+rhel8cis_rule_4_2_2_1_3: true
+rhel8cis_rule_4_2_2_1_4: true
 rhel8cis_rule_4_2_2_2: true
 rhel8cis_rule_4_2_2_3: true
+rhel8cis_rule_4_2_2_4: true
+rhel8cis_rule_4_2_2_5: true
+rhel8cis_rule_4_2_2_6: true
+rhel8cis_rule_4_2_2_7: true
 rhel8cis_rule_4_2_3: true
 rhel8cis_rule_4_3: true
 
@@ -240,6 +278,7 @@ rhel8cis_rule_5_1_5: true
 rhel8cis_rule_5_1_6: true
 rhel8cis_rule_5_1_7: true
 rhel8cis_rule_5_1_8: true
+rhel8cis_rule_5_1_9: true
 rhel8cis_rule_5_2_1: true
 rhel8cis_rule_5_2_2: true
 rhel8cis_rule_5_2_3: true
@@ -263,22 +302,26 @@ rhel8cis_rule_5_2_20: true
 rhel8cis_rule_5_3_1: true
 rhel8cis_rule_5_3_2: true
 rhel8cis_rule_5_3_3: true
+rhel8cis_rule_5_3_4: true
+rhel8cis_rule_5_3_5: true
+rhel8cis_rule_5_3_6: true
+rhel8cis_rule_5_3_7: true
 rhel8cis_rule_5_4_1: true
 rhel8cis_rule_5_4_2: true
-rhel8cis_rule_5_4_3: true
-rhel8cis_rule_5_4_4: true
-rhel8cis_rule_5_4_5: true
-rhel8cis_rule_5_5_1_1: true
-rhel8cis_rule_5_5_1_2: true
-rhel8cis_rule_5_5_1_3: true
-rhel8cis_rule_5_5_1_4: true
-rhel8cis_rule_5_5_1_5: true
+rhel8cis_rule_5_5_1: true
 rhel8cis_rule_5_5_2: true
 rhel8cis_rule_5_5_3: true
 rhel8cis_rule_5_5_4: true
 rhel8cis_rule_5_5_5: true
-rhel8cis_rule_5_6: true
-rhel8cis_rule_5_7: true
+rhel8cis_rule_5_6_1_1: true
+rhel8cis_rule_5_6_1_2: true
+rhel8cis_rule_5_6_1_3: true
+rhel8cis_rule_5_6_1_4: true
+rhel8cis_rule_5_6_1_5: true
+rhel8cis_rule_5_6_2: true
+rhel8cis_rule_5_6_3: true
+rhel8cis_rule_5_6_4: true
+rhel8cis_rule_5_6_5: true
 
 # Section 6 rules
 rhel8cis_rule_6_1_1: true
@@ -295,6 +338,7 @@ rhel8cis_rule_6_1_11: true
 rhel8cis_rule_6_1_12: true
 rhel8cis_rule_6_1_13: true
 rhel8cis_rule_6_1_14: true
+rhel8cis_rule_6_1_15: true
 rhel8cis_rule_6_2_1: true
 rhel8cis_rule_6_2_2: true
 rhel8cis_rule_6_2_3: true
@@ -311,45 +355,50 @@ rhel8cis_rule_6_2_13: true
 rhel8cis_rule_6_2_14: true
 rhel8cis_rule_6_2_15: true
 rhel8cis_rule_6_2_16: true
-rhel8cis_rule_6_2_17: true
-rhel8cis_rule_6_2_18: true
-rhel8cis_rule_6_2_19: true
-rhel8cis_rule_6_2_20: true
 
 # Service configuration booleans set true to keep service
+rhel8cis_xinetd_server: false
 rhel8cis_avahi_server: false
 rhel8cis_cups_server: false
 rhel8cis_dhcp_server: false
-rhel8cis_ldap_server: false
+rhel8cis_dns_server: false
+rhel8cis_ftp_server: false
+rhel8cis_vsftpd_server: false
+rhel8cis_tftp_server: false
+rhel8cis_httpd_server: false
+rhel8cis_nginx_server: false
+rhel8cis_dovecot_cyrus_server: false
+rhel8cis_samba_server: false
+rhel8cis_squid_server: false
+rhel8cis_snmp_server: false
+rhel8cis_nis_server: false
 rhel8cis_telnet_server: false
+rhel8cis_is_mail_server: false
 rhel8cis_nfs_server: false
 rhel8cis_rpc_server: false
+rhel8cis_rsync_server: false
+rhel8cis_tftp_client: false
+
+rhel8cis_ldap_server: false
 rhel8cis_ntalk_server: false
-rhel8cis_rsyncd_server: false
-rhel8cis_tftp_server: false
 rhel8cis_rsh_server: false
-rhel8cis_nis_server: false
-rhel8cis_snmp_server: false
-rhel8cis_squid_server: false
 rhel8cis_smb_server: false
-rhel8cis_dovecot_server: false
-rhel8cis_httpd_server: false
-rhel8cis_vsftpd_server: false
-rhel8cis_named_server: false
+# rhel8cis_dovecot_server: false
+# rhel8cis_named_server: false
 rhel8cis_nfs_rpc_server: false
-rhel8cis_is_mail_server: false
 rhel8cis_bind: false
 rhel8cis_vsftpd: false
 rhel8cis_httpd: false
 rhel8cis_dovecot: false
-rhel8cis_samba: false
 rhel8cis_squid: false
 rhel8cis_net_snmp: false
 rhel8cis_allow_autofs: false
 
 ## Section 1 vars
 
-# 1.1.2
+# 1.1.2.2
+# 1.1.2.3
+# 1.1.2.4
 # These settings go into the /etc/fstab file for the /tmp mount settings
 # The value must contain nosuid,nodev,noexec to conform to CIS standards
 # rhel8cis_tmp_tmpfs_settings: "defaults,rw,nosuid,nodev,noexec,relatime 0 0"
@@ -374,7 +423,7 @@ rhel8cis_varlog_location: "/var/log/sudo.log"
 # xinetd required
 rhel8cis_xinetd_required: false
 
-# 1.4.2 Bootloader password
+# 1.4.1 Bootloader password
 rhel8cis_bootloader_password_hash: 'grub.pbkdf2.sha512.changethispassword'
 rhel8cis_bootloader_password: random
 rhel8cis_set_boot_pass: false
@@ -406,18 +455,20 @@ rhel8cis_aide_cron:
 rhel8cis_selinux_pol: targeted
 
 # Whether or not to run tasks related to auditing/patching the desktop environment
-rhel8cis_gui: no
+rhel8cis_gui: false
 
 # Set to 'true' if X Windows is needed in your environment
 rhel8cis_xwindows_required: false
 
-rhel8cis_openldap_clients_required: false
-rhel8cis_telnet_required: false
-rhel8cis_talk_required: false
-rhel8cis_rsh_required: false
 rhel8cis_ypbind_required: false
+rhel8cis_rsh_required: false
+rhel8cis_talk_required: false
+rhel8cis_telnet_required: false
+rhel8cis_openldap_clients_required: false
 
-# 2.2.1.1 Time Synchronization - Either chrony or ntp
+
+
+# 2.1.1 Time Synchronization - Either chrony or ntp
 rhel8cis_time_synchronization: chrony
 
 # 2.2.1.2 Time Synchronization servers - used in template file chrony.conf.j2
@@ -440,7 +491,7 @@ rhel8cis_host_allow:
 # Firewall Service - either firewalld, iptables, or nftables
 rhel8cis_firewall: firewalld
 
-# 3.4.2.4 Default zone setting
+# 3.4.1.5 Default zone setting
 rhel8cis_default_zone: public
 
 # 3.4.2.5 Zone and Interface setting
@@ -451,11 +502,16 @@ rhel8cis_firewall_services:
     - ssh
     - dhcpv6-client
 
-# 3.4.3.2 Set nftables new table create
+# 3.4.2.5 Set nftables new table create
+# 3.4.2.6
+# 3.4.2.7
+# 3.4.2.8
+# 3.4.2.9
+# 3.4.2.11
 rhel8cis_nft_tables_autonewtable: true
 rhel8cis_nft_tables_tablename: filter
 
-# 3.4.3.3 Set nftables new chain create
+# 3.4.2.6 Set nftables new chain create
 rhel8cis_nft_tables_autochaincreate: true
 
 # Warning Banner Content (issue, issue.net, motd)
@@ -482,14 +538,33 @@ rhel8cis_max_log_file_size: 10
 # RHEL-08-4.2.1.4/4.2.1.5 remote and destation log server name
 rhel8cis_remote_log_server: logagg.example.com
 
-# RHEL-08-4.2.1.5
+# 4.2.1.5
 rhel8cis_system_is_log_server: false
+
+# 4.2.2.1.2
+# rhel8cis_journal_upload_url is the ip address to upload the journal entries to
+rhel8cis_journal_upload_url: 192.168.50.42
+# The paths below have the default paths/files, but allow user to create custom paths/filenames
+rhel8cis_journal_upload_serverkeyfile: "/etc/ssl/private/journal-upload.pem"
+rhel8cis_journal_servercertificatefile: "/etc/ssl/certs/journal-upload.pem"
+rhel8cis_journal_trustedcertificatefile: "/etc/ssl/ca/trusted.pem"
+
+# 4.2.2.1
+# The variables below related to journald, please set these to your site specific values
+# rhel8cis_journald_systemmaxuse is the max amount of disk space the logs will use
+rhel8cis_journald_systemmaxuse: 10M
+# rhel8cis_journald_systemkeepfree is the amount of disk space to keep free
+rhel8cis_journald_systemkeepfree: 100G
+rhel8cis_journald_runtimemaxuse: 10M
+rhel8cis_journald_runtimekeepfree: 100G
+# rhel8cis_journald_MaxFileSec is how long in time to keep log files. Values are Xm, Xh, Xday, Xweek, Xmonth, Xyear, for example 2week is two weeks
+rhel8cis_journald_maxfilesec: 1month
 
 ## Section5 vars
 
 rhel8cis_sshd:
-    clientalivecountmax: 3
-    clientaliveinterval: 300
+    clientalivecountmax: 0
+    clientaliveinterval: 900
     ciphers: "aes256-ctr,aes192-ctr,aes128-ctr"
     macs: "hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com"
     logingracetime: 60
@@ -509,18 +584,9 @@ rhel8cis_pam_faillock:
 # 5.2.5 SSH LogLevel setting. Options are INFO or VERBOSE
 rhel8cis_ssh_loglevel: INFO
 
-# 5.2.19 SSH MaxSessions setting. Must be 4 our less
-rhel8cis_ssh_maxsessions: 4
-rhel8cis_inactivelock:
-    lock_days: 30
+# 5.2.19 SSH MaxSessions setting. Must be 10 or less
+rhel8cis_ssh_maxsessions: 10
 
-# 5.3.1/5.3.2 Custom authselect profile settings. Settings in place now will fail, they are place holders from the control example
-# Due to the way many multiple options and ways to configure this control needs to be enabled and settings adjusted to minimise risk
-rhel8cis_use_authconfig: false
-rhel8cis_authselect:
-    custom_profile_name: custom-profile
-    default_file_to_copy: "sssd --symlink-meta"
-    options: with-sudo with-faillock without-nullok
 
 # 5.3.1 Enable automation to create custom profile settings, using the settings above
 rhel8cis_authselect_custom_profile_create: false
@@ -528,6 +594,27 @@ rhel8cis_authselect_custom_profile_create: false
 # 5.3.2 Enable automation to select custom profile options, using the settings above
 rhel8cis_authselect_custom_profile_select: false
 
+# 5.3.6 rhel8cis_sudo_timestamp_timeout is the timeout set to authentication in minutes
+# To conform to CIS standards this needs to be 15 minutes or less
+rhel8cis_sudo_timestamp_timeout: 15
+
+# 5.3.7
+# rhel8cis_sugroup: sugroup  # change accordingly wheel is default
+
+# wheel users list
+rhel8cis_sugroup_users: "root"
+
+# 5.4.1/5.4.2 Custom authselect profile settings. Settings in place now will fail, they are place holders from the control example
+# Due to the way many multiple options and ways to configure this control needs to be enabled and settings adjusted to minimise risk
+rhel8cis_use_authconfig: false
+rhel8cis_authselect:
+    custom_profile_name: custom-profile
+    default_file_to_copy: "sssd --symlink-meta"
+    options: with-sudo with-faillock without-nullok
+
+# 5.6.1.1
+# 5.6.1.2
+# 5.6.1.3
 rhel8cis_pass:
     max_days: 365
     min_days: 7
@@ -536,43 +623,38 @@ rhel8cis_pass:
 rhel8cis_syslog: rsyslog
 rhel8cis_rsyslog_ansiblemanaged: true
 
-rhel8cis_vartmp:
-    source: /tmp
-    fstype: none
-    opts: "defaults,nodev,nosuid,noexec,bind"
-    enabled: no
+# 5.6.1.4
+rhel8cis_inactivelock:
+    lock_days: 30
+
+# 5.6.1.5 Allow ansible to expire password for account with a last changed date in the future. False will just display users in violation, true will expire those users passwords
+rhel8cis_futurepwchgdate_autofix: true
+
 ## PAM
 rhel8cis_pam_password:
-    minlen: "14"
-    minclass: "4"
+    minlen: 14
+    minclass: 4
 
 # Starting GID for interactive users
 rhel8cis_int_gid: 1000
 
-# RHEL-08-5.4.5
+# 5.6.3
 # Session timeout setting file (TMOUT setting can be set in multiple files)
 # Timeout value is in seconds. (60 seconds * 10 = 600)
 rhel8cis_shell_session_timeout:
     file: /etc/profile.d/tmout.sh
     timeout: 600
-# RHEL-08-5.4.1.5 Allow ansible to expire password for account with a last changed date in the future. False will just display users in violation, true will expire those users passwords
-rhel8cis_futurepwchgdate_autofix: true
-
-# 5.7
-# rhel8cis_sugroup: sugroup  # change accordingly wheel is default
-
-# wheel users list
-rhel8cis_sugroup_users: "root"
 
 ## Section6 vars
 
 # RHEL-08_6.1.1
 rhel8cis_rpm_audit_file: /var/tmp/rpm_file_check
 
-# RHEL-08_6.1.10 Allow ansible to adjust world-writable files. False will just display world-writable files, True will remove world-writable
+# RHEL-08_6.1.11 Allow ansible to adjust world-writable files. False will just display world-writable files, True will remove world-writable
 rhel8cis_no_world_write_adjust: true
 rhel8cis_passwd_label: "{{ (this_item | default(item)).id }}: {{ (this_item | default(item)).dir }}"
-# 6.2.9
+
+# 6.2.12
 rhel8cis_dotperm_ansiblemanaged: true
 #### Goss Configuration Settings ####
 
@@ -593,24 +675,24 @@ goss_url: "https://github.com/aelsabbahy/goss/releases/download/{{ goss_version.
 copy_goss_from_path: /some/accessible/path
 
 ### Goss Audit Benchmark file ###
-## managed by the control rhel8cis_audit_content
+## managed by the control audit_content
 # git
-rhel8cis_audit_file_git: "https://github.com/ansible-lockdown/{{ benchmark }}-Audit.git"
-rhel8cis_audit_git_version: main
+audit_file_git: "https://github.com/ansible-lockdown/{{ benchmark }}-Audit.git"
+audit_git_version: main
 
 # copy:
-rhel8cis_audit_local_copy: "some path to copy from"
+audit_local_copy: "some path to copy from"
 
 # get_url:
-rhel8cis_audit_files_url: "some url maybe s3?"
+audit_files_url: "some url maybe s3?"
 
 # Where the goss audit configuration will be stored
-rhel8cis_audit_files: "/var/tmp/{{ benchmark }}-Audit/"
+audit_files: "/var/tmp/{{ benchmark }}-Audit/"
 
 ## Goss configuration information
 # Where the goss configs and outputs are stored
 audit_out_dir: '/var/tmp'
-audit_conf_dir: "{{ audit_out_dir }}/{{ benchmark }}-Audit/"
+audit_conf_dir: "{{ audit_out_dir }}/{{ benchmark }}-Audit"
 pre_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}_pre_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
 post_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}_post_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
 

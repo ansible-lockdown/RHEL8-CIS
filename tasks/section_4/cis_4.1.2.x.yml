@@ -1,43 +1,42 @@
 ---
 
-- name: "4.1.2.1 | L2 | PATCH | Ensure audit log storage size is configured"
+- name: "4.1.2.1 | PATCH | Ensure audit log storage size is configured"
   lineinfile:
-      dest: /etc/audit/auditd.conf
+      path: /etc/audit/auditd.conf
       regexp: "^max_log_file( |=)"
       line: "max_log_file = {{ rhel8cis_max_log_file_size }}"
-      state: present
   notify: restart auditd
   when:
       - rhel8cis_rule_4_1_2_1
   tags:
       - level2-server
       - level2-workstation
-      - auditd
+      - automated
       - patch
+      - auditd
       - rule_4.1.2.1
 
-- name: "4.1.2.2 | L2 | PATCH | Ensure audit logs are not automatically deleted"
+- name: "4.1.2.2 | PATCH | Ensure audit logs are not automatically deleted"
   lineinfile:
-      dest: /etc/audit/auditd.conf
+      path: /etc/audit/auditd.conf
       regexp: "^max_log_file_action"
       line: "max_log_file_action = {{ rhel8cis_auditd['max_log_file_action'] }}"
-      state: present
   notify: restart auditd
   when:
       - rhel8cis_rule_4_1_2_2
   tags:
       - level2-server
       - level2-workstation
-      - auditd
+      - automated
       - patch
+      - auditd
       - rule_4.1.2.2
 
-- name: "4.1.2.3 | L2 | PATCH | Ensure system is disabled when audit logs are full"
+- name: "4.1.2.3 | PATCH | Ensure system is disabled when audit logs are full"
   lineinfile:
-      dest: /etc/audit/auditd.conf
+      path: /etc/audit/auditd.conf
       regexp: "{{ item.regexp }}"
       line: "{{ item.line }}"
-      state: present
   notify: restart auditd
   with_items:
       - { regexp: '^admin_space_left_action', line: 'admin_space_left_action = {{ rhel8cis_auditd.admin_space_left_action }}' }
@@ -48,6 +47,7 @@
   tags:
       - level2-server
       - level2-workstation
-      - auditd
+      - automated
       - patch
+      - auditd
       - rule_4.1.2.3

@@ -1,0 +1,63 @@
+---
+
+- name: "1.1.3.1 | AUDIT | Ensure separate partition exists for /var"
+  block:
+      - name: "1.1.3.1 | AUDIT | Ensure separate partition exists for /var | Absent"
+        debug:
+            msg: "Warning! {{ required_mount }} doesn't exist. This is a manual task"
+        register: var_mount_absent
+        changed_when: var_mount_absent.skipped is undefined
+        when:
+            - required_mount not in mount_names
+
+      - name: "1.1.3.1 | AUDIT | Ensure separate partition exists for /var | Present"
+        debug:
+            msg: "Congratulations: {{ required_mount }} exists."
+        register: var_mount_present
+        when:
+            - required_mount in mount_names
+  vars:
+      required_mount: '/var'
+  when:
+      - rhel8cis_rule_1_1_3_1
+  tags:
+      - level2-server
+      - level2-workstation
+      - automated
+      - patch
+      - mounts
+      - rule_1.1.3.1
+
+# skips if mount is absent
+- name: |
+          "1.1.3.2 | PATCH | Ensure nodev option set on /var partition"
+          "1.1.3.3 | PATCH | Ensure noexec option set on /var partition"
+          "1.1.3.4 | PATCH | Ensure nosuid option set on /var partition"
+  mount:
+      name: /var
+      src: "{{ item.device }}"
+      fstype: "{{ item.fstype }}"
+      state: present
+      opts: defaults,{% if rhel8cis_rule_1_1_3_3 %}noexec,{% endif %}{% if rhel8cis_rule_1_1_3_2 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_3_4 %}nosuid{% endif %}
+  with_items:
+      - "{{ ansible_mounts }}"
+  loop_control:
+      label: "{{ item.device }}"
+  notify: change_requires_reboot
+  when:
+      - var_mount_present is defined
+      - item.mount == "/var"
+      - rhel8cis_rule_1_1_3_1  # This is required so the check takes place
+      - rhel8cis_rule_1_1_3_2 or
+        rhel8cis_rule_1_1_3_3 or
+        rhel8cis_rule_1_1_3_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - mounts
+      - skip_ansible_lint
+      - rule_1.1.3.2
+      - rule_1.1.3.3
+      - rule_1.1.3.4

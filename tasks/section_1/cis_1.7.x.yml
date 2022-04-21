@@ -1,0 +1,102 @@
+---
+
+- name: "1.7.1 | PATCH | Ensure message of the day is configured properly"
+  template:
+      src: etc/motd.j2
+      dest: /etc/motd
+      owner: root
+      group: root
+      mode: 0644
+  when:
+      - rhel8cis_rule_1_7_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - banner
+      - patch
+      - rule_1.7.1
+
+- name: "1.7.2 | PATCH | Ensure local login warning banner is configured properly"
+  template:
+      src: etc/issue.j2
+      dest: /etc/issue
+      owner: root
+      group: root
+      mode: 0644
+  when:
+      - rhel8cis_rule_1_7_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_1.7.2
+
+- name: "1.7.3 | PATCH | Ensure remote login warning banner is configured properly"
+  template:
+      src: etc/issue.net.j2
+      dest: /etc/issue.net
+      owner: root
+      group: root
+      mode: 0644
+  when:
+      - rhel8cis_rule_1_7_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - banner
+      - patch
+      - rule_1.7.3
+
+- name: "1.7.4 | PATCH | Ensure permissions on /etc/motd are configured"
+  file:
+      path: /etc/motd
+      state: file
+      owner: root
+      group: root
+      mode: 0644
+  when:
+      - rhel8cis_rule_1_7_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - perms
+      - patch
+      - rule_1.7.4
+
+- name: "1.7.5 | PATCH | Ensure permissions on /etc/issue are configured"
+  file:
+      path: /etc/issue
+      state: file
+      owner: root
+      group: root
+      mode: 0644
+  when:
+      - rhel8cis_rule_1_7_5
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - perms
+      - patch
+      - rule_1.7.5
+
+- name: "1.7.6 | PATCH | Ensure permissions on /etc/issue.net are configured"
+  file:
+      path: /etc/issue.net
+      state: file
+      owner: root
+      group: root
+      mode: 0644
+  when:
+      - rhel8cis_rule_1_7_6
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - perms
+      - patch
+      - rule_1.7.6

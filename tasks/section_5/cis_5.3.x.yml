@@ -1,90 +1,135 @@
 ---
 
-- name: "5.3.1 | L1 | PATCH | Create custom authselect profile"
-  block:
-      - name: "5.3.1 | L1 | PATCH | Create custom authselect profile | Gather profiles"
-        shell: 'authselect current | grep "Profile ID: custom/"'
-        failed_when: false
-        changed_when: false
-        check_mode: no
-        register: rhel8cis_5_3_1_profiles
-
-      - name: "5.3.1 | L1 | AUDIT | Create custom authselect profile | Show profiles"
-        debug:
-            msg:
-                - "Below are the current custom profiles"
-                - "{{ rhel8cis_5_3_1_profiles.stdout_lines }}"
-
-      - name: "5.3.1 | L1 | PATCH | Create custom authselect profile | Create custom profiles"
-        shell: authselect create-profile {{ rhel8cis_authselect['custom_profile_name'] }} -b {{ rhel8cis_authselect['default_file_to_copy'] }}
-        args:
-            warn: no
-        when: rhel8cis_authselect_custom_profile_create
+- name: "5.3.1 | PATCH | Ensure sudo is installed"
+  package:
+      name: sudo
+      state: present
   when:
       - rhel8cis_rule_5_3_1
   tags:
       - level1-server
       - level1-workstation
+      - automated
       - patch
-      - authselect
+      - sudo
       - rule_5.3.1
 
-- name: "5.3.2 | L1 | PATCH | Select authselect profile"
-  block:
-      - name: "5.3.2 | L1 | AUDIT | Select authselect profile | Gather profiles and enabled features"
-        shell: "authselect current"
-        args:
-            warn: no
-        failed_when: false
-        changed_when: false
-        check_mode: no
-        register: rhel8cis_5_3_2_profiles
-
-      - name: "5.3.2 | L1 | AUDIT | Select authselect profile | Show profiles"
-        debug:
-            msg:
-                - "Below are the current custom profiles"
-                - "{{ rhel8cis_5_3_2_profiles.stdout_lines }}"
-
-      - name: "5.3.2 | L1 | PATCH | Select authselect profile | Create custom profiles"
-        shell: "authselect select custom/{{ rhel8cis_authselect['custom_profile_name'] }} {{ rhel8cis_authselect['options'] }}"
-        args:
-            warn: no
-        when: rhel8cis_authselect_custom_profile_select
+- name: "5.3.2 | PATCH | Ensure sudo commands use pty"
+  lineinfile:
+      path: /etc/sudoers
+      line: "Defaults    use_pty"
   when:
       - rhel8cis_rule_5_3_2
   tags:
       - level1-server
       - level1-workstation
+      - automated
       - patch
-      - authselect
+      - sudo
       - rule_5.3.2
 
-- name: "5.3.3 | L1 | PATCH | Ensure authselect includes with-faillock"
-  block:
-      - name: "5.3.3 | L1 | AUDIT | Ensure authselect includes with-faillock | Gather profiles and enabled features"
-        shell: "authselect current | grep with-faillock"
-        failed_when: false
-        changed_when: false
-        check_mode: no
-        register: rhel8cis_5_3_3_profiles_faillock
-
-      - name: "5.3.3 | L1 | AUDIT | Ensure authselect includes with-faillock| Show profiles"
-        debug:
-            msg:
-                - "Below are the current custom profiles"
-                - "{{ rhel8cis_5_3_3_profiles_faillock.stdout_lines }}"
-
-      - name: "5.3.3 | L1 | PATCH | Ensure authselect includes with-faillock | Create custom profiles"
-        shell: "authselect select custom/{{ rhel8cis_authselect['custom_profile_name'] }} with-faillock"
-        args:
-            warn: no
-        when: rhel8cis_authselect_custom_profile_select
+- name: "5.3.3 | PATCH | Ensure sudo log file exists"
+  lineinfile:
+      path: /etc/sudoers
+      regexp: '^Defaults    logfile='
+      line: 'Defaults    logfile="{{ rhel8cis_varlog_location }}"'
   when:
       - rhel8cis_rule_5_3_3
   tags:
       - level1-server
       - level1-workstation
+      - automated
       - patch
-      - authselect
+      - sudo
       - rule_5.3.3
+
+- name: "5.3.4 | PATCH | Ensure users must provide password for escalation"
+  replace:
+      path: "{{ item }}"
+      regexp: '^([^#|{% if system_is_ec2 %}ec2-user{% endif %}].*)NOPASSWD(.*)'
+      replace: '\1PASSWD\2'
+  with_items:
+      - "{{ rhel8cis_sudoers_files.stdout_lines }}"
+  when:
+      - rhel8cis_rule_5_3_4
+  tags:
+      - level2-server
+      - level2-workstation
+      - automated
+      - patch
+      - sudo
+      - rule_5.3.4
+
+- name: "5.3.5 | PATCH | Ensure re-authentication for privilege escalation is not disabled globally"
+  replace:
+      path: "{{ item }}"
+      regexp: '^([^#].*)!authenticate(.*)'
+      replace: '\1authenticate\2'
+  with_items:
+      - "{{ rhel8cis_sudoers_files.stdout_lines }}"
+  when:
+      - rhel8cis_rule_5_3_5
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - sudo
+      - rule_5.3.5
+
+- name: "5.3.6 | PATCH | Ensure sudo authentication timeout is configured correctly"
+  block:
+      - name: "5.3.6 | AUDIT | Ensure sudo authentication timeout is configured correctly | Get files with timeout set"
+        shell: grep -is 'timestamp_timeout' /etc/sudoers /etc/sudoers.d/* | cut -d":" -f1 | uniq | sort
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_5_3_6_timeout_files
+
+      - name: "5.3.6 | PATCH | Ensure sudo authentication timeout is configured correctly | Set value if no results"
+        lineinfile:
+            path: /etc/sudoers
+            regexp: 'Defaults timestamp_timeout='
+            line: "Defaults timestamp_timeout={{ rhel8cis_sudo_timestamp_timeout }}"
+            validate: '/usr/sbin/visudo -cf %s'
+        when: rhel8cis_5_3_6_timeout_files.stdout | length == 0
+
+      - name: "5.3.6 | PATCH | Ensure sudo authentication timeout is configured correctly | Set value if has results"
+        replace:
+            path: "{{ item }}"
+            regexp: 'timestamp_timeout=(\d+)'
+            replace: "timestamp_timeout={{ rhel8cis_sudo_timestamp_timeout }}"
+            validate: '/usr/sbin/visudo -cf %s'
+        with_items:
+            - "{{ rhel8cis_5_3_6_timeout_files.stdout_lines }}"
+        when: rhel8cis_5_3_6_timeout_files.stdout | length > 0
+  when:
+      - rhel8cis_rule_5_3_6
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - sudo
+      - rule_5.3.6
+
+- name: "5.3.7 | PATCH | Ensure access to the su command is restricted"
+  block:
+      - name: "5.3.7 | PATCH | Ensure access to the su command is restricted | Setting pam_wheel to use_uid"
+        lineinfile:
+            path: /etc/pam.d/su
+            regexp: '^(#)?auth\s+required\s+pam_wheel\.so'
+            line: 'auth           required        pam_wheel.so use_uid {% if rhel8cis_sugroup is defined %}group={{ rhel8cis_sugroup }}{% endif %}'
+
+      - name: "5.3.7 | PATCH | Ensure access to the su command is restricted | wheel group contains root"
+        user:
+            name: "{{ rhel8cis_sugroup_users }}"
+            groups: "{{ rhel8cis_sugroup | default('wheel') }}"
+  when:
+      - rhel8cis_rule_5_3_7
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - sudo
+      - rule_5.3.7

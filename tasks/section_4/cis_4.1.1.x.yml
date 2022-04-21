@@ -1,14 +1,14 @@
 ---
 
-- name: "4.1.1.1 | L2 | PATCH | Ensure auditd is installed"
+- name: "4.1.1.1 | PATCH | Ensure auditd is installed"
   block:
-      - name: "4.1.1.1 | L2 | PATCH | Ensure auditd is installed | Install auditd packages"
+      - name: "4.1.1.1 | PATCH | Ensure auditd is installed | Install auditd packages"
         package:
             name: audit
             state: present
         when: '"auditd" not in ansible_facts.packages'
 
-      - name: "4.1.1.1 | L2 | PATCH | Ensure auditd is installed | Install auditd-lib packages"
+      - name: "4.1.1.1 | PATCH | Ensure auditd is installed | Install auditd-lib packages"
         package:
             name: audit-libs
             state: present
@@ -18,10 +18,12 @@
   tags:
       - level2-server
       - level2-workstation
+      - automated
       - patch
+      - auditd
       - rule_4.1.1.1
 
-- name: "4.1.1.2 | L2 | PATCH | Ensure auditd service is enabled"
+- name: "4.1.1.2 | PATCH | Ensure auditd service is enabled"
   service:
       name: auditd
       state: started
@@ -33,28 +35,29 @@
   tags:
       - level2-server
       - level2-workstation
-      - auditd
+      - automated
       - patch
+      - auditd
       - rule_4.1.1.2
 
-- name: "4.1.1.3 | L2 | PATCH | Ensure auditing for processes that start prior to auditd is enabled"
+- name: "4.1.1.3 | PATCH | Ensure auditing for processes that start prior to auditd is enabled"
   block:
-      - name: "4.1.1.3 | L2 | AUDIT | Ensure auditing for processes that start prior to auditd is enabled | Get GRUB_CMDLINE_LINUX"
+      - name: "4.1.1.3 | AUDIT | Ensure auditing for processes that start prior to auditd is enabled | Get GRUB_CMDLINE_LINUX"
         shell: grep 'GRUB_CMDLINE_LINUX=' /etc/default/grub | sed 's/.$//'
         changed_when: false
         failed_when: false
         check_mode: no
         register: rhel8cis_4_1_1_3_grub_cmdline_linux
 
-      - name: "4.1.1.3 | L2 | PATCH | Ensure auditing for processes that start prior to auditd is enabled | Replace existing setting"
+      - name: "4.1.1.3 | PATCH | Ensure auditing for processes that start prior to auditd is enabled | Replace existing setting"
         replace:
-            dest: /etc/default/grub
+            path: /etc/default/grub
             regexp: 'audit=.'
             replace: 'audit=1'
         notify: grub2cfg
         when: "'audit=' in rhel8cis_4_1_1_3_grub_cmdline_linux.stdout"
 
-      - name: "4.1.1.3 | L2 | PATCH | Ensure auditing for processes that start prior to auditd is enabled | Add audit setting if missing"
+      - name: "4.1.1.3 | PATCH | Ensure auditing for processes that start prior to auditd is enabled | Add audit setting if missing"
         lineinfile:
             path: /etc/default/grub
             regexp: '^GRUB_CMDLINE_LINUX='
@@ -66,28 +69,30 @@
   tags:
       - level2-server
       - level2-workstation
-      - auditd
+      - automated
       - patch
+      - auditd
+      - grub
       - rule_4.1.1.3
 
-- name: "4.1.1.4 | L2 | PATCH | Ensure audit_backlog_limit is sufficient"
+- name: "4.1.1.4 | PATCH | Ensure audit_backlog_limit is sufficient"
   block:
-      - name: "4.1.1.4 | L2 | AUDIT | Ensure audit_backlog_limit is sufficient | Get GRUB_CMDLINE_LINUX"
+      - name: "4.1.1.4 | AUDIT | Ensure audit_backlog_limit is sufficient | Get GRUB_CMDLINE_LINUX"
         shell: grep 'GRUB_CMDLINE_LINUX=' /etc/default/grub | sed 's/.$//'
         changed_when: false
         failed_when: false
         check_mode: no
         register: rhel8cis_4_1_1_4_grub_cmdline_linux
 
-      - name: "4.1.1.4 | L2 | PATCH | Ensure audit_backlog_limit is sufficient | Replace existing setting"
+      - name: "4.1.1.4 | PATCH | Ensure audit_backlog_limit is sufficient | Replace existing setting"
         replace:
-            dest: /etc/default/grub
+            path: /etc/default/grub
             regexp: 'audit_backlog_limit=\d+'
             replace: 'audit_backlog_limit={{ rhel8cis_audit_back_log_limit }}'
         notify: grub2cfg
         when: "'audit_backlog_limit=' in rhel8cis_4_1_1_4_grub_cmdline_linux.stdout"
 
-      - name: "4.1.1.4 | L2 | PATCH | Ensure audit_backlog_limit is sufficient | Add audit_backlog_limit setting if missing"
+      - name: "4.1.1.4 | PATCH | Ensure audit_backlog_limit is sufficient | Add audit_backlog_limit setting if missing"
         lineinfile:
             path: /etc/default/grub
             regexp: '^GRUB_CMDLINE_LINUX='
@@ -99,5 +104,8 @@
   tags:
       - level2-server
       - level2-workstation
+      - automated
       - patch
+      - auditd
+      - grub
       - rule_4.1.1.4

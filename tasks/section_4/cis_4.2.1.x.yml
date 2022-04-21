@@ -1,6 +1,6 @@
 ---
 
-- name: "4.2.1.1 | L1 | PATCH | Ensure rsyslog installed"
+- name: "4.2.1.1 | PATCH | Ensure rsyslog installed"
   package:
       name: rsyslog
       state: present
@@ -10,10 +10,12 @@
   tags:
       - level1-server
       - level1-workstation
+      - automated
       - patch
+      - rsyslog
       - rule_4.2.1.1
 
-- name: "4.2.1.2 | L1 | PATCH | Ensure rsyslog Service is enabled"
+- name: "4.2.1.2 | PATCH | Ensure rsyslog Service is enabled"
   service:
       name: rsyslog
       enabled: yes
@@ -22,40 +24,59 @@
   tags:
       - level1-server
       - level1-workstation
+      - automated
       - patch
       - rsyslog
       - rule_4.2.1.2
 
-- name: "4.2.1.3 | L1 | PATCH | Ensure rsyslog default file permissions configured"
+# This is counter to control 4.2.1.5??
+- name: "4.2.1.3 | PATCH | Ensure journald is configured to send logs to rsyslog"
   lineinfile:
-      dest: /etc/rsyslog.conf
-      regexp: '^\$FileCreateMode'
-      line: '$FileCreateMode 0640'
-  notify: restart rsyslog
+      path: /etc/systemd/journald.conf
+      regexp: "^#ForwardToSyslog=|^ForwardToSyslog="
+      line: ForwardToSyslog=yes
   when:
       - rhel8cis_rule_4_2_1_3
   tags:
       - level1-server
       - level1-workstation
+      - manual
       - patch
       - rule_4.2.1.3
 
-- name: "4.2.1.4 | L1 | PATCH | Ensure logging is configured"
+- name: "4.2.1.4 | L1 | PATCH | Ensure rsyslog default file permissions configured"
+  lineinfile:
+      path: /etc/rsyslog.conf
+      regexp: '^\$FileCreateMode'
+      line: '$FileCreateMode 0640'
+  notify: restart rsyslog
+  when:
+      - rhel8cis_rule_4_2_1_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rsyslog
+      - rule_4.2.1.4
+
+- name: "4.2.1.5 | PATCH | Ensure logging is configured"
   block:
-      - name: "4.2.1.4 | L1 | AUDIT | Ensure logging is configured | rsyslog current config message out"
+      - name: "4.2.1.5 | AUDIT | Ensure logging is configured | rsyslog current config message out"
         command: cat /etc/rsyslog.conf
         become: yes
         changed_when: false
         failed_when: no
-        register: rhel_08_4_2_1_4_audit
+        check_mode: no
+        register: rhel_08_4_2_1_5_audit
 
-      - name: "4.2.1.4 | L1 | AUDIT | Ensure logging is configured | rsyslog current config message out"
+      - name: "4.2.1.5 | AUDIT | Ensure logging is configured | rsyslog current config message out"
         debug:
             msg:
                 - "These are the current logging configurations for rsyslog, please review:"
-                - "{{ rhel_08_4_2_1_4_audit.stdout_lines }}"
+                - "{{ rhel_08_4_2_1_5_audit.stdout_lines }}"
 
-      - name: "4.2.1.4 | L1 | PATCH | Ensure logging is configured | mail.* log setting"
+      - name: "4.2.1.5 | PATCH | Ensure logging is configured | mail.* log setting"
         blockinfile:
             path: /etc/rsyslog.conf
             state: present
@@ -70,7 +91,7 @@
         notify: restart rsyslog
         when: rhel8cis_rsyslog_ansiblemanaged
 
-      - name: "4.2.1.4 | L1 | PATCH | Ensure logging is configured | news.crit log setting"
+      - name: "4.2.1.5 | PATCH | Ensure logging is configured | news.crit log setting"
         blockinfile:
             path: /etc/rsyslog.conf
             state: present
@@ -83,7 +104,7 @@
         notify: restart rsyslog
         when: rhel8cis_rsyslog_ansiblemanaged
 
-      - name: "4.2.1.4 | L1 | PATCH | Ensure logging is configured | Misc. log setting"
+      - name: "4.2.1.5 | PATCH | Ensure logging is configured | Misc. log setting"
         blockinfile:
             path: /etc/rsyslog.conf
             state: present
@@ -97,13 +118,13 @@
         notify: restart rsyslog
         when: rhel8cis_rsyslog_ansiblemanaged
 
-      - name: "4.2.1.4 | L1 | PATCH | Ensure logging is configured | Local log settings"
+      - name: "4.2.1.5 | PATCH | Ensure logging is configured | Local log settings"
         blockinfile:
             path: /etc/rsyslog.conf
             state: present
             marker: "#{mark} LOCAL LOG SETTINGS (ANSIBLE MANAGED)"
             block: |
-              # local log settings
+              # local log settings to meet CIS standards
               local0,local1.*                                          -/var/log/localmessages
               local2,local3.*                                          -/var/log/localmessages
               local4,local5.*                                          -/var/log/localmessages
@@ -111,16 +132,39 @@
               *.emrg                                                    :omusrmsg:*
             insertafter: '#### RULES ####'
         notify: restart rsyslog
+
+      - name: "4.2.1.5 | PATCH | Ensure logging is configured | Auth Settings"
+        blockinfile:
+            path: /etc/rsyslog.conf
+            state: present
+            marker: "#{mark} Auth SETTINGS (ANSIBLE MANAGED)"
+            block: |
+              # Private settings to meet CIS standards
+              auth,authpriv.*                                          -/var/log/secure
+            insertafter: '#### RULES ####'
+        notify: restart rsyslog
+
+      - name: "4.2.1.5 | PATCH | Ensure logging is configured | Cron Settings"
+        blockinfile:
+            path: /etc/rsyslog.conf
+            state: present
+            marker: "#{mark} Auth SETTINGS (ANSIBLE MANAGED)"
+            block: |
+              # Cron settings to meet CIS standards
+              cron.*                                                   /var/log/cron
+            insertafter: '#### RULES ####'
+        notify: restart rsyslog
   when:
-      - rhel8cis_rule_4_2_1_4
+      - rhel8cis_rule_4_2_1_5
   tags:
       - level1-server
       - level1-workstation
+      - manual
       - patch
       - rsyslog
-      - rule_4.2.1.4
+      - rule_4.2.1.5
 
-- name: "4.2.1.5 | L1 | PATCH | Ensure rsyslog is configured to send logs to a remote log host"
+- name: "4.2.1.6 | PATCH | Ensure rsyslog is configured to send logs to a remote log host"
   blockinfile:
       path: /etc/rsyslog.conf
       state: present
@@ -134,18 +178,19 @@
       - result.rc != 257
   notify: restart rsyslog
   when:
-      - rhel8cis_rule_4_2_1_5
+      - rhel8cis_rule_4_2_1_6
       - rhel8cis_remote_log_server is defined
   tags:
       - level1-server
       - level1-workstation
+      - manual
       - patch
-      - rule_4.2.1.5
       - rsyslog
+      - rule_4.2.1.6
 
-- name: "4.2.1.6 | L1 | PATCH | Ensure remote rsyslog messages are only accepted on designated log hosts."
+- name: "4.2.1.7 | PATCH | Ensure rsyslog is not configured to recieve logs from a remote client"
   block:
-      - name: "4.2.1.6 | L1 | PATCH | Ensure remote rsyslog messages are only accepted on designated log hosts. | When not log host"
+      - name: "4.2.1.7 | PATCH | Ensure rsyslog is not configured to recieve logs from a remote client. | When not log host"
         replace:
             path: /etc/rsyslog.conf
             regexp: '({{ item }})'
@@ -154,9 +199,11 @@
         with_items:
             - '^(\$ModLoad imtcp)'
             - '^(\$InputTCPServerRun)'
+            - '^(module\(load="imtcp"\))'
+            - '^(input\(type="imtcp")'
         when: not rhel8cis_system_is_log_server
 
-      - name: "4.2.1.6 | L1 | PATCH | Ensure remote rsyslog messages are only accepted on designated log hosts. | When log host"
+      - name: "4.2.1.7 | PATCH | Ensure rsyslog is not configured to recieve logs from a remote clients. | When log host"
         replace:
             path: /etc/rsyslog.conf
             regexp: '^#(.*{{ item }}.*)'
@@ -165,12 +212,15 @@
         with_items:
             - 'ModLoad imtcp'
             - 'InputTCPServerRun'
+            - 'module\(load="imtcp"\)'
+            - 'input\(type="imtcp"'
         when: rhel8cis_system_is_log_server
   when:
-      - rhel8cis_rule_4_2_1_6
+      - rhel8cis_rule_4_2_1_7
   tags:
       - level1-server
       - level1-workstation
+      - automated
       - patch
-      - rule_4.2.1.6
       - rsyslog
+      - rule_4.2.1.7

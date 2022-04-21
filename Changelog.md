@@ -1,6 +1,39 @@
 # Changes to rhel8CIS
 
+## 1.3.4
+
+- CentOS no longer supported due to moving to Stream updates
+- Rocky and AlmaLinux tested and working
+- #155 thanks to RayMcAdmin
+- #156 thanks to Thulium-Drake
+
+## 1.3.3
+
+- update to audit script
+  - variable for audit OS agnostic
+  - removal of included library module (not required)
+
+- Issues included
+  - #135 - running levels - upadted tags
+  - #138 - auditd immutable
+  - #139 - 5.2.13 valus updated
+  - #140
+  - #141 - check mode update
+  - #142
+  - #143 - labels added
+  - #144
+  - #146 - undefined variable added
+  - #147 - removed warn statement
+  - #149 - shell timeout
+
+## 1.3.2
+
+- issues with crypto policies on ec2 - added skip for rules if system_is_ec2 variable
+  - cis_1.10  ## Change crypto breaks installing products
+  - cis_1.11  ## Change crypto breaks installing products
+
 ## 1.3.1
+
 - CIS 1.0.1 updates
 - Added Issue and PR templates
 - Added better reboot logic
@@ -12,8 +45,7 @@
 - Added systemd tmp mount
 - Added systemd tmpfs block
 - #110 tmp.mount support
-    - thanks to @erpadmin
-
+  - thanks to @erpadmin
 
 ## 1.3
 
