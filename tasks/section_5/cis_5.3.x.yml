@@ -16,9 +16,8 @@
 
 - name: "5.3.2 | PATCH | Ensure sudo commands use pty"
   lineinfile:
-      dest: /etc/sudoers
+      path: /etc/sudoers
       line: "Defaults    use_pty"
-      state: present
   when:
       - rhel8cis_rule_5_3_2
   tags:
@@ -31,10 +30,9 @@
 
 - name: "5.3.3 | PATCH | Ensure sudo log file exists"
   lineinfile:
-      dest: /etc/sudoers
+      path: /etc/sudoers
       regexp: '^Defaults    logfile='
       line: 'Defaults    logfile="{{ rhel8cis_varlog_location }}"'
-      state: present
   when:
       - rhel8cis_rule_5_3_3
   tags:
@@ -118,8 +116,7 @@
   block:
       - name: "5.3.7 | PATCH | Ensure access to the su command is restricted | Setting pam_wheel to use_uid"
         lineinfile:
-            state: present
-            dest: /etc/pam.d/su
+            path: /etc/pam.d/su
             regexp: '^(#)?auth\s+required\s+pam_wheel\.so'
             line: 'auth           required        pam_wheel.so use_uid {% if rhel8cis_sugroup is defined %}group={{ rhel8cis_sugroup }}{% endif %}'
 

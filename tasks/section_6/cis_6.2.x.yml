@@ -305,7 +305,7 @@
       - skip_ansible_lint  # settings found on 6_2_7
       - level1-server
       - level1-workstation
-      - autoamted
+      - automated
       - patch
       - users
       - rule_6.2.10
@@ -427,8 +427,8 @@
 
 - name: "6.2.14 | PATCH | Ensure no users have .forward files"
   file:
+      path: "~{{ item }}/.forward"
       state: absent
-      dest: "~{{ item }}/.forward"
   with_items:
       - "{{ users.stdout_lines }}"
   when:
@@ -444,8 +444,8 @@
 
 - name: "6.2.15 | PATCH | Ensure no users have .netrc files"
   file:
+      path: "~{{ item }}/.netrc"
       state: absent
-      dest: "~{{ item }}/.netrc"
   with_items:
       - "{{ users.stdout_lines }}"
   when:
@@ -461,8 +461,8 @@
 
 - name: "6.2.16 | PATCH | Ensure no users have .rhosts files"
   file:
+      path: "~{{ item }}/.rhosts"
       state: absent
-      dest: "~{{ item }}/.rhosts"
   with_items: "{{ users.stdout_lines }}"
   when:
       - rhel8cis_rule_6_2_16

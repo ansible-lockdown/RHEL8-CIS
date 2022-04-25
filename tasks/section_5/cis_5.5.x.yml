@@ -1,59 +1,89 @@
 ---
 
-- name: "5.5.2 | L1 | PATCH | Ensure system accounts are secured"
+- name: "5.5.1 | PATCH | Ensure password creation requirements are configured"
   block:
-      - name: "5.5.2 | L1 | Ensure system accounts are secured | Set nologin"
-        user:
-            name: "{{ item.id }}"
-            shell: /usr/sbin/nologin
+      - name: "5.5.1 | PATCH | Ensure password creation requirements are configured | Set pwquality config settings"
+        lineinfile:
+            path: /etc/security/pwquality.conf
+            regexp: "{{ item.regexp }}"
+            line: "{{ item.line }}"
         with_items:
-            - "{{ rhel8cis_passwd }}"
-        when:
-            - item.id != "root"
-            - item.id != "sync"
-            - item.id != "shutdown"
-            - item.id != "halt"
-            - rhel8cis_int_gid | int > item.gid
-            - item.shell != "      /bin/false"
-            - item.shell != "      /usr/sbin/nologin"
+            - { regexp: '^minlen', line: 'minlen = {{ rhel8cis_pam_password.minlen }}' }
+            - { regexp: '^minclass', line: 'minclass = {{ rhel8cis_pam_password.minclass }}' }
 
-      - name: "5.5.2 | L1 | PATCH | Ensure system accounts are secured | Lock accounts"
-        user:
-            name: "{{ item.id }}"
-            password_lock: true
+      - name: "5.5.1 | PATCH | Ensure password creation requirements are configured | Set system-auth and password-auth retry settings"
+        lineinfile:
+            path: "{{ item }}"
+            state: present
+            regexp: '^password\s*requisite\s*pam_pwquality.so'
+            line: "password    requisite                                    pam_pwquality.so try_first_pass local_users_only enforce_for_root retry=3"
+            insertbefore: '^#?password ?'
         with_items:
-            - "{{ rhel8cis_passwd }}"
-        when:
-            - item.id != "halt"
-            - item.id != "shutdown"
-            - item.id != "sync"
-            - item.id != "root"
-            - rhel8cis_int_gid | int > item.gid
-            - item.shell != "      /bin/false"
-            - item.shell != "      /usr/sbin/nologin"
+            - /etc/pam.d/system-auth
+            - /etc/pam.d/password-auth
   when:
-      - rhel8cis_rule_5_5_2
+      - rhel8cis_rule_5_5_1
   tags:
       - level1-server
       - level1-workstation
       - patch
-      - rule_5.5.2
+      - rule_5.5.1
 
-- name: "5.5.3 | L1 | PATCH | Ensure default user shell timeout is 900 seconds or less"
-  blockinfile:
-      create: yes
-      mode: 0644
-      dest: "{{ item.dest }}"
-      state: "{{ item.state }}"
-      marker: "# {mark} ANSIBLE MANAGED"
-      block: |
-        # Set session timeout - CIS ID RHEL-08-5.4.5
-        TMOUT={{ rhel8cis_shell_session_timeout.timeout }}
-        export TMOUT
-        readonly TMOUT
-  with_items:
-      - { dest: "{{ rhel8cis_shell_session_timeout.file }}", state: present }
-      - { dest: /etc/profile, state: "{{ (rhel8cis_shell_session_timeout.file == '/etc/profile') | ternary('present', 'absent') }}" }
+- name: "5.5.2 | PATCH | Ensure system accounts are secured | pre RHEL8.2"
+  block:
+      - name: "5.5.2 | PATCH | Ensure lockout for failed password attempts is configured | pre RHEL8.2 | Add deny count and unlock time for preauth"
+        lineinfile:
+            path: /etc/pam.d/{{ item }}
+            state: present
+            regexp: '^auth\s*required\s*pam_faillock.so preauth'
+            line: "auth        required                                     pam_faillock.so preauth silent deny={{ rhel8cis_pam_faillock.attempts }}{{ (rhel8cis_pam_faillock.fail_for_root) | ternary(' even_deny_root ',' ') }}unlock_time={{ rhel8cis_pam_faillock.unlock_time }}"
+            insertafter: '^#?auth ?'
+        with_items:
+            - "system-auth"
+            - "password-auth"
+        when: ansible_distribution_version <= "8.1"
+
+      - name: "5.5.2 | PATCH | Ensure lockout for failed password attempts is configured | pre RHEL8.2 | Add deny count and unlock times for authfail"
+        lineinfile:
+            dest: /etc/pam.d/{{ item }}
+            state: present
+            regexp: '^auth\s*required\s*pam_faillock.so authfail'
+            line: "auth        required                                     pam_faillock.so authfail deny={{ rhel8cis_pam_faillock.attempts }}{{ (rhel8cis_pam_faillock.fail_for_root) | ternary(' even_deny_root ',' ') }}unlock_time={{ rhel8cis_pam_faillock.unlock_time }}"
+            insertafter: '^#?auth ?'
+        with_items:
+            - "system-auth"
+            - "password-auth"
+        when: ansible_distribution_version <= "8.1"
+
+      - name: "5.5.2 | PATCH | Ensure system accounts are secured | RHEL8.2+ "
+        lineinfile:
+            path: /etc/security/faillock.conf
+            state: present
+            regexp: "{{ item.regexp }}"
+            line: "{{ item.line }}"
+        with_items:
+            - { regexp: '^\s*deny\s*=\s*[1-5]\b', line: 'deny = 5' }
+            - { regexp: '^\s*unlock_time\s*=\s*(0|9[0-9][0-9]|[1-9][0-9][0-9][0-9]+)\b', line: 'unlock_time = 900' }
+        when: ansible_distribution_version >= "8.2"
+  when: 
+      - ansible_distribution_version <= "8.1"
+      - rhel8cis_rule_5_5_2
+
+- name: "5.5.3 | PATCH | Ensure password reuse is limited"
+  block:
+      - name: "5.5.3 | PATCH | Ensure password reuse is limited | pwhistory"
+        lineinfile:
+            path: /etc/pam.d/system-auth
+            state: present
+            line: "password    requisite                                    pam_pwhistory.so try_first_pass local_users_only enforce_for_root retry=3 remember={{ rhel8cis_pam_faillock.remember }}"
+            insertafter: '^password\s*requisite\s*pam_pwquality.so'
+
+      - name: "5.5.3 | PATCH | Ensure password reuse is limited | pam_unix"
+        replace:
+            path: /etc/pam.d/system-auth
+            regexp: '^password\s*sufficient\s*pam_unix.so.*$'
+            #after: '^password\s*requisite\s*pam_pwhistory.so'
+            replace: 'password    sufficient                                   pam_unix.so sha512 shadow try_first_pass use_authtok remember={{ rhel8cis_pam_faillock.remember }}'
   when:
       - rhel8cis_rule_5_5_3
   tags:
@@ -62,10 +92,25 @@
       - patch
       - rule_5.5.3
 
-- name: "5.5.4 | L1 | PATCH | Ensure default group for the root account is GID 0"
-  command: usermod -g 0 root
-  changed_when: false
-  failed_when: false
+- name: "5.5.4 | PATCH | Ensure password hashing algorithm is SHA-512"
+  block:
+      - name: "5.5.4 | PATCH | Ensure password hashing algorithm is SHA-512 | libuser.conf"
+        replace:
+            path: "{{ item.path }}"
+            regexp: "{{ item.regexp }}"
+            replace: "{{ item.replace }}"
+        with_items:
+            - { path: /etc/libuser.conf, regexp: '^crypt_style\s*=\s*.*$', replace: 'crypt_style = sha512' }
+            - { path: /etc/login.defs, regexp: '^ENCRYPT_METHOD.*', replace: 'ENCRYPT_METHOD SHA512' }
+
+      - name: "5.5.4 | PATCH | Ensure password reuse is limited | pwhistory"
+        replace:
+            path: "{{ item }}"
+            regexp: '^password\s*sufficient\s*pam_unix.so.*$'
+            replace: 'password    sufficient                                   pam_unix.so sha512 shadow try_first_pass use_authtok remember={{ rhel8cis_pam_faillock.remember }}'
+        with_items:
+            - /etc/pam.d/password-auth
+            - /etc/pam.d/system-auth
   when:
       - rhel8cis_rule_5_5_4
   tags:
@@ -73,24 +118,3 @@
       - level1-workstation
       - patch
       - rule_5.5.4
-
-- name: "5.5.5 | L1 | PATCH | Ensure default user umask is 027 or more restrictive"
-  block:
-      - name: "5.5.5 | L1 | PATCH | Ensure default user umask is 027 or more restrictive | Set umask for /etc/bashrc"
-        replace:
-            path: /etc/bashrc
-            regexp: '(^\s+umask) 0[012][0-6]'
-            replace: '\1 027'
-
-      - name: "5.5.5 | L1 | PATCH | Ensure default user umask is 027 or more restrictive | Set umask for /etc/profile"
-        replace:
-            path: /etc/profile
-            regexp: '(^\s+umask) 0[012][0-6]'
-            replace: '\1 027'
-  when:
-      - rhel8cis_rule_5_5_5
-  tags:
-      - level1-server
-      - level1-workstation
-      - patch
-      - rule_5.5.5

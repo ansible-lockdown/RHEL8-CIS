@@ -160,7 +160,7 @@
             - not rhel8cis_nginx_server
             - "'nginx' in ansible_facts.packages"
   when:
-      - rhel8cis_rule_2_2_9
+      - rhel8cis_rule_2_2_10
   tags:
       - level1-server
       - level1-workstation
@@ -169,7 +169,7 @@
       - httpd
       - nginx
       - webserver
-      - rule_2.2.9
+      - rule_2.2.10
 
 - name: "2.2.11 | PATCH | Ensure IMAP and POP3 server is not installed"
   package:
@@ -273,7 +273,7 @@
 
 - name: "2.2.17 | PATCH | Ensure mail transfer agent is configured for local-only mode"
   lineinfile:
-      dest: /etc/postfix/main.cf
+      path: /etc/postfix/main.cf
       regexp: "^(#)?inet_interfaces"
       line: "inet_interfaces = loopback-only"
   notify: restart postfix

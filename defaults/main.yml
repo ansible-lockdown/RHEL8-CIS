@@ -632,8 +632,8 @@ rhel8cis_futurepwchgdate_autofix: true
 
 ## PAM
 rhel8cis_pam_password:
-    minlen: "14"
-    minclass: "4"
+    minlen: 14
+    minclass: 4
 
 # Starting GID for interactive users
 rhel8cis_int_gid: 1000

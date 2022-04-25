@@ -15,7 +15,7 @@
 
 - name: "1.6.1.2 | PATCH | Ensure SELinux is not disabled in bootloader configuration"
   replace:
-      dest: /etc/default/grub
+      path: /etc/default/grub
       regexp: '(selinux|enforcing)\s*=\s*0\s*'
       replace: ''
   register: selinux_grub_patch
