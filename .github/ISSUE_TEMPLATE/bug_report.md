@@ -23,6 +23,7 @@ What controls are being affected by the issue
  - Ansible Version: [e.g. 2.10] 
  - Host Python Version: [e.g. Python 3.7.6]
  - Ansible Server Python Version: [e.g. Python 3.7.6]
+ - Using branch: [e.g. main]
  - Additional Details:
 
 **Additional Notes**
