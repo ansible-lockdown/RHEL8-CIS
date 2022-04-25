@@ -90,7 +90,7 @@
 - name: "1.8.5 | PATCH | Ensure automatic mounting of removable media is disabled"
   lineinfile:
       path: /etc/dconf/db/local.d/00-media-automount
-      regex: "{{ item.regex }}"
+      regexp: "{{ item.regex }}"
       line: "{{ item.line }}"
       create: yes
   notify: reload dconf
