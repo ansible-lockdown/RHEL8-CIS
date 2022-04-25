@@ -15,6 +15,7 @@ Improvements
 
 - changed crypto to DEFAULT in defaults/main and updated as allowed option
 - 3.4.1.2 - removed enabled option as errors if masked and enable option
+- workflow added branch option to issues.
 
 ## 1.3.6
 
