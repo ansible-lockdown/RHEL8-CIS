@@ -2,13 +2,19 @@
 
 ## 1.3.7
 
-- Issues
-  thanks to @ccravens
+Issues
+
+- thanks to @ccravens
   - #160 & #183 - Please not this changes the variable for the aide cron job from /etc/crontab - manual tidy up maybe required.
-  thanks to @flwitten
+- thanks to @flwitten
   - #180 - update to assert in main.yml and 1.4.1 conditional update
   - #181 - 1.8.5 typo resolved
   - #182 - 1.2.2 fixed variable and enhanced gpg check with vendor key
+
+Improvements
+
+- changed crypto to DEFAULT in defaults/main and updated as allowed option
+- 3.4.1.2 - removed enabled option as errors if masked and enable option
 
 ## 1.3.6
 
