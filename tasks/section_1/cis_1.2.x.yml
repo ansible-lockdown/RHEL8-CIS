@@ -20,11 +20,13 @@
       - skip_ansible_lint  # Added as no_log still errors on ansuible-lint
 
 - name: "1.2.2 | AUDIT | Ensure GPG keys are configured"
-  command: gpg --quiet --with-fingerprint "{{ rpm_gpg_key }}"
+  shell: "PKG=`rpm -qf {{ rpm_gpg_key }}` && rpm -q --queryformat \"%{PACKAGER} %{SIGPGP:pgpsig}\\n\" \"${PKG}\" | grep \"^{{ rpm_packager }}.*Key.ID.{{ rpm_key }}\""
+  changed_when: false
   when:
       - rhel8cis_rule_1_2_2
       - ansible_distribution == "RedHat" or
-        ansible_distribution == "Rocky"
+        ansible_distribution == "Rocky" or
+        ansible_distribution == "AlmaLinux"
   tags:
       - level1-server
       - level1-workstation
