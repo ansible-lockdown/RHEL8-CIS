@@ -10,8 +10,6 @@
   notify: grub2cfg
   when:
       - rhel8cis_set_boot_pass
-      - grub_pass is defined and grub_pass.passhash is defined
-      - grub_pass.passhash | length > 0
       - rhel8cis_rule_1_4_1
   tags:
       - level1-server

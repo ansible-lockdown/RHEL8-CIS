@@ -22,7 +22,6 @@
       - name: "3.4.1.2 | PATCH | Ensure iptables-services not installed with firewalld | Stop running services"
         systemd:
             name: "{{ item }}"
-            enabled: false
             masked: true
         with_items:
             - iptables
