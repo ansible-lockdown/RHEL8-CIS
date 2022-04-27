@@ -90,12 +90,7 @@
       - rhel8cis_section5 or 
         rhel8cis_section6
   tags:
-      - rule_5.5.2
-      - rule_6.2.7
-      - rule_6.2.8
-      - rule_6.2.20
-      - rhel9cis_section5
-      - rhel9cis_section6
+      - always
 
 - name: run Section 1 tasks
   import_tasks: section_1/main.yml
