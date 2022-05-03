@@ -690,6 +690,11 @@ audit_files_url: "some url maybe s3?"
 audit_files: "/var/tmp/{{ benchmark }}-Audit/"
 
 ## Goss configuration information
+# Set correct env for the run_audit.sh script from https://github.com/ansible-lockdown/{{ benchmark }}-Audit.git"
+audit_run_script_environment:
+    AUDIT_BIN: "{{ audit_bin }}"
+    AUDIT_FILE: 'goss.yml'
+    AUDIT_CONTENT_LOCATION: "{{ audit_out_dir }}"
 # Where the goss configs and outputs are stored
 audit_out_dir: '/var/tmp'
 audit_conf_dir: "{{ audit_out_dir }}/{{ benchmark }}-Audit"
