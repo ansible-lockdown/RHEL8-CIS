@@ -90,7 +90,7 @@
 
 - name: "6.1.5 | PATCH |  Ensure permissions on /etc/group are configured"
   file:
-      path: /etc/group-
+      path: /etc/group
       owner: root
       group: root
       mode: 0644
