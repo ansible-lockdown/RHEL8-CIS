@@ -7,6 +7,7 @@
   when:
       - rhel8cis_rule_1_8_1
       - "'gdm' in ansible_facts.packages"
+      - not rhel8cis_gui
   tags:
       - level2-server
       - automated
