@@ -32,7 +32,7 @@
 {% if rhel8cis_rule_4_1_3_7 %}
 -a always,exit -F arch=b64 -S creat,open,openat,truncate,ftruncate -F exit=-EACCES -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=access
 -a always,exit -F arch=b64 -S creat,open,openat,truncate,ftruncate -F exit=-EPERM -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=access
--a always,exit -F arch=b32 -S creat,open,openat,truncate,ftruncate -F exit=-EACCES -F auid>={{ rhel8cis_int_gid }} -F auid!=-4294967295 -F key=access
+-a always,exit -F arch=b32 -S creat,open,openat,truncate,ftruncate -F exit=-EACCES -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=access
 -a always,exit -F arch=b32 -S creat,open,openat,truncate,ftruncate -F exit=-EPERM -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=access
 {% endif %}
 {% if rhel8cis_rule_4_1_3_8 %}
