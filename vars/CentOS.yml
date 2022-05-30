@@ -1,0 +1,6 @@
+---
+# OS Specific Settings
+
+rpm_gpg_key: /etc/pki/rpm-gpg/RPM-GPG-KEY-{{ ansible_distribution|lower }}official
+rpm_packager: "The CentOS Project"
+rpm_key: "8483C65D"  # found on https://www.centos.org/keys/
