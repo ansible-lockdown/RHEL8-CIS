@@ -189,7 +189,7 @@
                 - "The following paths have colon end: {{ rhel8cis_6_2_7_path_colon_end.stdout_lines }}"
                 - "The following paths have a dot in the path: {{ rhel8cis_6_2_7_dot_in_path.stdout_lines }}"
 
-      - name: "6.2.7 | PATCH | Ensure root PATH Integrity (Scored) | Determine rights and owner"
+      - name: "6.2.7 | PATCH | Ensure root PATH Integrity | Determine rights and owner"
         file: >
           path='{{ item }}'
           follow=yes
