@@ -29,7 +29,7 @@ variable "ami_os" {
 
 variable "ami_id" {
   description = "AMI ID reference"
-  type = string
+  type        = string
 }
 
 variable "ami_username" {
