@@ -68,7 +68,6 @@
   tags:
       - level1-server
       - level1-workstation
-      - scored
       - patch
       - mounts
       - rule_1.1.2.1
