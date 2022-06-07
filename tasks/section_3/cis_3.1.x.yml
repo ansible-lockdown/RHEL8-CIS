@@ -60,7 +60,7 @@
 
 - name: "3.1.4 | PATCH | Ensure wireless interfaces are disabled"
   block:
-      - name: "3.1.4 | AUDIT |  Ensure wireless interfaces are disabled | Check if nmcli command is available"
+      - name: "3.1.4 | AUDIT | Ensure wireless interfaces are disabled | Check if nmcli command is available"
         command: rpm -q NetworkManager
         changed_when: false
         failed_when: false
