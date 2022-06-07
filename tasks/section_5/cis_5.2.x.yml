@@ -271,7 +271,7 @@
       - ssh
       - rule_5.2.14
 
-- name: "5.2.15 | L1 | PATCH | Ensure SSH warning banner is configured"
+- name: "5.2.15 | PATCH | Ensure SSH warning banner is configured"
   lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^Banner'
