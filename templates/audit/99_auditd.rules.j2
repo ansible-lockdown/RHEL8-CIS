@@ -26,14 +26,14 @@
 {% endif %}
 {% if rhel8cis_rule_4_1_3_6 %}
 {% for proc in priv_procs.stdout_lines -%}
--a always,exit -F path={{ proc }} -F perm=x -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -k privileged
+-a always,exit -F path={{ proc }} -F perm=x -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -k privileged
 {% endfor %}
 {% endif %}
 {% if rhel8cis_rule_4_1_3_7 %}
--a always,exit -F arch=b64 -S creat,open,openat,truncate,ftruncate -F exit=-EACCES -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=access
--a always,exit -F arch=b64 -S creat,open,openat,truncate,ftruncate -F exit=-EPERM -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=access
--a always,exit -F arch=b32 -S creat,open,openat,truncate,ftruncate -F exit=-EACCES -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=access
--a always,exit -F arch=b32 -S creat,open,openat,truncate,ftruncate -F exit=-EPERM -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=access
+-a always,exit -F arch=b64 -S creat,open,openat,truncate,ftruncate -F exit=-EACCES -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -F key=access
+-a always,exit -F arch=b64 -S creat,open,openat,truncate,ftruncate -F exit=-EPERM -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -F key=access
+-a always,exit -F arch=b32 -S creat,open,openat,truncate,ftruncate -F exit=-EACCES -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -F key=access
+-a always,exit -F arch=b32 -S creat,open,openat,truncate,ftruncate -F exit=-EPERM -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -F key=access
 {% endif %}
 {% if rhel8cis_rule_4_1_3_8 %}
 -w /etc/group -p wa -k identity
@@ -43,16 +43,16 @@
 -w /etc/security/opasswd -p wa -k identity
 {% endif %}
 {% if rhel8cis_rule_4_1_3_9 %}
--a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=perm_mod
--a always,exit -F arch=b64 -S chown,fchown,lchown,fchownat -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=perm_mod
--a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=perm_mod
--a always,exit -F arch=b32 -S lchown,fchown,chown,fchownat -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=perm_mod
--a always,exit -F arch=b64 -S setxattr,lsetxattr,fsetxattr,removexattr,lremovexattr,fremovexattr -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=perm_mod
--a always,exit -F arch=b32 -S setxattr,lsetxattr,fsetxattr,removexattr,lremovexattr,fremovexattr -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=perm_mod
+-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -F key=perm_mod
+-a always,exit -F arch=b64 -S chown,fchown,lchown,fchownat -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -F key=perm_mod
+-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -F key=perm_mod
+-a always,exit -F arch=b32 -S lchown,fchown,chown,fchownat -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -F key=perm_mod
+-a always,exit -F arch=b64 -S setxattr,lsetxattr,fsetxattr,removexattr,lremovexattr,fremovexattr -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -F key=perm_mod
+-a always,exit -F arch=b32 -S setxattr,lsetxattr,fsetxattr,removexattr,lremovexattr,fremovexattr -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -F key=perm_mod
 {% endif %}
 {% if rhel8cis_rule_4_1_3_10 %}
--a always,exit -F arch=b32 -S mount -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -k mounts
--a always,exit -F arch=b64 -S mount -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -k mounts
+-a always,exit -F arch=b32 -S mount -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -k mounts
+-a always,exit -F arch=b64 -S mount -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -k mounts
 {% endif %}
 {% if rhel8cis_rule_4_1_3_11 %}
 -w /var/run/utmp -p wa -k session
@@ -64,28 +64,28 @@
 -w /var/run/faillock -p wa -k logins
 {% endif %}
 {% if rhel8cis_rule_4_1_3_13 %}
--a always,exit -F arch=b64 -S rename,unlink,unlinkat,renameat -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=delete
--a always,exit -F arch=b32 -S rename,unlink,unlinkat,renameat -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -F key=delete
+-a always,exit -F arch=b64 -S rename,unlink,unlinkat,renameat -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -F key=delete
+-a always,exit -F arch=b32 -S rename,unlink,unlinkat,renameat -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -F key=delete
 {% endif %}
 {% if rhel8cis_rule_4_1_3_14 %}
 -w /etc/selinux/ -p wa -k MAC-policy
 -w /usr/share/selinux/ -p wa -k MAC-policy
 {% endif %}
 {% if rhel8cis_rule_4_1_3_15 %}
--a always,exit -F path=/usr/bin/chcon -F perm=x -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -k perm_chng
+-a always,exit -F path=/usr/bin/chcon -F perm=x -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -k perm_chng
 {% endif %}
 {% if rhel8cis_rule_4_1_3_16 %}
--a always,exit -F path=/usr/bin/setfacl -F perm=x -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -k perm_chng
+-a always,exit -F path=/usr/bin/setfacl -F perm=x -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -k perm_chng
 {% endif %}
 {% if rhel8cis_rule_4_1_3_17 %}
--a always,exit -F path=/usr/bin/chacl -F perm=x -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -k priv_cmd
+-a always,exit -F path=/usr/bin/chacl -F perm=x -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -k priv_cmd
 {% endif %}
 {% if rhel8cis_rule_4_1_3_18 %}
--a always,exit -F path=/usr/sbin/usermod -F perm=x -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -k usermod
+-a always,exit -F path=/usr/sbin/usermod -F perm=x -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -k usermod
 {% endif %}
 {% if rhel8cis_rule_4_1_3_19 %}
--a always,exit -F arch=b64 -S init_module,finit_module,delete_module,create_module,query_module -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -k kernel_modules
--a always,exit -F path=/usr/bin/kmod -F perm=x -F auid>={{ rhel8cis_int_gid }} -F auid!=4294967295 -k kernel_modules
+-a always,exit -F arch=b64 -S init_module,finit_module,delete_module,create_module,query_module -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -k kernel_modules
+-a always,exit -F path=/usr/bin/kmod -F perm=x -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -k kernel_modules
 {% endif %}
 {% if rhel8cis_rule_4_1_3_20 %}
 -e 2
