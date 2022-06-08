@@ -466,7 +466,7 @@ rhel8cis_auditd:
   auditd_backlog_limit: {{ rhel8cis_audit_back_log_limit }}
 
 ## syslog
-rhel8_cis_rsyslog: true
+rhel8cis_syslog: {{ rhel8cis_syslog }}
 
 ### Section 5
 rhel8cis_sshd_limited: false
