@@ -20,7 +20,7 @@
       replace: ''
   register: selinux_grub_patch
   ignore_errors: yes
-  notify: grub2cfg
+  notify: rhel8cis_grub2cfg
   when:
       - rhel8cis_rule_1_6_1_2
   tags:
