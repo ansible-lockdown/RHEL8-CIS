@@ -11,7 +11,7 @@
       - "'openssh-server' in ansible_facts.packages"
 
 - name: "SECTION | 5.3 | Configure privilege escalation"
-  include_tasks: cis_5.3.x.yml
+  import_tasks: cis_5.3.x.yml
 
 - name: "SECTION | 5.4 | Configure authselect"
   import_tasks: cis_5.4.x.yml
