@@ -148,7 +148,7 @@
         blockinfile:
             path: /etc/rsyslog.conf
             state: present
-            marker: "#{mark} Auth SETTINGS (ANSIBLE MANAGED)"
+            marker: "#{mark} Cron SETTINGS (ANSIBLE MANAGED)"
             block: |
               # Cron settings to meet CIS standards
               cron.*                                                   /var/log/cron
