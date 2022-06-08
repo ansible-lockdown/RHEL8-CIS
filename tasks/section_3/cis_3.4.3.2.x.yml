@@ -16,7 +16,7 @@
             out_interface: lo
             jump: ACCEPT
 
-      - name: "3.4.3.2.1 | L1 | PATCH | Ensure iptables loopback traffic is configured | INPUT Loopback 127.0.0.0/8"
+      - name: "3.4.3.2.1 | PATCH | Ensure iptables loopback traffic is configured | INPUT Loopback 127.0.0.0/8"
         iptables:
             action: append
             chain: INPUT

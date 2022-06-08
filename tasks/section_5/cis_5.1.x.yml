@@ -64,7 +64,7 @@
       - cron
       - rule_5.1.4
 
-- name: "5.1.5 | L1 | PATCH | Ensure permissions on /etc/cron.weekly are configured"
+- name: "5.1.5 | PATCH | Ensure permissions on /etc/cron.weekly are configured"
   file:
       path: /etc/cron.weekly
       state: directory

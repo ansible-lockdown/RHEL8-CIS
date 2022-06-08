@@ -328,7 +328,7 @@
       - ssh
       - rule_5.2.17
 
-- name: "5.2.18 | L1 | PATCH | Ensure SSH MaxSessions is set to 10 or less"
+- name: "5.2.18 | PATCH | Ensure SSH MaxSessions is set to 10 or less"
   lineinfile:
       path: /etc/ssh/sshd_config
       regexp: "^#MaxSessions|^MaxSessions"
