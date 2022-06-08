@@ -1,5 +1,27 @@
 # Changes to rhel8CIS
 
+## 1.3.8
+
+Issues
+
+- #185 thanks to @flwitten rsyslog and journald work
+- #189
+- #190 being addressed thanks to @ztmr - any feedback helpful on this one
+- #196 #200 thanks to @Thulium-Drake
+- #203 thanks to @scottdoane
+- #204 thanks to @ccravens
+- #206 flush handler tidy up
+
+## improvements
+
+- Dynamic UID discovery
+- Several title updates and alignments
+- Logic and idempotence improvement
+- Tag updates and fixes
+- Removed config no longer used
+- Dynamic container discovery
+- Update container variables and usage
+
 ## 1.3.7
 
 Issues
