@@ -537,7 +537,7 @@ rhel8cis_audit_back_log_limit: 8192
 rhel8cis_max_log_file_size: 10
 
 # OS logging system - either rsyslog or journald or other if 3rd party tool
-rhel8cis_syslog: journald
+rhel8cis_syslog: rsyslog
 rhel8cis_rsyslog_ansiblemanaged: true
 
 # RHEL-08-4.2.1.4/4.2.1.5 remote and destination log server name
