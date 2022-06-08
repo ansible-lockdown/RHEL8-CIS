@@ -270,7 +270,8 @@
             recursive: yes
             etype: "{{ item.1.etype }}"
             permissions: "{{ item.1.mode }}"
-        when: not rhel8cis_system_is_container
+        when: 
+            - not system_is_container
         with_nested:
             - "{{ (ansible_check_mode | ternary(rhel_08_6_2_9_patch_audit, rhel_08_6_2_9_patch)).results |
               rejectattr('skipped', 'defined') | map(attribute='item') | map('first') | list }}"
@@ -356,7 +357,8 @@
             recursive: yes
             etype: "{{ item.1.etype }}"
             permissions: "{{ item.1.mode }}"
-        when: not rhel8cis_system_is_container
+        when: 
+            - not system_is_container
         with_nested:
             - "{{ (ansible_check_mode | ternary(rhel_08_6_2_11_patch_audit, rhel_08_6_2_11_patch)).results |
               rejectattr('skipped', 'defined') | map(attribute='item') | map('first') | list }}"

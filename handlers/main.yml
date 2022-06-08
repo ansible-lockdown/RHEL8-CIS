@@ -8,7 +8,8 @@
       value: '1'
       sysctl_set: yes
   ignore_errors: yes
-  when: ansible_virtualization_type != "docker"
+  when:
+      - not system_is_container
   tags:
       - skip_ansible_lint
 
@@ -19,7 +20,8 @@
       value: '1'
       sysctl_set: yes
   ignore_errors: yes
-  when: ansible_virtualization_type != "docker"
+  when:
+      - not system_is_container
 
 - name: systemd restart tmp.mount
   become: yes
@@ -114,12 +116,6 @@
   become: yes
   service:
       name: rsyslog
-      state: restarted
-
-- name: restart syslog-ng
-  become: yes
-  service:
-      name: syslog-ng
       state: restarted
 
 - name: systemd_daemon_reload

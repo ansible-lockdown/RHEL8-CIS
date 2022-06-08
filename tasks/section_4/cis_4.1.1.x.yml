@@ -31,7 +31,6 @@
   when:
       - not rhel8cis_skip_for_travis
       - rhel8cis_rule_4_1_1_2
-      - ansible_connection != 'docker'
   tags:
       - level2-server
       - level2-workstation
