@@ -301,6 +301,7 @@
       label: "{{ rhel8cis_passwd_label }}"
   when:
       - item.uid >= rhel8uid_interactive_uid_start|int
+      - item.id != 'nobody'
       - rhel8cis_rule_6_2_10
   tags:
       - skip_ansible_lint  # settings found on 6_2_7
