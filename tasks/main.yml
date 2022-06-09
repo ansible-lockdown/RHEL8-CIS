@@ -34,6 +34,28 @@
   tags:
     - always
 
+- name: Setup rules if container
+  block:
+      - name: Discover and set container variable if required
+        set_fact:
+            system_is_container: true
+
+      - name: Load variable for container
+        include_vars:
+            file: "{{ container_vars_file }}"
+
+      - name: output if discovered is a container
+        debug:
+            msg: system has been discovered as a container
+        when:
+            - system_is_container
+  when:
+      - ansible_connection == 'docker' or
+        ansible_virtualization_type in ["docker", "lxc", "openvz", "podman", "container"]
+  tags:
+      - container_discovery
+      - always
+
 - name: "check sugroup exists if used"
   block:
   - name: "Check su group exists if defined"
@@ -123,16 +145,6 @@
   import_tasks: section_6/main.yml
   become: true
   when: rhel8cis_section6
-
-- name: flush handlers
-  meta: flush_handlers
-  tags:
-      - section1
-      - section2
-      - section3
-      - section4
-      - section5
-      - section6
 
 - name: run post remediation tasks
   import_tasks: post.yml

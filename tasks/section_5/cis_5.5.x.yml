@@ -65,9 +65,13 @@
             - { regexp: '^\s*deny\s*=\s*[1-5]\b', line: 'deny = 5' }
             - { regexp: '^\s*unlock_time\s*=\s*(0|9[0-9][0-9]|[1-9][0-9][0-9][0-9]+)\b', line: 'unlock_time = 900' }
         when: ansible_distribution_version >= "8.2"
-  when: 
-      - ansible_distribution_version <= "8.1"
+  when:
       - rhel8cis_rule_5_5_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_5.5.2
 
 - name: "5.5.3 | PATCH | Ensure password reuse is limited"
   block:

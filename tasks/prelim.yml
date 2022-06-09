@@ -9,6 +9,27 @@
   check_mode: no
   register: users
 
+- name: "PRELIM | Gather interactive user ID min and max"
+  block:
+      - name: "PRELIM | Gather interactive user ID min"
+        shell: grep ^UID_MIN /etc/login.defs | awk '{print $2}'
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_min_uid
+
+      - name: "PRELIM | Gather interactive user ID max"
+        shell: grep ^UID_MAX /etc/login.defs | awk '{print $2}'
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_max_uid
+
+      - name: "PRELIM | Setting the fact"
+        set_fact:
+            rhel8uid_interactive_uid_start: "{{ rhel8cis_min_uid.stdout | string }}"
+            rhel8uid_interactive_uid_stop: "{{ rhel8cis_max_uid.stdout | string }}"
+  when:
+      - rhel8uid_info_dynamic
+
 - name: "PRELIM | Gather accounts with empty password fields"
   shell: "cat /etc/shadow | awk -F: '($2 == \"\" ) {j++;print $1; } END {exit j}'"
   args:
@@ -102,12 +123,6 @@
         set_fact:
             grub2_path: /etc/grub2-efi.cfg
         when: rhel_08_efi_boot.stat.exists
-
-# - name: debug legacy boot var
-#   debug:
-#       msg: |
-#           legacy_boot={{ rhel8cis_legacy_boot }}
-#           grub2_path={{ grub2_path }}
 
 - name: "PRELIM | AUDIT | Ensure permissions on bootloader config are configured | Get grub config file stats"
   stat:

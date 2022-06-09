@@ -8,7 +8,8 @@
       value: '1'
       sysctl_set: yes
   ignore_errors: yes
-  when: ansible_virtualization_type != "docker"
+  when:
+      - not system_is_container
   tags:
       - skip_ansible_lint
 
@@ -19,7 +20,8 @@
       value: '1'
       sysctl_set: yes
   ignore_errors: yes
-  when: ansible_virtualization_type != "docker"
+  when:
+      - not system_is_container
 
 - name: systemd restart tmp.mount
   become: yes
@@ -103,7 +105,7 @@
       name: systemd-journal-upload
       state: restarted
 
-- name: grub2cfg
+- name: rhel8cis_grub2cfg
   command: "grub2-mkconfig -o {{ grub_cfg.stat.lnk_source }}"
   ignore_errors: True
   notify: change_requires_reboot
@@ -114,12 +116,6 @@
   become: yes
   service:
       name: rsyslog
-      state: restarted
-
-- name: restart syslog-ng
-  become: yes
-  service:
-      name: syslog-ng
       state: restarted
 
 - name: systemd_daemon_reload

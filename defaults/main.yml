@@ -2,7 +2,10 @@
 # defaults file for rhel8-cis
 
 rhel8cis_skip_for_travis: false
-rhel8cis_system_is_container: false
+system_is_container: false
+# Place to find the container yml file for your environment - /vars/... This can be adjusted for your requirements.
+container_vars_file: is_container.yml
+
 os_check: true
 # rhel8cis is left off the front of this var for consistency in testing pipeline
 # system_is_ec2 toggle will disable tasks that fail on Amazon EC2 instances. Set true to skip and false to run tasks
@@ -521,6 +524,7 @@ rhel8cis_warning_banner: |
 
 ## Section4 vars
 
+
 rhel8cis_auditd:
     space_left_action: email
     action_mail_acct: root
@@ -535,10 +539,14 @@ rhel8cis_audit_back_log_limit: 8192
 # The max_log_file parameter should be based on your sites policy
 rhel8cis_max_log_file_size: 10
 
-# RHEL-08-4.2.1.4/4.2.1.5 remote and destation log server name
+# OS logging system - either rsyslog or journald or other if 3rd party tool
+rhel8cis_syslog: rsyslog
+rhel8cis_rsyslog_ansiblemanaged: true
+
+# RHEL-08-4.2.1.4/4.2.1.5 remote and destination log server name
 rhel8cis_remote_log_server: logagg.example.com
 
-# 4.2.1.5
+# 4.2.1.5, 4.2.2.1.3, 4.2.2.1.4
 rhel8cis_system_is_log_server: false
 
 # 4.2.2.1.2
@@ -619,9 +627,7 @@ rhel8cis_pass:
     max_days: 365
     min_days: 7
     warn_age: 7
-# Syslog system - either rsyslog or syslog-ng
-rhel8cis_syslog: rsyslog
-rhel8cis_rsyslog_ansiblemanaged: true
+
 
 # 5.6.1.4
 rhel8cis_inactivelock:
@@ -635,8 +641,10 @@ rhel8cis_pam_password:
     minlen: 14
     minclass: 4
 
-# Starting GID for interactive users
-rhel8cis_int_gid: 1000
+# This is a dynamic check but can be overridden here marking it as false and uncomment
+rhel8uid_info_dynamic: true
+#rhel8uid_interactive_uid_start: 1000
+#rhel8uid_interactive_uid_stop: 60000
 
 # 5.6.3
 # Session timeout setting file (TMOUT setting can be set in multiple files)

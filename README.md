@@ -29,6 +29,18 @@ To use release version please point to main branch
 - [Wiki](https://github.com/ansible-lockdown/RHEL8-CIS/wiki)
 - [Repo GitHub Page](https://ansible-lockdown.github.io/RHEL8-CIS/)
 
+### Running level1 or level2 only
+
+While the defaults/main.yml has the options this is used for auditing purposes.
+In order to run level(1|2)-server level(1|2)-workstation  This is carried out via tags.
+
+e.g.
+
+``` shell
+ansible-playbook -l test-server -i test_inv site.yml -t level1-server
+
+```
+
 ## Auditing (new)
 
 This can be turned on or off within the defaults/main.yml file with the variable rhel8cis_run_audit. The value is false by default, please refer to the wiki for more details.
@@ -129,6 +141,13 @@ uses:
 - ansible collections - pulls in the latest version based on requirements file
 - runs the audit using the devel branch
 - This is an automated test that occurs on pull requests into devel
+
+## known-issues
+
+cloud0init - due to a bug this will stop working if noexec is added to /var.
+rhel8cis_rule_1_1_3_3
+
+https://bugs.launchpad.net/cloud-init/+bug/1839899
 
 ## Support
 
