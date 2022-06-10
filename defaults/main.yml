@@ -502,8 +502,9 @@ rhel8cis_int_zone: customezone
 rhel8cis_interface: eth0
 
 rhel8cis_firewall_services:
-    - ssh
+    - cockpit
     - dhcpv6-client
+    - ssh
 
 # 3.4.2.5 Set nftables new table create
 # 3.4.2.6
