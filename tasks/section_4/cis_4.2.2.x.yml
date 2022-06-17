@@ -53,7 +53,7 @@
 
 - name: "4.2.2.1.4 | PATCH | Ensure journald is not configured to recieve logs from a remote client"
   systemd:
-      name: systemd-journal-remote
+      name: systemd-journal-remote.socket
       state: stopped
       enabled: no
       masked: yes
