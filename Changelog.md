@@ -2,7 +2,7 @@
 
 ## 1.3.9
 
-Improvemenst for idempotents
+Improvements for idempotency
 
 - update to auditd template
   - uses facts and template new variable
