@@ -2,6 +2,8 @@
 
 ## 1.3.9
 
+- tidy up become statements
+
 Improvements for idempotency
 
 - update to auditd template
@@ -9,6 +11,7 @@ Improvements for idempotency
     - update_audit_template (default false)
 - 3.4.1.5 discovery improvement
 - 5.6.1.4 discovery improvement
+
 
 ## 1.3.8
 
