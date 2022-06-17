@@ -146,6 +146,14 @@
   become: true
   when: rhel8cis_section6
 
+- name: run auditd logic
+  import_tasks: auditd.yml
+  become: true
+  when:
+      - update_audit_template
+  tags:
+      - always
+
 - name: run post remediation tasks
   import_tasks: post.yml
   become: true

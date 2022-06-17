@@ -524,6 +524,7 @@ rhel8cis_warning_banner: |
 
 ## Section4 vars
 
+update_audit_template: false
 
 rhel8cis_auditd:
     space_left_action: email
