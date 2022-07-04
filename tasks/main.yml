@@ -26,11 +26,35 @@
 
 - name: Check rhel8cis_bootloader_password_hash variable has been changed
   assert:
-      that: rhel8cis_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'
-      msg: "This role will not be able to run single user password commands as rhel8cis_bootloader_password_hash variable has not been set"
+      that: rhel8cis_bootloader_password_hash.find('grub.pbkdf2.sha512') != -1 and rhel8cis_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'
+      msg: "This role will not be able to run single user password commands as rhel8cis_bootloader_password_hash variable has not been set correctly"
   when:
       - rhel8cis_set_boot_pass
-      - rhel8cis_rule_1_5_2
+      - rhel8cis_rule_1_4_1
+  tags:
+    - always
+
+- name: Setup rules if container
+  block:
+      - name: Discover and set container variable if required
+        set_fact:
+            system_is_container: true
+
+      - name: Load variable for container
+        include_vars:
+            file: "{{ container_vars_file }}"
+
+      - name: output if discovered is a container
+        debug:
+            msg: system has been discovered as a container
+        when:
+            - system_is_container
+  when:
+      - ansible_connection == 'docker' or
+        ansible_virtualization_type in ["docker", "lxc", "openvz", "podman", "container"]
+  tags:
+      - container_discovery
+      - always
 
 - name: "check sugroup exists if used"
   block:
@@ -88,58 +112,43 @@
       - rhel8cis_section5 or 
         rhel8cis_section6
   tags:
-      - rule_5.5.2
-      - rule_6.2.7
-      - rule_6.2.8
-      - rule_6.2.20
-      - rhel9cis_section5
-      - rhel9cis_section6
+      - always
 
 - name: run Section 1 tasks
   import_tasks: section_1/main.yml
-  become: true
   when: rhel8cis_section1
   tags:
       - rhel8cis_section1
 
 - name: run Section 2 tasks
   import_tasks: section_2/main.yml
-  become: true
   when: rhel8cis_section2
 
 - name: run Section 3 tasks
   import_tasks: section_3/main.yml
-  become: true
   when: rhel8cis_section3
 
 - name: run Section 4 tasks
   import_tasks: section_4/main.yml
-  become: true
   when: rhel8cis_section4
 
 - name: run Section 5 tasks
   import_tasks: section_5/main.yml
-  become: true
   when: rhel8cis_section5
 
 - name: run Section 6 tasks
   import_tasks: section_6/main.yml
-  become: true
   when: rhel8cis_section6
 
-- name: flush handlers
-  meta: flush_handlers
+- name: run auditd logic
+  import_tasks: auditd.yml
+  when:
+      - update_audit_template
   tags:
-      - section1
-      - section2
-      - section3
-      - section4
-      - section5
-      - section6
+      - always
 
 - name: run post remediation tasks
   import_tasks: post.yml
-  become: true
   tags:
       - post_tasks
       - always

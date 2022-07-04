@@ -189,7 +189,7 @@
                 - "The following paths have colon end: {{ rhel8cis_6_2_7_path_colon_end.stdout_lines }}"
                 - "The following paths have a dot in the path: {{ rhel8cis_6_2_7_dot_in_path.stdout_lines }}"
 
-      - name: "6.2.7 | PATCH | Ensure root PATH Integrity (Scored) | Determine rights and owner"
+      - name: "6.2.7 | PATCH | Ensure root PATH Integrity | Determine rights and owner"
         file: >
           path='{{ item }}'
           follow=yes
@@ -230,7 +230,7 @@
         stat:
             path: "{{ item }}"
         register: rhel_08_6_2_9_audit
-        with_items: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8cis_int_gid) | selectattr('uid', '!=', 65534) | map(attribute='dir') | list }}"
+        with_items: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8uid_interactive_uid_start|int ) | selectattr('uid', '<=', rhel8uid_interactive_uid_stop|int ) | map(attribute='dir') | list }}"
 
       - name: "6.2.9 | AUDIT | Ensure all users' home directories exist"
         command: find -H {{ item.0 | quote }} -not -type l -perm /027
@@ -270,7 +270,8 @@
             recursive: yes
             etype: "{{ item.1.etype }}"
             permissions: "{{ item.1.mode }}"
-        when: not rhel8cis_system_is_container
+        when: 
+            - not system_is_container
         with_nested:
             - "{{ (ansible_check_mode | ternary(rhel_08_6_2_9_patch_audit, rhel_08_6_2_9_patch)).results |
               rejectattr('skipped', 'defined') | map(attribute='item') | map('first') | list }}"
@@ -299,7 +300,8 @@
   loop_control:
       label: "{{ rhel8cis_passwd_label }}"
   when:
-      - item.uid >= rhel8cis_int_gid
+      - item.uid >= rhel8uid_interactive_uid_start|int
+      - item.id != 'nobody'
       - rhel8cis_rule_6_2_10
   tags:
       - skip_ansible_lint  # settings found on 6_2_7
@@ -315,7 +317,7 @@
       - name: "6.2.11 | AUDIT | Ensure users' home directories permissions are 750 or more restrictive"
         stat:
             path: "{{ item }}"
-        with_items: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8cis_int_gid) | selectattr('uid', '!=', 65534) | map(attribute='dir') | list }}"
+        with_items: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8uid_interactive_uid_start|int) | selectattr('uid', '<=', rhel8uid_interactive_uid_stop|int) | map(attribute='dir') | list }}"
         register: rhel_08_6_2_11_audit
 
       - name: "6.2.11 | AUDIT | Ensure users' home directories permissions are 750 or more restrictive"
@@ -356,7 +358,8 @@
             recursive: yes
             etype: "{{ item.1.etype }}"
             permissions: "{{ item.1.mode }}"
-        when: not rhel8cis_system_is_container
+        when: 
+            - not system_is_container
         with_nested:
             - "{{ (ansible_check_mode | ternary(rhel_08_6_2_11_patch_audit, rhel_08_6_2_11_patch)).results |
               rejectattr('skipped', 'defined') | map(attribute='item') | map('first') | list }}"

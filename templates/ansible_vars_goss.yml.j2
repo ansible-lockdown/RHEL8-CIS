@@ -452,8 +452,7 @@ rhel8cis_firewall_interface:
 - enp0s3 
 - enp0s8
 
-rhel8cis_firewall_services: {{ rhel8cis_firewall_services }}
-
+rhel8cis_firewall_services: {% for svc in rhel8cis_firewall_services %}{{ svc }} {% endfor %}
 
 
 ### Section 4
@@ -466,7 +465,7 @@ rhel8cis_auditd:
   auditd_backlog_limit: {{ rhel8cis_audit_back_log_limit }}
 
 ## syslog
-rhel8_cis_rsyslog: true
+rhel8cis_syslog: {{ rhel8cis_syslog }}
 
 ### Section 5
 rhel8cis_sshd_limited: false

@@ -13,7 +13,7 @@
             - item.id != "sync"
             - item.id != "shutdown"
             - item.id != "halt"
-            - rhel8cis_int_gid | int < item.gid
+            - item.gid < rhel8uid_interactive_uid_start | int
             - item.shell != "      /bin/false"
             - item.shell != "      /usr/sbin/nologin"
         loop_control:
@@ -31,7 +31,7 @@
             - item.id != "sync"
             - item.id != "root"
             - item.id != "nfsnobody"
-            - rhel8cis_int_gid | int < item.gid
+            - item.gid < rhel8uid_interactive_uid_start | int
             - item.shell != "      /bin/false"
             - item.shell != "      /usr/sbin/nologin"
         loop_control:

@@ -41,6 +41,7 @@
       state: started
       enabled: yes
   when:
+      - rhel8cis_system_is_log_server
       - rhel8cis_rule_4_2_2_1_3
   tags:
       - level1-server
@@ -52,11 +53,12 @@
 
 - name: "4.2.2.1.4 | PATCH | Ensure journald is not configured to recieve logs from a remote client"
   systemd:
-      name: systemd-journal-remote
+      name: systemd-journal-remote.socket
       state: stopped
       enabled: no
       masked: yes
   when:
+      - not rhel8cis_system_is_log_server
       - rhel8cis_rule_4_2_2_1_4
   tags:
       - level1-server

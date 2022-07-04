@@ -14,7 +14,8 @@
         modprobe:
             name: cramfs
             state: absent
-        when: ansible_connection != 'docker'
+        when:
+            - not system_is_container
   when:
       - rhel8cis_rule_1_1_1_1
   tags:
@@ -39,7 +40,8 @@
         modprobe:
             name: squashfs
             state: absent
-        when: ansible_connection != 'docker'
+        when:
+            - not system_is_container
   when:
       - rhel8cis_rule_1_1_1_2
   tags:
@@ -64,7 +66,8 @@
         modprobe:
             name: udf
             state: absent
-        when: ansible_connection != 'docker'
+        when:
+            - not system_is_container
   when:
       - rhel8cis_rule_1_1_1_3
   tags:

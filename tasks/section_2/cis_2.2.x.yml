@@ -22,6 +22,7 @@
   when:
       - rhel8cis_rule_2_2_2
       - "'xorg-x11-server-common' in ansible_facts.packages"
+      - not rhel8cis_xwindows_required or not rhel8cis_gui
   tags:
       - level1-server
       - automated

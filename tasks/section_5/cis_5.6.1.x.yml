@@ -59,13 +59,13 @@
         when: rhel8cis_5_6_1_4_inactive_settings.stdout | length == 0
 
       - name: "5.6.1.4 | AUDIT | Ensure inactive password lock is 30 days or less | Getting user list"
-        shell: 'egrep ^[^:]+:[^\!*] /etc/shadow | cut -d: -f1'
+        shell: "awk -F: '/^[^#:]+:[^\\!\\*:]*:[^:]*:[^:]*:[^:]*:[^:]*:(\\s*|-1|3[1-9]|[4-9][0-9]|[1-9][0-9][0-9]+):[^:]*:[^:]*\\s*$/ {print $1}' /etc/shadow"
         changed_when: false
         check_mode: no
         register: rhel_8_5_6_1_4_user_list
 
       - name: "5.6.1.4 | PATCH | Ensure inactive password lock is 30 days or less | Apply Inactive setting to existing accounts"
-        command: chage --inactive {{ rhel8cis_inactivelock.lock_days }} "{{ item }}"
+        command: "chage --inactive {{ rhel8cis_inactivelock.lock_days }} {{ item }}"
         with_items:
             - "{{ rhel_8_5_6_1_4_user_list.stdout_lines }}"
   when:
