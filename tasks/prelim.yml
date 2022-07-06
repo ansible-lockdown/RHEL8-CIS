@@ -70,7 +70,7 @@
       name: dconf
       state: present
   when:
-      - "'dconf' not in ansible_facts.packages"
+      - "'gdm' in ansible_facts.packages"
       - rhel8cis_rule_1_8_2 or
         rhel8cis_rule_1_8_3 or
         rhel8cis_rule_1_8_5
