@@ -124,24 +124,28 @@ default                    : ok=270  changed=23   unreachable=0    failed=0    s
 - reports - This is a protected branch for our scoring reports, no code should ever go here
 - all other branches** - Individual community member branches
 
-## Lifecycle
+## Lifecycle of releases and branches
 
-- devel branch release
-  - Updates - bug fixes PRs etc
+While Remediate and Audit are managed individually some of the content is linked. Ther are occasions where both need updating or just one of them.
 
-    We aim to get the majority merged to devel in approx 2-4 weeks. This maybe expedited if a customer has a requirement.
+As a general rule we try to abide to the following lifecycle process for branches and releases inclduing ansible-galaxy sync updates. Being community we do have direct customer requests
+and requirements will take priority in releases.
 
-- Main branch release
-  - New benchmark version release
+- devel branch
+  - Staging area for bug fixes PRs and new benchmarks.
 
-    Dependant on the number of changes required and customer priorities we aim to carry the initial update in around 4 weeks.
+    We aim to get the majority of PRs merged to devel in 2-4 weeks.
 
-  - merge of devel for updates
+- Main branch
+  - Merge of devel in to main.
 
     This is dependant on the severity and impact of issues closed. Normally a release alignment every 8-12 weeks (sometimes much quicker)
 
-- Audit
-  - This is generally released in alignment with the this remediation role for releases.
+  - New benchmark version release.
+
+    Once a new benchmark has been released by the provider we aim to get to a new tagged release in 2-4 weeks
+
+  - This is also the where the releases are sourced and linked with ansible-galaxy.
 
 ## Community Contribution
 
@@ -174,7 +178,7 @@ This is a community project at its core and will be managed as such. Please prov
 
 Refer to linked below drop us a message for further information
 
-- [lockdown-enterprise](https://www.lockdownenterprise.com)
+- [Lockdown Enterprise](https://www.lockdownenterprise.com)
   - support for individual repository benchmarks
     - advice on how to use and adopt and priority issue adoption
 - [Ansible Counselor](https://www.mindpointgroup.com/cybersecurity-products/ansible-counselor)
