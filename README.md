@@ -10,7 +10,7 @@ Based on [CIS RedHat Enterprise Linux 8 Benchmark v2.0.0 - 02-23-2022 ](https://
 
 ## Join us
 
-On our [Discord Server](https://discord.gg/JFxpSgPFEJ) to ask questions, discuss features, or just chat with other Ansible-Lockdown users
+On our [Discord Server](https://discord.io/ansible-lockdownJ) to ask questions, discuss features, or just chat with other Ansible-Lockdown users
 
 ## Caution(s)
 
@@ -124,6 +124,25 @@ default                    : ok=270  changed=23   unreachable=0    failed=0    s
 - reports - This is a protected branch for our scoring reports, no code should ever go here
 - all other branches** - Individual community member branches
 
+## Lifecycle
+
+- devel branch release
+  - Updates - bug fixes PRs etc
+
+    We aim to get the majority merged to devel in approx 2-4 weeks. This maybe expedited if a customer has a requirement.
+
+- Main branch release
+  - New benchmark version release
+
+    Dependant on the number of changes required and customer priorities we aim to carry the initial update in around 4 weeks.
+
+  - merge of devel for updates
+
+    This is dependant on the severity and impact of issues closed. Normally a release alignment every 8-12 weeks (sometimes much quicker)
+
+- Audit
+  - This is generally released in alignment with the this remediation role for releases.
+
 ## Community Contribution
 
 We encourage you (the community) to contribute to this role. Please read the rules below.
@@ -151,9 +170,16 @@ https://bugs.launchpad.net/cloud-init/+bug/1839899
 
 ## Support
 
-This is a community project at its core and will be managed as such.
+This is a community project at its core and will be managed as such. Please provide as much information as possible and utilise the community [Discord Server](https://discord.io/ansible-lockdown).
 
-If you would are interested in dedicated support to assist or provide bespoke setups
+Refer to linked below drop us a message for further information
 
-- [Ansible Counselor](https://www.mindpointgroup.com/products/ansible-counselor-on-demand-ansible-services-and-consulting/)
-- [Try us out](https://engage.mindpointgroup.com/try-ansible-counselor)
+- [lockdown-enterprise](https://www.lockdownenterprise.com)
+  - support for individual repository benchmarks
+    - advice on how to use and adopt and priority issue adoption
+- [Ansible Counselor](https://www.mindpointgroup.com/cybersecurity-products/ansible-counselor)
+  - support for all available repos and enhanced support around ansible usage
+
+Bespoke automation support - ansible and otrher products
+
+- Please enquire for specific requirements
