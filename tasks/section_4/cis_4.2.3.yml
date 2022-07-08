@@ -1,9 +1,66 @@
 ---
 
 - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured"
-  command: find /var/log -type f -exec chmod g-wx,o-rwx "{}" +
-  changed_when: false
-  failed_when: false
+  block:
+      - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Find log files"
+        find:
+            paths: /var/log
+            recurse: yes
+            patterns: '*.log'
+        register: rhel8cis_4_2_3_logfiles
+
+      - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Apply permissions to existing logfiles"
+        file:
+            path: "{{ item.path }}"
+            mode: g-w,o-rwx
+        with_items:
+            - "{{ rhel8cis_4_2_3_logfiles.files }}"
+        loop_control:
+            label: "{{ item.path }}"
+
+      - block:
+            - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Find logrotate conf files"
+              find:
+                  paths: /etc/logrotate.d
+                  contains: '^\s+create 06[5-7][0-7]'
+              register: rhel8cis_4_2_3_logrotate_conf_files
+
+            - debug:
+                msg: "{{ item }}"
+              loop: "{{ rhel8cis_4_2_3_logrotate_conf_files.files }}"
+              loop_control:
+                  label: "{{ item.path }}"
+
+            - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | update logrotate.conf"
+              lineinfile:
+                  path: /etc/logrotate.conf
+                  regexp: '^create'
+                  line: "create 0640"
+
+            - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | update logrotate.d conf files"
+              replace:
+                  path: "{{ item.path }}"
+                  regexp: 'create [0-7][0-7][0-7][0-7]'
+                  replace: 'create'
+              loop: "{{ rhel8cis_4_2_3_logrotate_conf_files.files }}"
+              loop_control:
+                  label: "{{ item.path }}"
+              when:
+                  - rhel8cis_4_2_3_logrotate_conf_files.files | length >= 1
+                  - allow_logrotate_conf_umask_updates
+            
+            - block:
+                  - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | warning logrotate.d conf files"
+                    debug:
+                        msg: "Warning!! logrotate.d conf file have create mode that will not match CIS requirements upon rotation"
+                  
+                  - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Set Warning fact"
+                    set_fact:
+                         control_number: "{{ control_number }} + [ 'rule_4.2.3' ]"
+                         warn_count: "{{ warn_count|int + 1 }}"
+              when:
+                  - rhel8cis_4_2_3_logrotate_conf_files.files | length >= 1
+                  - not allow_logrotate_conf_umask_updates
   when:
       - rhel8cis_rule_4_2_3
   tags:
