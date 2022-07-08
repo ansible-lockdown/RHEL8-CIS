@@ -18,7 +18,7 @@
 
       - name:  "2.4 | AUDIT | Ensure nonessential services are removed or masked | Warn Count"
         set_fact:
-            control_number: "{{ control_number }} + [ '2.4' ]"
+            control_number: "{{ control_number }} + [ 'rule_2.4' ]"
             warn_count: "{{ warn_count|int + 1 }}"
   when:
       - rhel8cis_rule_2_4

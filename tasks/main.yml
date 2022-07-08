@@ -170,6 +170,6 @@
 
 - name: Output Warning count and control IDs affected
   debug:
-    msg: "You have {{ warn_count }} warning that require investigating that are related to the following benchmark ID(s) {{ control_number }}"
+    msg: "You have {{ warn_count }} warning(s) that require investigating that are related to the following benchmark ID(s) {{ control_number }}"
   tags:
       - always
