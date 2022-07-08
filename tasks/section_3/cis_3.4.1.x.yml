@@ -100,18 +100,23 @@
 
 - name: "3.4.1.6 | AUDIT | Ensure network interfaces are assigned to appropriate zone"
   block:
-      - name: "3.4.1.6 | AUDIT | Ensure network interfaces are assigned to appropriate zone | Get list of interfaces and polocies"
+      - name: "3.4.1.6 | AUDIT | Ensure network interfaces are assigned to appropriate zone | Get list of interfaces and policies"
         shell: "nmcli -t connection show | awk -F: '{ if($4){print $4} }' | while read INT; do firewall-cmd --get-active-zones | grep -B1 $INT; done"
         changed_when: false
         failed_when: false
         check_mode: no
         register: rhel8cis_3_4_1_6_interfacepolicy
 
-      - name: "3.4.1.6 | AUDIT | Ensure network interfaces are assigned to appropriate zone | Get list of interfaces and polocies | Show the interface to policy"
+      - name: "3.4.1.6 | AUDIT | Ensure network interfaces are assigned to appropriate zone | Get list of interfaces and policies | Show the interface to policy"
         debug:
             msg:
-                - "The items below are the policies tied to the interfaces, please correct as needed"
+                - "Warning!! The items below are the policies tied to the interfaces, please correct as needed"
                 - "{{ rhel8cis_3_4_1_6_interfacepolicy.stdout_lines }}"
+
+      - name: "3.4.1.6 | AUDIT | Ensure network interfaces are assigned to appropriate zone | warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_3.4.1.6' ]"
+            warn_count: "{{ warn_count|int + 1 }}"
   when:
       - rhel8cis_firewall == "firewalld"
       - rhel8cis_rule_3_4_1_6

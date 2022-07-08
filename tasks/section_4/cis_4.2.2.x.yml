@@ -85,7 +85,13 @@
       - name: "4.2.2.2 | AUDIT | Ensure journald service is enabled | Alert on bad status"
         debug:
             msg:
-                - "ALERT! The status of systemd-journald should be static and it is not. Please investigate"
+                - "Warning!! The status of systemd-journald should be static and it is not. Please investigate"
+        when: "'static' not in rhel8cis_4_2_2_2_status.stdout"
+
+      - name: "4.2.2.2 | AUDIT | Ensure journald service is enabled | Warn Count"
+        set_fact:
+            control_number: "{{ control_number }} + [ '4.2.2.2' ]"
+            warn_count: "{{ warn_count|int + 1 }}"
         when: "'static' not in rhel8cis_4_2_2_2_status.stdout"
   when:
       - rhel8cis_rule_4_2_2_2
@@ -191,9 +197,13 @@
       - name: "4.2.2.7 | AUDIT | Ensure journald default file permissions configured | Display file settings"
         debug:
             msg:
-                - "Alert! Below are the current default settings for journald, please confirm they align with your site policies"
-                # - "{{ rhel8cis_4_2_2_7_override_settings.stdout_lines }}"
+                - "Warning!! Below are the current default settings for journald, please confirm they align with your site policies"
                 - "{{ (rhel8cis_4_2_2_7_override_status.matched >= 1) | ternary(rhel8cis_4_2_2_7_override_settings.stdout_lines, rhel8cis_4_2_2_7_notoverride_settings.stdout_lines) }}"
+
+      - name: "4.2.2.7 | AUDIT | Ensure journald default file permissions configured | Warn Count"
+        set_fact:
+            control_number: "{{ control_number }} + [ '1.1.2.1' ]"
+            warn_count: "{{ warn_count|int + 1 }}"
   when:
       - rhel8cis_rule_4_2_2_7
   tags:
