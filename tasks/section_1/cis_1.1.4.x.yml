@@ -5,9 +5,16 @@
   block:
       - name: "1.1.4.1 | AUDIT | Ensure separate partition exists for /var/tmp | Absent"
         debug:
-            msg: "Warning! {{ required_mount }} doesn't exist. This is a manual task"
+            msg: "Warning!! {{ required_mount }} doesn't exist. This is a manual task"
         register: var_tmp_mount_absent
         changed_when: var_tmp_mount_absent.skipped is undefined
+        when:
+            - required_mount not in mount_names
+
+      - name: "1.1.4.1 | AUDIT | Ensure separate partition exists for /var/tmp | Warn Count"
+        set_fact:
+            control_number: "{{ control_number }} + [ '1.1.4.1' ]"
+            warn_count: "{{ warn_count|int + 1 }}"
         when:
             - required_mount not in mount_names
 

@@ -4,11 +4,19 @@
   block:
       - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Absent"
         debug:
-            msg: "Warning! {{ required_mount }} doesn't exist. This is a manual task"
+            msg: "Warning!! {{ required_mount }} doesn't exist. This is a manual task"
         register: var_log_audit_mount_absent
         changed_when: var_log_audit_mount_absent.skipped is undefined
         when:
             - required_mount not in mount_names
+
+      - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Warn Count"
+        set_fact:
+            control_number: "{{ control_number }} + [ '1.1.6.1' ]"
+            warn_count: "{{ warn_count|int + 1 }}"
+        when:
+            - required_mount not in mount_names
+
       - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Present"
         debug:
             msg: "Congratulations: {{ required_mount }} exists."
