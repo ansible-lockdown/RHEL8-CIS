@@ -566,6 +566,10 @@ rhel8cis_journald_runtimekeepfree: 100G
 # rhel8cis_journald_MaxFileSec is how long in time to keep log files. Values are Xm, Xh, Xday, Xweek, Xmonth, Xyear, for example 2week is two weeks
 rhel8cis_journald_maxfilesec: 1month
 
+# 4.2.3 logrotate configuration
+# change to true if you wish to change logrotate.d conf files
+allow_logrotate_conf_umask_updates: false
+
 ## Section5 vars
 
 rhel8cis_sshd:

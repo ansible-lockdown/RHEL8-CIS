@@ -94,8 +94,15 @@
 
       - name: "1.6.1.6 | AUDIT | Ensure no unconfined services exist | Message on unconfined services"
         debug:
-            msg: "Warning! You have unconfined services: {{ rhelcis_1_6_1_6_unconf_services.stdout_lines }}"
+            msg: "Warning!! You have unconfined services: {{ rhelcis_1_6_1_6_unconf_services.stdout_lines }}"
         when: rhelcis_1_6_1_6_unconf_services.stdout | length > 0
+
+      - name: "1.6.1.6 | AUDIT | Ensure no unconfined services exist | warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_1.6.1.6 ]"
+            warn_count: "{{ warn_count|int + 1 }}"
+        when: rhelcis_1_6_1_6_unconf_services.stdout | length > 0
+
   when:
       - rhel8cis_rule_1_6_1_6
   tags:

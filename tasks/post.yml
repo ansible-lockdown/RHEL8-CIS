@@ -24,6 +24,14 @@
         when:
             - change_requires_reboot
             - skip_reboot
+
+      - name: "POST | Warning a reboot required but skip option set | warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'Reboot Required' ]"
+            warn_count: "{{ warn_count|int + 1 }}"
+        when:
+            - change_requires_reboot
+            - skip_reboot
   tags:
       - grub
       - level1-server
@@ -36,3 +44,9 @@
       - rhel8cis_section4
       - rhel8cis_section5
       - rhel8cis_section6
+
+- name: If Warning count is 0 set fact
+  set_fact:
+      control_number: "Congratulation None Found"
+  when:
+     - warn_count == '0'
