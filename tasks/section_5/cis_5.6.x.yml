@@ -14,8 +14,8 @@
             - item.id != "shutdown"
             - item.id != "halt"
             - item.gid < rhel8uid_interactive_uid_start | int
-            - item.shell != "      /bin/false"
-            - item.shell != "      /usr/sbin/nologin"
+            - item.shell != "/bin/false"
+            - item.shell != "/usr/sbin/nologin"
         loop_control:
             label: "{{ item.id }}"
 
@@ -32,8 +32,8 @@
             - item.id != "root"
             - item.id != "nfsnobody"
             - item.gid < rhel8uid_interactive_uid_start | int
-            - item.shell != "      /bin/false"
-            - item.shell != "      /usr/sbin/nologin"
+            - item.shell != "/bin/false"
+            - item.shell != "/usr/sbin/nologin"
         loop_control:
             label: "{{ item.id }}"
   when:
