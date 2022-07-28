@@ -34,13 +34,13 @@
       - name: "6.2.2 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Print warning about users with invalid GIDs missing GID entries in /etc/group"
         debug:
             msg: "Warning!! The following users have non-existent GIDs (Groups): {{ rhel8cis_6_2_2_passwd_gid_check.stdout_lines | join (', ') }}"
-        when: rhel8cis_6_2_2_passwd_gid_check.stdout is defined
+        when: rhel8cis_6_2_2_passwd_gid_check.stdout | length > 0
 
       - name: "6.2.2 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.2' ]"
             warn_count: "{{ warn_count|int + 1 }}"
-        when: rhel8cis_6_2_2_passwd_gid_check.stdout is defined
+        when: rhel8cis_6_2_2_passwd_gid_check.stdout | length > 0
   when:
       - rhel8cis_rule_6_2_2
   tags:
@@ -63,18 +63,18 @@
       - name: "6.2.3 | AUDIT | Ensure no duplicate UIDs exist | Print message that no duplicate UIDs exist"
         debug:
             msg: "Good News! There are no duplicate UID's in the system"
-        when: rhel8cis_6_2_3_user_uid_check.stdout is not defined
+        when: rhel8cis_6_2_3_user_uid_check.stdout | length == 0
 
       - name: "6.2.3 | AUDIT| Ensure no duplicate UIDs exist | Print warning about users with duplicate UIDs"
         debug:
             msg: "Warning!! The following users have UIDs that are duplicates: {{ rhel8cis_6_2_3_user_uid_check.stdout_lines }}"
-        when: rhel8cis_6_2_3_user_uid_check.stdout is defined
+        when: rhel8cis_6_2_3_user_uid_check.stdout | length > 0
 
       - name: "6.2.3 | AUDIT| Ensure no duplicate UIDs exist | warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.3' ]"
             warn_count: "{{ warn_count|int + 1 }}"
-        when: rhel8cis_6_2_3_user_uid_check.stdout is defined
+        when: rhel8cis_6_2_3_user_uid_check.stdout | length > 0
   when:
       - rhel8cis_rule_6_2_3
   tags:
@@ -97,18 +97,18 @@
       - name: "6.2.4 | AUDIT | Ensure no duplicate GIDs exist | Print message that no duplicate GID's exist"
         debug:
             msg: "Good News! There are no duplicate GIDs in the system"
-        when: rhel8cis_6_2_4_user_user_check.stdout is not defined
+        when: rhel8cis_6_2_4_user_user_check.stdout | length == 0
 
       - name: "6.2.4 | AUDIT | Ensure no duplicate GIDs exist | Print warning about users with duplicate GIDs"
         debug:
             msg: "Warning!! The following groups have duplicate GIDs: {{ rhel8cis_6_2_4_user_user_check.stdout_lines }}"
-        when: rhel8cis_6_2_4_user_user_check.stdout is defined
+        when: rhel8cis_6_2_4_user_user_check.stdout | length > 0
 
       - name: "6.2.4 | AUDIT | Ensure no duplicate GIDs exist | warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.4' ]"
             warn_count: "{{ warn_count|int + 1 }}"
-        when: rhel8cis_6_2_4_user_user_check.stdout is defined
+        when: rhel8cis_6_2_4_user_user_check.stdout | length > 0
 
   when:
       - rhel8cis_rule_6_2_4
@@ -132,18 +132,18 @@
       - name: "6.2.5 | AUDIT | Ensure no duplicate user names exist | Print message that no duplicate user names exist"
         debug:
             msg: "Good News! There are no duplicate user names in the system"
-        when: rhel8cis_6_2_5_user_username_check.stdout is not defined
+        when: rhel8cis_6_2_5_user_username_check.stdout | length == 0
 
       - name: "6.2.5 | AUDIT | Ensure no duplicate user names exist | Print warning about users with duplicate User Names"
         debug:
             msg: "Warning!! The following user names are duplicates: {{ rhel8cis_6_2_5_user_username_check.stdout_lines }}"
-        when: rhel8cis_6_2_5_user_username_check.stdout is defined
+        when: rhel8cis_6_2_5_user_username_check.stdout | length > 0
 
       - name: "6.2.5 | AUDIT | Ensure no duplicate user names exist | warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.5' ]"
             warn_count: "{{ warn_count|int + 1 }}"
-        when: rhel8cis_6_2_5_user_username_check.stdout is defined
+        when: rhel8cis_6_2_5_user_username_check.stdout | length > 0
   when:
       - rhel8cis_rule_6_2_5
   tags:
@@ -167,18 +167,18 @@
       - name: "6.2.6 | AUDIT | Ensure no duplicate group names exist | Print message that no duplicate groups exist"
         debug:
             msg: "Good News! There are no duplicate group names in the system"
-        when: rhel8cis_6_2_6_group_group_check.stdout is defined
+        when: rhel8cis_6_2_6_group_group_check.stdout | length == 0
 
       - name: "6.2.6 | AUDIT | Ensure no duplicate group names exist | Print warning about users with duplicate group names"
         debug:
             msg: "Warning!! The following group names are duplicates: {{ rhel8cis_6_2_6_group_group_check.stdout_lines }}"
-        when: rhel8cis_6_2_6_group_group_check.stdout is not defined
+        when: rhel8cis_6_2_6_group_group_check.stdout | length > 0
 
       - name: "6.2.6 | AUDIT | Ensure no duplicate group names exist | warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.6' ]"
             warn_count: "{{ warn_count|int + 1 }}"
-        when: rhel8cis_6_2_6_group_group_check.stdout is not defined
+        when: rhel8cis_6_2_6_group_group_check.stdout | length > 0
   when:
       - rhel8cis_rule_6_2_6
   tags:
