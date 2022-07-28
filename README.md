@@ -170,7 +170,7 @@ uses:
 cloud0init - due to a bug this will stop working if noexec is added to /var.
 rhel8cis_rule_1_1_3_3
 
-https://bugs.launchpad.net/cloud-init/+bug/1839899
+[bug 1839899](https://bugs.launchpad.net/cloud-init/+bug/1839899)
 
 ## Support
 
