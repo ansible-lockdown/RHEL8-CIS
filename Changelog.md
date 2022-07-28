@@ -11,7 +11,9 @@ Improvements for idempotency
     - update_audit_template (default false)
 - 3.4.1.5 discovery improvement
 - 5.6.1.4 discovery improvement
-
+- warning count added to summary at end of playbook
+- Added support for Almalinux
+- Added support for Rocky
 
 ## 1.3.8
 
