@@ -10,7 +10,7 @@ Based on [CIS RedHat Enterprise Linux 8 Benchmark v2.0.0 - 02-23-2022 ](https://
 
 ## Join us
 
-On our [Discord Server](https://discord.io/ansible-lockdownJ) to ask questions, discuss features, or just chat with other Ansible-Lockdown users
+On our [Discord Server](https://discord.io/ansible-lockdown) to ask questions, discuss features, or just chat with other Ansible-Lockdown users
 
 ## Caution(s)
 
