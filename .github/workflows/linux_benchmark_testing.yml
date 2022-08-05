@@ -91,8 +91,8 @@ jobs:
           grep -c RHEL7 OS.tfvars
           )"
 
-      - name: if RHEL7 - Sleep for 60 seconds
-        if: steps.test_os.outputs.RHEL7 >= 1
+      - name: Sleep for 60 seconds
+        #if: steps.test_os.outputs.RHEL7 >= 1
         run: sleep 60s
         shell: bash
 
