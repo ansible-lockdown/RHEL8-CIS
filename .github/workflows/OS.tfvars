@@ -5,5 +5,5 @@ ami_username  = "rocky"
 ami_user_home = "/home/rocky"
 instance_tags = {
   Name        = "RHEL8-CIS"
-  Environment = "lockdown_github_repo_workflow"
+  Environment       = "github_test_pipeline"
 }
