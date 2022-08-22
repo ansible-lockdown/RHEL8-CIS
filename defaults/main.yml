@@ -529,6 +529,12 @@ rhel8cis_auditd:
     admin_space_left_action: halt
     max_log_file_action: keep_logs
 
+# This can be used to configure other keys in auditd.conf
+rhel8cis_auditd_extra_conf: {}
+# Example:
+# rhel8cis_auditd_extra_conf:
+#     admin_space_left: '10%'
+
 rhel8cis_logrotate: "daily"
 
 # The audit_back_log_limit value should never be below 8192
