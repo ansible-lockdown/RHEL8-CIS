@@ -4,7 +4,7 @@
 // 
 
 namespace = "github_actions"
-environment       = "github_test_pipeline"
+environment = "lockdown_github_repo_workflow"
 
 // Matching pair name found in AWS for keypairs PEM key
 ami_key_pair_name = "github_actions"
