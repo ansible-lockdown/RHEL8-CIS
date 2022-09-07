@@ -34,6 +34,28 @@
   tags:
     - always
 
+- name: "Check password set for {{ ansible_user }}"
+  block:
+       - name: Capture current password state of "{{ ansible_user }}"
+         shell: "grep {{ ansible_user }} /etc/shadow | awk -F: '{print $2}'"
+         changed_when: false
+         failed_when: false
+         check_mode: false
+         register: ansible_user_password_set
+
+       - name: "Assert that password set for {{ ansible_user }} and account not locked"
+         assert:
+             that: ansible_user_password_set.stdout | length != 0 and ansible_user_password_set.stdout != "!!"
+             fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_user }} has no password set - It can break access"
+             success_msg: "You a password set for the {{ ansible_user }}"
+         vars:
+              sudo_password_rule: rhel8cis_rule_5_3_4
+  when:
+      - rhel8cis_rule_5_3_4
+      - not system_is_ec2
+  tags:
+      - user_passwd
+
 - name: Setup rules if container
   block:
       - name: Discover and set container variable if required
