@@ -5,7 +5,7 @@
       - name: "6.1.1 | AUDIT | Audit system file permissions | Audit the packages"
         shell: rpm -Va --nomtime --nosize --nomd5 --nolinkto
         args:
-            warn: no
+            warn: false
         changed_when: false
         failed_when: false
         register: rhel8cis_6_1_1_packages_rpm
@@ -16,6 +16,9 @@
               copy:
                   dest: "{{ rhel8cis_rpm_audit_file }}"
                   content: "{{ rhel8cis_6_1_1_packages_rpm.stdout }}"
+                  owner: root
+                  group: root
+                  mode: 0644
 
             - name: "6.1.1 | AUDIT | Audit system file permissions | Message out alert for package descrepancies"
               debug:
@@ -26,7 +29,7 @@
             - name: "6.1.1 | AUDIT | Audit system file permissions | warning count"
               set_fact:
                   control_number: "{{ control_number }} + [ 'rule_6.1.1' ]"
-                  warn_count: "{{ warn_count|int + 1 }}"
+                  warn_count: "{{ warn_count | int + 1 }}"
         when: rhel8cis_6_1_1_packages_rpm.stdout|length > 0
 
       - name: "6.1.1 | AUDIT | Audit system file permissions | Message out no package descrepancies"
@@ -46,7 +49,7 @@
 - name: "6.1.2 | PATCH | Ensure sticky bit is set on all world-writable directories"
   shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d -perm -0002 2>/dev/null | xargs chmod a+t
   args:
-      warn: no
+      warn: false
   changed_when: false
   failed_when: false
   when:
