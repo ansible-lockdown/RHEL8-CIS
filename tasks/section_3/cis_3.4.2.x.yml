@@ -105,14 +105,14 @@
       - name: "3.4.2.5 | AUDIT | Ensure an nftables table exists | Alert on no tables | warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_3.4.2.5' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
         when:
             - rhel8cis_3_4_2_5_nft_tables.stdout | length == 0
             - not rhel8cis_nft_tables_autonewtable
 
       - name: "3.4.2.5 | PATCH | Ensure a table exists | Create table if needed"
         command: nft create table inet "{{ rhel8cis_nft_tables_tablename }}"
-        failed_when: no
+        failed_when: false
         when: rhel8cis_nft_tables_autonewtable
   when:
       - rhel8cis_firewall == "nftables"
@@ -159,8 +159,8 @@
       - name: "3.4.2.6 | PATCH | Ensure nftables base chains exist | Create chains if needed"
         shell: "{{ item }}"
         args:
-            warn: no
-        failed_when: no
+            warn: false
+        failed_when: false
         with_items:
             - nft create chain inet "{{ rhel8cis_nft_tables_tablename }}" input { type filter hook input priority 0 \; }
             - nft create chain inet "{{ rhel8cis_nft_tables_tablename }}" forward { type filter hook forward priority 0 \; }
@@ -322,7 +322,7 @@
 - name: "3.4.2.10 | PATCH | Ensure nftables service is enabled"
   service:
       name: nftables
-      enabled: yes
+      enabled: true
   when:
       - rhel8cis_firewall == "nftables"
       - rhel8cis_rule_3_4_2_10

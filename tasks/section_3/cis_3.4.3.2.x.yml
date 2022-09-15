@@ -155,7 +155,7 @@
 - name: "3.4.3.2.6 | PATCH | Ensure iptables service is enabled and active"
   service:
       name: iptables
-      enabled: yes
+      enabled: true
       state: started
   when:
       - rhel8cis_firewall == "iptables"
