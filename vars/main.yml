@@ -7,7 +7,7 @@ rhel8cis_allowed_crypto_policies:
     - 'FUTURE'
     - 'FIPS'
 
-# default setting, this should not be changed 
+# default setting, this should not be changed
 # and is overridden if a task that changed sets the value if required.
 change_requires_reboot: false
 
