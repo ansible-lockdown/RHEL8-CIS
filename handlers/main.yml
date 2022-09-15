@@ -5,8 +5,8 @@
   sysctl:
       name: net.ipv4.route.flush
       value: '1'
-      sysctl_set: yes
-  ignore_errors: yes
+      sysctl_set: true
+  ignore_errors: true
   when:
       - not system_is_container
   tags:
@@ -16,25 +16,25 @@
   sysctl:
       name: net.ipv6.route.flush
       value: '1'
-      sysctl_set: yes
-  ignore_errors: yes
+      sysctl_set: true
+  ignore_errors: true
   when:
       - not system_is_container
 
 - name: systemd restart tmp.mount
   systemd:
       name: tmp.mount
-      daemon_reload: yes
-      enabled: yes
-      masked: no
+      daemon_reload: true
+      enabled: true
+      masked: false
       state: reloaded
 
 - name: systemd restart var-tmp.mount
   systemd:
       name: var-tmp.mount
-      daemon_reload: yes
-      enabled: yes
-      masked: no
+      daemon_reload: true
+      enabled: true
+      masked: false
       state: reloaded
 
 - name: remount tmp
@@ -76,11 +76,11 @@
 
 - name: restart auditd
   command: /sbin/service auditd restart
-  changed_when: no
-  check_mode: no
-  failed_when: no
+  changed_when: false
+  check_mode: false
+  failed_when: false
   args:
-      warn: no
+      warn: false
   when:
       - not rhel8cis_skip_for_travis
   tags:
@@ -110,7 +110,7 @@
 
 - name: systemd_daemon_reload
   systemd:
-      daemon-reload: yes
+      daemon-reload: true
 
 - name: change_requires_reboot
   set_fact:
