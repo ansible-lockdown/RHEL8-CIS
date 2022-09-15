@@ -465,8 +465,6 @@ rhel8cis_talk_required: false
 rhel8cis_telnet_required: false
 rhel8cis_openldap_clients_required: false
 
-
-
 # 2.1.1 Time Synchronization - Either chrony or ntp
 rhel8cis_time_synchronization: chrony
 
@@ -645,8 +643,8 @@ rhel8cis_pam_password:
 
 # This is a dynamic check but can be overridden here marking it as false and uncomment
 rhel8uid_info_dynamic: true
-#rhel8uid_interactive_uid_start: 1000
-#rhel8uid_interactive_uid_stop: 60000
+# rhel8uid_interactive_uid_start: 1000
+# rhel8uid_interactive_uid_stop: 60000
 
 # 5.6.3
 # Session timeout setting file (TMOUT setting can be set in multiple files)
@@ -696,9 +694,6 @@ audit_local_copy: "some path to copy from"
 # get_url:
 audit_files_url: "some url maybe s3?"
 
-# Where the goss audit configuration will be stored
-audit_files: "/var/tmp/{{ benchmark }}-Audit/"
-
 ## Goss configuration information
 # Set correct env for the run_audit.sh script from https://github.com/ansible-lockdown/{{ benchmark }}-Audit.git"
 audit_run_script_environment:
@@ -706,7 +701,7 @@ audit_run_script_environment:
     AUDIT_FILE: 'goss.yml'
     AUDIT_CONTENT_LOCATION: "{{ audit_out_dir }}"
 # Where the goss configs and outputs are stored
-audit_out_dir: '/var/tmp'
+audit_out_dir: '/opt'
 audit_conf_dir: "{{ audit_out_dir }}/{{ benchmark }}-Audit"
 pre_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}_pre_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
 post_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}_post_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
