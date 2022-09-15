@@ -19,7 +19,7 @@
       regexp: '(selinux|enforcing)\s*=\s*0\s*'
       replace: ''
   register: selinux_grub_patch
-  ignore_errors: yes
+  ignore_errors: true
   notify: rhel8cis_grub2cfg
   when:
       - rhel8cis_rule_1_6_1_2
@@ -100,7 +100,7 @@
       - name: "1.6.1.6 | AUDIT | Ensure no unconfined services exist | warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_1.6.1.6 ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: rhelcis_1_6_1_6_unconf_services.stdout | length > 0
 
   when:

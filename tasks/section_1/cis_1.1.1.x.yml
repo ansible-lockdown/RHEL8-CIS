@@ -7,7 +7,7 @@
             path: /etc/modprobe.d/CIS.conf
             regexp: "^(#)?install cramfs(\\s|$)"
             line: "install cramfs /bin/true"
-            create: yes
+            create: true
             mode: 0600
 
       - name: "1.1.1.1 | PATCH | Ensure mounting of cramfs filesystems is disabled | Disable cramfs"
@@ -33,7 +33,7 @@
             path: /etc/modprobe.d/CIS.conf
             regexp: "^(#)?install squashfs(\\s|$)"
             line: "install squashfs /bin/true"
-            create: yes
+            create: true
             mode: 0600
 
       - name: "1.1.1.2 | PATCH | Ensure mounting of squashfs filesystems is disabled | Disable squashfs"
@@ -59,7 +59,7 @@
             path: /etc/modprobe.d/CIS.conf
             regexp: "^(#)?install udf(\\s|$)"
             line: "install udf /bin/true"
-            create: yes
+            create: true
             mode: 0600
 
       - name: "1.1.1.3 | PATCH | Ensure mounting of udf filesystems is disable | Disable udf"

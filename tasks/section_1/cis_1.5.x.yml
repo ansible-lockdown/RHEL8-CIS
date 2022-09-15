@@ -36,9 +36,9 @@
       name: kernel.randomize_va_space
       value: '2'
       state: present
-      reload: yes
-      sysctl_set: yes
-      ignoreerrors: yes
+      reload: true
+      sysctl_set: true
+      ignoreerrors: true
   when:
       - rhel8cis_rule_1_5_3
   tags:

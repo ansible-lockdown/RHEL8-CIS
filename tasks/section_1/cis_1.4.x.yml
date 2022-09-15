@@ -60,7 +60,7 @@
       path: /etc/systemd/system/rescue.service.d/00-require-auth.conf
       regexp: '^ExecStart='
       line: "ExecStart=-/usr/lib/systemd/systemd-sulogin-shell rescue"
-      create: yes
+      create: true
       owner: root
       group: root
       mode: 0644
