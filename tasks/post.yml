@@ -3,8 +3,8 @@
 
 - name: POST | Perform DNF package cleanup
   dnf:
-      autoremove: yes
-  changed_when: no
+      autoremove: true
+  changed_when: false
 
 - name: POST | flush handlers
   meta: flush_handlers
@@ -28,7 +28,7 @@
       - name: "POST | Warning a reboot required but skip option set | warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'Reboot Required' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
         when:
             - change_requires_reboot
             - skip_reboot
@@ -49,4 +49,4 @@
   set_fact:
       control_number: "Congratulation None Found"
   when:
-     - warn_count == '0'
+      - warn_count == '0'

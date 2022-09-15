@@ -4,9 +4,9 @@
 - name: "PRELIM | List users accounts"
   command: "awk -F: '{print $1}' /etc/passwd"
   args:
-      warn: no
-  changed_when: no
-  check_mode: no
+      warn: false
+  changed_when: false
+  check_mode: false
   register: users
 
 - name: "PRELIM | Gather interactive user ID min and max"
@@ -33,25 +33,25 @@
 - name: "PRELIM | Gather accounts with empty password fields"
   shell: "cat /etc/shadow | awk -F: '($2 == \"\" ) {j++;print $1; } END {exit j}'"
   args:
-      warn: no
-  changed_when: no
-  check_mode: no
+      warn: false
+  changed_when: false
+  check_mode: false
   register: empty_password_accounts
 
 - name: "PRELIM | Gather UID 0 accounts other than root"
   shell: "cat /etc/passwd | awk -F: '($3 == 0 && $1 != \"root\") {i++;print $1 } END {exit i}'"
   args:
-      warn: no
-  changed_when: no
-  check_mode: no
+      warn: false
+  changed_when: false
+  check_mode: false
   register: rhel8cis_uid_zero_accounts_except_root
 
 - name: "PRELIM | Gather system-wide crypto-policy"
   shell: update-crypto-policies --show
   args:
-      warn: no
-  changed_when: no
-  check_mode: no
+      warn: false
+  changed_when: false
+  check_mode: false
   register: system_wide_crypto_policy
 
 - name: "PRELIM | if systemd coredump"
