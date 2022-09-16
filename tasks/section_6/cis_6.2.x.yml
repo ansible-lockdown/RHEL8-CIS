@@ -193,21 +193,21 @@
   block:
       - name: "6.2.7 | AUDIT | Ensure root PATH Integrity | Determine empty value"
         shell: 'echo $PATH | grep ::'
-        changed_when: False
+        changed_when: false
         failed_when: rhel8cis_6_2_7_path_colon.rc == 0
         check_mode: false
         register: rhel8cis_6_2_7_path_colon
 
       - name: "6.2.7 | AUDIT | Ensure root PATH Integrity | Determin colon end"
         shell: 'echo $PATH | grep :$'
-        changed_when: False
+        changed_when: false
         failed_when: rhel8cis_6_2_7_path_colon_end.rc == 0
         check_mode: false
         register: rhel8cis_6_2_7_path_colon_end
 
       - name: "6.2.7 | AUDIT | Ensure root PATH Integrity | Determine dot in path"
         shell: "/bin/bash --login -c 'env | grep ^PATH=' | sed -e 's/PATH=//' -e 's/::/:/' -e 's/:$//' -e 's/:/\\n/g'"
-        changed_when: False
+        changed_when: false
         failed_when: '"." in rhel8cis_6_2_7_dot_in_path.stdout_lines'
         check_mode: false
         register: rhel8cis_6_2_7_dot_in_path

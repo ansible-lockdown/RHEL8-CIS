@@ -20,8 +20,9 @@
       - name: POST | AUDITD | Set reboot required if auditd immutable
         debug:
             msg: "Reboot required for auditd to apply new rules as immutable set"
+        changed_when: true
+        notify: change_requires_reboot
         when:
             - auditd_immutable_check.stdout == '1'
-  notify: change_requires_reboot
   when:
       - audit_rules_update.changed

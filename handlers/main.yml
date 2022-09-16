@@ -98,7 +98,7 @@
 
 - name: rhel8cis_grub2cfg
   command: "grub2-mkconfig -o {{ grub_cfg.stat.lnk_source }}"
-  ignore_errors: True
+  ignore_errors: true
   notify: change_requires_reboot
   tags:
       - skip_ansible_lint
