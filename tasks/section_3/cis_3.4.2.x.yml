@@ -39,7 +39,7 @@
             name: "{{ item }}"
             enabled: false
             masked: true
-        ignore_errors: true
+        ignore_errors: true  # noqa ignore-errors
         with_items:
             - iptables
             - ip6tables

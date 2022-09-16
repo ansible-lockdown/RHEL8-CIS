@@ -21,7 +21,7 @@
         debug:
             msg: "Reboot required for auditd to apply new rules as immutable set"
         changed_when: true
-        notify: change_requires_reboot
+        notify: change_requires_reboot  # noqa no-handler
         when:
             - auditd_immutable_check.stdout == '1'
   when:

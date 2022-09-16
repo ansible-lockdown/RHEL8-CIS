@@ -19,7 +19,7 @@
       regexp: '(selinux|enforcing)\s*=\s*0\s*'
       replace: ''
   register: selinux_grub_patch
-  ignore_errors: true
+  ignore_errors: true  # noqa ignore-errors
   notify: rhel8cis_grub2cfg
   when:
       - rhel8cis_rule_1_6_1_2
