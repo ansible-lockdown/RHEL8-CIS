@@ -112,6 +112,32 @@
   systemd:
       daemon-reload: true
 
+## Auditd tasks note order for handlers to run
+
+- name: auditd_immutable_check
+  shell: grep -c "^-e 2" /etc/audit/rules.d/99_auditd.rules
+  changed_when: false
+  register: auditd_immutable_check
+
+- name: audit_immutable_fact
+  debug:
+      msg: "Reboot required for auditd to apply new rules as immutable set"
+  notify: change_requires_reboot
+  when:
+      - auditd_immutable_check.stdout == '1'
+
+- name: restart auditd
+  shell: service auditd restart
+  args:
+      warn: false
+  when:
+      - audit_rules_updated.changed or
+        rule_4_1_2_1.changed or
+        rule_4_1_2_2.changed or
+        rule_4_1_2_3.changed
+  tags:
+      - skip_ansible_lint
+
 - name: change_requires_reboot
   set_fact:
       change_requires_reboot: true
