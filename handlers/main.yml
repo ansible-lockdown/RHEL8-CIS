@@ -130,11 +130,6 @@
   shell: service auditd restart
   args:
       warn: false
-  when:
-      - audit_rules_updated.changed or
-        rule_4_1_2_1.changed or
-        rule_4_1_2_2.changed or
-        rule_4_1_2_3.changed
   tags:
       - skip_ansible_lint
 
