@@ -5,7 +5,7 @@
       - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Find log files"
         find:
             paths: /var/log
-            recurse: yes
+            recurse: true
             patterns: '*.log'
         register: rhel8cis_4_2_3_logfiles
 
@@ -18,15 +18,17 @@
         loop_control:
             label: "{{ item.path }}"
 
-      - block:
+      - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured"
+        block:
             - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Find logrotate conf files"
               find:
                   paths: /etc/logrotate.d
                   contains: '^\s+create 06[5-7][0-7]'
               register: rhel8cis_4_2_3_logrotate_conf_files
 
-            - debug:
-                msg: "{{ item }}"
+            - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | output found logrotate file"
+              debug:
+                  msg: "{{ item }}"
               loop: "{{ rhel8cis_4_2_3_logrotate_conf_files.files }}"
               loop_control:
                   label: "{{ item.path }}"
@@ -51,15 +53,15 @@
 
             - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | warning logrotate.d conf files"
               debug:
-                msg: "Warning!! logrotate.d conf file have create mode that will not match CIS requirements upon rotation"
+                  msg: "Warning!! logrotate.d conf file have create mode that will not match CIS requirements upon rotation"
               when:
                   - rhel8cis_4_2_3_logrotate_conf_files.files | length >= 1
                   - not allow_logrotate_conf_umask_updates
-            
+
             - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Set Warning fact"
               set_fact:
-                    control_number: "{{ control_number }} + [ 'rule_4.2.3' ]"
-                    warn_count: "{{ warn_count|int + 1 }}"
+                  control_number: "{{ control_number }} + [ 'rule_4.2.3' ]"
+                  warn_count: "{{ warn_count | int + 1 }}"
               when:
                   - rhel8cis_4_2_3_logrotate_conf_files.files | length >= 1
                   - not allow_logrotate_conf_umask_updates

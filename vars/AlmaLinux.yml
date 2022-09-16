@@ -1,6 +1,7 @@
 ---
-# OS Specific Settings
 
+# OS Specific Settings
 rpm_gpg_key: /etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux
 rpm_packager: "AlmaLinux Packaging Team"
-rpm_key: "51d6647ec21ad6ea"  # found on https://wiki.almalinux.org/cloud/Generic-cloud.html#download-and-verification note lower case
+# found on https://wiki.almalinux.org/cloud/Generic-cloud.html#download-and-verification note lower cas
+rpm_key: "51d6647ec21ad6ea"

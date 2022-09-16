@@ -51,7 +51,7 @@
         shell: useradd -D | grep INACTIVE={{ rhel8cis_inactivelock.lock_days }} | cut -f2 -d=
         changed_when: false
         failed_when: false
-        check_mode: no
+        check_mode: false
         register: rhel8cis_5_6_1_4_inactive_settings
 
       - name: "5.6.1.4 | PATCH | Ensure inactive password lock is 30 days or less | Set default inactive setting"
@@ -61,7 +61,7 @@
       - name: "5.6.1.4 | AUDIT | Ensure inactive password lock is 30 days or less | Getting user list"
         shell: "awk -F: '/^[^#:]+:[^\\!\\*:]*:[^:]*:[^:]*:[^:]*:[^:]*:(\\s*|-1|3[1-9]|[4-9][0-9]|[1-9][0-9][0-9]+):[^:]*:[^:]*\\s*$/ {print $1}' /etc/shadow"
         changed_when: false
-        check_mode: no
+        check_mode: false
         register: rhel_8_5_6_1_4_user_list
 
       - name: "5.6.1.4 | PATCH | Ensure inactive password lock is 30 days or less | Apply Inactive setting to existing accounts"
@@ -84,14 +84,14 @@
         shell: echo $(($(date --utc --date "$1" +%s)/86400))
         changed_when: false
         failed_when: false
-        check_mode: no
+        check_mode: false
         register: rhel8cis_5_6_1_5_currentut
 
       - name: "5.6.1.5 | AUDIT | Ensure all users last password change date is in the past | Get list of users with last changed pw date in the future"
         shell: "cat /etc/shadow | awk -F: '{if($3>{{ rhel8cis_5_6_1_5_currentut.stdout }})print$1}'"
         changed_when: false
         failed_when: false
-        check_mode: no
+        check_mode: false
         register: rhel8cis_5_6_1_5_user_list
 
       - name: "5.6.1.5 | AUDIT | Ensure all users last password change date is in the past | Alert no pw change in the future exist"
@@ -109,7 +109,7 @@
       - name: "5.6.1.5 | AUDIT | Ensure all users last password change date is in the past | warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_5.6.1.5' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
         when:
             - rhel8cis_5_6_1_5_user_list.stdout | length > 0
             - not rhel8cis_futurepwchgdate_autofix

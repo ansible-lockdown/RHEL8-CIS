@@ -50,7 +50,7 @@
   blockinfile:
       path: "{{ item.path }}"
       state: "{{ item.state }}"
-      create: yes
+      create: true
       mode: 0644
       marker: "# {mark} ANSIBLE MANAGED"
       block: |

@@ -32,7 +32,7 @@
       - rsh
       - rule_2.3.2
 
-- name:  "2.3.3 | PATCH | Ensure talk client is not installed"
+- name: "2.3.3 | PATCH | Ensure talk client is not installed"
   package:
       name: talk
       state: absent

@@ -17,8 +17,8 @@ galaxy_info:
         - hardening
 
 collections:
-  - community.general
-  - community.crypto
-  - ansible.posix
+    - community.general
+    - community.crypto
+    - ansible.posix
 
 dependencies: []

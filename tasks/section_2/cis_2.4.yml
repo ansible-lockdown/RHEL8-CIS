@@ -6,7 +6,7 @@
         shell: systemctl list-units --type=service
         changed_when: false
         failed_when: false
-        check_mode: no
+        check_mode: false
         register: rhel8cis_2_4_services
 
       - name: "2.4 | AUDIT | Ensure nonessential services are removed or masked | Display list of services"
@@ -16,10 +16,10 @@
                 - "Please review to make sure all are essential"
                 - "{{ rhel8cis_2_4_services.stdout_lines }}"
 
-      - name:  "2.4 | AUDIT | Ensure nonessential services are removed or masked | Warn Count"
+      - name: "2.4 | AUDIT | Ensure nonessential services are removed or masked | Warn Count"
         set_fact:
             control_number: "{{ control_number }} + ['rule_2.4']"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
   when:
       - rhel8cis_rule_2_4
   tags:

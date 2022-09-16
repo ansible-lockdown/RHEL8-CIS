@@ -86,7 +86,7 @@
         replace:
             path: /etc/pam.d/system-auth
             regexp: '^password\s*sufficient\s*pam_unix.so.*$'
-            #after: '^password\s*requisite\s*pam_pwhistory.so'
+            # after: '^password\s*requisite\s*pam_pwhistory.so'
             replace: 'password    sufficient                                   pam_unix.so sha512 shadow try_first_pass use_authtok remember={{ rhel8cis_pam_faillock.remember }}'
   when:
       - rhel8cis_rule_5_5_3

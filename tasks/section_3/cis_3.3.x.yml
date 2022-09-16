@@ -6,10 +6,10 @@
         sysctl:
             name: '{{ item.name }}'
             value: '{{ item.value }}'
-            sysctl_set: yes
+            sysctl_set: true
             state: present
-            reload: yes
-            ignoreerrors: yes
+            reload: true
+            ignoreerrors: true
         notify: sysctl flush ipv4 route table
         with_items:
             - { name: net.ipv4.conf.all.accept_source_route, value: 0 }
@@ -19,9 +19,9 @@
         sysctl:
             name: '{{ item.name }}'
             value: '{{ item.value }}'
-            sysctl_set: yes
-            reload: yes
-            ignoreerrors: yes
+            sysctl_set: true
+            reload: true
+            ignoreerrors: true
         notify: sysctl flush ipv6 route table
         with_items:
             - { name: net.ipv6.conf.all.accept_source_route, value: 0}
@@ -43,10 +43,10 @@
         sysctl:
             name: '{{ item.name }}'
             value: '{{ item.value }}'
-            sysctl_set: yes
+            sysctl_set: true
             state: present
-            reload: yes
-            ignoreerrors: yes
+            reload: true
+            ignoreerrors: true
         notify: sysctl flush ipv4 route table
         with_items:
             - { name: net.ipv4.conf.all.accept_redirects, value: 0 }
@@ -56,10 +56,10 @@
         sysctl:
             name: '{{ item.name }}'
             value: '{{ item.value }}'
-            sysctl_set: yes
+            sysctl_set: true
             state: present
-            reload: yes
-            ignoreerrors: yes
+            reload: true
+            ignoreerrors: true
         notify: sysctl flush ipv6 route table
         with_items:
             - { name: net.ipv6.conf.all.accept_redirects, value: 0 }
@@ -79,10 +79,10 @@
   sysctl:
       name: '{{ item.name }}'
       value: '{{ item.value }}'
-      sysctl_set: yes
+      sysctl_set: true
       state: present
-      reload: yes
-      ignoreerrors: yes
+      reload: true
+      ignoreerrors: true
   notify: sysctl flush ipv4 route table
   with_items:
       - { name: net.ipv4.conf.all.secure_redirects, value: 0 }
@@ -101,10 +101,10 @@
   sysctl:
       name: '{{ item.name }}'
       value: '{{ item.value }}'
-      sysctl_set: yes
+      sysctl_set: true
       state: present
-      reload: yes
-      ignoreerrors: yes
+      reload: true
+      ignoreerrors: true
   notify: sysctl flush ipv4 route table
   with_items:
       - { name: net.ipv4.conf.all.log_martians, value: 1 }
@@ -124,8 +124,8 @@
       name: net.ipv4.icmp_echo_ignore_broadcasts
       value: '1'
       state: present
-      reload: yes
-      ignoreerrors: yes
+      reload: true
+      ignoreerrors: true
   notify: sysctl flush ipv4 route table
   when:
       - rhel8cis_rule_3_3_5
@@ -142,8 +142,8 @@
       name: net.ipv4.icmp_ignore_bogus_error_responses
       value: '1'
       state: present
-      reload: yes
-      ignoreerrors: yes
+      reload: true
+      ignoreerrors: true
   notify: sysctl flush ipv4 route table
   when:
       - rhel8cis_rule_3_3_6
@@ -159,10 +159,10 @@
   sysctl:
       name: net.ipv4.conf.default.rp_filter
       value: '1'
-      sysctl_set: yes
+      sysctl_set: true
       state: present
-      reload: yes
-      ignoreerrors: yes
+      reload: true
+      ignoreerrors: true
   notify: sysctl flush ipv4 route table
   when:
       - rhel8cis_rule_3_3_7
@@ -179,8 +179,8 @@
       name: net.ipv4.tcp_syncookies
       value: '1'
       state: present
-      reload: yes
-      ignoreerrors: yes
+      reload: true
+      ignoreerrors: true
   notify: sysctl flush ipv4 route table
   when:
       - rhel8cis_rule_3_3_8
@@ -196,10 +196,10 @@
   sysctl:
       name: '{{ item.name }}'
       value: '{{ item.value }}'
-      sysctl_set: yes
+      sysctl_set: true
       state: present
-      reload: yes
-      ignoreerrors: yes
+      reload: true
+      ignoreerrors: true
   notify: sysctl flush ipv6 route table
   with_items:
       - { name: net.ipv6.conf.all.accept_ra, value: 0 }

@@ -1,13 +1,13 @@
 ---
 
-# The CIS Control wants IPv6 disabled if not in use. 
+# The CIS Control wants IPv6 disabled if not in use.
 # We are using the rhel8cis_ipv6_required to specify if you have IPv6 in use
 - name: "3.1.1 | PATCH | Verify if IPv6 is enabled on the system"
   sysctl:
       name: "{{ item }}"
       value: '1'
       state: present
-      reload: yes
+      reload: true
   with_items:
       - net.ipv6.conf.all.disable_ipv6
       - net.ipv6.conf.default.disable_ipv6
@@ -29,7 +29,7 @@
       path: /etc/modprobe.d/CIS.conf
       regexp: "^(#)?install sctp(\\s|$)"
       line: "install sctp /bin/true"
-      create: yes
+      create: true
       mode: 0600
   when:
       - rhel8cis_rule_3_1_2
@@ -46,7 +46,7 @@
       path: /etc/modprobe.d/CIS.conf
       regexp: "^(#)?install dccp(\\s|$)"
       line: "install dccp /bin/true"
-      create: yes
+      create: true
       mode: 0600
   when:
       - rhel8cis_rule_3_1_3
@@ -64,9 +64,9 @@
         command: rpm -q NetworkManager
         changed_when: false
         failed_when: false
-        check_mode: no
+        check_mode: false
         args:
-            warn: no
+            warn: false
         register: rhel_08_nmcli_available
 
       - name: "3.1.4 | AUDIT | Ensure wireless interfaces are disabled | Check if wifi is enabled"

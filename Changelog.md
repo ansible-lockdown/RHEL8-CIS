@@ -1,5 +1,16 @@
 # Changes to rhel8CIS
 
+## 1.4.0
+
+- workflow improvements
+- auditd alignment
+  - tftp client
+  - default locatoin moved from /var/tmp to /opt
+- linting
+  - new .ansiblelint
+  - boolean standards
+  - general linting improvements
+
 ## 1.3.9
 
 - tidy up become statements

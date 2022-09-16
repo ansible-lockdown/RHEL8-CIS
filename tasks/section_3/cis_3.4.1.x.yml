@@ -47,7 +47,7 @@
   systemd:
       name: nftables
       state: stopped
-      masked: yes
+      masked: true
   when:
       - rhel8cis_firewall == "firewalld"
       - rhel8cis_rule_3_4_1_3
@@ -63,7 +63,7 @@
   systemd:
       name: firewalld
       state: started
-      enabled: yes
+      enabled: true
   when:
       - rhel8cis_firewall == "firewalld"
       - rhel8cis_rule_3_4_1_4
@@ -82,7 +82,7 @@
         changed_when: false
         failed_when: ( firewalld_zone_set.rc not in [ 0, 1 ] )
         register: firewalld_zone_set
-    
+
       - name: "3.4.1.5 | AUDIT | Ensure firewalld default zone is set"
         command: firewall-cmd --set-default-zone="{{ rhel8cis_default_zone }}"
         when:
@@ -104,7 +104,7 @@
         shell: "nmcli -t connection show | awk -F: '{ if($4){print $4} }' | while read INT; do firewall-cmd --get-active-zones | grep -B1 $INT; done"
         changed_when: false
         failed_when: false
-        check_mode: no
+        check_mode: false
         register: rhel8cis_3_4_1_6_interfacepolicy
 
       - name: "3.4.1.6 | AUDIT | Ensure network interfaces are assigned to appropriate zone | Get list of interfaces and policies | Show the interface to policy"
@@ -116,7 +116,7 @@
       - name: "3.4.1.6 | AUDIT | Ensure network interfaces are assigned to appropriate zone | warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_3.4.1.6' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
   when:
       - rhel8cis_firewall == "firewalld"
       - rhel8cis_rule_3_4_1_6
@@ -133,7 +133,7 @@
         shell: "firewall-cmd --get-active-zones | awk '!/:/ {print $1}' | while read ZN; do firewall-cmd --list-all --zone=$ZN; done"
         changed_when: false
         failed_when: false
-        check_mode: no
+        check_mode: false
         register: rhel8cis_3_4_1_7_servicesport
 
       - name: "3.4.1.7 | AUDIT | Ensure firewalld drops unnecessary services and ports | Show services and ports"

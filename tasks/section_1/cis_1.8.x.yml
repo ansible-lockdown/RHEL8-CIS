@@ -21,7 +21,7 @@
       path: "{{ item.file }}"
       regexp: "{{ item.regexp }}"
       line: "{{ item.line }}"
-      create: yes
+      create: true
       owner: root
       group: root
       mode: 0644
@@ -50,7 +50,7 @@
       path: "{{ item.file }}"
       regexp: "{{ item.regexp }}"
       line: "{{ item.line }}"
-      create: yes
+      create: true
       owner: root
       group: root
       mode: 0644
@@ -93,7 +93,10 @@
       path: /etc/dconf/db/local.d/00-media-automount
       regexp: "{{ item.regex }}"
       line: "{{ item.line }}"
-      create: yes
+      create: true
+      owner: root
+      group: root
+      mode: 0640
   notify: reload dconf
   with_items:
       - { regex: '\[org\/gnome\/desktop\/media-handling\]', line: '[org/gnome/desktop/media-handling]' }

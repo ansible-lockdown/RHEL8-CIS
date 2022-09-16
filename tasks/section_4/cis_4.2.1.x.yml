@@ -18,7 +18,7 @@
 - name: "4.2.1.2 | PATCH | Ensure rsyslog Service is enabled"
   service:
       name: rsyslog
-      enabled: yes
+      enabled: true
   when:
       - rhel8cis_rule_4_2_1_2
   tags:
@@ -64,10 +64,10 @@
   block:
       - name: "4.2.1.5 | AUDIT | Ensure logging is configured | rsyslog current config message out"
         command: cat /etc/rsyslog.conf
-        become: yes
+        become: true
         changed_when: false
-        failed_when: no
-        check_mode: no
+        failed_when: false
+        check_mode: false
         register: rhel_08_4_2_1_5_audit
 
       - name: "4.2.1.5 | AUDIT | Ensure logging is configured | rsyslog current config message out"

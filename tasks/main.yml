@@ -6,7 +6,7 @@
       that: (ansible_distribution != 'CentOS' and ansible_os_family == 'RedHat' or ansible_os_family == "Rocky") and ansible_distribution_major_version is version_compare('8', '==')
       fail_msg: "This role can only be run against Supported OSs. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
       success_msg: "This role is running against a supported OS {{ ansible_distribution }} {{ ansible_distribution_major_version }}"
-  when: 
+  when:
       - os_check
       - not system_is_ec2
   tags:
@@ -32,7 +32,29 @@
       - rhel8cis_set_boot_pass
       - rhel8cis_rule_1_4_1
   tags:
-    - always
+      - always
+
+- name: "Check password set for {{ ansible_user }}"
+  block:
+      - name: Capture current password state of "{{ ansible_user }}"
+        shell: "grep {{ ansible_user }} /etc/shadow | awk -F: '{print $2}'"
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        register: ansible_user_password_set
+
+      - name: "Assert that password set for {{ ansible_user }} and account not locked"
+        assert:
+            that: ansible_user_password_set.stdout | length != 0 and ansible_user_password_set.stdout != "!!"
+            fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_user }} has no password set - It can break access"
+            success_msg: "You a password set for the {{ ansible_user }}"
+        vars:
+            sudo_password_rule: rhel8cis_rule_5_3_4
+  when:
+      - rhel8cis_rule_5_3_4
+      - not system_is_ec2
+  tags:
+      - user_passwd
 
 - name: Setup rules if container
   block:
@@ -58,18 +80,18 @@
 
 - name: "check sugroup exists if used"
   block:
-  - name: "Check su group exists if defined"
-    shell: grep -w "{{ rhel8cis_sugroup }}" /etc/group
-    register: sugroup_exists
-    changed_when: false
-    failed_when: sugroup_exists.rc >= 2
-    tags:
-        - skip_ansible_lint
+      - name: "Check su group exists if defined"
+        shell: grep -w "{{ rhel8cis_sugroup }}" /etc/group
+        register: sugroup_exists
+        changed_when: false
+        failed_when: sugroup_exists.rc >= 2
+        tags:
+            - skip_ansible_lint
 
-  - name: Check sugroup if defined exists before continuing
-    assert:
-        that: sugroup_exists.rc == 0
-        msg: "The variable rhel8cis_sugroup is defined but does not exist please rectify"
+      - name: Check sugroup if defined exists before continuing
+        assert:
+            that: sugroup_exists.rc == 0
+            msg: "The variable rhel8cis_sugroup is defined but does not exist please rectify"
   when:
       - rhel8cis_sugroup is defined
       - rhel8cis_rule_5_7
@@ -108,8 +130,8 @@
 
 - name: capture /etc/password variables
   include_tasks: parse_etc_password.yml
-  when: 
-      - rhel8cis_section5 or 
+  when:
+      - rhel8cis_section5 or
         rhel8cis_section6
   tags:
       - always
@@ -170,6 +192,6 @@
 
 - name: Output Warning count and control IDs affected
   debug:
-    msg: "You have {{ warn_count }} warning(s) that require investigating that are related to the following benchmark ID(s) {{ control_number }}"
+      msg: "You have {{ warn_count }} warning(s) that require investigating that are related to the following benchmark ID(s) {{ control_number }}"
   tags:
       - always
