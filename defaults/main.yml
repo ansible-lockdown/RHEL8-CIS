@@ -356,41 +356,40 @@ rhel8cis_rule_6_2_15: true
 rhel8cis_rule_6_2_16: true
 
 # Service configuration booleans set true to keep service
-rhel8cis_xinetd_server: false
+
+# Server Services
 rhel8cis_avahi_server: false
+rhel8cis_bind: false
 rhel8cis_cups_server: false
 rhel8cis_dhcp_server: false
 rhel8cis_dns_server: false
-rhel8cis_ftp_server: false
-rhel8cis_vsftpd_server: false
-rhel8cis_tftp_server: false
-rhel8cis_httpd_server: false
-rhel8cis_nginx_server: false
 rhel8cis_dovecot_cyrus_server: false
-rhel8cis_samba_server: false
-rhel8cis_squid_server: false
-rhel8cis_snmp_server: false
-rhel8cis_nis_server: false
-rhel8cis_telnet_server: false
+rhel8cis_ftp_server: false
+rhel8cis_httpd_server: false
 rhel8cis_is_mail_server: false
+rhel8cis_net_snmp_server: false
 rhel8cis_nfs_server: false
+rhel8cis_nginx_server: false
+rhel8cis_nis_server: false
 rhel8cis_rpc_server: false
 rhel8cis_rsync_server: false
+rhel8cis_samba_server: false
+rhel8cis_squid_server: false
+rhel8cis_telnet_server: false
+rhel8cis_tftp_server: false
+rhel8cis_vsftpd_server: false
+rhel8cis_xinetd_server: false
+
+# Client Services
+
+rhel8cis_ypbind_required: false
+rhel8cis_rsh_required: false
+rhel8cis_talk_required: false
+rhel8cis_telnet_required: false
+rhel8cis_openldap_clients_required: false
 rhel8cis_tftp_client: false
 
-rhel8cis_ldap_server: false
-rhel8cis_ntalk_server: false
-rhel8cis_rsh_server: false
-rhel8cis_smb_server: false
-# rhel8cis_dovecot_server: false
-# rhel8cis_named_server: false
-rhel8cis_nfs_rpc_server: false
-rhel8cis_bind: false
-rhel8cis_vsftpd: false
-rhel8cis_httpd: false
-rhel8cis_dovecot: false
-rhel8cis_squid: false
-rhel8cis_net_snmp: false
+
 rhel8cis_allow_autofs: false
 
 ## Section 1 vars
@@ -459,11 +458,8 @@ rhel8cis_gui: false
 # Set to 'true' if X Windows is needed in your environment
 rhel8cis_xwindows_required: false
 
-rhel8cis_ypbind_required: false
-rhel8cis_rsh_required: false
-rhel8cis_talk_required: false
-rhel8cis_telnet_required: false
-rhel8cis_openldap_clients_required: false
+
+
 
 # 2.1.1 Time Synchronization - Either chrony or ntp
 rhel8cis_time_synchronization: chrony
@@ -573,8 +569,6 @@ allow_logrotate_conf_umask_updates: false
 rhel8cis_sshd:
     clientalivecountmax: 0
     clientaliveinterval: 900
-    ciphers: "aes256-ctr,aes192-ctr,aes128-ctr"
-    macs: "hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com"
     logingracetime: 60
     # WARNING: make sure you understand the precedence when working with these values!!
     # allowusers:
@@ -703,8 +697,8 @@ audit_run_script_environment:
 # Where the goss configs and outputs are stored
 audit_out_dir: '/opt'
 audit_conf_dir: "{{ audit_out_dir }}/{{ benchmark }}-Audit"
-pre_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}_pre_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
-post_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}_post_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
+pre_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}-{{ benchmark }}_pre_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
+post_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}-{{ benchmark }}_post_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
 
 ## The following should not need changing
 goss_file: "{{ audit_conf_dir }}goss.yml"
