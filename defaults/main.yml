@@ -458,9 +458,6 @@ rhel8cis_gui: false
 # Set to 'true' if X Windows is needed in your environment
 rhel8cis_xwindows_required: false
 
-
-
-
 # 2.1.1 Time Synchronization - Either chrony or ntp
 rhel8cis_time_synchronization: chrony
 

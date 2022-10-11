@@ -60,7 +60,7 @@
   loop: "{{ rhel8cis_auditd_extra_conf.keys() }}"
   notify: restart auditd
   when:
-    - rhel8cis_auditd_extra_conf.keys() | length > 0
+      - rhel8cis_auditd_extra_conf.keys() | length > 0
   tags:
       - level2-server
       - level2-workstation
