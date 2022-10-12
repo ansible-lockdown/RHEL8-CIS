@@ -15,21 +15,21 @@
       - rhel8cis_firewall == "firewalld"
 
 - name: "SECTION | 3.4.2.x | Configure nftables"
-  include_tasks: cis_3.4.2.x.yml
+  import_tasks: cis_3.4.2.x.yml
   when:
       - rhel8cis_firewall == "nftables"
 
 - name: "SECTION | 3.4.3.1.x | Configure iptables software"
-  include_tasks: cis_3.4.3.1.x.yml
+  import_tasks: cis_3.4.3.1.x.yml
   when:
       - rhel8cis_firewall == "iptables"
 
 - name: "SECTION | 3.4.3.2.x | Configure IPv4 iptables"
-  include_tasks: cis_3.4.3.2.x.yml
+  import_tasks: cis_3.4.3.2.x.yml
   when:
       - rhel8cis_firewall == "iptables"
 
 - name: "SECTION | 3.4.3.3.x | Configure IPv6 iptables"
-  include_tasks: cis_3.4.3.3.x.yml
+  import_tasks: cis_3.4.3.3.x.yml
   when:
       - ( rhel8cis_firewall == "iptables" and rhel8cis_ipv6_required )

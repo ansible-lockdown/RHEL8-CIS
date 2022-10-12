@@ -15,11 +15,11 @@
 
 # 4.2 Configure Logging
 - name: "SECTION | 4.2.1.x| Configure rsyslog"
-  include_tasks: cis_4.2.1.x.yml
+  import_tasks: cis_4.2.1.x.yml
   when: rhel8cis_syslog == 'rsyslog'
 
 - name: "SECTION | 4.2.2.x| Configure journald"
-  include_tasks: cis_4.2.2.x.yml
+  import_tasks: cis_4.2.2.x.yml
   when: rhel8cis_syslog == 'journald'
 
 - name: "SECTION | 4.2.3 | Configure logile perms"
