@@ -87,6 +87,15 @@
 
 - name: "5.6.5 | PATCH | Ensure default user umask is 027 or more restrictive"
   block:
+      - name: "5.6.5 | PATCH | Ensure default user umask is 027 or more restrictive | Set umask for /etc/login.defs pam_umask settings"
+        replace:
+            path: /etc/login.defs
+            regexp: "{{ item.regexp }}"
+            replace: "{{ item.replace }}"
+        loop:
+        - { regexp: '(UMASK\s+)0[012][0-6]', replace: '\1 027' }
+        - { regexp: '(USERGROUPS_ENAB\s+)yes', replace: '\1 no' }
+
       - name: "5.6.5 | PATCH | Ensure default user umask is 027 or more restrictive | Set umask for /etc/bashrc"
         replace:
             path: /etc/bashrc
