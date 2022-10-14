@@ -93,8 +93,8 @@
             regexp: "{{ item.regexp }}"
             replace: "{{ item.replace }}"
         loop:
-        - { regexp: '(UMASK\s+)0[012][0-6]', replace: '\1 027' }
-        - { regexp: '(USERGROUPS_ENAB\s+)yes', replace: '\1 no' }
+            - { regexp: '(UMASK\s+)0[012][0-6]', replace: '\1 027' }
+            - { regexp: '(USERGROUPS_ENAB\s+)yes', replace: '\1 no' }
 
       - name: "5.6.5 | PATCH | Ensure default user umask is 027 or more restrictive | Set umask for /etc/bashrc"
         replace:
