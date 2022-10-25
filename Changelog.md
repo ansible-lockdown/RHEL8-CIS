@@ -2,6 +2,7 @@
 
 ## 1.5.0
 
+- Changed include_tasks to import_tasks to resolve using tags for levels
 - #209 5.6.5 rewrite umask settings
 - #220 tidy up and align variables
 - #226 Thanks to Thulium-Drake
