@@ -111,7 +111,7 @@
       - always
 
 - name: run pre_remediation audit
-  include_tasks: pre_remediation_audit.yml
+  import_tasks: pre_remediation_audit.yml
   when:
       - run_audit
   tags:
@@ -129,7 +129,7 @@
       - always
 
 - name: capture /etc/password variables
-  include_tasks: parse_etc_password.yml
+  import_tasks: parse_etc_password.yml
   when:
       - rhel8cis_section5 or
         rhel8cis_section6

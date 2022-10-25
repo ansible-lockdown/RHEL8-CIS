@@ -1,7 +1,7 @@
 ---
 
 - name: Pre Audit | Setup the audit
-  include_tasks: LE_audit_setup.yml
+  import_tasks: LE_audit_setup.yml
   when:
       - setup_audit
   tags:
