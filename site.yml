@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: all  # noqa: name[play]
   become: true
   vars:
       is_container: false
