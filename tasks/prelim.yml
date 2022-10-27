@@ -144,3 +144,22 @@
       - rhel8cis_rule_1_2_2
   tags:
       - skip_ansible_lint
+
+# Optional extra keys to extend auditd not part of CIS but can influence a system
+# e.g. admin_space_left: '10%'
+
+- name: PRELIM | Configure other keys for auditd.conf
+  lineinfile:
+      path: /etc/audit/auditd.conf
+      regexp: "^{{ item }}( |=)"
+      line: "{{ item }} = {{ rhel8cis_auditd_extra_conf[item] }}"
+  notify: restart auditd
+  loop: "{{ rhel8cis_auditd_extra_conf.keys() }}"
+  when:
+      - rhel8cis_auditd_extra_conf.keys() | length > 0
+      - rhel8cis_level_2
+  tags:
+      - level2-server
+      - level2-workstation
+      - patch
+      - auditd
