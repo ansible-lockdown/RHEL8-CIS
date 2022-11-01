@@ -1,5 +1,19 @@
 # Changes to rhel8CIS
 
+## 1.5.0
+
+- Changed include_tasks to import_tasks to resolve using tags for levels
+- #209 5.6.5 rewrite umask settings
+- #220 tidy up and align variables
+- #226 Thanks to Thulium-Drake
+  -Extended the auditd config required value for auditd space left percentage (not part of CIS Benchmark but required fopr auditd to run correctly in some cases)
+
+- #227 thanks to OscarElits
+  - chrony files now RH expected locations
+- #228 Thanks to benbulll 
+  - audit binary copy var missing
+
+
 ## 1.4.0
 
 - workflow improvements

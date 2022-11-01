@@ -2,7 +2,7 @@
 
 - name: "1.4.1 | PATCH | Ensure bootloader password is set"
   copy:
-      dest: /boot/grub2/user.cfg
+      dest: /boot/grub2/user.cfg  # noqa template-instead-of-copy
       content: "GRUB2_PASSWORD={{ rhel8cis_bootloader_password_hash }}"
       owner: root
       group: root

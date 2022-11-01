@@ -229,7 +229,7 @@
       name: net-snmp
       state: absent
   when:
-      - not rhel8cis_snmp_server
+      - not rhel8cis_net_snmp_server
       - "'net-snmp' in ansible_facts.packages"
       - rhel8cis_rule_2_2_14
   tags:
