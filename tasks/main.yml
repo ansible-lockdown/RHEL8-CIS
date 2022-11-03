@@ -113,7 +113,7 @@
 - name: run pre_remediation audit
   import_tasks: pre_remediation_audit.yml
   when:
-      - run_audit
+      - run_audit | bool
   tags:
       - run_audit
 
@@ -131,36 +131,36 @@
 - name: capture /etc/password variables
   import_tasks: parse_etc_password.yml
   when:
-      - rhel8cis_section5 or
-        rhel8cis_section6
+      - rhel8cis_section5 | bool or
+        rhel8cis_section6 | bool
   tags:
       - always
 
 - name: run Section 1 tasks
   import_tasks: section_1/main.yml
-  when: rhel8cis_section1
+  when: rhel8cis_section1 | bool
   tags:
       - rhel8cis_section1
 
 - name: run Section 2 tasks
   import_tasks: section_2/main.yml
-  when: rhel8cis_section2
+  when: rhel8cis_section2 | bool
 
 - name: run Section 3 tasks
   import_tasks: section_3/main.yml
-  when: rhel8cis_section3
+  when: rhel8cis_section3 | bool
 
 - name: run Section 4 tasks
   import_tasks: section_4/main.yml
-  when: rhel8cis_section4
+  when: rhel8cis_section4 | bool
 
 - name: run Section 5 tasks
   import_tasks: section_5/main.yml
-  when: rhel8cis_section5
+  when: rhel8cis_section5 | bool
 
 - name: run Section 6 tasks
   import_tasks: section_6/main.yml
-  when: rhel8cis_section6
+  when: rhel8cis_section6 | bool
 
 - name: run auditd logic
   import_tasks: auditd.yml
@@ -178,7 +178,7 @@
 - name: run post_remediation audit
   import_tasks: post_remediation_audit.yml
   when:
-      - run_audit
+      - run_audit | bool
   tags:
       - run_audit
 
@@ -186,7 +186,7 @@
   debug:
       msg: "{{ audit_results.split('\n') }}"
   when:
-      - run_audit
+      - run_audit | bool
   tags:
       - run_audit
 

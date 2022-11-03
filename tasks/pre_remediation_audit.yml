@@ -66,7 +66,7 @@
         when:
             - not goss_available.stat.exists
   when:
-      - run_audit
+      - run_audit | bool
 
 - name: "Pre Audit | Check whether machine is UEFI-based"
   stat:
@@ -81,7 +81,7 @@
       dest: "{{ audit_vars_path }}"
       mode: 0600
   when:
-      - run_audit
+      - run_audit | bool
   tags:
       - goss_template
 
