@@ -309,12 +309,17 @@
       - services
       - rule_2.2.18
 
-# The name title of the service says mask the service, but the fix allows for both options
-# We went with removing to remove the security/update overhead with having the package installed
-- name: "2.2.19 | PATCH | Ensure rpcbind is not installed or the rpcbind services are masked"
-  package:
-      name: rpcbind
-      state: absent
+# The name title of the service says mask the service.
+# 'ipa-client' depends on the package and it should not be removed as it would break a
+# system in an enterprise environment
+- name: "2.2.19 | PATCH | Ensure rpcbind and rpcbind.socket are masked"
+  systemd:
+    name: "{{ item }}"
+    masked: yes
+    state: stopped
+  with_items:
+    - rpcbind
+    - rpcbind.socket
   when:
       - not rhel8cis_rpc_server
       - "'rpcbind' in ansible_facts.packages"
