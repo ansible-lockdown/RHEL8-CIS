@@ -74,7 +74,12 @@
       - rule_5.5.2
 
 # This is only setting the pam_pwhistory remember due to the man page for pam_unix.so saying you should not use the remember feature
-# here is the link to the man page
+# Man page entry below
+# remember=n
+# The last n passwords for each user are saved in /etc/security/opasswd in order to force password
+# change history and keep the user from alternating between the same password too frequently. The MD5
+# password hash algorithm is used for storing the old passwords. Instead of this option the
+# pam_pwhistory module should be used.
 - name: "5.5.3 | PATCH | Ensure password reuse is limited"
   lineinfile:
       path: /etc/pam.d/system-auth
