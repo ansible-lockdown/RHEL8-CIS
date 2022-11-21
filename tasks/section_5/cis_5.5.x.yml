@@ -73,21 +73,14 @@
       - patch
       - rule_5.5.2
 
+# This is only setting the pam_pwhistory remember due to the man page for pam_unix.so saying you should not use the remember feature
+# here is the link to the man page
 - name: "5.5.3 | PATCH | Ensure password reuse is limited"
-  block:
-      - name: "5.5.3 | PATCH | Ensure password reuse is limited | pwhistory"
-        lineinfile:
-            path: /etc/pam.d/system-auth
-            state: present
-            line: "password    requisite                                    pam_pwhistory.so try_first_pass local_users_only enforce_for_root retry=3 remember={{ rhel8cis_pam_faillock.remember }}"
-            insertafter: '^password\s*requisite\s*pam_pwquality.so'
-
-      - name: "5.5.3 | PATCH | Ensure password reuse is limited | pam_unix"
-        replace:
-            path: /etc/pam.d/system-auth
-            regexp: '^password\s*sufficient\s*pam_unix.so.*$'
-            # after: '^password\s*requisite\s*pam_pwhistory.so'
-            replace: 'password    sufficient                                   pam_unix.so sha512 shadow try_first_pass use_authtok remember={{ rhel8cis_pam_faillock.remember }}'
+  lineinfile:
+      path: /etc/pam.d/system-auth
+      state: present
+      line: "password    requisite                                    pam_pwhistory.so try_first_pass local_users_only enforce_for_root retry=3 remember={{ rhel8cis_pam_faillock.remember }}"
+      insertafter: '^password\s*requisite\s*pam_pwquality.so'
   when:
       - rhel8cis_rule_5_5_3
   tags:
