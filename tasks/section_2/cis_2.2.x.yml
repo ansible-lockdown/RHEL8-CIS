@@ -290,12 +290,13 @@
       - postfix
       - rule_2.2.17
 
-# The name title of the service says mask the service, but the fix allows for both options
-# We went with removing to remove the security/update overhead with having the package installed
+# The name title of the service says mask the service or remove packages
+# We went with masking the service due to ipa-client and other elements that are dependant on nfs-utils
 - name: "2.2.18 | PATCH | Ensure nfs-utils is not installed or the nfs-server service is masked"
-  package:
+  systemd:
       name: nfs-utils
-      state: absent
+      masked: yes
+      state: stopped
   when:
       - not rhel8cis_nfs_server
       - "'nfs-utils' in ansible_facts.packages"
@@ -309,8 +310,8 @@
       - services
       - rule_2.2.18
 
-# The name title of the service says mask the service, but the fix allows for both options
-# We went with removing to remove the security/update overhead with having the package installed
+# The name title of the service says mask the service or remove packages 
+# We went with masking the service due to ipa-client and other elements that are dependant on rpcbind
 - name: "2.2.19 | PATCH | Ensure rpcbind is not installed or the rpcbind services are masked"
   systemd:
       name: "{{ item }}"
