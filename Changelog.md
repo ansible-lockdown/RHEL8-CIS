@@ -1,5 +1,13 @@
 # Changes to rhel8CIS
 
+## 1.5.1
+
+- Linting updates
+- Allow /dev/null folders in 6.2.10
+- #232 pam_unix.so remember flag in section 5.5.3 and 5.5.4
+- #235 rule 2.2.18 - nfs-utils should be changed to mask nfs-server
+- #236 rule 2.2.19 - should be changed to mask rpcbind service and rpcbind.socke
+
 ## 1.5.0
 
 - Changed include_tasks to import_tasks to resolve using tags for levels
