@@ -39,7 +39,7 @@
   loop_control:
       label: "{{ item.device }}"
   when:
-      - "'/var/log/audit' not in mount_names"
+      - "'/var/log/audit' in mount_names"
       - item.mount == "/var/log/audit"
       - rhel8cis_rule_1_1_6_2 or
         rhel8cis_rule_1_1_6_3 or

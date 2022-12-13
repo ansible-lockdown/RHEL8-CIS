@@ -41,7 +41,7 @@
   loop_control:
       label: "{{ item.device }}"
   when:
-      - "'/home' not in mount_names"
+      - "'/home' in mount_names"
       - item.mount == "/home"
       - rhel8cis_rule_1_1_7_2 or
         rhel8cis_rule_1_1_7_3 or
