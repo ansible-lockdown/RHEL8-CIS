@@ -86,6 +86,7 @@
 -a always,exit -F path=/usr/sbin/usermod -F perm=x -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -k usermod
 {% endif %}
 {% if rhel8cis_rule_4_1_3_19 %}
+-a always,exit -F arch=b32 -S init_module,finit_module,delete_module,create_module,query_module -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -k kernel_modules
 -a always,exit -F arch=b64 -S init_module,finit_module,delete_module,create_module,query_module -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -k kernel_modules
 -a always,exit -F path=/usr/bin/kmod -F perm=x -F auid>={{ rhel8uid_interactive_uid_start }} -F auid!=4294967295 -k kernel_modules
 {% endif %}
