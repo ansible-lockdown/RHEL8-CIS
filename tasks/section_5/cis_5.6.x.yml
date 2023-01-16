@@ -54,7 +54,7 @@
       mode: 0644
       marker: "# {mark} ANSIBLE MANAGED"
       block: |
-        # Set session timeout - CIS ID RHEL-08-5.4.5
+        # Set session timeout - CIS ID RHEL-08-5.6.3
         TMOUT={{ rhel8cis_shell_session_timeout.timeout }}
         export TMOUT
         readonly TMOUT
