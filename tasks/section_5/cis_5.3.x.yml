@@ -118,7 +118,7 @@
         lineinfile:
             path: /etc/pam.d/su
             regexp: '^(#)?auth\s+required\s+pam_wheel\.so'
-            line: 'auth           required        pam_wheel.so use_uid {% if rhel8cis_sugroup is defined %}group={{ rhel8cis_sugroup }}{% endif %}'
+            line: 'auth            required        pam_wheel.so use_uid {% if rhel8cis_sugroup is defined %}group={{ rhel8cis_sugroup }}{% endif %}'
 
       - name: "5.3.7 | PATCH | Ensure access to the su command is restricted | wheel group contains root"
         user:
