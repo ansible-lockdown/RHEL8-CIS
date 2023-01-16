@@ -10,7 +10,7 @@
 -a always,exit -F arch=b32 -C euid!=uid -F auid!=unset -S execve -k user_emulation
 {% endif %}
 {% if rhel8cis_rule_4_1_3_3 %}
--w {{ rhel8cis_varlog_location }} -p wa -k sudo_log_file
+-w {{ rhel8cis_sudolog_location }} -p wa -k sudo_log_file
 {% endif %}
 {% if rhel8cis_rule_4_1_3_4 %}
 -a always,exit -F arch=b64 -S adjtimex,settimeofday,clock_settime -k time-change
