@@ -1,5 +1,12 @@
 # Changes to rhel8CIS
 
+## 1.5.2
+
+- change of varlog_location variable name to sudolog_location
+- update to blacklist checks for related modprobe files
+- update to spacing in sudo_log
+- update to 32b check for kernel_module keys 4.1.3.19
+
 ## 1.5.1
 
 - Linting updates
@@ -20,7 +27,6 @@
   - chrony files now RH expected locations
 - #228 Thanks to benbulll 
   - audit binary copy var missing
-
 
 ## 1.4.0
 
