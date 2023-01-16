@@ -157,12 +157,15 @@
 
 - name: "3.3.7 | PATCH | Ensure Reverse Path Filtering is enabled"
   sysctl:
-      name: net.ipv4.conf.default.rp_filter
+      name: "{{ item }}"
       value: '1'
       sysctl_set: true
       state: present
       reload: true
       ignoreerrors: true
+  loop:
+      - net.ipv4.conf.all.rp_filter
+      - net.ipv4.conf.default.rp_filter
   notify: sysctl flush ipv4 route table
   when:
       - rhel8cis_rule_3_3_7
