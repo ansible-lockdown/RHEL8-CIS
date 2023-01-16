@@ -415,8 +415,6 @@ rhel8cis_rh_sub_password: password
 # RedHat Satellite Subscription items
 rhel8cis_rhnsd_required: false
 
-# 1.3.3 var log location variable
-rhel8cis_varlog_location: "/var/log/sudo.log"
 
 # xinetd required
 rhel8cis_xinetd_required: false
@@ -598,6 +596,9 @@ rhel8cis_authselect_custom_profile_create: false
 
 # 5.3.2 Enable automation to select custom profile options, using the settings above
 rhel8cis_authselect_custom_profile_select: false
+
+# 5.3.3 sudo log location variable
+rhel8cis_sudolog_location: "/var/log/sudo.log"
 
 # 5.3.6 rhel8cis_sudo_timestamp_timeout is the timeout set to authentication in minutes
 # To conform to CIS standards this needs to be 15 minutes or less

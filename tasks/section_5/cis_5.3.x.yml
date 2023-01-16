@@ -32,7 +32,7 @@
   lineinfile:
       path: /etc/sudoers
       regexp: '^Defaults\s+logfile='
-      line: 'Defaults logfile="{{ rhel8cis_varlog_location }}"'
+      line: 'Defaults logfile="{{ rhel8cis_sudolog_location }}"'
   when:
       - rhel8cis_rule_5_3_3
   tags:
