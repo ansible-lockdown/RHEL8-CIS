@@ -31,8 +31,8 @@
 - name: "5.3.3 | PATCH | Ensure sudo log file exists"
   lineinfile:
       path: /etc/sudoers
-      regexp: '^Defaults    logfile='
-      line: 'Defaults    logfile="{{ rhel8cis_varlog_location }}"'
+      regexp: '^Defaults\s+logfile='
+      line: 'Defaults logfile="{{ rhel8cis_varlog_location }}"'
   when:
       - rhel8cis_rule_5_3_3
   tags:
