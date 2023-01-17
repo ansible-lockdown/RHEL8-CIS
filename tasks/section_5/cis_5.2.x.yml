@@ -261,15 +261,11 @@
       - name: "5.2.14 | AUDIT | Ensure system-wide crypto policy is not over-ridden"
         shell: grep -i '^\s*CRYPTO_POLICY=' /etc/sysconfig/sshd
         failed_when: ( crypto_policy_override.rc not in [ 0, 1 ] )
-        args:
-            warn: false
         changed_when: false
         register: crypto_policy_override
 
       - name: "5.2.14 | PATCH | Ensure system-wide crypto policy is not over-ridden"
         shell: sed -ri "s/^\s*(CRYPTO_POLICY\s*=.*)$/# \1/" /etc/sysconfig/sshd
-        args:
-            warn: false
         notify: restart sshd
         when:
             - crypto_policy_override.stdout | length > 0

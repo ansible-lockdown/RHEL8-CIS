@@ -17,8 +17,6 @@
 
       - name: "5.4.1 | PATCH | Ensure custom authselect profile is used | Create custom profiles"
         shell: authselect create-profile {{ rhel8cis_authselect['custom_profile_name'] }} -b {{ rhel8cis_authselect['default_file_to_copy'] }}
-        args:
-            warn: false
         when: rhel8cis_authselect_custom_profile_create
   when:
       - rhel8cis_rule_5_4_1
@@ -47,8 +45,6 @@
 
       - name: "5.4.2 | PATCH | Ensure authselect includes with-faillock | Create custom profiles"
         shell: "authselect select custom/{{ rhel8cis_authselect['custom_profile_name'] }} with-faillock"
-        args:
-            warn: false
         when: rhel8cis_authselect_custom_profile_select
   when:
       - rhel8cis_rule_5_4_2

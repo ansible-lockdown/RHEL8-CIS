@@ -6,8 +6,6 @@
         command: rpm -q python36-rpm
         failed_when: ( python36_rpm_present.rc not in [ 0, 1 ] )
         changed_when: false
-        args:
-            warn: false
         register: python36_rpm_present
 
       - name: Add the EPEL repository required for the python36-rpm pkg

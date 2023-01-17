@@ -69,8 +69,6 @@
         failed_when: false
         register: dnf_configured
         check_mode: false
-        args:
-            warn: false
 
       - name: "1.2.4 | AUDIT | Ensure package manager repositories are configured | Display repo list"
         debug:

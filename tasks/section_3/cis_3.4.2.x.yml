@@ -158,8 +158,6 @@
 
       - name: "3.4.2.6 | PATCH | Ensure nftables base chains exist | Create chains if needed"
         shell: "{{ item }}"
-        args:
-            warn: false
         failed_when: false
         with_items:
             - nft create chain inet "{{ rhel8cis_nft_tables_tablename }}" input { type filter hook input priority 0 \; }
