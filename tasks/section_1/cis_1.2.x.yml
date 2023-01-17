@@ -6,7 +6,7 @@
       username: "{{ rhel8cis_rh_sub_user }}"
       password: "{{ rhel8cis_rh_sub_password }}"
       auto_attach: true
-      no_log: true
+  no_log: true
   when:
       - ansible_distribution == "RedHat"
       - rhel8cis_rhnsd_required
