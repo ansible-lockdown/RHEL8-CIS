@@ -2,31 +2,19 @@
 
 - name: "1.1.5.1 | AUDIT | Ensure separate partition exists for /var/log"
   block:
-      - name: "1.1.5.1 | AUDIT | Ensure separate partition exists for /var/log | Absent"
+      - name: "1.1.5.1 | AUDIT | Ensure separate partition exists for /var/log | Warn if partition is absent"
         debug:
             msg: "Warning!! {{ required_mount }} doesn't exist. This is a manual task"
         register: var_log_mount_absent
         changed_when: var_log_mount_absent.skipped is undefined
-        when:
-            - required_mount not in mount_names
 
       - name: "1.1.5.1 | AUDIT | Ensure separate partition exists for /var/log | Warn Count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_1.1.5.1' ]"
             warn_count: "{{ warn_count | int + 1 }}"
-        when:
-            - required_mount not in mount_names
-
-      - name: "1.1.5.1 | AUDIT | Ensure separate partition exists for /var/log | Present"
-        debug:
-            msg: "Congratulations: {{ required_mount }} exists."
-        register: var_log_mount_present
-        when:
-            - required_mount in mount_names
-  vars:
-      required_mount: '/var/log'
   when:
       - rhel8cis_rule_1_1_5_1
+      - "'/var/log' not in mount_names"
   tags:
       - level2-server
       - level2-workstation
@@ -36,6 +24,7 @@
       - rule_1.1.5.1
       - skip_ansible_lint
 
+# skips if mount is absent
 - name: |
           "1.1.5.2 | PATCH | Ensure nodev option set on /var/log partition"
           "1.1.5.3 | PATCH | Ensure noexec option set on /var/log partition"
@@ -46,13 +35,13 @@
       fstype: "{{ item.fstype }}"
       state: present
       opts: defaults,{% if rhel8cis_rule_1_1_5_3 %}noexec,{% endif %}{% if rhel8cis_rule_1_1_5_2 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_5_4 %}nosuid{% endif %}
+  notify: change_requires_reboot
   with_items:
       - "{{ ansible_mounts }}"
   loop_control:
       label: "{{ item.device }}"
-  notify: change_requires_reboot
   when:
-      - var_log_mount_present is defined
+      - "'/var/log' not in mount_names"
       - item.mount == "/var/log"
       - rhel8cis_rule_1_1_5_1  # This is required so the check takes place
       - rhel8cis_rule_1_1_5_2 or

@@ -2,13 +2,11 @@
 
 - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit"
   block:
-      - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Absent"
+      - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Warn if partition is absent"
         debug:
             msg: "Warning!! {{ required_mount }} doesn't exist. This is a manual task"
         register: var_log_audit_mount_absent
         changed_when: var_log_audit_mount_absent.skipped is undefined
-        when:
-            - required_mount not in mount_names
 
       - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Warn Count"
         set_fact:
@@ -21,12 +19,9 @@
         debug:
             msg: "Congratulations: {{ required_mount }} exists."
         register: var_log_audit_mount_present
-        when:
-            - required_mount in mount_names
-  vars:
-      required_mount: '/var/log/audit'
   when:
       - rhel8cis_rule_1_1_6_1
+      - "'/var/log/audit' not in mount_names"
   tags:
       - level2-server
       - level2-workstation
@@ -35,6 +30,7 @@
       - mounts
       - rule_1.1.6.1
 
+# skips if mount is absent
 - name: |
           "1.1.6.2 | PATCH | Ensure noexec option set on /var/log/audit partition"
           "1.1.6.3 | PATCH | Ensure nodev option set on /var/log/audit partition"
@@ -45,13 +41,13 @@
       fstype: "{{ item.fstype }}"
       state: present
       opts: defaults,{% if rhel8cis_rule_1_1_6_2 %}noexec,{% endif %}{% if rhel8cis_rule_1_1_6_3 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_6_4 %}nosuid{% endif %}
+  notify: change_requires_reboot
   with_items:
       - "{{ ansible_mounts }}"
   loop_control:
       label: "{{ item.device }}"
-  notify: change_requires_reboot
   when:
-      - var_log_audit_mount_present is defined
+      - "'/var/log/audit' not in mount_names"
       - item.mount == "/var/log/audit"
       - rhel8cis_rule_1_1_6_1  # This is required so the check takes place
       - rhel8cis_rule_1_1_6_2 or

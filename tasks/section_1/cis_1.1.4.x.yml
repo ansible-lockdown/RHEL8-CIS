@@ -3,31 +3,20 @@
 # Skips if mount is absent
 - name: "1.1.4.1 | AUDIT | Ensure separate partition exists for /var/tmp"
   block:
-      - name: "1.1.4.1 | AUDIT | Ensure separate partition exists for /var/tmp | Absent"
+      - name: "1.1.4.1 | AUDIT | Ensure separate partition exists for /var/tmp | Warn if partition is absent"
         debug:
             msg: "Warning!! {{ required_mount }} doesn't exist. This is a manual task"
         register: var_tmp_mount_absent
         changed_when: var_tmp_mount_absent.skipped is undefined
-        when:
-            - required_mount not in mount_names
 
       - name: "1.1.4.1 | AUDIT | Ensure separate partition exists for /var/tmp | Warn Count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_1.1.4.1' ]"
             warn_count: "{{ warn_count | int + 1 }}"
-        when:
-            - required_mount not in mount_names
 
-      - name: "1.1.4.1 | AUDIT | Ensure separate partition exists for /var/tmp | Present"
-        debug:
-            msg: "Congratulations: {{ required_mount }} exists."
-        register: var_tmp_mount_present
-        when:
-            - required_mount in mount_names
-  vars:
-      required_mount: '/var/tmp'
   when:
       - rhel8cis_rule_1_1_4_1
+      - "'/var/tmp' not in mount_names"
   tags:
       - level2-server
       - level2-workstation
@@ -47,13 +36,13 @@
       fstype: "{{ item.fstype }}"
       state: present
       opts: defaults,{% if rhel8cis_rule_1_1_4_2 %}noexec,{% endif %}{% if rhel8cis_rule_1_1_4_4 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_4_3 %}nosuid{% endif %}
+  notify: change_requires_reboot
   with_items:
       - "{{ ansible_mounts }}"
   loop_control:
       label: "{{ item.device }}"
-  notify: change_requires_reboot
   when:
-      - var_tmp_mount_present is defined
+      - "'/var/tmp' in mount_names"
       - item.mount == "/var/tmp"
       - rhel8cis_rule_1_1_4_1  # This is required so the check takes place
       - rhel8cis_rule_1_1_4_2 or
