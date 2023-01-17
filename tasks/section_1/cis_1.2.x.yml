@@ -17,7 +17,7 @@
       - manual
       - patch
       - rule_1.2.1
-      - skip_ansible_lint  # Added as no_log still errors on ansuible-lint
+      - skip_ansible_lint  # Added as no_log still errors on ansible-lint
 
 - name: "1.2.2 | AUDIT | Ensure GPG keys are configured"
   shell: "PKG=`rpm -qf {{ rpm_gpg_key }}` && rpm -q --queryformat \"%{PACKAGER} %{SIGPGP:pgpsig}\\n\" \"${PKG}\" | grep \"^{{ rpm_packager }}.*Key.ID.{{ rpm_key }}\""
