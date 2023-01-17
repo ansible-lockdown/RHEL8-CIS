@@ -145,22 +145,32 @@
 - name: run Section 2 tasks
   import_tasks: section_2/main.yml
   when: rhel8cis_section2
+  tags:
+      - rhel8cis_section2
 
 - name: run Section 3 tasks
   import_tasks: section_3/main.yml
   when: rhel8cis_section3
+  tags:
+      - rhel8cis_section3
 
 - name: run Section 4 tasks
   import_tasks: section_4/main.yml
   when: rhel8cis_section4
+  tags:
+      - rhel8cis_section4
 
 - name: run Section 5 tasks
   import_tasks: section_5/main.yml
   when: rhel8cis_section5
+  tags:
+      - rhel8cis_section5
 
 - name: run Section 6 tasks
   import_tasks: section_6/main.yml
   when: rhel8cis_section6
+  tags:
+      - rhel8cis_section6
 
 - name: run auditd logic
   import_tasks: auditd.yml
