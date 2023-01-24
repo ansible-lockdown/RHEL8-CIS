@@ -8,10 +8,12 @@
         register: home_mount_absent
         changed_when: home_mount_absent.skipped is undefined
 
-      - name: "1.1.7.1 | AUDIT | Ensure separate partition exists for /home | Warn Count"
-        set_fact:
-            control_number: "{{ control_number }} + [ 'rule_1.1.7.1' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+      - name: "1.1.7.1 | AUDIT | Ensure separate partition exists for /home | Present"
+        ansible.builtin.import_tasks: warning_facts.yml
+
+  vars:
+      warn_control_id: '1.1.7.1'
+      required_mount: '/home'
   when:
       - rhel8cis_rule_1_1_7_1
       - "'/home' not in mount_names"
@@ -42,7 +44,7 @@
   loop_control:
       label: "{{ item.device }}"
   when:
-      - "'/home' not in mount_names"
+      - "'/home' in mount_names"
       - item.mount == "/home"
       - rhel8cis_rule_1_1_7_1
       - rhel8cis_rule_1_1_7_2 or

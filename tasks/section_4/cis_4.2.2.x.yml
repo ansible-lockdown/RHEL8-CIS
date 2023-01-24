@@ -89,9 +89,9 @@
         when: "'static' not in rhel8cis_4_2_2_2_status.stdout"
 
       - name: "4.2.2.2 | AUDIT | Ensure journald service is enabled | Warn Count"
-        set_fact:
-            control_number: "{{ control_number }} + [ 'rule_4.2.2.2' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: '4.2.2.2'
         when: "'static' not in rhel8cis_4_2_2_2_status.stdout"
   when:
       - rhel8cis_rule_4_2_2_2
@@ -201,9 +201,9 @@
                 - "{{ (rhel8cis_4_2_2_7_override_status.matched >= 1) | ternary(rhel8cis_4_2_2_7_override_settings.stdout_lines, rhel8cis_4_2_2_7_notoverride_settings.stdout_lines) }}"
 
       - name: "4.2.2.7 | AUDIT | Ensure journald default file permissions configured | Warn Count"
-        set_fact:
-            control_number: "{{ control_number }} + [ 'rule_4.2.2.7' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: '4.2.2.7'
   when:
       - rhel8cis_rule_4_2_2_7
   tags:

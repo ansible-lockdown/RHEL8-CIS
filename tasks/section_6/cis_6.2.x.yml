@@ -25,20 +25,15 @@
         check_mode: false
         register: rhel8cis_6_2_2_passwd_gid_check
 
-      - name: "6.2.2 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Print message that all groups match between passwd and group files"
-        debug:
-            msg: "Good News! There are no users that have non-existent GUIDs (Groups)"
-        when: rhel8cis_6_2_2_passwd_gid_check.stdout is not defined
-
       - name: "6.2.2 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Print warning about users with invalid GIDs missing GID entries in /etc/group"
         debug:
             msg: "Warning!! The following users have non-existent GIDs (Groups): {{ rhel8cis_6_2_2_passwd_gid_check.stdout_lines | join (', ') }}"
         when: rhel8cis_6_2_2_passwd_gid_check.stdout | length > 0
 
-      - name: "6.2.2 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | warning count"
-        set_fact:
-            control_number: "{{ control_number }} + [ 'rule_6.2.2' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+      - name: "6.2.2 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Warn Count"
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: '6.2.2'
         when: rhel8cis_6_2_2_passwd_gid_check.stdout | length > 0
   when:
       - rhel8cis_rule_6_2_2
@@ -59,20 +54,15 @@
         failed_when: false
         register: rhel8cis_6_2_3_user_uid_check
 
-      - name: "6.2.3 | AUDIT | Ensure no duplicate UIDs exist | Print message that no duplicate UIDs exist"
-        debug:
-            msg: "Good News! There are no duplicate UID's in the system"
-        when: rhel8cis_6_2_3_user_uid_check.stdout | length == 0
-
-      - name: "6.2.3 | AUDIT| Ensure no duplicate UIDs exist | Print warning about users with duplicate UIDs"
+      - name: "6.2.3 | AUDIT | Ensure no duplicate UIDs exist | Print warning about users with duplicate UIDs"
         debug:
             msg: "Warning!! The following users have UIDs that are duplicates: {{ rhel8cis_6_2_3_user_uid_check.stdout_lines }}"
         when: rhel8cis_6_2_3_user_uid_check.stdout | length > 0
 
-      - name: "6.2.3 | AUDIT| Ensure no duplicate UIDs exist | warning count"
-        set_fact:
-            control_number: "{{ control_number }} + [ 'rule_6.2.3' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+      - name: "6.2.3 | AUDIT | Ensure no duplicate UIDs exist | Warn Count"
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: '6.2.3'
         when: rhel8cis_6_2_3_user_uid_check.stdout | length > 0
   when:
       - rhel8cis_rule_6_2_3
@@ -93,20 +83,15 @@
         failed_when: false
         register: rhel8cis_6_2_4_user_user_check
 
-      - name: "6.2.4 | AUDIT | Ensure no duplicate GIDs exist | Print message that no duplicate GID's exist"
-        debug:
-            msg: "Good News! There are no duplicate GIDs in the system"
-        when: rhel8cis_6_2_4_user_user_check.stdout | length == 0
-
       - name: "6.2.4 | AUDIT | Ensure no duplicate GIDs exist | Print warning about users with duplicate GIDs"
         debug:
             msg: "Warning!! The following groups have duplicate GIDs: {{ rhel8cis_6_2_4_user_user_check.stdout_lines }}"
         when: rhel8cis_6_2_4_user_user_check.stdout | length > 0
 
-      - name: "6.2.4 | AUDIT | Ensure no duplicate GIDs exist | warning count"
-        set_fact:
-            control_number: "{{ control_number }} + [ 'rule_6.2.4' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+      - name: "6.2.4 | AUDIT | Ensure no duplicate GIDs exist | Warn Count"
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: '6.2.4'
         when: rhel8cis_6_2_4_user_user_check.stdout | length > 0
 
   when:
@@ -128,20 +113,15 @@
         failed_when: false
         register: rhel8cis_6_2_5_user_username_check
 
-      - name: "6.2.5 | AUDIT | Ensure no duplicate user names exist | Print message that no duplicate user names exist"
-        debug:
-            msg: "Good News! There are no duplicate user names in the system"
-        when: rhel8cis_6_2_5_user_username_check.stdout | length == 0
-
       - name: "6.2.5 | AUDIT | Ensure no duplicate user names exist | Print warning about users with duplicate User Names"
         debug:
             msg: "Warning!! The following user names are duplicates: {{ rhel8cis_6_2_5_user_username_check.stdout_lines }}"
         when: rhel8cis_6_2_5_user_username_check.stdout | length > 0
 
-      - name: "6.2.5 | AUDIT | Ensure no duplicate user names exist | warning count"
-        set_fact:
-            control_number: "{{ control_number }} + [ 'rule_6.2.5' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+      - name: "6.2.5 | AUDIT | Ensure no duplicate user names exist | Warn Count"
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: '6.2.5'
         when: rhel8cis_6_2_5_user_username_check.stdout | length > 0
   when:
       - rhel8cis_rule_6_2_5
@@ -163,20 +143,15 @@
         check_mode: false
         register: rhel8cis_6_2_6_group_group_check
 
-      - name: "6.2.6 | AUDIT | Ensure no duplicate group names exist | Print message that no duplicate groups exist"
-        debug:
-            msg: "Good News! There are no duplicate group names in the system"
-        when: rhel8cis_6_2_6_group_group_check.stdout | length == 0
-
       - name: "6.2.6 | AUDIT | Ensure no duplicate group names exist | Print warning about users with duplicate group names"
         debug:
             msg: "Warning!! The following group names are duplicates: {{ rhel8cis_6_2_6_group_group_check.stdout_lines }}"
         when: rhel8cis_6_2_6_group_group_check.stdout | length > 0
 
-      - name: "6.2.6 | AUDIT | Ensure no duplicate group names exist | warning count"
-        set_fact:
-            control_number: "{{ control_number }} + [ 'rule_6.2.6' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+      - name: "6.2.6 | AUDIT | Ensure no duplicate group names exist | Warn count"
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: '6.2.6'
         when: rhel8cis_6_2_6_group_group_check.stdout | length > 0
   when:
       - rhel8cis_rule_6_2_6
@@ -417,12 +392,6 @@
         changed_when: false
         failed_when: false
         register: rhel8cis_6_2_12_audit
-
-      - name: "6.2.12 | AUDIT | Ensure users' dot files are not group or world-writable | Alert on files found"
-        debug:
-            msg: "Good news! We have not found any group or world-writable dot files on your sytem"
-        when:
-            - rhel8cis_6_2_12_audit.stdout is not defined
 
       - name: "6.2.12 | PATCH | Ensure users' dot files are not group or world-writable | Changes files if configured"
         file:

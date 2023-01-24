@@ -12,5 +12,5 @@ rhel8cis_allowed_crypto_policies:
 change_requires_reboot: false
 
 # Used to control warning summary
-control_number: ""
+warn_control_list: ""
 warn_count: 0

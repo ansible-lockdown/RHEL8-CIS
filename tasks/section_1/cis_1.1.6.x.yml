@@ -8,17 +8,12 @@
         register: var_log_audit_mount_absent
         changed_when: var_log_audit_mount_absent.skipped is undefined
 
-      - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Warn Count"
-        set_fact:
-            control_number: "{{ control_number }} + [ 'rule_1.1.6.1' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
-        when:
-            - required_mount not in mount_names
-
       - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Present"
-        debug:
-            msg: "Congratulations: {{ required_mount }} exists."
-        register: var_log_audit_mount_present
+        ansible.builtin.import_tasks: warning_facts.yml
+
+  vars:
+      warn_control_id: '1.1.6.1'
+      required_mount: '/var/log/audit'
   when:
       - rhel8cis_rule_1_1_6_1
       - "'/var/log/audit' not in mount_names"
@@ -47,7 +42,7 @@
   loop_control:
       label: "{{ item.device }}"
   when:
-      - "'/var/log/audit' not in mount_names"
+      - "'/var/log/audit' in mount_names"
       - item.mount == "/var/log/audit"
       - rhel8cis_rule_1_1_6_1  # This is required so the check takes place
       - rhel8cis_rule_1_1_6_2 or

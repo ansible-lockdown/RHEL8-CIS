@@ -106,10 +106,10 @@
             - rhel8cis_5_6_1_5_user_list.stdout | length > 0
             - not rhel8cis_futurepwchgdate_autofix
 
-      - name: "5.6.1.5 | AUDIT | Ensure all users last password change date is in the past | warning count"
-        set_fact:
-            control_number: "{{ control_number }} + [ 'rule_5.6.1.5' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+      - name: "5.6.1.5 | AUDIT | Ensure all users last password change date is in the past| Warn Count"
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: '5.6.1.5'
         when:
             - rhel8cis_5_6_1_5_user_list.stdout | length > 0
             - not rhel8cis_futurepwchgdate_autofix

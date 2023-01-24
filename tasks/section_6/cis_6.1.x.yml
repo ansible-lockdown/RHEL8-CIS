@@ -23,17 +23,14 @@
                   msg: |
                      "Warning!! You have some package descrepancies issues.
                       The file list can be found in {{ rhel8cis_rpm_audit_file }}"
+              when: rhel8cis_6_1_1_packages_rpm.stdout|length > 0
 
-            - name: "6.1.1 | AUDIT | Audit system file permissions | warning count"
-              set_fact:
-                  control_number: "{{ control_number }} + [ 'rule_6.1.1' ]"
-                  warn_count: "{{ warn_count | int + 1 }}"
-        when: rhel8cis_6_1_1_packages_rpm.stdout|length > 0
+            - name: "6.1.1 | AUDIT | Audit system file permissions | Warn Count"
+              ansible.builtin.import_tasks: warning_facts.yml
+              vars:
+                  warn_control_id: '6.1.1'
+              when: rhel8cis_6_1_1_packages_rpm.stdout | length > 0
 
-      - name: "6.1.1 | AUDIT | Audit system file permissions | Message out no package descrepancies"
-        debug:
-            msg: "Good News! There are no package descrepancies"
-        when: rhel8cis_6_1_1_packages_rpm.stdout|length == 0
   when:
       - rhel8cis_rule_6_1_1
   tags:
@@ -211,6 +208,14 @@
         when:
             - rhel_08_6_1_11_perms_results.stdout_lines is defined
             - rhel8cis_no_world_write_adjust
+
+      - name: "6.1.11 | AUDIT | Ensure no world writable files exist | Warn Count"
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: '6.1.11'
+        when:
+            - rhel_08_6_1_11_perms_results.stdout_lines is defined
+            - not rhel8cis_no_world_write_adjust
   when:
       - rhel8cis_rule_6_1_11
   tags:
@@ -239,9 +244,17 @@
         debug:
             msg: "Manual intervention is required -- missing owner on items in {{ item.item.mount }}: {{ item.stdout_lines | join(', ') }}"
         with_items: "{{ rhel_08_6_1_12_audit.results }}"
+        register: rhel_08_6_1_12_unowned_files
         when:
             - item.stdout_lines is defined
             - item.stdout_lines | length > 0
+
+      - name: "6.1.12 | AUDIT | Ensure no unowned files or directories exist | Warn Count"
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: '6.1.12'
+        when:
+            - not rhel_08_6_1_12_unowned_files.skipped
   when:
       - rhel8cis_rule_6_1_12
   tags:
@@ -270,9 +283,17 @@
         debug:
             msg: "Manual intervention is required -- missing group on items in {{ item.item.mount }}: {{ item.stdout_lines | join(', ') }}"
         with_items: "{{ rhel_08_6_1_13_audit.results }}"
+        register: rhel_08_6_1_13_ungrouped_files
         when:
             - item.stdout_lines is defined
             - item.stdout_lines | length > 0
+
+      - name: "6.1.13 | AUDIT | Ensure no ungrouped files or directories exist | Warn Count"
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: '6.1.13'
+        when: not rhel_08_6_1_13_ungrouped_files.skipped
+
   when:
       - rhel8cis_rule_6_1_13
   tags:
@@ -295,18 +316,17 @@
         loop_control:
             label: "{{ item.mount }}"
 
-      - name: "6.1.14 | AUDIT | Audit SUID executables |  Alert no SUID executables exist"
-        debug:
-            msg: "Good news! We have not found any SUID executable files on your system"
-        failed_when: false
-        changed_when: false
-        when:
-            - rhel_08_6_1_14_perms_results.stdout is not defined
-
       - name: "6.1.14 | AUDIT | Audit SUID executables |  Alert SUID executables exist"
         debug:
             msg: "Manual intervention is required -- SUID set on items in {{ item.item.mount }}: {{ item.stout_lines | join(', ') }}"
         with_items: "{{ rhel_08_6_1_14_perms_results.stdout_lines }}"
+        when:
+            - rhel_08_6_1_14_perms_results.stdout is defined
+
+      - name: "6.1.14 | AUDIT | Audit SUID executables | Warn Count"
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: '6.1.14'
         when:
             - rhel_08_6_1_14_perms_results.stdout is defined
   when:
@@ -330,20 +350,19 @@
         loop_control:
             label: "{{ item.mount }}"
 
-      - name: "6.1.15 | AUDIT | Audit SGID executables |  Alert no SGID executables exist"
-        debug:
-            msg: "Good news! We have not found any SGID executable files on your system"
-        failed_when: false
-        changed_when: false
-        when:
-            - rhel_08_6_1_15_perms_results.stdout is not defined
-
       - name: "6.1.15 | AUDIT | Audit SGID executables |  Alert SGID executables exist"
         debug:
             msg: "Manual intervention is required -- SGID set on items in {{ item.item.mount }}: {{ item.stout_lines | join(', ') }}"
         with_items: "{{ rhel_08_6_1_15_perms_results.stdout_lines }}"
         when:
             - rhel_08_6_1_15_perms_results.stdout is defined
+
+      - name: "6.1.15 | AUDIT | Audit SGID executables | Warn Count"
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: '6.1.15'
+        when:
+            - rhel_08_6_1_15_perms_results.skipped
   when:
       - rhel8cis_rule_6_1_15
   tags:

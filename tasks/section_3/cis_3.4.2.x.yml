@@ -102,10 +102,10 @@
             - rhel8cis_3_4_2_5_nft_tables.stdout | length == 0
             - not rhel8cis_nft_tables_autonewtable
 
-      - name: "3.4.2.5 | AUDIT | Ensure an nftables table exists | Alert on no tables | warning count"
-        set_fact:
-            control_number: "{{ control_number }} + [ 'rule_3.4.2.5' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+      - name: "3.4.2.5 | AUDIT | Ensure an nftables table exists| Warn Count"
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+             warn_control_id: '3.4.2.5'
         when:
             - rhel8cis_3_4_2_5_nft_tables.stdout | length == 0
             - not rhel8cis_nft_tables_autonewtable
