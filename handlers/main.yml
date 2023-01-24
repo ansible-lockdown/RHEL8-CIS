@@ -77,10 +77,6 @@
   changed_when: false
   check_mode: false
   failed_when: false
-  when:
-      - not rhel8cis_skip_for_travis
-  tags:
-      - skip_ansible_lint
 
 - name: restart journald
   service:
