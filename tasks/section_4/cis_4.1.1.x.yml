@@ -29,7 +29,6 @@
       state: started
       enabled: true
   when:
-      - not rhel8cis_skip_for_travis
       - rhel8cis_rule_4_1_1_2
   tags:
       - level2-server
