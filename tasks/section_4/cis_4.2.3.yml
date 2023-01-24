@@ -17,6 +17,10 @@
             - "{{ rhel8cis_4_2_3_logfiles.files }}"
         loop_control:
             label: "{{ item.path }}"
+        when:
+            - item.path != "/var/log/btmp"
+            - item.path != "/var/log/utmp"
+            - item.path != "/var/log/wtmp
 
       - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured"
         block:
