@@ -10,7 +10,6 @@ os_check: true
 # system_is_ec2 toggle will disable tasks that fail on Amazon EC2 instances. Set true to skip and false to run tasks
 system_is_ec2: false
 
-rhel8cis_notauto: false
 rhel8cis_section1: true
 rhel8cis_section2: true
 rhel8cis_section3: true
