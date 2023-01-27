@@ -362,7 +362,7 @@
         vars:
             warn_control_id: '6.1.15'
         when:
-            - rhel_08_6_1_15_perms_results.skipped
+            - rhel_08_6_1_15_perms_results.stdout is defined
   when:
       - rhel8cis_rule_6_1_15
   tags:
