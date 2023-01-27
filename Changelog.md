@@ -8,6 +8,8 @@ Issues.
 - [#244](https://github.com/ansible-lockdown/RHEL8-CIS/issues/244)
 - [#245](https://github.com/ansible-lockdown/RHEL8-CIS/issues/245)
 - [#248](https://github.com/ansible-lockdown/RHEL8-CIS/issues/248)
+- [#249](https://github.com/ansible-lockdown/RHEL8-CIS/issues/249)
+- [#250](https://github.com/ansible-lockdown/RHEL8-CIS/issues/250)
 - warning method update
 - various vars not used removed
 - Initial Oracle files added - requires feedback
