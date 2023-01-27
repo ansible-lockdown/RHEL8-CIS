@@ -42,8 +42,8 @@
 
 - name: "PRELIM | Ensure crypto-policies-scripts package is installed"
   package:
-    name: crypto-policies-scripts
-    state: installed
+      name: crypto-policies-scripts
+      state: installed
 
 - name: "PRELIM | Gather system-wide crypto-policy"
   shell: update-crypto-policies --show
