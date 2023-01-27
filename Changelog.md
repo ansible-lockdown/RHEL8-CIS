@@ -1,5 +1,17 @@
 # Changes to rhel8CIS
 
+## 1.5.3
+
+Issues.
+
+- [#243](https://github.com/ansible-lockdown/RHEL8-CIS/issues/243)
+- [#244](https://github.com/ansible-lockdown/RHEL8-CIS/issues/244)
+- [#245](https://github.com/ansible-lockdown/RHEL8-CIS/issues/245)
+- [#248](https://github.com/ansible-lockdown/RHEL8-CIS/issues/248)
+- warning method update
+- various vars not used removed
+- Initial Oracle files added - requires feedback
+
 ## 1.5.2
 
 - change of varlog_location variable name to sudolog_location
