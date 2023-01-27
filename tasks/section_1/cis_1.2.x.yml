@@ -26,7 +26,8 @@
       - rhel8cis_rule_1_2_2
       - ansible_distribution == "RedHat" or
         ansible_distribution == "Rocky" or
-        ansible_distribution == "AlmaLinux"
+        ansible_distribution == "AlmaLinux" or
+        ansible_distribution == "OracleLinux"
   tags:
       - level1-server
       - level1-workstation
