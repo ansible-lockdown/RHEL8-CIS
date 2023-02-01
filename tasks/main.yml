@@ -98,12 +98,6 @@
   tags:
       - rule_5.7
 
-- name: Gather the package facts before prelim
-  package_facts:
-      manager: auto
-  tags:
-      - always
-
 - name: Include preliminary steps
   import_tasks: prelim.yml
   tags:
