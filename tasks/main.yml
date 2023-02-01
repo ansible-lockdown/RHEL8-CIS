@@ -98,12 +98,6 @@
   tags:
       - rule_5.7
 
-- name: Gather the package facts before prelim
-  package_facts:
-      manager: auto
-  tags:
-      - always
-
 - name: Include preliminary steps
   import_tasks: prelim.yml
   tags:
@@ -138,29 +132,45 @@
 
 - name: run Section 1 tasks
   import_tasks: section_1/main.yml
-  when: rhel8cis_section1
+  when:
+      - rhel8cis_section1
   tags:
       - rhel8cis_section1
 
 - name: run Section 2 tasks
   import_tasks: section_2/main.yml
-  when: rhel8cis_section2
+  when:
+      - rhel8cis_section2
+  tags:
+      - rhel8cis_section2
 
 - name: run Section 3 tasks
   import_tasks: section_3/main.yml
-  when: rhel8cis_section3
+  when:
+      - rhel8cis_section3
+  tags:
+      - rhel8cis_section3
 
 - name: run Section 4 tasks
   import_tasks: section_4/main.yml
-  when: rhel8cis_section4
+  when:
+      - rhel8cis_section4
+  tags:
+      - rhel8cis_section4
 
 - name: run Section 5 tasks
   import_tasks: section_5/main.yml
-  when: rhel8cis_section5
+  when:
+      - rhel8cis_section5
+  tags:
+      - rhel8cis_section5
 
 - name: run Section 6 tasks
   import_tasks: section_6/main.yml
-  when: rhel8cis_section6
+  when:
+      - rhel8cis_section6
+  tags:
+      - rhel8cis_section6
 
 - name: run auditd logic
   import_tasks: auditd.yml
@@ -192,6 +202,6 @@
 
 - name: Output Warning count and control IDs affected
   debug:
-      msg: "You have {{ warn_count }} warning(s) that require investigating that are related to the following benchmark ID(s) {{ control_number }}"
+      msg: "You have {{ warn_count }} warning(s) that require investigating that are related to the following benchmark ID(s) {{ warn_control_list }}"
   tags:
       - always

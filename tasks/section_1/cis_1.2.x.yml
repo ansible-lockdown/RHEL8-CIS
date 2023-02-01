@@ -6,7 +6,7 @@
       username: "{{ rhel8cis_rh_sub_user }}"
       password: "{{ rhel8cis_rh_sub_password }}"
       auto_attach: true
-      no_log: true
+  no_log: true
   when:
       - ansible_distribution == "RedHat"
       - rhel8cis_rhnsd_required
@@ -17,7 +17,7 @@
       - manual
       - patch
       - rule_1.2.1
-      - skip_ansible_lint  # Added as no_log still errors on ansuible-lint
+      - skip_ansible_lint  # Added as no_log still errors on ansible-lint
 
 - name: "1.2.2 | AUDIT | Ensure GPG keys are configured"
   shell: "PKG=`rpm -qf {{ rpm_gpg_key }}` && rpm -q --queryformat \"%{PACKAGER} %{SIGPGP:pgpsig}\\n\" \"${PKG}\" | grep \"^{{ rpm_packager }}.*Key.ID.{{ rpm_key }}\""
@@ -26,7 +26,8 @@
       - rhel8cis_rule_1_2_2
       - ansible_distribution == "RedHat" or
         ansible_distribution == "Rocky" or
-        ansible_distribution == "AlmaLinux"
+        ansible_distribution == "AlmaLinux" or
+        ansible_distribution == "OracleLinux"
   tags:
       - level1-server
       - level1-workstation
@@ -69,8 +70,6 @@
         failed_when: false
         register: dnf_configured
         check_mode: false
-        args:
-            warn: false
 
       - name: "1.2.4 | AUDIT | Ensure package manager repositories are configured | Display repo list"
         debug:
@@ -79,9 +78,9 @@
                 - "{{ dnf_configured.stdout_lines }}"
 
       - name: "1.2.4 | AUDIT | Ensure package manager repositories are configured | Warn Count"
-        set_fact:
-            control_number: "{{ control_number }} + ['rule_1.2.4']"
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
+  vars:
+      warn_control_id: '1.2.4'
   when:
       - rhel8cis_rule_1_2_4
   tags:

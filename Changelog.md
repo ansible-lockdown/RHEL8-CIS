@@ -1,5 +1,26 @@
 # Changes to rhel8CIS
 
+## 1.5.3
+
+Issues.
+
+- [#243](https://github.com/ansible-lockdown/RHEL8-CIS/issues/243)
+- [#244](https://github.com/ansible-lockdown/RHEL8-CIS/issues/244)
+- [#245](https://github.com/ansible-lockdown/RHEL8-CIS/issues/245)
+- [#248](https://github.com/ansible-lockdown/RHEL8-CIS/issues/248)
+- [#249](https://github.com/ansible-lockdown/RHEL8-CIS/issues/249)
+- [#250](https://github.com/ansible-lockdown/RHEL8-CIS/issues/250)
+- warning method update
+- various vars not used removed
+- Initial Oracle files added - requires feedback
+
+## 1.5.2
+
+- change of varlog_location variable name to sudolog_location
+- update to blacklist checks for related modprobe files
+- update to spacing in sudo_log
+- update to 32b check for kernel_module keys 4.1.3.19
+
 ## 1.5.1
 
 - Linting updates
@@ -21,7 +42,10 @@
 - #228 Thanks to benbulll 
   - audit binary copy var missing
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> devel
 ## 1.4.0
 
 - workflow improvements

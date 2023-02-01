@@ -4,19 +4,22 @@
   block:
       - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Find log files"
         find:
-            paths: /var/log
+            paths: "/var/log"
+            file_type: file
             recurse: true
-            patterns: '*.log'
         register: rhel8cis_4_2_3_logfiles
 
       - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Apply permissions to existing logfiles"
         file:
             path: "{{ item.path }}"
             mode: g-w,o-rwx
-        with_items:
-            - "{{ rhel8cis_4_2_3_logfiles.files }}"
+        loop: "{{ rhel8cis_4_2_3_logfiles.files }}"
         loop_control:
             label: "{{ item.path }}"
+        when:
+            - item.path != "/var/log/btmp"
+            - item.path != "/var/log/utmp"
+            - item.path != "/var/log/wtmp"
 
       - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured"
         block:
@@ -58,10 +61,10 @@
                   - rhel8cis_4_2_3_logrotate_conf_files.files | length >= 1
                   - not allow_logrotate_conf_umask_updates
 
-            - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Set Warning fact"
-              set_fact:
-                  control_number: "{{ control_number }} + [ 'rule_4.2.3' ]"
-                  warn_count: "{{ warn_count | int + 1 }}"
+            - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Warn Count"
+              ansible.builtin.import_tasks: warning_facts.yml
+              vars:
+                  warn_control_id: '4.2.3'
               when:
                   - rhel8cis_4_2_3_logrotate_conf_files.files | length >= 1
                   - not allow_logrotate_conf_umask_updates

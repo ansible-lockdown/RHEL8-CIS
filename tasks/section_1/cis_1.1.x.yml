@@ -29,6 +29,14 @@
             group: root
             mode: 0600
 
+      - name: "1.1.10 | PATCH | Disable USB Storage | | blacklist"
+        lineinfile:
+            path: /etc/modprobe.d/blacklist.conf
+            regexp: "^(#)?blacklist usb-storage(\\s|$)"
+            line: "blacklist usb-storage"
+            create: true
+            mode: 0600
+
       - name: "1.1.10 | PATCH | Disable USB Storage | Edit modprobe config"
         modprobe:
             name: usb-storage

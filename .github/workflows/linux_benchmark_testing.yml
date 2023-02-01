@@ -26,7 +26,7 @@ jobs:
       runs-on: ubuntu-latest
 
       steps:
-          - uses: actions/first-interaction@v1.1.1
+          - uses: actions/first-interaction@main
             with:
                 repo-token: ${{ secrets.GITHUB_TOKEN }}
                 pr-message: |-
@@ -44,7 +44,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, 
       # so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
