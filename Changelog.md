@@ -42,6 +42,10 @@ Issues.
 - #228 Thanks to benbulll 
   - audit binary copy var missing
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> devel
 ## 1.4.0
 
 - workflow improvements
