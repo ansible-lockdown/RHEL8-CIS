@@ -255,6 +255,7 @@
         file:
             path: "{{ item.0 }}"
             recurse: true
+            follow: false
             mode: a-st,g-w,o-rwx
         register: rhel_08_6_2_9_patch
         when:
@@ -273,6 +274,7 @@
             default: true
             state: present
             recursive: true
+            follow: false
             etype: "{{ item.1.etype }}"
             permissions: "{{ item.1.mode }}"
         when:
