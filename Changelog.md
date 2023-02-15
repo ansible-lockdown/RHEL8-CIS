@@ -1,5 +1,15 @@
 # Changes to rhel8CIS
 
+## 1.5.4
+
+PR
+
+Many thanks to @dulin-gnet and community feedback on this one  
+Changed default to not follow symlinks due to number of issues it has been causing.  
+Can still be changed using the new variable rhel_08_6_2_9_follow_home_symlinks
+
+- [#252](https://github.com/ansible-lockdown/RHEL8-CIS/pull/252)
+
 ## 1.5.3
 
 Issues.
