@@ -1,5 +1,11 @@
 # Changes to rhel8CIS
 
+## 1.5.4
+
+- improved conditional for 1.1.2.1
+- updated audit git branch now runs correct version
+- added var for benchmark_version
+
 ## 1.5.3
 
 Issues.
