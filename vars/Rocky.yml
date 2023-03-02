@@ -3,4 +3,6 @@
 
 rpm_gpg_key: /etc/pki/rpm-gpg/RPM-GPG-KEY-rockyofficial
 rpm_packager: "infrastructure@rockylinux.org"
-rpm_key: "15af5dac6d745a60"  # found on https://rockylinux.org/keys/ note lower case
+
+# found on https://rockylinux.org/keys/ note lower case
+rpm_key: "15af5dac6d745a60"

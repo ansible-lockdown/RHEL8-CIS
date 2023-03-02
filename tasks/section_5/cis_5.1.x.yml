@@ -3,7 +3,7 @@
 - name: "5.1.1 | PATCH | Ensure cron daemon is enabled"
   service:
       name: crond
-      enabled: yes
+      enabled: true
   when:
       - rhel8cis_rule_5_1_1
   tags:

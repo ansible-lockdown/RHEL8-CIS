@@ -1,5 +1,72 @@
 # Changes to rhel8CIS
 
+## 1.5.4
+
+PR
+
+Many thanks to @dulin-gnet and community feedback on this one  
+Changed default to not follow symlinks due to number of issues it has been causing.  
+Can still be changed using the new variable rhel_08_6_2_9_follow_home_symlinks
+
+- [#252](https://github.com/ansible-lockdown/RHEL8-CIS/pull/252)
+
+## 1.5.3
+
+Issues.
+
+- [#243](https://github.com/ansible-lockdown/RHEL8-CIS/issues/243)
+- [#244](https://github.com/ansible-lockdown/RHEL8-CIS/issues/244)
+- [#245](https://github.com/ansible-lockdown/RHEL8-CIS/issues/245)
+- [#248](https://github.com/ansible-lockdown/RHEL8-CIS/issues/248)
+- [#249](https://github.com/ansible-lockdown/RHEL8-CIS/issues/249)
+- [#250](https://github.com/ansible-lockdown/RHEL8-CIS/issues/250)
+- warning method update
+- various vars not used removed
+- Initial Oracle files added - requires feedback
+
+## 1.5.2
+
+- change of varlog_location variable name to sudolog_location
+- update to blacklist checks for related modprobe files
+- update to spacing in sudo_log
+- update to 32b check for kernel_module keys 4.1.3.19
+
+## 1.5.1
+
+- Linting updates
+- Allow /dev/null folders in 6.2.10
+- #232 pam_unix.so remember flag in section 5.5.3 and 5.5.4
+- #235 rule 2.2.18 - nfs-utils should be changed to mask nfs-server
+- #236 rule 2.2.19 - should be changed to mask rpcbind service and rpcbind.socke
+
+## 1.5.0
+
+- Changed include_tasks to import_tasks to resolve using tags for levels
+- #209 5.6.5 rewrite umask settings
+- #220 tidy up and align variables
+- #226 Thanks to Thulium-Drake
+  -Extended the auditd config required value for auditd space left percentage (not part of CIS Benchmark but required fopr auditd to run correctly in some cases)
+
+- #227 thanks to OscarElits
+  - chrony files now RH expected locations
+- #228 Thanks to benbulll 
+  - audit binary copy var missing
+
+<<<<<<< HEAD
+=======
+
+>>>>>>> devel
+## 1.4.0
+
+- workflow improvements
+- auditd alignment
+  - tftp client
+  - default locatoin moved from /var/tmp to /opt
+- linting
+  - new .ansiblelint
+  - boolean standards
+  - general linting improvements
+
 ## 1.3.9
 
 - tidy up become statements
@@ -11,7 +78,9 @@ Improvements for idempotency
     - update_audit_template (default false)
 - 3.4.1.5 discovery improvement
 - 5.6.1.4 discovery improvement
-
+- warning count added to summary at end of playbook
+- Added support for Almalinux
+- Added support for Rocky
 
 ## 1.3.8
 

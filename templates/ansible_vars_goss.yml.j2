@@ -11,7 +11,6 @@ host_os_distribution: {{ ansible_distribution }}
 timeout_ms: {{ audit_cmd_timeout }}
 
 # Taken from LE rhel8-cis
-rhel8cis_notauto: {{ rhel8cis_notauto }}
 rhel8cis_section1: {{ rhel8cis_section1 }}
 rhel8cis_section2: {{ rhel8cis_section2 }}
 rhel8cis_section3: {{ rhel8cis_section3 }}
@@ -274,6 +273,7 @@ rhel8cis_rule_5_1_5: {{ rhel8cis_rule_5_1_5 }}
 rhel8cis_rule_5_1_6: {{ rhel8cis_rule_5_1_6 }}
 rhel8cis_rule_5_1_7: {{ rhel8cis_rule_5_1_7 }}
 rhel8cis_rule_5_1_8: {{ rhel8cis_rule_5_1_8 }}
+rhel8cis_rule_5_1_9: {{ rhel8cis_rule_5_1_9 }}
 
 
 rhel8cis_rule_5_2_1: {{ rhel8cis_rule_5_2_1 }}
@@ -365,29 +365,25 @@ rhel8cis_rule_6_2_16: {{ rhel8cis_rule_6_2_16 }}
 rhel8cis_avahi_server: {{ rhel8cis_avahi_server }}
 rhel8cis_cups_server: {{ rhel8cis_cups_server }}
 rhel8cis_dhcp_server: {{ rhel8cis_dhcp_server }}
-rhel8cis_ldap_server: {{ rhel8cis_ldap_server }}
-rhel8cis_telnet_server: {{ rhel8cis_telnet_server }}
-rhel8cis_nfs_server: {{ rhel8cis_nfs_server }}
-rhel8cis_rpc_server: {{ rhel8cis_rpc_server }}
-rhel8cis_ntalk_server: {{ rhel8cis_ntalk_server }}
-rhel8cis_rsyncd_server: {{ rhel8cis_rsync_server }}
-rhel8cis_tftp_server: {{ rhel8cis_tftp_server }}
-rhel8cis_rsh_server: {{ rhel8cis_rsh_server }}
-rhel8cis_nis_server: {{ rhel8cis_nis_server }}
-rhel8cis_snmp_server: {{ rhel8cis_snmp_server }}
-rhel8cis_squid_server: {{ rhel8cis_squid_server }}
-rhel8cis_smb_server: {{ rhel8cis_smb_server }}
-rhel8cis_dovecot_server: {{ rhel8cis_dovecot_cyrus_server }}
-rhel8cis_httpd_server: {{ rhel8cis_httpd_server }}
-rhel8cis_imap_server: {{ rhel8cis_dovecot_cyrus_server }}
+rhel8cis_dns_server: {{ rhel8cis_dns_server }}
+rhel8cis_dovecot_cyrus_server: {{ rhel8cis_dovecot_cyrus_server }}
 rhel8cis_ftp_server: {{ rhel8cis_ftp_server }}
-rhel8cis_vsftpd_server: {{ rhel8cis_vsftpd_server }}
-rhel8cis_nfs_rpc_server: {{ rhel8cis_nfs_rpc_server }}
+rhel8cis_httpd_server: {{ rhel8cis_httpd_server }}
 rhel8cis_is_mail_server: {{ rhel8cis_is_mail_server }}
-rhel8cis_bind: {{ rhel8cis_bind }}
-rhel8cis_vsftpd: {{ rhel8cis_vsftpd }}
-rhel8cis_httpd: {{ rhel8cis_httpd }}
-rhel8cis_dovecot: {{ rhel8cis_dovecot }}
+rhel8cis_net_snmp_server: {{ rhel8cis_net_snmp_server }}
+rhel8cis_nfs_server: {{ rhel8cis_nfs_server }}
+rhel8cis_nginx_server: {{ rhel8cis_nginx_server }}
+rhel8cis_nis_server: {{ rhel8cis_nis_server }}
+rhel8cis_rpc_server: {{ rhel8cis_rpc_server }}
+rhel8cis_rsync_server: {{ rhel8cis_rsync_server }}
+rhel8cis_samba_server: {{ rhel8cis_samba_server }}
+rhel8cis_squid_server: {{ rhel8cis_squid_server }}
+rhel8cis_telnet_server: {{ rhel8cis_telnet_server }}
+rhel8cis_tftp_server: {{ rhel8cis_tftp_server }}
+rhel8cis_vsftpd_server: {{ rhel8cis_vsftpd_server }}
+
+
+
 rhel8cis_allow_autofs: {{ rhel8cis_allow_autofs }}
 
 # client services
@@ -396,6 +392,7 @@ rhel8cis_telnet_required: {{ rhel8cis_telnet_required }}
 rhel8cis_talk_required: {{ rhel8cis_talk_required }}
 rhel8cis_rsh_required: {{ rhel8cis_rsh_required }}
 rhel8cis_ypbind_required: {{ rhel8cis_ypbind_required }}
+rhel8cis_tftp_required: {{ rhel8cis_tftp_client }}
 
 # AIDE
 rhel8cis_config_aide: {{ rhel8cis_config_aide }}
@@ -443,7 +440,7 @@ rhel8cis_is_router: {{ rhel8cis_is_router }}
 # Time Synchronization
 rhel8cis_time_synchronization: {{ rhel8cis_time_synchronization }}
 
-rhel8cis_varlog_location: {{ rhel8cis_varlog_location }}
+rhel8cis_sudolog_location: {{ rhel8cis_sudolog_location }}
 
 rhel8cis_firewall: {{ rhel8cis_firewall }}
 #rhel8cis_firewall: iptables
@@ -475,42 +472,6 @@ rhel8cis_sshd_access:
   AllowGroup:
   DenyUser:
   DenyGroup:
-
-rhel8cis_ssh_strong_ciphers:  Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128- gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
-rhel8cis_ssh_weak_ciphers:
-  3des-cbc
-  aes128-cbc
-  aes192-cbc
-  aes256-cbc
-  arcfour
-  arcfour128
-  arcfour256
-  blowfish-cbc
-  cast128-cbc 
-  rijndael-cbc@lysator.liu.se
-
-rhel8cis_ssh_strong_macs:  MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2- 512,hmac-sha2-256
-rhel8cis_ssh_weak_macs:
-  hmac-md5 
-  hmac-md5-96 
-  hmac-ripemd160 
-  hmac-sha1
-  hmac-sha1-96 
-  umac-64@openssh.com 
-  umac-128@openssh.com 
-  hmac-md5-etm@openssh.com 
-  hmac-md5-96-etm@openssh.com 
-  hmac-ripemd160-etm@openssh.com 
-  hmac-sha1-etm@openssh.com 
-  hmac-sha1-96-etm@openssh.com 
-  umac-64-etm@openssh.com 
-  umac-128-etm@openssh.com
-
-rhel8cis_ssh_strong_kex: KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman- group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256
-rhel8cis_ssh_weak_kex: 
-  diffie-hellman-group1-sha1 
-  diffie-hellman-group14-sha1 
-  diffie-hellman-group-exchange-sha1
 
 rhel8cis_ssh_aliveinterval: "300"
 rhel8cis_ssh_countmax: "3"

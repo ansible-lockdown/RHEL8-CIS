@@ -2,7 +2,7 @@
 
 - name: "1.4.1 | PATCH | Ensure bootloader password is set"
   copy:
-      dest: /boot/grub2/user.cfg
+      dest: /boot/grub2/user.cfg  # noqa template-instead-of-copy
       content: "GRUB2_PASSWORD={{ rhel8cis_bootloader_password_hash }}"
       owner: root
       group: root
@@ -60,7 +60,7 @@
       path: /etc/systemd/system/rescue.service.d/00-require-auth.conf
       regexp: '^ExecStart='
       line: "ExecStart=-/usr/lib/systemd/systemd-sulogin-shell rescue"
-      create: yes
+      create: true
       owner: root
       group: root
       mode: 0644

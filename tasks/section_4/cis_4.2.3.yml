@@ -1,9 +1,73 @@
 ---
 
 - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured"
-  command: find /var/log -type f -exec chmod g-wx,o-rwx "{}" +
-  changed_when: false
-  failed_when: false
+  block:
+      - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Find log files"
+        find:
+            paths: "/var/log"
+            file_type: file
+            recurse: true
+        register: rhel8cis_4_2_3_logfiles
+
+      - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Apply permissions to existing logfiles"
+        file:
+            path: "{{ item.path }}"
+            mode: g-w,o-rwx
+        loop: "{{ rhel8cis_4_2_3_logfiles.files }}"
+        loop_control:
+            label: "{{ item.path }}"
+        when:
+            - item.path != "/var/log/btmp"
+            - item.path != "/var/log/utmp"
+            - item.path != "/var/log/wtmp"
+
+      - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured"
+        block:
+            - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Find logrotate conf files"
+              find:
+                  paths: /etc/logrotate.d
+                  contains: '^\s+create 06[5-7][0-7]'
+              register: rhel8cis_4_2_3_logrotate_conf_files
+
+            - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | output found logrotate file"
+              debug:
+                  msg: "{{ item }}"
+              loop: "{{ rhel8cis_4_2_3_logrotate_conf_files.files }}"
+              loop_control:
+                  label: "{{ item.path }}"
+
+            - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | update logrotate.conf"
+              lineinfile:
+                  path: /etc/logrotate.conf
+                  regexp: '^create'
+                  line: "create 0640"
+
+            - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | update logrotate.d conf files"
+              replace:
+                  path: "{{ item.path }}"
+                  regexp: 'create [0-7][0-7][0-7][0-7]'
+                  replace: 'create'
+              loop: "{{ rhel8cis_4_2_3_logrotate_conf_files.files }}"
+              loop_control:
+                  label: "{{ item.path }}"
+              when:
+                  - rhel8cis_4_2_3_logrotate_conf_files.files | length >= 1
+                  - allow_logrotate_conf_umask_updates
+
+            - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | warning logrotate.d conf files"
+              debug:
+                  msg: "Warning!! logrotate.d conf file have create mode that will not match CIS requirements upon rotation"
+              when:
+                  - rhel8cis_4_2_3_logrotate_conf_files.files | length >= 1
+                  - not allow_logrotate_conf_umask_updates
+
+            - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Warn Count"
+              ansible.builtin.import_tasks: warning_facts.yml
+              vars:
+                  warn_control_id: '4.2.3'
+              when:
+                  - rhel8cis_4_2_3_logrotate_conf_files.files | length >= 1
+                  - not allow_logrotate_conf_umask_updates
   when:
       - rhel8cis_rule_4_2_3
   tags:

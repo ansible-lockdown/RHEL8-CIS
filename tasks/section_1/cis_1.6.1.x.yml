@@ -19,7 +19,7 @@
       regexp: '(selinux|enforcing)\s*=\s*0\s*'
       replace: ''
   register: selinux_grub_patch
-  ignore_errors: yes
+  ignore_errors: true  # noqa ignore-errors
   notify: rhel8cis_grub2cfg
   when:
       - rhel8cis_rule_1_6_1_2
@@ -87,15 +87,16 @@
         failed_when: false
         changed_when: false
 
-      - name: "1.6.1.6 | AUDIT | Ensure no unconfined services exist | Message on no unconfined services"
-        debug:
-            msg: "Good News! There are no services found on your system"
-        when: rhelcis_1_6_1_6_unconf_services.stdout | length == 0
-
       - name: "1.6.1.6 | AUDIT | Ensure no unconfined services exist | Message on unconfined services"
         debug:
-            msg: "Warning! You have unconfined services: {{ rhelcis_1_6_1_6_unconf_services.stdout_lines }}"
+            msg: "Warning!! You have unconfined services: {{ rhelcis_1_6_1_6_unconf_services.stdout_lines }}"
         when: rhelcis_1_6_1_6_unconf_services.stdout | length > 0
+
+      - name: "1.6.1.6 | AUDIT | Ensure no unconfined services exist | warning count"
+        ansible.builtin.import_tasks: warning_facts.yml
+        when: rhelcis_1_6_1_6_unconf_services.stdout | length > 0
+  vars:
+      warn_control_id: '1.6.1.6'
   when:
       - rhel8cis_rule_1_6_1_6
   tags:

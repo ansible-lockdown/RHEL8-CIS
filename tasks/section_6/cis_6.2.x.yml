@@ -16,7 +16,6 @@
       - accounts
       - rule_6.2.1
 
-
 - name: "6.2.2 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group"
   block:
       - name: "6.2.2 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Check /etc/passwd entries"
@@ -26,15 +25,16 @@
         check_mode: false
         register: rhel8cis_6_2_2_passwd_gid_check
 
-      - name: "6.2.2 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Print message that all groups match between passwd and group files"
-        debug:
-            msg: "Good News! There are no users that have non-existent GUIDs (Groups)"
-        when: rhel8cis_6_2_2_passwd_gid_check.stdout is not defined
-
       - name: "6.2.2 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Print warning about users with invalid GIDs missing GID entries in /etc/group"
         debug:
-            msg: "WARNING: The following users have non-existent GIDs (Groups): {{ rhel8cis_6_2_2_passwd_gid_check.stdout_lines | join (', ') }}"
-        when: rhel8cis_6_2_2_passwd_gid_check.stdout is defined
+            msg: "Warning!! The following users have non-existent GIDs (Groups): {{ rhel8cis_6_2_2_passwd_gid_check.stdout_lines | join (', ') }}"
+        when: rhel8cis_6_2_2_passwd_gid_check.stdout | length > 0
+
+      - name: "6.2.2 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Warn Count"
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: '6.2.2'
+        when: rhel8cis_6_2_2_passwd_gid_check.stdout | length > 0
   when:
       - rhel8cis_rule_6_2_2
   tags:
@@ -54,15 +54,16 @@
         failed_when: false
         register: rhel8cis_6_2_3_user_uid_check
 
-      - name: "6.2.3 | AUDIT | Ensure no duplicate UIDs exist | Print message that no duplicate UIDs exist"
+      - name: "6.2.3 | AUDIT | Ensure no duplicate UIDs exist | Print warning about users with duplicate UIDs"
         debug:
-            msg: "Good News! There are no duplicate UID's in the system"
-        when: rhel8cis_6_2_3_user_uid_check.stdout is not defined
+            msg: "Warning!! The following users have UIDs that are duplicates: {{ rhel8cis_6_2_3_user_uid_check.stdout_lines }}"
+        when: rhel8cis_6_2_3_user_uid_check.stdout | length > 0
 
-      - name: "6.2.3 | AUDIT| Ensure no duplicate UIDs exist | Print warning about users with duplicate UIDs"
-        debug:
-            msg: "Warning: The following users have UIDs that are duplicates: {{ rhel8cis_6_2_3_user_uid_check.stdout_lines }}"
-        when: rhel8cis_6_2_3_user_uid_check.stdout is defined
+      - name: "6.2.3 | AUDIT | Ensure no duplicate UIDs exist | Warn Count"
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: '6.2.3'
+        when: rhel8cis_6_2_3_user_uid_check.stdout | length > 0
   when:
       - rhel8cis_rule_6_2_3
   tags:
@@ -82,15 +83,17 @@
         failed_when: false
         register: rhel8cis_6_2_4_user_user_check
 
-      - name: "6.2.4 | AUDIT | Ensure no duplicate GIDs exist | Print message that no duplicate GID's exist"
-        debug:
-            msg: "Good News! There are no duplicate GIDs in the system"
-        when: rhel8cis_6_2_4_user_user_check.stdout is not defined
-
       - name: "6.2.4 | AUDIT | Ensure no duplicate GIDs exist | Print warning about users with duplicate GIDs"
         debug:
-            msg: "Warning: The following groups have duplicate GIDs: {{ rhel8cis_6_2_4_user_user_check.stdout_lines }}"
-        when: rhel8cis_6_2_4_user_user_check.stdout is defined
+            msg: "Warning!! The following groups have duplicate GIDs: {{ rhel8cis_6_2_4_user_user_check.stdout_lines }}"
+        when: rhel8cis_6_2_4_user_user_check.stdout | length > 0
+
+      - name: "6.2.4 | AUDIT | Ensure no duplicate GIDs exist | Warn Count"
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: '6.2.4'
+        when: rhel8cis_6_2_4_user_user_check.stdout | length > 0
+
   when:
       - rhel8cis_rule_6_2_4
   tags:
@@ -110,15 +113,16 @@
         failed_when: false
         register: rhel8cis_6_2_5_user_username_check
 
-      - name: "6.2.5 | AUDIT | Ensure no duplicate user names exist | Print message that no duplicate user names exist"
-        debug:
-            msg: "Good News! There are no duplicate user names in the system"
-        when: rhel8cis_6_2_5_user_username_check.stdout is not defined
-
       - name: "6.2.5 | AUDIT | Ensure no duplicate user names exist | Print warning about users with duplicate User Names"
         debug:
-            msg: "Warning: The following user names are duplicates: {{ rhel8cis_6_2_5_user_username_check.stdout_lines }}"
-        when: rhel8cis_6_2_5_user_username_check.stdout is defined
+            msg: "Warning!! The following user names are duplicates: {{ rhel8cis_6_2_5_user_username_check.stdout_lines }}"
+        when: rhel8cis_6_2_5_user_username_check.stdout | length > 0
+
+      - name: "6.2.5 | AUDIT | Ensure no duplicate user names exist | Warn Count"
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: '6.2.5'
+        when: rhel8cis_6_2_5_user_username_check.stdout | length > 0
   when:
       - rhel8cis_rule_6_2_5
   tags:
@@ -136,18 +140,19 @@
         shell: 'getent passwd | cut -d: -f1 | sort -n | uniq -d'
         changed_when: false
         failed_when: false
-        check_mode: no
+        check_mode: false
         register: rhel8cis_6_2_6_group_group_check
-
-      - name: "6.2.6 | AUDIT | Ensure no duplicate group names exist | Print message that no duplicate groups exist"
-        debug:
-            msg: "Good News! There are no duplicate group names in the system"
-        when: rhel8cis_6_2_6_group_group_check.stdout is defined
 
       - name: "6.2.6 | AUDIT | Ensure no duplicate group names exist | Print warning about users with duplicate group names"
         debug:
-            msg: "Warning: The following group names are duplicates: {{ rhel8cis_6_2_6_group_group_check.stdout_lines }}"
-        when: rhel8cis_6_2_6_group_group_check.stdout is not defined
+            msg: "Warning!! The following group names are duplicates: {{ rhel8cis_6_2_6_group_group_check.stdout_lines }}"
+        when: rhel8cis_6_2_6_group_group_check.stdout | length > 0
+
+      - name: "6.2.6 | AUDIT | Ensure no duplicate group names exist | Warn count"
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: '6.2.6'
+        when: rhel8cis_6_2_6_group_group_check.stdout | length > 0
   when:
       - rhel8cis_rule_6_2_6
   tags:
@@ -163,23 +168,23 @@
   block:
       - name: "6.2.7 | AUDIT | Ensure root PATH Integrity | Determine empty value"
         shell: 'echo $PATH | grep ::'
-        changed_when: False
+        changed_when: false
         failed_when: rhel8cis_6_2_7_path_colon.rc == 0
-        check_mode: no
+        check_mode: false
         register: rhel8cis_6_2_7_path_colon
 
       - name: "6.2.7 | AUDIT | Ensure root PATH Integrity | Determin colon end"
         shell: 'echo $PATH | grep :$'
-        changed_when: False
+        changed_when: false
         failed_when: rhel8cis_6_2_7_path_colon_end.rc == 0
-        check_mode: no
+        check_mode: false
         register: rhel8cis_6_2_7_path_colon_end
 
       - name: "6.2.7 | AUDIT | Ensure root PATH Integrity | Determine dot in path"
         shell: "/bin/bash --login -c 'env | grep ^PATH=' | sed -e 's/PATH=//' -e 's/::/:/' -e 's/:$//' -e 's/:/\\n/g'"
-        changed_when: False
+        changed_when: false
         failed_when: '"." in rhel8cis_6_2_7_dot_in_path.stdout_lines'
-        check_mode: no
+        check_mode: false
         register: rhel8cis_6_2_7_dot_in_path
 
       - name: "6.2.7 | AUDIT | Ensure root PATH Integrity | Alert on empty value, colon end, and dot in path"
@@ -230,7 +235,7 @@
         stat:
             path: "{{ item }}"
         register: rhel_08_6_2_9_audit
-        with_items: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8uid_interactive_uid_start|int ) | selectattr('uid', '<=', rhel8uid_interactive_uid_stop|int ) | map(attribute='dir') | list }}"
+        with_items: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8uid_interactive_uid_start | int ) | selectattr('uid', '<=', rhel8uid_interactive_uid_stop | int ) | map(attribute='dir') | list }}"
 
       - name: "6.2.9 | AUDIT | Ensure all users' home directories exist"
         command: find -H {{ item.0 | quote }} -not -type l -perm /027
@@ -249,7 +254,7 @@
       - name: "6.2.9 | PATCH | Ensure all users' home directories exist"
         file:
             path: "{{ item.0 }}"
-            recurse: yes
+            recurse: true
             mode: a-st,g-w,o-rwx
         register: rhel_08_6_2_9_patch
         when:
@@ -265,12 +270,13 @@
       - name: "6.2.9 | PATCH | Ensure all users' home directories exist"
         acl:
             path: "{{ item.0 }}"
-            default: yes
+            default: true
             state: present
-            recursive: yes
+            recursive: true
+            follow: "{{ rhel_08_6_2_9_follow_home_symlinks }}"
             etype: "{{ item.1.etype }}"
             permissions: "{{ item.1.mode }}"
-        when: 
+        when:
             - not system_is_container
         with_nested:
             - "{{ (ansible_check_mode | ternary(rhel_08_6_2_9_patch_audit, rhel_08_6_2_9_patch)).results |
@@ -302,6 +308,7 @@
   when:
       - item.uid >= rhel8uid_interactive_uid_start|int
       - item.id != 'nobody'
+      - item.dir != '/dev/null'
       - rhel8cis_rule_6_2_10
   tags:
       - skip_ansible_lint  # settings found on 6_2_7
@@ -317,7 +324,7 @@
       - name: "6.2.11 | AUDIT | Ensure users' home directories permissions are 750 or more restrictive"
         stat:
             path: "{{ item }}"
-        with_items: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8uid_interactive_uid_start|int) | selectattr('uid', '<=', rhel8uid_interactive_uid_stop|int) | map(attribute='dir') | list }}"
+        with_items: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8uid_interactive_uid_start | int) | selectattr('uid', '<=', rhel8uid_interactive_uid_stop | int) | map(attribute='dir') | list }}"
         register: rhel_08_6_2_11_audit
 
       - name: "6.2.11 | AUDIT | Ensure users' home directories permissions are 750 or more restrictive"
@@ -337,7 +344,7 @@
       - name: "6.2.11 | PATCH | Ensure users' home directories permissions are 750 or more restrictive"
         file:
             path: "{{ item.0 }}"
-            recurse: yes
+            recurse: true
             mode: a-st,g-w,o-rwx
         register: rhel_08_6_2_11_patch
         when:
@@ -353,12 +360,12 @@
       - name: "6.2.11 | PATCH | Ensure users' home directories permissions are 750 or more restrictive"
         acl:
             path: "{{ item.0 }}"
-            default: yes
+            default: true
             state: present
-            recursive: yes
+            recursive: true
             etype: "{{ item.1.etype }}"
             permissions: "{{ item.1.mode }}"
-        when: 
+        when:
             - not system_is_container
         with_nested:
             - "{{ (ansible_check_mode | ternary(rhel_08_6_2_11_patch_audit, rhel_08_6_2_11_patch)).results |
@@ -386,12 +393,6 @@
         changed_when: false
         failed_when: false
         register: rhel8cis_6_2_12_audit
-
-      - name: "6.2.12 | AUDIT | Ensure users' dot files are not group or world-writable | Alert on files found"
-        debug:
-            msg: "Good news! We have not found any group or world-writable dot files on your sytem"
-        when:
-            - rhel8cis_6_2_12_audit.stdout is not defined
 
       - name: "6.2.12 | PATCH | Ensure users' dot files are not group or world-writable | Changes files if configured"
         file:

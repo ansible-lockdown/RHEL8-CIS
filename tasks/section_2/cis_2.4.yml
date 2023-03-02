@@ -6,15 +6,20 @@
         shell: systemctl list-units --type=service
         changed_when: false
         failed_when: false
-        check_mode: no
+        check_mode: false
         register: rhel8cis_2_4_services
 
       - name: "2.4 | AUDIT | Ensure nonessential services are removed or masked | Display list of services"
         debug:
             msg:
-                - "Alert! Below are the list of services, both active and inactive"
+                - "Warning!! Below are the list of services, both active and inactive"
                 - "Please review to make sure all are essential"
                 - "{{ rhel8cis_2_4_services.stdout_lines }}"
+
+      - name: "2.4 | AUDIT | Ensure nonessential services are removed or masked | Warn Count"
+        ansible.builtin.import_tasks: warning_facts.yml
+  vars:
+      warn_control_id: '2.4'
   when:
       - rhel8cis_rule_2_4
   tags:

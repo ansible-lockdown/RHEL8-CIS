@@ -3,7 +3,7 @@
 - name: "1.1.9 | PATCH | Disable Automounting"
   service:
       name: autofs
-      enabled: no
+      enabled: false
   when:
       - not rhel8cis_allow_autofs
       - "'autofs' in ansible_facts.packages"
@@ -24,9 +24,17 @@
             path: /etc/modprobe.d/CIS.conf
             regexp: "^(#)?install usb-storage(\\s|$)"
             line: "install usb-storage /bin/true"
-            create: yes
+            create: true
             owner: root
             group: root
+            mode: 0600
+
+      - name: "1.1.10 | PATCH | Disable USB Storage | | blacklist"
+        lineinfile:
+            path: /etc/modprobe.d/blacklist.conf
+            regexp: "^(#)?blacklist usb-storage(\\s|$)"
+            line: "blacklist usb-storage"
+            create: true
             mode: 0600
 
       - name: "1.1.10 | PATCH | Disable USB Storage | Edit modprobe config"

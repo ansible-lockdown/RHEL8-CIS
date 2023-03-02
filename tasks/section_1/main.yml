@@ -41,7 +41,7 @@
   import_tasks: cis_1.5.x.yml
 
 - name: "SECTION | 1.6 | Mandatory Access Control"
-  include_tasks: cis_1.6.1.x.yml
+  import_tasks: cis_1.6.1.x.yml
   when: not rhel8cis_selinux_disable
 
 - name: "SECTION | 1.7 | Command Line Warning Banners"
@@ -54,6 +54,6 @@
   import_tasks: cis_1.9.yml
 
 - name: "SECTION | 1.10 | Crypto policies"
-  include_tasks: cis_1.10.yml
+  import_tasks: cis_1.10.yml
   when:
   - not system_is_ec2

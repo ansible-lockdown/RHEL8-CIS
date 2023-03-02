@@ -1,7 +1,7 @@
 ---
 
 - name: Pre Audit | Setup the audit
-  include_tasks: LE_audit_setup.yml
+  import_tasks: LE_audit_setup.yml
   when:
       - setup_audit
   tags:
@@ -49,21 +49,22 @@
   get_url:
       url: "{{ audit_files_url }}"
       dest: "{{ audit_conf_dir }}"
+      mode: 0755
   when:
       - audit_content == 'get_url'
 
 - name: Pre Audit | Check Goss is available
   block:
-  - name: Pre Audit | Check for goss file
-    stat:
-        path: "{{ audit_bin }}"
-    register: goss_available
+      - name: Pre Audit | Check for goss file
+        stat:
+            path: "{{ audit_bin }}"
+        register: goss_available
 
-  - name: Pre Audit | If audit ensure goss is available
-    assert:
-        msg: "Audit has been selected: unable to find goss binary at {{ audit_bin }}"
-    when:
-        - not goss_available.stat.exists
+      - name: Pre Audit | If audit ensure goss is available
+        assert:
+            msg: "Audit has been selected: unable to find goss binary at {{ audit_bin }}"
+        when:
+            - not goss_available.stat.exists
   when:
       - run_audit
 
@@ -80,13 +81,13 @@
       dest: "{{ audit_vars_path }}"
       mode: 0600
   when:
-  - run_audit
+      - run_audit
   tags:
-  - goss_template
+      - goss_template
 
 - name: "Pre Audit | Run pre_remediation {{ benchmark }} audit"
   shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -o {{ pre_audit_outfile }} -g {{ group_names }}"
-  environment: "{{ audit_run_script_environment|default({}) }}"
+  environment: "{{ audit_run_script_environment | default ({}) }}"
   vars:
       warn: false
 
