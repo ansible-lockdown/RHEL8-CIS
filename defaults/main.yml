@@ -659,6 +659,13 @@ rhel8cis_rpm_audit_file: /var/tmp/rpm_file_check
 rhel8cis_no_world_write_adjust: true
 rhel8cis_passwd_label: "{{ (this_item | default(item)).id }}: {{ (this_item | default(item)).dir }}"
 
+
+# 6.2.9 - adjusting symlinks in home directories
+# Default in ansible is true this causes lots of issues for many users
+# set as variable so can be overridden but default is not to follow.
+
+rhel_08_6_2_9_follow_home_symlinks: false
+
 # 6.2.12
 rhel8cis_dotperm_ansiblemanaged: true
 #### Goss Configuration Settings ####

@@ -1,10 +1,18 @@
 # Changes to rhel8CIS
 
-## 1.5.4
+## 1.5.5
 
 - improved conditional for 1.1.2.1
 - updated audit git branch now runs correct version
 - added var for benchmark_version
+
+## 1.5.4
+
+Many thanks to @dulin-gnet and community feedback on this one  
+Changed default to not follow symlinks due to number of issues it has been causing.  
+Can still be changed using the new variable rhel_08_6_2_9_follow_home_symlinks
+
+- [#252](https://github.com/ansible-lockdown/RHEL8-CIS/pull/252)
 
 ## 1.5.3
 
