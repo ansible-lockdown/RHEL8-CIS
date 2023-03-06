@@ -54,7 +54,7 @@ Refer to [RHEL8-CIS-Audit](https://github.com/ansible-lockdown/RHEL8-CIS-Audit).
 
 ## Requirements
 
-RHEL/AlmaLinux/Rocky 8 - Other versions are not supported.
+RHEL/AlmaLinux/Rocky/Oracle 8 - Other versions are not supported.
 
 - AlmaLinux/Rocky Has been tested on 8.4(enabling crypto (sections 1.10&1.11) breaks updating or installs 01Jul2021
 - Access to download or add the goss binary and content to the system if using auditing (other options are available on how to get the content to the system.)
