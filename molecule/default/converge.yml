@@ -1,0 +1,30 @@
+---
+# This is a playbook to test the tasks.
+- name: Converge
+  hosts: all
+  gather_facts: true
+
+  vars:
+    role_name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+    ansible_user: root
+    system_is_container: true
+    rhel8cis_selinux_disable: true
+    rhel8cis_rule_5_3_4: false
+    rhel8cis_rule_1_1_10: false
+    rhel8cis_rsyslog_ansiblemanaged: false
+    rhel8cis_rule_3_4_1_3: false
+    rhel8cis_rule_3_4_1_4: false
+    rhel8cis_rule_4_1_1_1: false
+    rhel8cis_rule_4_1_1_2: false
+    rhel8cis_rule_4_1_1_3: false
+    rhel8cis_rule_4_1_1_4: false
+    rhel8cis_rule_4_2_1_2: false
+    rhel8cis_rule_4_2_1_4: false
+    rhel8cis_rule_5_1_1: false
+
+  pre_tasks:
+  tasks:
+    - name: "Include tasks"
+      ansible.builtin.include_role:
+        name: "{{ role_name }}"
+
