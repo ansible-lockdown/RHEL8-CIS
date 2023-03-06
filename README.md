@@ -114,7 +114,7 @@ ok: [default] => {
 }
 
 PLAY RECAP *******************************************************************************************************************************************
-default                    : ok=270  changed=23   unreachable=0    failed=0    skipped=140  rescued=0    ignored=0  
+default                    : ok=270  changed=23   unreachable=0    failed=0    skipped=140  rescued=0    ignored=0
 ```
 
 ## Branches
@@ -164,6 +164,26 @@ uses:
 - ansible collections - pulls in the latest version based on requirements file
 - runs the audit using the devel branch
 - This is an automated test that occurs on pull requests into devel
+
+
+## Local Testing
+
+Molecule can be used to work on this role and test in distinct _scenarios_.
+
+**examples**
+
+```bash
+molecule test -s default
+molecule converge -s wsl -- --check
+```
+
+local testing uses:
+- ansible 2.13.3
+- molecule 4.0.1
+- molecule-docker 2.0.0
+- molecule-podman 2.0.2
+- molecule-vagrant 1.0.0
+- molecule-azure 0.5.0
 
 ## known-issues
 
