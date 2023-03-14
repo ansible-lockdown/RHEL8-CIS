@@ -10,16 +10,23 @@ os_check: true
 # system_is_ec2 toggle will disable tasks that fail on Amazon EC2 instances. Set true to skip and false to run tasks
 system_is_ec2: false
 
+  # General Settings
 rhel8cis_section1: true
+  # Services Settings
 rhel8cis_section2: true
+  # Network Settings:
 rhel8cis_section3: true
+  # Logging and Auditing Settings
 rhel8cis_section4: true
+  #  Access Authentication Authorization Settings
 rhel8cis_section5: true
+  # System Maintenance Settings
 rhel8cis_section6: true
 
 rhel8cis_level_1: true
-rhel8cis_level_2: true
+rhel8cis_level_2: false
 
+  # Disable SELinux-related Tasks
 rhel8cis_selinux_disable: false
 rhel8cis_legacy_boot: false
 
@@ -397,7 +404,7 @@ rhel8cis_allow_autofs: false
 # 1.1.2.4
 # These settings go into the /etc/fstab file for the /tmp mount settings
 # The value must contain nosuid,nodev,noexec to conform to CIS standards
-# rhel8cis_tmp_tmpfs_settings: "defaults,rw,nosuid,nodev,noexec,relatime 0 0"
+rhel8cis_tmp_tmpfs_settings: "defaults,rw,nosuid,nodev,noexec,relatime 0 0"
 # If set true uses the tmp.mount service else using fstab configuration
 rhel8cis_tmp_svc: false
 
@@ -405,8 +412,9 @@ rhel8cis_tmp_svc: false
 # This is the login information for your RedHat Subscription
 # DO NOT USE PLAIN TEXT PASSWORDS!!!!!
 # The intent here is to use a password utility like Ansible Vault here
-rhel8cis_rh_sub_user: user
-rhel8cis_rh_sub_password: password
+rhel8cis_rh_sub_user: rhel_user
+
+rhel8cis_rh_sub_password: rhel_password
 
 # 1.2.2
 # Do you require rhnsd
@@ -430,7 +438,7 @@ rhel8cis_crypto_policy: "DEFAULT"
 rhel8cis_is_router: false
 
 # IPv6 required
-rhel8cis_ipv6_required: true
+rhel8cis_ipv6_required: false
 
 # AIDE
 rhel8cis_config_aide: true
@@ -481,8 +489,8 @@ rhel8cis_firewall: firewalld
 rhel8cis_default_zone: public
 
 # 3.4.2.5 Zone and Interface setting
-rhel8cis_int_zone: customezone
-rhel8cis_interface: eth0
+rhel8cis_int_zone: internal
+rhel8cis_interface: ens192
 
 rhel8cis_firewall_services:
     - cockpit
@@ -535,18 +543,18 @@ rhel8cis_syslog: rsyslog
 rhel8cis_rsyslog_ansiblemanaged: true
 
 # RHEL-08-4.2.1.4/4.2.1.5 remote and destination log server name
-rhel8cis_remote_log_server: logagg.example.com
-
-# 4.2.1.5, 4.2.2.1.3, 4.2.2.1.4
+#rhel8cis_remote_log_server: logagg.example.com
+#
+## 4.2.1.5, 4.2.2.1.3, 4.2.2.1.4
 rhel8cis_system_is_log_server: false
-
-# 4.2.2.1.2
-# rhel8cis_journal_upload_url is the ip address to upload the journal entries to
-rhel8cis_journal_upload_url: 192.168.50.42
-# The paths below have the default paths/files, but allow user to create custom paths/filenames
-rhel8cis_journal_upload_serverkeyfile: "/etc/ssl/private/journal-upload.pem"
-rhel8cis_journal_servercertificatefile: "/etc/ssl/certs/journal-upload.pem"
-rhel8cis_journal_trustedcertificatefile: "/etc/ssl/ca/trusted.pem"
+#
+## 4.2.2.1.2
+## rhel8cis_journal_upload_url is the ip address to upload the journal entries to
+#rhel8cis_journal_upload_url: 192.168.50.42
+## The paths below have the default paths/files, but allow user to create custom paths/filenames
+#rhel8cis_journal_upload_serverkeyfile: "/etc/ssl/private/journal-upload.pem"
+#rhel8cis_journal_servercertificatefile: "/etc/ssl/certs/journal-upload.pem"
+#rhel8cis_journal_trustedcertificatefile: "/etc/ssl/ca/trusted.pem"
 
 # 4.2.2.1
 # The variables below related to journald, please set these to your site specific values
@@ -570,7 +578,7 @@ rhel8cis_sshd:
     clientaliveinterval: 900
     logingracetime: 60
     # WARNING: make sure you understand the precedence when working with these values!!
-    # allowusers:
+    allowusers: ansible
     # allowgroups: systems dba
     # denyusers:
     # denygroups:
@@ -586,7 +594,7 @@ rhel8cis_pam_faillock:
 rhel8cis_ssh_loglevel: INFO
 
 # 5.2.19 SSH MaxSessions setting. Must be 10 or less
-rhel8cis_ssh_maxsessions: 10
+rhel8cis_ssh_maxsessions: 4
 
 
 # 5.3.1 Enable automation to create custom profile settings, using the settings above
@@ -606,15 +614,15 @@ rhel8cis_sudo_timestamp_timeout: 15
 # rhel8cis_sugroup: sugroup  # change accordingly wheel is default
 
 # wheel users list
-rhel8cis_sugroup_users: "root"
+rhel8cis_sugroup_users: ["root", "ansible"]
 
 # 5.4.1/5.4.2 Custom authselect profile settings. Settings in place now will fail, they are place holders from the control example
 # Due to the way many multiple options and ways to configure this control needs to be enabled and settings adjusted to minimise risk
 rhel8cis_use_authconfig: false
-rhel8cis_authselect:
-    custom_profile_name: custom-profile
-    default_file_to_copy: "sssd --symlink-meta"
-    options: with-sudo with-faillock without-nullok
+#rhel8cis_authselect:
+#    custom_profile_name: custom-profile
+#    default_file_to_copy: "sssd --symlink-meta"
+#    options: with-sudo with-faillock without-nullok
 
 # 5.6.1.1
 # 5.6.1.2
