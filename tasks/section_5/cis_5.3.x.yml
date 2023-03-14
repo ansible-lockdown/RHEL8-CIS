@@ -122,7 +122,6 @@
 
       - name: "5.3.7 | PATCH | Ensure access to the su command is restricted | wheel group contains root"
         user:
-            # name: "{{ rhel8cis_sugroup_users }}"
             name: "{{ loop_rhel8cis_sugroup_users }}"
             groups: "{{ rhel8cis_sugroup | default('wheel') }}"
         loop: "{{ rhel8cis_sugroup_users }}"
