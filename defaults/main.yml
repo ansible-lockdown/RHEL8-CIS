@@ -607,7 +607,7 @@ rhel8cis_sudo_timestamp_timeout: 15
 # rhel8cis_sugroup: sugroup  # change accordingly wheel is default
 
 # wheel users list
-rhel8cis_sugroup_users: "root"
+rhel8cis_sugroup_users: ["root"]
 
 # 5.4.1/5.4.2 Custom authselect profile settings. Settings in place now will fail, they are place holders from the control example
 # Due to the way many multiple options and ways to configure this control needs to be enabled and settings adjusted to minimise risk
