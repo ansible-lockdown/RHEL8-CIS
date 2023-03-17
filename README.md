@@ -175,6 +175,7 @@ Molecule can be used to work on this role and test in distinct _scenarios_.
 ```bash
 molecule test -s default
 molecule converge -s wsl -- --check
+molecule verify -s localhost
 ```
 
 local testing uses:

@@ -1,0 +1,30 @@
+---
+# Molecule configuration
+# https://molecule.readthedocs.io/en/latest/
+
+driver:
+  name: delegated
+  options:
+    managed: false
+    ansible_connection_options:
+      ansible_connection: local
+platforms:
+  - name: localhost
+
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      interpreter_python: auto_silent
+      stdout_callback: yaml
+      callbacks_enabled: profile_tasks, timer
+
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+  flake8
+
+verifier:
+  name: ansible
+
