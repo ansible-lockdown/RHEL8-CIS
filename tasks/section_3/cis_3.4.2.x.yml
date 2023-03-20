@@ -263,7 +263,7 @@
       - automated
       - patch
       - nftables
-      - rule_3.4.3.5
+      - rule_3.4.3.8
 
 - name: "3.4.2.9 | PATCH | Ensure nftables default deny firewall policy"
   block:
@@ -330,7 +330,7 @@
       - automated
       - patch
       - nftables
-      - rule_3.4.3.7
+      - rule_3.4.3.10
 
 - name: "3.4.2.11 | PATCH | Ensure nftables rules are permanent"
   lineinfile:

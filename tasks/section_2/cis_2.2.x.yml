@@ -61,7 +61,7 @@
       - automated
       - patch
       - cups
-      - rule_2.2.3
+      - rule_2.2.4
 
 - name: "2.2.5 | PATCH | Ensure DHCP Server is not installed"
   package:
@@ -247,14 +247,14 @@
   when:
       - not rhel8cis_nis_server
       - "'ypserv' in ansible_facts.packages"
-      - rhel8cis_rule_2_2_17
+      - rhel8cis_rule_2_2_15
   tags:
       - level1-server
       - level1-workstation
       - automated
       - patch
       - nis
-      - rule_2.2.17
+      - rule_2.2.15
 
 - name: "2.2.16 | PATCH | Ensure telnet-server is not installed"
   package:
