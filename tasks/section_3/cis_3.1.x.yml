@@ -68,7 +68,6 @@
             line: "blacklist dccp"
             create: true
             mode: 0600
-
   when:
       - rhel8cis_rule_3_1_3
   tags:
