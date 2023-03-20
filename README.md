@@ -165,7 +165,6 @@ uses:
 - runs the audit using the devel branch
 - This is an automated test that occurs on pull requests into devel
 
-
 ## Local Testing
 
 Molecule can be used to work on this role and test in distinct _scenarios_.
@@ -179,6 +178,7 @@ molecule verify -s localhost
 ```
 
 local testing uses:
+
 - ansible 2.13.3
 - molecule 4.0.1
 - molecule-docker 2.0.0

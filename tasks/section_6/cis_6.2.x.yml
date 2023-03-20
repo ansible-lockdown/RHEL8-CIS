@@ -296,7 +296,6 @@
       - users
       - rule_6.2.9
 
-
 - name: "6.2.10 | PATCH | Ensure users own their home directories"
   file:
       path: "{{ item.dir }}"

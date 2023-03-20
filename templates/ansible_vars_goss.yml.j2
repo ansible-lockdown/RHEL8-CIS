@@ -23,14 +23,11 @@ rhel8cis_level_2: {{ rhel8cis_level_2 }}
 
 rhel8cis_selinux_disable: {{ rhel8cis_selinux_disable }}
 
-
-
 # to enable rules that may have IO impact on a system e.g. full filesystem scans or CPU heavy
 run_heavy_tests: true
 {% if rhel8cis_legacy_boot is defined %}
 rhel8cis_legacy_boot: {{ rhel8cis_legacy_boot }}
 {% endif %}
-
 
 rhel8cis_set_boot_pass: {{ rhel8cis_set_boot_pass }}
 # These variables correspond with the CIS rule IDs or paragraph numbers defined in
@@ -110,10 +107,8 @@ rhel8cis_rule_1_8_3: {{ rhel8cis_rule_1_8_3 }}
 rhel8cis_rule_1_8_4: {{ rhel8cis_rule_1_8_4 }}
 rhel8cis_rule_1_8_5: {{ rhel8cis_rule_1_8_5 }}
 
-
 rhel8cis_rule_1_9: {{ rhel8cis_rule_1_9 }}
 rhel8cis_rule_1_10: {{ rhel8cis_rule_1_10 }}
-
 
 # section 2 rules
 rhel8cis_rule_2_1_1: {{ rhel8cis_rule_2_1_1 }}
@@ -206,7 +201,6 @@ rhel8cis_rule_3_4_3_3_4: {{ rhel8cis_rule_3_4_3_3_4 }}
 rhel8cis_rule_3_4_3_3_5: {{ rhel8cis_rule_3_4_3_3_5 }}
 rhel8cis_rule_3_4_3_3_6: {{ rhel8cis_rule_3_4_3_3_6 }}
 
-
 # Section 4 rules
 rhel8cis_rule_4_1_1_1: {{ rhel8cis_rule_4_1_1_1 }}
 rhel8cis_rule_4_1_1_2: {{ rhel8cis_rule_4_1_1_2 }}
@@ -252,7 +246,6 @@ rhel8cis_rule_4_2_2_1_2: {{ rhel8cis_rule_4_2_2_1_2 }}
 rhel8cis_rule_4_2_2_1_3: {{ rhel8cis_rule_4_2_2_1_3 }}
 rhel8cis_rule_4_2_2_1_4: {{ rhel8cis_rule_4_2_2_1_4 }}
 
-
 rhel8cis_rule_4_2_2_2: {{ rhel8cis_rule_4_2_2_2 }}
 rhel8cis_rule_4_2_2_3: {{ rhel8cis_rule_4_2_2_3 }}
 rhel8cis_rule_4_2_2_4: {{ rhel8cis_rule_4_2_2_4 }}
@@ -274,7 +267,6 @@ rhel8cis_rule_5_1_6: {{ rhel8cis_rule_5_1_6 }}
 rhel8cis_rule_5_1_7: {{ rhel8cis_rule_5_1_7 }}
 rhel8cis_rule_5_1_8: {{ rhel8cis_rule_5_1_8 }}
 rhel8cis_rule_5_1_9: {{ rhel8cis_rule_5_1_9 }}
-
 
 rhel8cis_rule_5_2_1: {{ rhel8cis_rule_5_2_1 }}
 rhel8cis_rule_5_2_2: {{ rhel8cis_rule_5_2_2 }}
@@ -324,7 +316,6 @@ rhel8cis_rule_5_6_3: {{ rhel8cis_rule_5_6_3 }}
 rhel8cis_rule_5_6_4: {{ rhel8cis_rule_5_6_4 }}
 rhel8cis_rule_5_6_5: {{ rhel8cis_rule_5_6_5 }}
 
-
 # Section 6
 rhel8cis_rule_6_1_1: {{ rhel8cis_rule_6_1_1 }}
 rhel8cis_rule_6_1_2: {{ rhel8cis_rule_6_1_2 }}
@@ -359,8 +350,6 @@ rhel8cis_rule_6_2_14: {{ rhel8cis_rule_6_2_14 }}
 rhel8cis_rule_6_2_15: {{ rhel8cis_rule_6_2_15 }}
 rhel8cis_rule_6_2_16: {{ rhel8cis_rule_6_2_16 }}
 
-
-
 # Service configuration booleans set true to keep service
 rhel8cis_avahi_server: {{ rhel8cis_avahi_server }}
 rhel8cis_cups_server: {{ rhel8cis_cups_server }}
@@ -381,8 +370,6 @@ rhel8cis_squid_server: {{ rhel8cis_squid_server }}
 rhel8cis_telnet_server: {{ rhel8cis_telnet_server }}
 rhel8cis_tftp_server: {{ rhel8cis_tftp_server }}
 rhel8cis_vsftpd_server: {{ rhel8cis_vsftpd_server }}
-
-
 
 rhel8cis_allow_autofs: {{ rhel8cis_allow_autofs }}
 
@@ -450,7 +437,6 @@ rhel8cis_firewall_interface:
 - enp0s8
 
 rhel8cis_firewall_services: {% for svc in rhel8cis_firewall_services %}{{ svc }} {% endfor %}
-
 
 ### Section 4
 ## auditd settings

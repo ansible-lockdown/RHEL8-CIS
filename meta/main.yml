@@ -22,11 +22,8 @@ galaxy_info:
         - redhat
         - rhel
         - compliance
-
-
 collections:
     - community.general
     - community.crypto
     - ansible.posix
-
 dependencies: []
