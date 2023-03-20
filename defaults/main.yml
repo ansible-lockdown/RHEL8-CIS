@@ -388,7 +388,6 @@ rhel8cis_telnet_required: false
 rhel8cis_openldap_clients_required: false
 rhel8cis_tftp_client: false
 
-
 rhel8cis_allow_autofs: false
 
 ## Section 1 vars
@@ -413,7 +412,6 @@ rhel8cis_rh_sub_password: password
 # Do you require rhnsd
 # RedHat Satellite Subscription items
 rhel8cis_rhnsd_required: false
-
 
 # xinetd required
 rhel8cis_xinetd_required: false
@@ -589,7 +587,6 @@ rhel8cis_ssh_loglevel: INFO
 # 5.2.19 SSH MaxSessions setting. Must be 10 or less
 rhel8cis_ssh_maxsessions: 10
 
-
 # 5.3.1 Enable automation to create custom profile settings, using the settings above
 rhel8cis_authselect_custom_profile_create: false
 
@@ -625,7 +622,6 @@ rhel8cis_pass:
     min_days: 7
     warn_age: 7
 
-
 # 5.6.1.4
 rhel8cis_inactivelock:
     lock_days: 30
@@ -658,7 +654,6 @@ rhel8cis_rpm_audit_file: /var/tmp/rpm_file_check
 # RHEL-08_6.1.11 Allow ansible to adjust world-writable files. False will just display world-writable files, True will remove world-writable
 rhel8cis_no_world_write_adjust: true
 rhel8cis_passwd_label: "{{ (this_item | default(item)).id }}: {{ (this_item | default(item)).dir }}"
-
 
 # 6.2.9 - adjusting symlinks in home directories
 # Default in ansible is true this causes lots of issues for many users
