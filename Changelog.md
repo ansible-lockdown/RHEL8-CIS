@@ -1,8 +1,12 @@
 # Changes to rhel8CIS
 
-## 1.5.4
+## 1.5.5
 
-PR
+- improved conditional for 1.1.2.1
+- updated audit git branch now runs correct version
+- added var for benchmark_version
+
+## 1.5.4
 
 Many thanks to @dulin-gnet and community feedback on this one  
 Changed default to not follow symlinks due to number of issues it has been causing.  

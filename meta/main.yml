@@ -16,6 +16,13 @@ galaxy_info:
         - security
         - cis
         - hardening
+        - rocky
+        - alma
+        - oel
+        - redhat
+        - rhel
+        - compliance
+
 
 collections:
     - community.general

@@ -30,6 +30,7 @@ python2_bin: /bin/python2.7
 ## Benchmark name used by audting control role
 # The audit variable found at the base
 benchmark: RHEL8-CIS
+benchmark_version: v2.0.0
 
 # Whether to skip the reboot
 skip_reboot: true
@@ -578,7 +579,7 @@ rhel8cis_pam_faillock:
     attempts: 5
     interval: 900
     unlock_time: 900
-    fail_for_root: no  # noqa yaml[truthy]
+    fail_for_root: 'no'
     remember: 5
     pwhash: sha512
 
@@ -689,7 +690,7 @@ copy_goss_from_path: /some/accessible/path
 ## managed by the control audit_content
 # git
 audit_file_git: "https://github.com/ansible-lockdown/{{ benchmark }}-Audit.git"
-audit_git_version: main
+audit_git_version: "benchmark_{{ benchmark_version }}_rh8"
 
 # copy:
 audit_local_copy: "some path to copy from"

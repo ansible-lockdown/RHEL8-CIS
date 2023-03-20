@@ -1,0 +1,19 @@
+---
+
+- name: Install openscap
+  ansible.builtin.dnf:
+      state: present
+      name:
+          - openscap-scanner
+          - scap-security-guide
+
+- name: Run CIS oscap scan and create /tmp/report.html
+  ansible.builtin.command:
+      oscap xccdf eval \
+          --report /tmp/report.html
+          --profile cis
+          --fetch-remote-resources
+          /usr/share/xml/scap/ssg/content/ssg-almalinux8-ds.xml
+  changed_when: true
+  no_log: false
+  ignore_errors: true

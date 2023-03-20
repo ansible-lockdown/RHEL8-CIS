@@ -4,9 +4,7 @@
   block:
       - name: "1.1.2.1 | PATCH | Ensure /tmp is a separate partition | Absent"
         debug:
-            msg: "Warning!! /tmp is not mounted on a separate partition"
-        when:
-            - required_mount not in mount_names
+            msg: "Warning!! {{ required_mount }} is not mounted on a separate partition"
 
       - name: "1.1.2.1 | PATCH | Ensure /tmp is a separate partition | Present"
         ansible.builtin.import_tasks: warning_facts.yml
@@ -15,6 +13,7 @@
       required_mount: '/tmp'
   when:
       - rhel8cis_rule_1_1_2_1
+      - "'/tmp' not in mount_names"
   tags:
       - level1-server
       - level1-workstation
