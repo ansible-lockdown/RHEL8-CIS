@@ -27,4 +27,3 @@ lint: |
 
 verifier:
   name: ansible
-
