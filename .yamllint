@@ -12,7 +12,11 @@ rules:
   document-start: disable
   empty-lines: {max: 3, level: error}
   hyphens: {level: error}
-  indentation: disable
+  indentation:
+     # Requiring 4 space indentation
+     spaces: 4
+     # Requiring consistent indentation within a file, either indented or not
+     indent-sequences: consistent
   key-duplicates: enable
   line-length: disable
   new-line-at-end-of-file: disable
