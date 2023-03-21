@@ -5,10 +5,10 @@
   become: true
 
   vars:
-    role_name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+      role_name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
 
   tasks:
-    - name: "Include verify tasks"
-      ansible.builtin.include_role:
-        name: "{{ role_name }}"
-        tasks_from: verify
+      - name: "Include verify tasks"
+        ansible.builtin.include_role:
+            name: "{{ role_name }}"
+            tasks_from: verify

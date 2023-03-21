@@ -3,32 +3,31 @@
 # https://molecule.readthedocs.io/en/latest/
 
 driver:
-  name: docker
+    name: docker
 
 platforms:
-  - name: ubi8
-    image: registry.access.redhat.com/ubi8/ubi-init
-    pre_build_image: true
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    privileged: true
-    command: "/usr/sbin/init"
-    capabilities:
-      - SYS_ADMIN
+    - name: ubi8
+      image: registry.access.redhat.com/ubi8/ubi-init
+      pre_build_image: true
+      volumes:
+          - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      privileged: true
+      command: "/usr/sbin/init"
+      capabilities:
+          - SYS_ADMIN
 
 provisioner:
-  name: ansible
-  config_options:
-    defaults:
-      interpreter_python: auto_silent
-      callbacks_enabled: profile_tasks, timer
+    name: ansible
+    config_options:
+        defaults:
+            interpreter_python: auto_silent
+            callbacks_enabled: profile_tasks, timer
 
 lint: |
-  set -e
-  yamllint .
-  ansible-lint
-  flake8
+    set -e
+    yamllint .
+    ansible-lint
+    flake8
 
 verifier:
-  name: ansible
-
+    name: ansible
