@@ -1,5 +1,10 @@
 # Changes to rhel8CIS
 
+## 1.5.6
+
+- updates to yamllint to increase galaxy score - doesnt honour local files or exclusions
+- removed blank lines from all
+
 ## 1.5.5
 
 - improved conditional for 1.1.2.1

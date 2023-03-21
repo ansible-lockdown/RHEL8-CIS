@@ -6,13 +6,12 @@
   gather_facts: true
 
   vars:
-    ansible_user: "{{ lookup('env', 'USER') }}"
-    role_name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
-    rhel8cis_rule_5_3_4: false
+      ansible_user: "{{ lookup('env', 'USER') }}"
+      role_name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+      rhel8cis_rule_5_3_4: false
 
   pre_tasks:
   tasks:
-    - name: "Include tasks"
-      ansible.builtin.include_role:
-        name: "{{ role_name }}"
-
+      - name: "Include tasks"
+        ansible.builtin.include_role:
+            name: "{{ role_name }}"
