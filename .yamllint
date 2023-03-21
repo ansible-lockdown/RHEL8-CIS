@@ -1,33 +1,21 @@
 ---
+# Based on ansible-lint config
 extends: default
 
-ignore: |
-    tests/
-    molecule/
-    .github/
-    .gitlab-ci.yml
-    *molecule.yml
-
 rules:
-    indentation:
-        # Requiring 4 space indentation
-        spaces: 4
-        # Requiring consistent indentation within a file, either indented or not
-        indent-sequences: consistent
-    braces:
-        max-spaces-inside: 1
-        level: error
-    brackets:
-        max-spaces-inside: 1
-        level: error
-    empty-lines:
-        max: 1
-    line-length: disable
-    key-duplicates: enable
-    new-line-at-end-of-file: enable
-    new-lines:
-        type: unix
-    trailing-spaces: enable
-    truthy:
-        allowed-values: ['true', 'false']
-        check-keys: false
+  braces: {max-spaces-inside: 1, level: error}
+  brackets: {max-spaces-inside: 1, level: error}
+  colons: {max-spaces-after: -1, level: error}
+  commas: {max-spaces-after: -1, level: error}
+  comments: disable
+  comments-indentation: disable
+  document-start: disable
+  empty-lines: {max: 3, level: error}
+  hyphens: {level: error}
+  indentation: disable
+  key-duplicates: enable
+  line-length: disable
+  new-line-at-end-of-file: disable
+  new-lines: {type: unix}
+  trailing-spaces: disable
+  truthy: disable
