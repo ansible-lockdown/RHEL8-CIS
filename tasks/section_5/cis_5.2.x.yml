@@ -1,7 +1,7 @@
 ---
 
 - name: "5.2.1 | Ensure permissions on /etc/ssh/sshd_config are configured"
-  file:
+  ansible.builtin.file:
       path: /etc/ssh/sshd_config
       owner: root
       group: root
@@ -20,7 +20,7 @@
 - name: "5.2.2 | PATCH | Ensure permissions on SSH private host key files are configured"
   block:
       - name: "5.2.2 | AUDIT | Ensure permissions on SSH private host key files are configured | Find the SSH private host keys"
-        find:
+        ansible.builtin.find:
             paths: /etc/ssh
             patterns: 'ssh_host_*_key'
             recurse: true
@@ -28,7 +28,7 @@
         register: rhel8cis_5_2_2_ssh_private_host_key
 
       - name: "5.2.2 | PATCH | Ensure permissions on SSH private host key files are configured | Set permissions on SSH private host keys"
-        file:
+        ansible.builtin.file:
             path: "{{ item.path }}"
             owner: root
             group: root
@@ -51,7 +51,7 @@
 - name: "5.2.3 | PATCH | Ensure permissions on SSH public host key files are configured"
   block:
       - name: "5.2.3 | AUDIT | Ensure permissions on SSH public host key files are configured | Find the SSH public host keys"
-        find:
+        ansible.builtin.find:
             paths: /etc/ssh
             patterns: 'ssh_host_*_key.pub'
             recurse: true
@@ -59,7 +59,7 @@
         register: rhel8cis_5_2_3_ssh_public_host_key
 
       - name: "5.2.3 | PATCH | Ensure permissions on SSH public host key files are configured | Set permissions on SSH public host keys"
-        file:
+        ansible.builtin.file:
             path: "{{ item.path }}"
             owner: root
             group: root
@@ -81,7 +81,7 @@
 - name: "5.2.4 | PATCH | Ensure SSH access is limited"
   block:
       - name: "5.2.4 | PATCH | Ensure SSH access is limited | Add line to sshd_config for allowusers"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/ssh/sshd_config
             regexp: "^AllowUsers"
             line: AllowUsers {{ rhel8cis_sshd['allowusers'] }}
@@ -89,7 +89,7 @@
         when: "rhel8cis_sshd['allowusers']|default('') | length > 0"
 
       - name: "5.2.4 | PATCH | Ensure SSH access is limited | Add line to sshd_config for allowgroups"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/ssh/sshd_config
             regexp: "^AllowGroups"
             line: AllowGroups {{ rhel8cis_sshd['allowgroups'] }}
@@ -97,7 +97,7 @@
         when: "rhel8cis_sshd['allowgroups']|default('') | length > 0"
 
       - name: "5.2.4 | PATCH | Ensure SSH access is limited | Add line to sshd_config for denyusers"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/ssh/sshd_config
             regexp: "^DenyUsers"
             line: DenyUsers {{ rhel8cis_sshd['denyusers'] }}
@@ -105,7 +105,7 @@
         when: "rhel8cis_sshd['denyusers']|default('') | length > 0"
 
       - name: "5.2.4 | PATCH | Ensure SSH access is limited | Add line to sshd_config for denygroups"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/ssh/sshd_config
             regexp: "^DenyGroups"
             line: DenyGroups {{ rhel8cis_sshd['denygroups'] }}
@@ -122,7 +122,7 @@
       - rule_5.2.4
 
 - name: "5.2.5 | PATCH | Ensure SSH LogLevel is appropriate"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: "^#LogLevel|^LogLevel"
       line: 'LogLevel {{ rhel8cis_ssh_loglevel }}'
@@ -137,7 +137,7 @@
       - rule_5.2.5
 
 - name: "5.2.6 | PATCH | Ensure SSH PAM is enabled"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: "^#UsePAM|^UsePAM"
       line: 'UsePAM yes'
@@ -152,7 +152,7 @@
       - rule_5.2.6
 
 - name: "5.2.7 | PATCH | Ensure SSH root login is disabled"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: "^#PermitRootLogin|^PermitRootLogin"
       line: 'PermitRootLogin no'
@@ -167,7 +167,7 @@
       - rule_5.2.7
 
 - name: "5.2.8 | PATCH | Ensure SSH HostbasedAuthentication is disabled"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: ^#HostbasedAuthentication|^HostbasedAuthentication"
       line: 'HostbasedAuthentication no'
@@ -182,7 +182,7 @@
       - rule_5.2.8
 
 - name: "5.2.9 | PATCH | Ensure SSH PermitEmptyPasswords is disabled"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: "^#PermitEmptyPasswords|^PermitEmptyPasswords"
       line: 'PermitEmptyPasswords no'
@@ -197,7 +197,7 @@
       - rule_5.2.9
 
 - name: "5.2.10 | PATCH | Ensure SSH PermitUserEnvironment is disabled"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: "^#PermitUserEnvironment|^PermitUserEnvironment"
       line: 'PermitUserEnvironment no'
@@ -212,7 +212,7 @@
       - rule_5.2.10
 
 - name: "5.2.11 | PATCH | Ensure SSH IgnoreRhosts is enabled"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: "^#IgnoreRhosts|^IgnoreRhosts"
       line: 'IgnoreRhosts yes'
@@ -227,7 +227,7 @@
       - rule_5.2.11
 
 - name: "5.2.12 | PATCH | Ensure SSH X11 forwarding is disabled"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: "^#X11Forwarding|^X11Forwarding"
       line: 'X11Forwarding no'
@@ -242,7 +242,7 @@
       - rule_5.2.12
 
 - name: "5.2.13 | PATCH | Ensure SSH AllowTcpForwarding is disabled"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: "^#AllowTcpForwarding|^AllowTcpForwarding"
       line: 'AllowTcpForwarding no'
@@ -259,13 +259,13 @@
 - name: "5.2.14 | PATCH | Ensure system-wide crypto policy is not over-ridden"
   block:
       - name: "5.2.14 | AUDIT | Ensure system-wide crypto policy is not over-ridden"
-        shell: grep -i '^\s*CRYPTO_POLICY=' /etc/sysconfig/sshd
+        ansible.builtin.shell: grep -i '^\s*CRYPTO_POLICY=' /etc/sysconfig/sshd
         failed_when: ( crypto_policy_override.rc not in [ 0, 1 ] )
         changed_when: false
         register: crypto_policy_override
 
       - name: "5.2.14 | PATCH | Ensure system-wide crypto policy is not over-ridden"
-        shell: sed -ri "s/^\s*(CRYPTO_POLICY\s*=.*)$/# \1/" /etc/sysconfig/sshd
+        ansible.builtin.shell: sed -ri "s/^\s*(CRYPTO_POLICY\s*=.*)$/# \1/" /etc/sysconfig/sshd
         notify: restart sshd
         when:
             - crypto_policy_override.stdout | length > 0
@@ -280,7 +280,7 @@
       - rule_5.2.14
 
 - name: "5.2.15 | PATCH | Ensure SSH warning banner is configured"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^Banner'
       line: 'Banner /etc/issue.net'
@@ -295,7 +295,7 @@
       - rule_5.2.15
 
 - name: "5.2.16 | PATCH | Ensure SSH MaxAuthTries is set to 4 or less"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^(#)?MaxAuthTries \d'
       line: 'MaxAuthTries 4'
@@ -310,7 +310,7 @@
       - rule_5.2.16
 
 - name: "5.2.17 | PATCH | Ensure SSH MaxStartups is configured"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: "^#MaxStartups|^MaxStartups"
       line: 'MaxStartups 10:30:60'
@@ -325,7 +325,7 @@
       - rule_5.2.17
 
 - name: "5.2.18 | PATCH | Ensure SSH MaxSessions is set to 10 or less"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: "^#MaxSessions|^MaxSessions"
       line: 'MaxSessions {{ rhel8cis_ssh_maxsessions }}'
@@ -340,7 +340,7 @@
       - rule_5.2.18
 
 - name: "5.2.19 | PATCH | Ensure SSH LoginGraceTime is set to one minute or less"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: "^#LoginGraceTime|^LoginGraceTime"
       line: "LoginGraceTime {{ rhel8cis_sshd['logingracetime'] }}"
@@ -357,13 +357,13 @@
 - name: "5.2.20 | PATCH | Ensure SSH Idle Timeout Interval is configured"
   block:
       - name: "5.2.20 | PATCH | Ensure SSH Idle Timeout Interval is configured | Add line in sshd_config for ClientAliveInterval"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/ssh/sshd_config
             regexp: '^ClientAliveInterval'
             line: "ClientAliveInterval {{ rhel8cis_sshd['clientaliveinterval'] }}"
 
       - name: "5.2.20 | PATCH | Ensure SSH Idle Timeout Interval is configured | Ensure SSH ClientAliveCountMax set to <= 3"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/ssh/sshd_config
             regexp: '^ClientAliveCountMax'
             line: "ClientAliveCountMax {{ rhel8cis_sshd['clientalivecountmax'] }}"

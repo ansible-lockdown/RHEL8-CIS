@@ -3,14 +3,14 @@
 - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured"
   block:
       - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Find log files"
-        find:
+        ansible.builtin.find:
             paths: "/var/log"
             file_type: file
             recurse: true
         register: rhel8cis_4_2_3_logfiles
 
       - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Apply permissions to existing logfiles"
-        file:
+        ansible.builtin.file:
             path: "{{ item.path }}"
             mode: g-w,o-rwx
         loop: "{{ rhel8cis_4_2_3_logfiles.files }}"
@@ -24,26 +24,26 @@
       - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured"
         block:
             - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Find logrotate conf files"
-              find:
+              ansible.builtin.find:
                   paths: /etc/logrotate.d
                   contains: '^\s+create 06[5-7][0-7]'
               register: rhel8cis_4_2_3_logrotate_conf_files
 
             - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | output found logrotate file"
-              debug:
+              ansible.builtin.debug:
                   msg: "{{ item }}"
               loop: "{{ rhel8cis_4_2_3_logrotate_conf_files.files }}"
               loop_control:
                   label: "{{ item.path }}"
 
             - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | update logrotate.conf"
-              lineinfile:
+              ansible.builtin.lineinfile:
                   path: /etc/logrotate.conf
                   regexp: '^create'
                   line: "create 0640"
 
             - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | update logrotate.d conf files"
-              replace:
+              ansible.builtin.replace:
                   path: "{{ item.path }}"
                   regexp: 'create [0-7][0-7][0-7][0-7]'
                   replace: 'create'
@@ -55,7 +55,7 @@
                   - allow_logrotate_conf_umask_updates
 
             - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | warning logrotate.d conf files"
-              debug:
+              ansible.builtin.debug:
                   msg: "Warning!! logrotate.d conf file have create mode that will not match CIS requirements upon rotation"
               when:
                   - rhel8cis_4_2_3_logrotate_conf_files.files | length >= 1

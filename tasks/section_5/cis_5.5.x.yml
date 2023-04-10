@@ -3,7 +3,7 @@
 - name: "5.5.1 | PATCH | Ensure password creation requirements are configured"
   block:
       - name: "5.5.1 | PATCH | Ensure password creation requirements are configured | Set pwquality config settings"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/security/pwquality.conf
             regexp: "{{ item.regexp }}"
             line: "{{ item.line }}"
@@ -12,7 +12,7 @@
             - { regexp: '^minclass', line: 'minclass = {{ rhel8cis_pam_password.minclass }}' }
 
       - name: "5.5.1 | PATCH | Ensure password creation requirements are configured | Set system-auth and password-auth retry settings"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: "{{ item }}"
             state: present
             regexp: '^password\s*requisite\s*pam_pwquality.so'
@@ -32,7 +32,7 @@
 - name: "5.5.2 | PATCH | Ensure system accounts are secured | pre RHEL8.2"
   block:
       - name: "5.5.2 | PATCH | Ensure lockout for failed password attempts is configured | pre RHEL8.2 | Add deny count and unlock time for preauth"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/pam.d/{{ item }}
             state: present
             regexp: '^auth\s*required\s*pam_faillock.so preauth'
@@ -44,7 +44,7 @@
         when: ansible_distribution_version <= "8.1"
 
       - name: "5.5.2 | PATCH | Ensure lockout for failed password attempts is configured | pre RHEL8.2 | Add deny count and unlock times for authfail"
-        lineinfile:
+        ansible.builtin.lineinfile:
             dest: /etc/pam.d/{{ item }}
             state: present
             regexp: '^auth\s*required\s*pam_faillock.so authfail'
@@ -56,7 +56,7 @@
         when: ansible_distribution_version <= "8.1"
 
       - name: "5.5.2 | PATCH | Ensure system accounts are secured | RHEL8.2+ "
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/security/faillock.conf
             state: present
             regexp: "{{ item.regexp }}"
@@ -81,7 +81,7 @@
 # password hash algorithm is used for storing the old passwords. Instead of this option the
 # pam_pwhistory module should be used.
 - name: "5.5.3 | PATCH | Ensure password reuse is limited"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/pam.d/system-auth
       state: present
       line: "password    requisite                                    pam_pwhistory.so try_first_pass local_users_only enforce_for_root retry=3 remember={{ rhel8cis_pam_faillock.remember }}"
@@ -97,7 +97,7 @@
 - name: "5.5.4 | PATCH | Ensure password hashing algorithm is SHA-512"
   block:
       - name: "5.5.4 | PATCH | Ensure password hashing algorithm is SHA-512 | libuser.conf"
-        replace:
+        ansible.builtin.replace:
             path: "{{ item.path }}"
             regexp: "{{ item.regexp }}"
             replace: "{{ item.replace }}"
@@ -106,7 +106,7 @@
             - { path: /etc/login.defs, regexp: '^ENCRYPT_METHOD.*', replace: 'ENCRYPT_METHOD SHA512' }
 
       - name: "5.5.4 | PATCH | Ensure password reuse is limited | pwhistory"
-        replace:
+        ansible.builtin.replace:
             path: "{{ item }}"
             regexp: '^password\s*sufficient\s*pam_unix.so.*$'
             replace: 'password    sufficient                                   pam_unix.so sha512 shadow try_first_pass use_authtok remember={{ rhel8cis_pam_faillock.remember }}'

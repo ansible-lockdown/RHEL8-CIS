@@ -1,7 +1,7 @@
 ---
 
 - name: "1.1.9 | PATCH | Disable Automounting"
-  service:
+  ansible.builtin.service:
       name: autofs
       enabled: false
   when:
@@ -20,7 +20,7 @@
 - name: "1.1.10 | PATCH | Disable USB Storage"
   block:
       - name: "1.1.10 | PATCH | Disable USB Storage | Edit modprobe config"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/modprobe.d/CIS.conf
             regexp: "^(#)?install usb-storage(\\s|$)"
             line: "install usb-storage /bin/true"
@@ -30,7 +30,7 @@
             mode: 0600
 
       - name: "1.1.10 | PATCH | Disable USB Storage | | blacklist"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/modprobe.d/blacklist.conf
             regexp: "^(#)?blacklist usb-storage(\\s|$)"
             line: "blacklist usb-storage"
@@ -38,7 +38,7 @@
             mode: 0600
 
       - name: "1.1.10 | PATCH | Disable USB Storage | Edit modprobe config"
-        modprobe:
+        community.general.modprobe:
             name: usb-storage
             state: absent
   when:

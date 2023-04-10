@@ -1,7 +1,7 @@
 ---
 
 - name: "5.1.1 | PATCH | Ensure cron daemon is enabled"
-  service:
+  ansible.builtin.service:
       name: crond
       enabled: true
   when:
@@ -15,7 +15,7 @@
       - rule_5.1.1
 
 - name: "5.1.2 | PATCH | Ensure permissions on /etc/crontab are configured"
-  file:
+  ansible.builtin.file:
       path: /etc/crontab
       owner: root
       group: root
@@ -31,7 +31,7 @@
       - rule_5.1.2
 
 - name: "5.1.3 | PATCH | Ensure permissions on /etc/cron.hourly are configured"
-  file:
+  ansible.builtin.file:
       path: /etc/cron.hourly
       state: directory
       owner: root
@@ -48,7 +48,7 @@
       - rule_5.1.3
 
 - name: "5.1.4 | PATCH | Ensure permissions on /etc/cron.daily are configured"
-  file:
+  ansible.builtin.file:
       path: /etc/cron.daily
       state: directory
       owner: root
@@ -65,7 +65,7 @@
       - rule_5.1.4
 
 - name: "5.1.5 | PATCH | Ensure permissions on /etc/cron.weekly are configured"
-  file:
+  ansible.builtin.file:
       path: /etc/cron.weekly
       state: directory
       owner: root
@@ -80,7 +80,7 @@
       - rule_5.1.5
 
 - name: "5.1.6 | PATCH | Ensure permissions on /etc/cron.monthly are configured"
-  file:
+  ansible.builtin.file:
       path: /etc/cron.monthly
       state: directory
       owner: root
@@ -96,7 +96,7 @@
       - rule_5.1.6
 
 - name: "5.1.7 | PATCH | Ensure permissions on /etc/cron.d are configured"
-  file:
+  ansible.builtin.file:
       path: /etc/cron.d
       state: directory
       owner: root
@@ -115,17 +115,17 @@
 - name: "5.1.8 | PATCH | Ensure cron is restricted to authorized users"
   block:
       - name: "5.1.8 | PATCH | Ensure cron is restricted to authorized users | Remove cron.deny"
-        file:
+        ansible.builtin.file:
             path: /etc/cron.deny
             state: absent
 
       - name: "5.1.8 | PATCH | Ensure cron is restricted to authorized users | Check if cron.allow exists"
-        stat:
+        ansible.builtin.stat:
             path: "/etc/cron.allow"
         register: rhel8cis_5_1_8_cron_allow_state
 
       - name: "5.1.8 | PATCH | Ensure cron is restricted to authorized users | Ensure cron.allow is restricted to authorized users"
-        file:
+        ansible.builtin.file:
             path: /etc/cron.allow
             state: '{{ "file" if  rhel8cis_5_1_8_cron_allow_state.stat.exists else "touch" }}'
             owner: root
@@ -144,17 +144,17 @@
 - name: "5.1.9 | PATCH | Ensure at is restricted to authorized users"
   block:
       - name: "5.1.9 | PATCH | Ensure at is restricted to authorized users | Remove at.deny"
-        file:
+        ansible.builtin.file:
             path: /etc/at.deny
             state: absent
 
       - name: "5.1.9 | PATCH | Ensure at is restricted to authorized users  | Check if at.allow exists"
-        stat:
+        ansible.builtin.stat:
             path: "/etc/at.allow"
         register: rhel8cis_5_1_9_at_allow_state
 
       - name: "5.1.9 | PATCH | Ensure at is restricted to authorized users | Ensure at.allow is restricted to authorized users"
-        file:
+        ansible.builtin.file:
             path: /etc/at.allow
             state: '{{ "file" if  rhel8cis_5_1_9_at_allow_state.stat.exists else "touch" }}'
             owner: root

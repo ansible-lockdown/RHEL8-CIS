@@ -3,7 +3,7 @@
 - name: "5.6.2 | PATCH | Ensure system accounts are secured"
   block:
       - name: "5.6.2 | Ensure system accounts are secured | Set nologin"
-        user:
+        ansible.builtin.user:
             name: "{{ item.id }}"
             shell: /usr/sbin/nologin
         with_items:
@@ -20,7 +20,7 @@
             label: "{{ item.id }}"
 
       - name: "5.6.2 | PATCH | Ensure system accounts are secured | Lock accounts"
-        user:
+        ansible.builtin.user:
             name: "{{ item.id }}"
             password_lock: true
         with_items:
@@ -47,7 +47,7 @@
       - rule_5.6.2
 
 - name: "5.6.3 | PATCH | Ensure default user shell timeout is 900 seconds or less"
-  blockinfile:
+  ansible.builtin.blockinfile:
       path: "{{ item.path }}"
       state: "{{ item.state }}"
       create: true
@@ -72,7 +72,7 @@
       - rule_5.6.3
 
 - name: "5.6.4 | PATCH | Ensure default group for the root account is GID 0"
-  command: usermod -g 0 root
+  ansible.builtin.command: usermod -g 0 root
   changed_when: false
   failed_when: false
   when:
@@ -88,7 +88,7 @@
 - name: "5.6.5 | PATCH | Ensure default user umask is 027 or more restrictive"
   block:
       - name: "5.6.5 | PATCH | Ensure default user umask is 027 or more restrictive | Set umask for /etc/login.defs pam_umask settings"
-        replace:
+        ansible.builtin.replace:
             path: /etc/login.defs
             regexp: "{{ item.regexp }}"
             replace: "{{ item.replace }}"
@@ -97,13 +97,13 @@
             - { regexp: '(USERGROUPS_ENAB\s+)yes', replace: '\1 no' }
 
       - name: "5.6.5 | PATCH | Ensure default user umask is 027 or more restrictive | Set umask for /etc/bashrc"
-        replace:
+        ansible.builtin.replace:
             path: /etc/bashrc
             regexp: '(^\s+umask) 0[012][0-6]'
             replace: '\1 027'
 
       - name: "5.6.5 | PATCH | Ensure default user umask is 027 or more restrictive | Set umask for /etc/profile"
-        replace:
+        ansible.builtin.replace:
             path: /etc/profile
             regexp: '(^\s+umask) 0[012][0-6]'
             replace: '\1 027'

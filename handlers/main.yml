@@ -2,7 +2,7 @@
 # handlers file for RHEL8-CIS
 
 - name: sysctl flush ipv4 route table
-  sysctl:
+  ansible.posix.sysctl:
       name: net.ipv4.route.flush
       value: '1'
       sysctl_set: true
@@ -13,7 +13,7 @@
       - skip_ansible_lint
 
 - name: sysctl flush ipv6 route table
-  sysctl:
+  ansible.posix.sysctl:
       name: net.ipv6.route.flush
       value: '1'
       sysctl_set: true
@@ -22,7 +22,7 @@
       - not system_is_container
 
 - name: systemd restart tmp.mount
-  systemd:
+  ansible.builtin.systemd:
       name: tmp.mount
       daemon_reload: true
       enabled: true
@@ -30,7 +30,7 @@
       state: reloaded
 
 - name: systemd restart var-tmp.mount
-  systemd:
+  ansible.builtin.systemd:
       name: var-tmp.mount
       daemon_reload: true
       enabled: true
@@ -38,33 +38,33 @@
       state: reloaded
 
 - name: remount tmp
-  command: mount -o remount /tmp
+  ansible.builtin.command: mount -o remount /tmp
 
 - name: restart firewalld
-  service:
+  ansible.builtin.service:
       name: firewalld
       state: restarted
 
 - name: restart xinetd
-  service:
+  ansible.builtin.service:
       name: xinetd
       state: restarted
 
 - name: restart sshd
-  service:
+  ansible.builtin.service:
       name: sshd
       state: restarted
 
 - name: restart postfix
-  service:
+  ansible.builtin.service:
       name: postfix
       state: restarted
 
 - name: reload dconf
-  command: dconf update
+  ansible.builtin.command: dconf update
 
 - name: update auditd
-  template:
+  ansible.builtin.template:
       src: audit/99_auditd.rules.j2
       dest: /etc/audit/rules.d/99_auditd.rules
       owner: root
@@ -73,56 +73,56 @@
   notify: restart auditd
 
 - name: restart auditd
-  command: /sbin/service auditd restart
+  ansible.builtin.command: /sbin/service auditd restart
   changed_when: false
   check_mode: false
   failed_when: false
 
 - name: restart journald
-  service:
+  ansible.builtin.service:
       name: systemd-journald
       state: restarted
 
 - name: restart systemd_journal_upload
-  service:
+  ansible.builtin.service:
       name: systemd-journal-upload
       state: restarted
 
 - name: rhel8cis_grub2cfg
-  command: "grub2-mkconfig -o {{ grub_cfg.stat.lnk_source }}"
+  ansible.builtin.command: "grub2-mkconfig -o {{ grub_cfg.stat.lnk_source }}"
   ignore_errors: true  # noqa ignore-errors
   notify: change_requires_reboot
   tags:
       - skip_ansible_lint
 
 - name: restart rsyslog
-  service:
+  ansible.builtin.service:
       name: rsyslog
       state: restarted
 
 - name: systemd_daemon_reload
-  systemd:
+  ansible.builtin.systemd:
       daemon-reload: true
 
 ## Auditd tasks note order for handlers to run
 
 - name: auditd_immutable_check
-  shell: grep -c "^-e 2" /etc/audit/rules.d/99_auditd.rules
+  ansible.builtin.shell: grep -c "^-e 2" /etc/audit/rules.d/99_auditd.rules
   changed_when: false
   register: auditd_immutable_check
 
 - name: audit_immutable_fact
-  debug:
+  ansible.builtin.debug:
       msg: "Reboot required for auditd to apply new rules as immutable set"
   notify: change_requires_reboot
   when:
       - auditd_immutable_check.stdout == '1'
 
 - name: restart auditd
-  shell: service auditd restart
+  ansible.builtin.shell: service auditd restart
   tags:
       - skip_ansible_lint
 
 - name: change_requires_reboot
-  set_fact:
+  ansible.builtin.set_fact:
       change_requires_reboot: true

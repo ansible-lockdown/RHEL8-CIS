@@ -1,7 +1,7 @@
 ---
 
 - name: "1.2.1 | PATCH | Ensure Red Hat Subscription Manager connection is configured"
-  redhat_subscription:
+  community.general.redhat_subscription:
       state: present
       username: "{{ rhel8cis_rh_sub_user }}"
       password: "{{ rhel8cis_rh_sub_password }}"
@@ -20,7 +20,7 @@
       - skip_ansible_lint  # Added as no_log still errors on ansible-lint
 
 - name: "1.2.2 | AUDIT | Ensure GPG keys are configured"
-  shell: "PKG=`rpm -qf {{ rpm_gpg_key }}` && rpm -q --queryformat \"%{PACKAGER} %{SIGPGP:pgpsig}\\n\" \"${PKG}\" | grep \"^{{ rpm_packager }}.*Key.ID.{{ rpm_key }}\""
+  ansible.builtin.shell: "PKG=`rpm -qf {{ rpm_gpg_key }}` && rpm -q --queryformat \"%{PACKAGER} %{SIGPGP:pgpsig}\\n\" \"${PKG}\" | grep \"^{{ rpm_packager }}.*Key.ID.{{ rpm_key }}\""
   changed_when: false
   when:
       - rhel8cis_rule_1_2_2
@@ -38,14 +38,14 @@
 - name: "1.2.3| PATCH | Ensure gpgcheck is globally activated"
   block:
       - name: "1.2.3 | AUDIT | Ensure gpgcheck is globally activated | Find repos"
-        find:
+        ansible.builtin.find:
             paths: /etc/yum.repos.d
             patterns: "*.repo"
         register: yum_repos
         changed_when: false
 
       - name: "1.2.3 | PATCH | Ensure gpgcheck is globally activated | Update yum.repos"
-        replace:
+        ansible.builtin.replace:
             name: "{{ item.path }}"
             regexp: "^gpgcheck=0"
             replace: "gpgcheck=1"
@@ -65,14 +65,14 @@
 - name: "1.2.4 | AUDIT | Ensure package manager repositories are configured"
   block:
       - name: "1.2.4 | AUDIT | Ensure package manager repositories are configured | Get repo list"
-        command: dnf repolist
+        ansible.builtin.command: dnf repolist
         changed_when: false
         failed_when: false
         register: dnf_configured
         check_mode: false
 
       - name: "1.2.4 | AUDIT | Ensure package manager repositories are configured | Display repo list"
-        debug:
+        ansible.builtin.debug:
             msg:
                 - "Warning!! Below are the configured repos. Please review and make sure all align with site policy"
                 - "{{ dnf_configured.stdout_lines }}"
