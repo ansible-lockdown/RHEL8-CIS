@@ -3,7 +3,7 @@
 - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit"
   block:
       - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Warn if partition is absent"
-        ansible.builtin.gather_facts:
+        ansible.builtin.debug:
             msg: "Warning!! {{ required_mount }} doesn't exist. This is a manual task"
         register: var_log_audit_mount_absent
         changed_when: var_log_audit_mount_absent.skipped is undefined
