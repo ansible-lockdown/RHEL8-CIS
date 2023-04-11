@@ -3,12 +3,12 @@
 - name: "4.3 | PATCH | Ensure logrotate is configured"
   block:
       - name: "4.3 | AUDIT | Ensure logrotate is configured | Get logrotate settings"
-        find:
+        ansible.builtin.find:
             paths: /etc/logrotate.d/
         register: log_rotates
 
       - name: "4.3 | PATCH | Ensure logrotate is configured"
-        replace:
+        ansible.builtin.replace:
             path: "{{ item.path }}"
             regexp: '^(\s*)(daily|weekly|monthly|yearly)$'
             replace: "\\1{{ rhel8cis_logrotate }}"

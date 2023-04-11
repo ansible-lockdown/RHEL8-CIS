@@ -1,7 +1,7 @@
 ---
 
 - name: "1.8.1 | PATCH | Ensure GNOME Display Manager is removed"
-  package:
+  ansible.builtin.package:
       name: gdm
       state: absent
   when:
@@ -17,7 +17,7 @@
       - rule_1.8.1
 
 - name: "1.8.2 | PATCH | Ensure GDM login banner is configured"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: "{{ item.file }}"
       regexp: "{{ item.regexp }}"
       line: "{{ item.line }}"
@@ -46,7 +46,7 @@
       - rule_1.8.2
 
 - name: "1.8.3 | PATCH | Ensure last logged in user display is disabled"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: "{{ item.file }}"
       regexp: "{{ item.regexp }}"
       line: "{{ item.line }}"
@@ -73,7 +73,7 @@
       - rule_1.8.3
 
 - name: "1.8.4 | PATCH | Ensure XDMCP is not enabled"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/gdm/custom.conf
       regexp: 'Enable=true'
       state: absent
@@ -89,7 +89,7 @@
       - rule_1.8.4
 
 - name: "1.8.5 | PATCH | Ensure automatic mounting of removable media is disabled"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/dconf/db/local.d/00-media-automount
       regexp: "{{ item.regex }}"
       line: "{{ item.line }}"

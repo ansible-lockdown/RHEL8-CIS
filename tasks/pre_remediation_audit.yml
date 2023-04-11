@@ -1,14 +1,14 @@
 ---
 
 - name: Pre Audit | Setup the audit
-  import_tasks: LE_audit_setup.yml
+  ansible.builtin.import_tasks: LE_audit_setup.yml
   when:
       - setup_audit
   tags:
       - setup_audit
 
 - name: "Pre Audit | Ensure {{ audit_conf_dir }} exists"
-  file:
+  ansible.builtin.file:
       path: "{{ audit_conf_dir }}"
       state: directory
       mode: '0755'
@@ -16,13 +16,13 @@
 - name: Pre Audit | If using git for content set up
   block:
       - name: Pre Audit | Install git (rh8 python3)
-        package:
+        ansible.builtin.package:
             name: git
             state: present
         when: ansible_distribution_major_version == '8'
 
       - name: Pre Audit | Install git (rh7 python2)
-        package:
+        ansible.builtin.package:
             name: git
             state: present
         vars:
@@ -30,7 +30,7 @@
         when: ansible_distribution_major_version == '7'
 
       - name: Pre Audit | retrieve audit content files from git
-        git:
+        ansible.builtin.git:
             repo: "{{ audit_file_git }}"
             dest: "{{ audit_conf_dir }}"
             version: "{{ audit_git_version }}"
@@ -38,7 +38,7 @@
       - audit_content == 'git'
 
 - name: Pre Audit | copy to audit content files to server
-  copy:
+  ansible.builtin.copy:
       src: "{{ audit_local_copy }}"
       dest: "{{ audit_conf_dir }}"
       mode: 0644
@@ -46,7 +46,7 @@
       - audit_content == 'copy'
 
 - name: Pre Audit | get audit content from url
-  get_url:
+  ansible.builtin.get_url:
       url: "{{ audit_files_url }}"
       dest: "{{ audit_conf_dir }}"
       mode: 0755
@@ -56,12 +56,12 @@
 - name: Pre Audit | Check Goss is available
   block:
       - name: Pre Audit | Check for goss file
-        stat:
+        ansible.builtin.stat:
             path: "{{ audit_bin }}"
         register: goss_available
 
       - name: Pre Audit | If audit ensure goss is available
-        assert:
+        ansible.builtin.assert:
             msg: "Audit has been selected: unable to find goss binary at {{ audit_bin }}"
         when:
             - not goss_available.stat.exists
@@ -69,14 +69,14 @@
       - run_audit
 
 - name: "Pre Audit | Check whether machine is UEFI-based"
-  stat:
+  ansible.builtin.stat:
       path: /sys/firmware/efi
   register: rhel8_efi_boot
   tags:
       - goss_template
 
 - name: Pre Audit | Copy ansible default vars values to test audit
-  template:
+  ansible.builtin.template:
       src: ansible_vars_goss.yml.j2
       dest: "{{ audit_vars_path }}"
       mode: 0600
@@ -86,7 +86,7 @@
       - goss_template
 
 - name: "Pre Audit | Run pre_remediation {{ benchmark }} audit"
-  shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -o {{ pre_audit_outfile }} -g {{ group_names }}"
+  ansible.builtin.shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -o {{ pre_audit_outfile }} -g {{ group_names }}"
   environment: "{{ audit_run_script_environment | default ({}) }}"
   vars:
       warn: false
@@ -94,12 +94,12 @@
 - name: Pre Audit | Capture audit data if json format
   block:
       - name: "Pre Audit | capture data {{ pre_audit_outfile }}"
-        command: "cat {{ pre_audit_outfile }}"
+        ansible.builtin.command: "cat {{ pre_audit_outfile }}"
         changed_when: false
         register: pre_audit
 
       - name: Pre Audit | Capture pre-audit result
-        set_fact:
+        ansible.builtin.set_fact:
             pre_audit_summary: "{{ pre_audit.stdout | from_json | json_query(summary) }}"
         vars:
             summary: 'summary."summary-line"'
@@ -109,12 +109,12 @@
 - name: Pre Audit | Capture audit data if documentation format
   block:
       - name: "Pre Audit | capture data {{ pre_audit_outfile }}"
-        command: "tail -2 {{ pre_audit_outfile }}"
+        ansible.builtin.command: "tail -2 {{ pre_audit_outfile }}"
         register: pre_audit
         changed_when: false
 
       - name: Pre Audit | Capture pre-audit result
-        set_fact:
+        ansible.builtin.set_fact:
             pre_audit_summary: "{{ pre_audit.stdout_lines }}"
   when:
       - audit_format == "documentation"

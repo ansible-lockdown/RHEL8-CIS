@@ -3,7 +3,7 @@
 - name: "1.1.5.1 | AUDIT | Ensure separate partition exists for /var/log"
   block:
       - name: "1.1.5.1 | AUDIT | Ensure separate partition exists for /var/log | Warn if partition is absent"
-        debug:
+        ansible.builtin.debug:
             msg: "Warning!! {{ required_mount }} doesn't exist. This is a manual task"
         register: var_log_mount_absent
         changed_when: var_log_mount_absent.skipped is undefined
@@ -31,7 +31,7 @@
           "1.1.5.2 | PATCH | Ensure nodev option set on /var/log partition"
           "1.1.5.3 | PATCH | Ensure noexec option set on /var/log partition"
           "1.1.5.4 | PATCH | Ensure nosuid option set on /var/log partition"
-  mount:
+  ansible.posix.mount:
       name: /var/log
       src: "{{ item.device }}"
       fstype: "{{ item.fstype }}"

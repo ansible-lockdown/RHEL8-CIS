@@ -3,7 +3,7 @@
 - name: "1.1.2.1 | PATCH | Ensure /tmp is a separate partition"
   block:
       - name: "1.1.2.1 | PATCH | Ensure /tmp is a separate partition | Absent"
-        debug:
+        ansible.builtin.debug:
             msg: "Warning!! {{ required_mount }} is not mounted on a separate partition"
 
       - name: "1.1.2.1 | PATCH | Ensure /tmp is a separate partition | Present"
@@ -27,7 +27,7 @@
         "1.1.2.2 | PATCH | Ensure nodev option set on /tmp partition"
         "1.1.2.3 | PATCH | Ensure noexec option set on /tmp partition"
         "1.1.2.4 | PATCH | Ensure nosuid option set on /tmp partition"
-  mount:
+  ansible.posix.mount:
       name: /tmp
       src: "{{ item.device }}"
       fstype: "{{ item.fstype }}"
@@ -60,7 +60,7 @@
         "1.1.2.2 | PATCH | Ensure nodev option set on /tmp partition"
         "1.1.2.3 | PATCH | Ensure noexec option set on /tmp partition"
         "1.1.2.4 | PATCH | Ensure nosuid option set on /tmp partition"
-  template:
+  ansible.builtin.template:
       src: etc/systemd/system/tmp.mount.j2
       dest: /etc/systemd/system/tmp.mount
       owner: root

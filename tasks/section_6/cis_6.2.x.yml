@@ -1,7 +1,7 @@
 ---
 
 - name: "6.2.1 | PATCH | Ensure password fields are not empty"
-  command: passwd -l {{ item }}
+  ansible.builtin.command: passwd -l {{ item }}
   changed_when: false
   failed_when: false
   with_items: "{{ empty_password_accounts.stdout_lines }}"
@@ -19,14 +19,14 @@
 - name: "6.2.2 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group"
   block:
       - name: "6.2.2 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Check /etc/passwd entries"
-        shell: pwck -r | grep 'no group' | awk '{ gsub("[:\47]",""); print $2}'
+        ansible.builtin.shell: pwck -r | grep 'no group' | awk '{ gsub("[:\47]",""); print $2}'
         changed_when: false
         failed_when: false
         check_mode: false
         register: rhel8cis_6_2_2_passwd_gid_check
 
       - name: "6.2.2 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Print warning about users with invalid GIDs missing GID entries in /etc/group"
-        debug:
+        ansible.builtin.debug:
             msg: "Warning!! The following users have non-existent GIDs (Groups): {{ rhel8cis_6_2_2_passwd_gid_check.stdout_lines | join (', ') }}"
         when: rhel8cis_6_2_2_passwd_gid_check.stdout | length > 0
 
@@ -49,13 +49,13 @@
 - name: "6.2.3 | AUDIT Ensure no duplicate UIDs exist"
   block:
       - name: "6.2.3 | AUDIT | Ensure no duplicate UIDs exist | Check for duplicate UIDs"
-        shell: "pwck -r | awk -F: '{if ($3 in uid) print $1 ; else uid[$3]}' /etc/passwd"
+        ansible.builtin.shell: "pwck -r | awk -F: '{if ($3 in uid) print $1 ; else uid[$3]}' /etc/passwd"
         changed_when: false
         failed_when: false
         register: rhel8cis_6_2_3_user_uid_check
 
       - name: "6.2.3 | AUDIT | Ensure no duplicate UIDs exist | Print warning about users with duplicate UIDs"
-        debug:
+        ansible.builtin.debug:
             msg: "Warning!! The following users have UIDs that are duplicates: {{ rhel8cis_6_2_3_user_uid_check.stdout_lines }}"
         when: rhel8cis_6_2_3_user_uid_check.stdout | length > 0
 
@@ -78,13 +78,13 @@
 - name: "6.2.4 | AUDIT | Ensure no duplicate GIDs exist"
   block:
       - name: "6.2.4 | AUDIT | Ensure no duplicate GIDs exist | Check for duplicate GIDs"
-        shell: "pwck -r | awk -F: '{if ($3 in users) print $1 ; else users[$3]}' /etc/group"
+        ansible.builtin.shell: "pwck -r | awk -F: '{if ($3 in users) print $1 ; else users[$3]}' /etc/group"
         changed_when: false
         failed_when: false
         register: rhel8cis_6_2_4_user_user_check
 
       - name: "6.2.4 | AUDIT | Ensure no duplicate GIDs exist | Print warning about users with duplicate GIDs"
-        debug:
+        ansible.builtin.debug:
             msg: "Warning!! The following groups have duplicate GIDs: {{ rhel8cis_6_2_4_user_user_check.stdout_lines }}"
         when: rhel8cis_6_2_4_user_user_check.stdout | length > 0
 
@@ -108,13 +108,13 @@
 - name: "6.2.5 | AUDIT | Ensure no duplicate user names exist"
   block:
       - name: "6.2.5 | AUDIT | Ensure no duplicate user names exist | Check for duplicate User Names"
-        shell: "pwck -r | awk -F: '{if ($1 in users) print $1 ; else users[$1]}' /etc/passwd"
+        ansible.builtin.shell: "pwck -r | awk -F: '{if ($1 in users) print $1 ; else users[$1]}' /etc/passwd"
         changed_when: false
         failed_when: false
         register: rhel8cis_6_2_5_user_username_check
 
       - name: "6.2.5 | AUDIT | Ensure no duplicate user names exist | Print warning about users with duplicate User Names"
-        debug:
+        ansible.builtin.debug:
             msg: "Warning!! The following user names are duplicates: {{ rhel8cis_6_2_5_user_username_check.stdout_lines }}"
         when: rhel8cis_6_2_5_user_username_check.stdout | length > 0
 
@@ -137,14 +137,14 @@
 - name: "6.2.6 | AUDIT |Ensure no duplicate group names exist"
   block:
       - name: "6.2.6 | AUDIT | Ensure no duplicate group names exist | Check for duplicate group names"
-        shell: 'getent passwd | cut -d: -f1 | sort -n | uniq -d'
+        ansible.builtin.shell: 'getent passwd | cut -d: -f1 | sort -n | uniq -d'
         changed_when: false
         failed_when: false
         check_mode: false
         register: rhel8cis_6_2_6_group_group_check
 
       - name: "6.2.6 | AUDIT | Ensure no duplicate group names exist | Print warning about users with duplicate group names"
-        debug:
+        ansible.builtin.debug:
             msg: "Warning!! The following group names are duplicates: {{ rhel8cis_6_2_6_group_group_check.stdout_lines }}"
         when: rhel8cis_6_2_6_group_group_check.stdout | length > 0
 
@@ -167,35 +167,35 @@
 - name: "6.2.7 | PATCH | Ensure root PATH Integrity"
   block:
       - name: "6.2.7 | AUDIT | Ensure root PATH Integrity | Determine empty value"
-        shell: 'echo $PATH | grep ::'
+        ansible.builtin.shell: 'echo $PATH | grep ::'
         changed_when: false
         failed_when: rhel8cis_6_2_7_path_colon.rc == 0
         check_mode: false
         register: rhel8cis_6_2_7_path_colon
 
       - name: "6.2.7 | AUDIT | Ensure root PATH Integrity | Determin colon end"
-        shell: 'echo $PATH | grep :$'
+        ansible.builtin.shell: 'echo $PATH | grep :$'
         changed_when: false
         failed_when: rhel8cis_6_2_7_path_colon_end.rc == 0
         check_mode: false
         register: rhel8cis_6_2_7_path_colon_end
 
       - name: "6.2.7 | AUDIT | Ensure root PATH Integrity | Determine dot in path"
-        shell: "/bin/bash --login -c 'env | grep ^PATH=' | sed -e 's/PATH=//' -e 's/::/:/' -e 's/:$//' -e 's/:/\\n/g'"
+        ansible.builtin.shell: "/bin/bash --login -c 'env | grep ^PATH=' | sed -e 's/PATH=//' -e 's/::/:/' -e 's/:$//' -e 's/:/\\n/g'"
         changed_when: false
         failed_when: '"." in rhel8cis_6_2_7_dot_in_path.stdout_lines'
         check_mode: false
         register: rhel8cis_6_2_7_dot_in_path
 
       - name: "6.2.7 | AUDIT | Ensure root PATH Integrity | Alert on empty value, colon end, and dot in path"
-        debug:
+        ansible.builtin.debug:
             msg:
                 - "The following paths have an empty value: {{ rhel8cis_6_2_7_path_colon.stdout_lines }}"
                 - "The following paths have colon end: {{ rhel8cis_6_2_7_path_colon_end.stdout_lines }}"
                 - "The following paths have a dot in the path: {{ rhel8cis_6_2_7_dot_in_path.stdout_lines }}"
 
       - name: "6.2.7 | PATCH | Ensure root PATH Integrity | Determine rights and owner"
-        file: >
+        ansible.builtin.file: >
           path='{{ item }}'
           follow=yes
           state=directory
@@ -213,7 +213,7 @@
       - rule_6.2.7
 
 - name: "6.2.8 | PATCH | Ensure root is the only UID 0 account"
-  command: passwd -l {{ item }}
+  ansible.builtin.command: passwd -l {{ item }}
   changed_when: false
   failed_when: false
   with_items: "{{ rhel8cis_uid_zero_accounts_except_root.stdout_lines }}"
@@ -232,13 +232,13 @@
 - name: "6.2.9 | PATCH | Ensure all users' home directories exist"
   block:
       - name: "6.2.9 | AUDIT | Ensure all users' home directories exist"
-        stat:
+        ansible.builtin.stat:
             path: "{{ item }}"
         register: rhel_08_6_2_9_audit
         with_items: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8uid_interactive_uid_start | int ) | selectattr('uid', '<=', rhel8uid_interactive_uid_stop | int ) | map(attribute='dir') | list }}"
 
       - name: "6.2.9 | AUDIT | Ensure all users' home directories exist"
-        command: find -H {{ item.0 | quote }} -not -type l -perm /027
+        ansible.builtin.command: find -H {{ item.0 | quote }} -not -type l -perm /027
         check_mode: false
         changed_when: rhel_08_6_2_9_patch_audit.stdout | length > 0
         register: rhel_08_6_2_9_patch_audit
@@ -252,7 +252,7 @@
             label: "{{ item.0 }}"
 
       - name: "6.2.9 | PATCH | Ensure all users' home directories exist"
-        file:
+        ansible.builtin.file:
             path: "{{ item.0 }}"
             recurse: true
             mode: a-st,g-w,o-rwx
@@ -268,7 +268,7 @@
 
       # set default ACLs so the homedir has an effective umask of 0027
       - name: "6.2.9 | PATCH | Ensure all users' home directories exist"
-        acl:
+        ansible.posix.acl:
             path: "{{ item.0 }}"
             default: true
             state: present
@@ -297,7 +297,7 @@
       - rule_6.2.9
 
 - name: "6.2.10 | PATCH | Ensure users own their home directories"
-  file:
+  ansible.builtin.file:
       path: "{{ item.dir }}"
       owner: "{{ item.id }}"
       state: directory
@@ -321,13 +321,13 @@
 - name: "6.2.11 | PATCH | Ensure users' home directories permissions are 750 or more restrictive"
   block:
       - name: "6.2.11 | AUDIT | Ensure users' home directories permissions are 750 or more restrictive"
-        stat:
+        ansible.builtin.stat:
             path: "{{ item }}"
         with_items: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8uid_interactive_uid_start | int) | selectattr('uid', '<=', rhel8uid_interactive_uid_stop | int) | map(attribute='dir') | list }}"
         register: rhel_08_6_2_11_audit
 
       - name: "6.2.11 | AUDIT | Ensure users' home directories permissions are 750 or more restrictive"
-        command: find -H {{ item.0 | quote }} -not -type l -perm /027
+        ansible.builtin.command: find -H {{ item.0 | quote }} -not -type l -perm /027
         check_mode: false
         changed_when: rhel_08_6_2_11_patch_audit.stdout | length > 0
         register: rhel_08_6_2_11_patch_audit
@@ -341,7 +341,7 @@
             label: "{{ item.0 }}"
 
       - name: "6.2.11 | PATCH | Ensure users' home directories permissions are 750 or more restrictive"
-        file:
+        ansible.builtin.file:
             path: "{{ item.0 }}"
             recurse: true
             mode: a-st,g-w,o-rwx
@@ -357,7 +357,7 @@
 
       # set default ACLs so the homedir has an effective umask of 0027
       - name: "6.2.11 | PATCH | Ensure users' home directories permissions are 750 or more restrictive"
-        acl:
+        ansible.posix.acl:
             path: "{{ item.0 }}"
             default: true
             state: present
@@ -388,13 +388,13 @@
 - name: "6.2.12 | PATCH | Ensure users' dot files are not group or world-writable"
   block:
       - name: "6.2.12 | AUDIT | Ensure users' dot files are not group or world-writable | Check for files"
-        shell: find /home/ -maxdepth 2 -name "\.*" -perm /g+w,o+w
+        ansible.builtin.shell: find /home/ -maxdepth 2 -name "\.*" -perm /g+w,o+w
         changed_when: false
         failed_when: false
         register: rhel8cis_6_2_12_audit
 
       - name: "6.2.12 | PATCH | Ensure users' dot files are not group or world-writable | Changes files if configured"
-        file:
+        ansible.builtin.file:
             path: '{{ item }}'
             mode: go-w
         with_items: "{{ rhel8cis_6_2_12_audit.stdout_lines }}"
@@ -413,7 +413,7 @@
       - rule_6.2.12
 
 - name: "6.2.13 | PATCH | Ensure users' .netrc Files are not group or world accessible"
-  command: /bin/true
+  ansible.builtin.command: /bin/true
   changed_when: false
   failed_when: false
   when:
@@ -429,7 +429,7 @@
       - rule_6.2.13
 
 - name: "6.2.14 | PATCH | Ensure no users have .forward files"
-  file:
+  ansible.builtin.file:
       path: "~{{ item }}/.forward"
       state: absent
   with_items:
@@ -446,7 +446,7 @@
       - rule_6.2.14
 
 - name: "6.2.15 | PATCH | Ensure no users have .netrc files"
-  file:
+  ansible.builtin.file:
       path: "~{{ item }}/.netrc"
       state: absent
   with_items:
@@ -463,7 +463,7 @@
       - rule_6.2.15
 
 - name: "6.2.16 | PATCH | Ensure no users have .rhosts files"
-  file:
+  ansible.builtin.file:
       path: "~{{ item }}/.rhosts"
       state: absent
   with_items: "{{ users.stdout_lines }}"

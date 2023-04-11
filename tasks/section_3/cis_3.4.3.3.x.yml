@@ -3,7 +3,7 @@
 - name: "3.4.3.3.1 | PATCH |  Ensure ip6tables loopback traffic is configured"
   block:
       - name: "3.4.3.3.1 | PATCH |  Ensure ip6tables loopback traffic is configured | INPUT Loopback ACCEPT"
-        iptables:
+        ansible.builtin.iptables:
             action: append
             chain: INPUT
             in_interface: lo
@@ -11,7 +11,7 @@
             ip_version: ipv6
 
       - name: "3.4.3.3.1 | PATCH |  Ensure ip6tables loopback traffic is configured | OUTPUT Loopback ACCEPT"
-        iptables:
+        ansible.builtin.iptables:
             action: append
             chain: OUTPUT
             out_interface: lo
@@ -19,7 +19,7 @@
             ip_version: ipv6
 
       - name: "3.4.3.3.1 | PATCH | Ensure ip6tables loopback traffic is configured | INPUT Loopback 127.0.0.0/8"
-        iptables:
+        ansible.builtin.iptables:
             action: append
             chain: INPUT
             source: ::1
@@ -38,7 +38,7 @@
       - rule_3.4.3.3.1
 
 - name: "3.4.3.3.2 | PATCH | Ensure ip6tables outbound and established connections are configured"
-  iptables:
+  ansible.builtin.iptables:
       action: append
       chain: '{{ item.chain }}'
       protocol: '{{ item.protocol }}'
@@ -68,13 +68,13 @@
 - name: "3.4.3.3.3 | PATCH | Ensure ip6tables firewall rules exist for all open ports"
   block:
       - name: "3.4.3.3.3 | AUDIT | Ensure ip6tables firewall rules exist for all open ports | Get list of TCP6 open ports"
-        shell: netstat -ant |grep "tcp6.*LISTEN" | awk '{ print $4 }'| sed 's/.*://'
+        ansible.builtin.shell: netstat -ant |grep "tcp6.*LISTEN" | awk '{ print $4 }'| sed 's/.*://'
         changed_when: false
         failed_when: false
         register: rhel8cis_3_4_3_3_3_otcp
 
       - name: "3.4.3.3.3 | PATCH |Ensure ip6tables firewall rules exist for all open ports| Adjust open tcp6 ports"
-        iptables:
+        ansible.builtin.iptables:
             action: append
             chain: INPUT
             protocol: tcp
@@ -101,7 +101,7 @@
 - name: "3.4.3.3.4 | PATCH | Ensure ip6tables default deny firewall policy"
   block:
       - name: "3.4.3.3.4 | PATCH | Ensure ip6tables default deny firewall policy | Configure ssh to be allowed"
-        iptables:
+        ansible.builtin.iptables:
             chain: INPUT
             protocol: tcp
             destination_port: "22"
@@ -109,7 +109,7 @@
             ip_version: ipv6
 
       - name: "3.4.3.3.4 | PATCH | Ensure ip6tables default deny firewall policy | Set drop items"
-        iptables:
+        ansible.builtin.iptables:
             policy: DROP
             chain: "{{ item }}"
             ip_version: ipv6
@@ -130,7 +130,7 @@
       - rule_3.4.3.3.4
 
 - name: "3.4.3.3.5 | PATCH | Ensure ip6tables rules are saved"
-  iptables_state:
+  community.general.iptables_state:
       state: saved
       path: /etc/sysconfig/ip6tables
       ip_version: ipv6
@@ -147,7 +147,7 @@
       - rule_3.4.3.3.5
 
 - name: "3.4.3.3.6 | PATCH | Ensure ip6tables service is enabled and active"
-  service:
+  ansible.builtin.service:
       name: ip6tables
       enabled: true
       state: started

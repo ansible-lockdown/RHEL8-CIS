@@ -1,7 +1,7 @@
 ---
 
 - name: "2.2.1 | PATCH | Ensure xinetd is not installed"
-  package:
+  ansible.builtin.package:
       name: xinetd
       state: absent
   when:
@@ -16,7 +16,7 @@
       - rule_2.2.1
 
 - name: "2.2.2 | PATCH | Ensure xorg-x11-server-common is not installed"
-  package:
+  ansible.builtin.package:
       name: xorg-x11-server-common
       state: absent
   when:
@@ -31,7 +31,7 @@
       - rule_2.2.2
 
 - name: "2.2.3 | PATCH | Ensure Avahi Server is not installed"
-  package:
+  ansible.builtin.package:
       name:
           - avahi-autoipd
           - avahi
@@ -49,7 +49,7 @@
       - rule_2.2.3
 
 - name: "2.2.4 | PATCH | Ensure CUPS is not installed"
-  package:
+  ansible.builtin.package:
       name: cups
       state: absent
   when:
@@ -64,7 +64,7 @@
       - rule_2.2.4
 
 - name: "2.2.5 | PATCH | Ensure DHCP Server is not installed"
-  package:
+  ansible.builtin.package:
       name: dhcp-server
       state: absent
   when:
@@ -80,7 +80,7 @@
       - rule_2.2.5
 
 - name: "2.2.6 | PATCH | Ensure DNS Server is not installed"
-  package:
+  ansible.builtin.package:
       name: bind
       state: absent
   when:
@@ -96,7 +96,7 @@
       - rule_2.2.6
 
 - name: "2.2.7 | PATCH | Ensure FTP Server is not installed"
-  package:
+  ansible.builtin.package:
       name: ftp
       state: absent
   when:
@@ -112,7 +112,7 @@
       - rule_2.2.7
 
 - name: "2.2.8 | PATCH | Ensure VSFTP Server is not installed"
-  package:
+  ansible.builtin.package:
       name: vsftpd
       state: absent
   when:
@@ -128,7 +128,7 @@
       - rule_2.2.8
 
 - name: "2.2.9 | PACH | Ensure TFTP Server is not installed"
-  package:
+  ansible.builtin.package:
       name: tftp-server
       state: absent
   when:
@@ -146,7 +146,7 @@
 - name: "2.2.10 | PATCH | Ensure a web server is not installed"
   block:
       - name: "2.2.10 | PATCH | Ensure a web server is not installed | Remove httpd server"
-        package:
+        ansible.builtin.package:
             name: httpd
             state: absent
         when:
@@ -154,7 +154,7 @@
             - "'httpd' in ansible_facts.packages"
 
       - name: "2.2.10 | PATCH | Ensure a web server is not installed | Remove nginx server"
-        package:
+        ansible.builtin.package:
             name: nginx
             state: absent
         when:
@@ -173,7 +173,7 @@
       - rule_2.2.10
 
 - name: "2.2.11 | PATCH | Ensure IMAP and POP3 server is not installed"
-  package:
+  ansible.builtin.package:
       name:
           - dovecot
           - cyrus-imapd
@@ -193,7 +193,7 @@
       - rule_2.2.11
 
 - name: "2.2.12 | PATCH | Ensure Samba is not enabled"
-  package:
+  ansible.builtin.package:
       name: samba
       state: absent
   when:
@@ -209,7 +209,7 @@
       - rule_2.2.12
 
 - name: "2.2.13 | PATCH | Ensure HTTP Proxy Server is not installed"
-  package:
+  ansible.builtin.package:
       name: squid
       state: absent
   when:
@@ -225,7 +225,7 @@
       - rule_2.2.13
 
 - name: "2.2.14 | PATCH | Ensure net-snmp is not installed"
-  package:
+  ansible.builtin.package:
       name: net-snmp
       state: absent
   when:
@@ -241,7 +241,7 @@
       - rule_2.2.14
 
 - name: "2.2.15 | PATCH | Ensure NIS Server is not installed"
-  package:
+  ansible.builtin.package:
       name: ypserv
       state: absent
   when:
@@ -257,7 +257,7 @@
       - rule_2.2.15
 
 - name: "2.2.16 | PATCH | Ensure telnet-server is not installed"
-  package:
+  ansible.builtin.package:
       name: telnet-server
       state: absent
   when:
@@ -273,7 +273,7 @@
       - rule_2.2.16
 
 - name: "2.2.17 | PATCH | Ensure mail transfer agent is configured for local-only mode"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/postfix/main.cf
       regexp: "^(#)?inet_interfaces"
       line: "inet_interfaces = loopback-only"
@@ -293,7 +293,7 @@
 # The name title of the service says mask the service or remove packages
 # We went with masking the service due to ipa-client and other elements that are dependant on nfs-utils
 - name: "2.2.18 | PATCH | Ensure nfs-utils is not installed or the nfs-server service is masked"
-  systemd:
+  ansible.builtin.systemd:
       name: nfs-utils
       masked: true
       state: stopped
@@ -313,7 +313,7 @@
 # The name title of the service says mask the service or remove packages
 # We went with masking the service due to ipa-client and other elements that are dependant on rpcbind
 - name: "2.2.19 | PATCH | Ensure rpcbind is not installed or the rpcbind services are masked"
-  systemd:
+  ansible.builtin.systemd:
       name: "{{ item }}"
       masked: true
       state: stopped
@@ -335,7 +335,7 @@
 # The name title of the service says mask the service, but the fix allows for both options
 # We went with removing to remove the security/update overhead with having the package installed
 - name: "2.2.20 | PATCH | Ensure rsync service is not enabled "
-  package:
+  ansible.builtin.package:
       name: rsync
       state: absent
   when:

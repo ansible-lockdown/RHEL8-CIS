@@ -1,7 +1,7 @@
 ---
 
 - name: "3.4.3.1.1 | PATCH | Ensure iptables packages are installed"
-  package:
+  ansible.builtin.package:
       name:
           - iptables
           - iptables-services
@@ -18,7 +18,7 @@
       - rule_3.4.3.1.1
 
 - name: "3.4.3.1.2 | PATCH | Ensure nftables is not installed with iptables"
-  package:
+  ansible.builtin.package:
       name: nftables
       state: absent
   when:
@@ -35,7 +35,7 @@
 # The control allows the service it be masked or not installed
 # We have chosen not installed
 - name: "3.4.3.1.3 | PATCH | Ensure firewalld is either not installed or masked with iptables"
-  package:
+  ansible.builtin.package:
       name: firewalld
       state: absent
   when:

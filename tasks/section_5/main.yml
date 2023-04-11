@@ -3,24 +3,24 @@
 # Access, Authentication, and Authorization
 
 - name: "SECTION | 5.1 | Configure time-based job schedulers"
-  import_tasks: cis_5.1.x.yml
+  ansible.builtin.import_tasks: cis_5.1.x.yml
 
 - name: "SECTION | 5.2 | Configure SSH Server"
-  import_tasks: cis_5.2.x.yml
+  ansible.builtin.import_tasks: cis_5.2.x.yml
   when:
       - "'openssh-server' in ansible_facts.packages"
 
 - name: "SECTION | 5.3 | Configure privilege escalation"
-  import_tasks: cis_5.3.x.yml
+  ansible.builtin.import_tasks: cis_5.3.x.yml
 
 - name: "SECTION | 5.4 | Configure authselect"
-  import_tasks: cis_5.4.x.yml
+  ansible.builtin.import_tasks: cis_5.4.x.yml
 
 - name: "SECTION | 5.5 | Configure PAM "
-  import_tasks: cis_5.5.x.yml
+  ansible.builtin.import_tasks: cis_5.5.x.yml
 
 - name: "SECTION | 5.6.1.x | Shadow Password Suite Parameters"
-  import_tasks: cis_5.6.1.x.yml
+  ansible.builtin.import_tasks: cis_5.6.1.x.yml
 
 - name: "SECTION | 5.6.x | Misc. User Account Settings"
-  import_tasks: cis_5.6.x.yml
+  ansible.builtin.import_tasks: cis_5.6.x.yml
