@@ -72,7 +72,7 @@
       - rule_5.6.3
 
 - name: "5.6.4 | PATCH | Ensure default group for the root account is GID 0"
-  ansible.builtin.command: usermod -g 0 root
+  ansible.builtin.shell: usermod -g 0 root
   changed_when: false
   failed_when: false
   when:

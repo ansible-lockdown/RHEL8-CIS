@@ -1,7 +1,7 @@
 ---
 
 - name: "6.2.1 | PATCH | Ensure password fields are not empty"
-  ansible.builtin.command: passwd -l {{ item }}
+  ansible.builtin.shell: passwd -l {{ item }}
   changed_when: false
   failed_when: false
   with_items: "{{ empty_password_accounts.stdout_lines }}"
@@ -213,7 +213,7 @@
       - rule_6.2.7
 
 - name: "6.2.8 | PATCH | Ensure root is the only UID 0 account"
-  ansible.builtin.command: passwd -l {{ item }}
+  ansible.builtin.shell: passwd -l {{ item }}
   changed_when: false
   failed_when: false
   with_items: "{{ rhel8cis_uid_zero_accounts_except_root.stdout_lines }}"
@@ -238,7 +238,7 @@
         with_items: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8uid_interactive_uid_start | int ) | selectattr('uid', '<=', rhel8uid_interactive_uid_stop | int ) | map(attribute='dir') | list }}"
 
       - name: "6.2.9 | AUDIT | Ensure all users' home directories exist"
-        ansible.builtin.command: find -H {{ item.0 | quote }} -not -type l -perm /027
+        ansible.builtin.shell: find -H {{ item.0 | quote }} -not -type l -perm /027
         check_mode: false
         changed_when: rhel_08_6_2_9_patch_audit.stdout | length > 0
         register: rhel_08_6_2_9_patch_audit
@@ -327,7 +327,7 @@
         register: rhel_08_6_2_11_audit
 
       - name: "6.2.11 | AUDIT | Ensure users' home directories permissions are 750 or more restrictive"
-        ansible.builtin.command: find -H {{ item.0 | quote }} -not -type l -perm /027
+        ansible.builtin.shell: find -H {{ item.0 | quote }} -not -type l -perm /027
         check_mode: false
         changed_when: rhel_08_6_2_11_patch_audit.stdout | length > 0
         register: rhel_08_6_2_11_patch_audit
@@ -413,7 +413,7 @@
       - rule_6.2.12
 
 - name: "6.2.13 | PATCH | Ensure users' .netrc Files are not group or world accessible"
-  ansible.builtin.command: /bin/true
+  ansible.builtin.shell: /bin/true
   changed_when: false
   failed_when: false
   when:
