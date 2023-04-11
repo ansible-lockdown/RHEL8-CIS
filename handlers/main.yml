@@ -38,7 +38,7 @@
       state: reloaded
 
 - name: remount tmp
-  ansible.builtin.command: mount -o remount /tmp
+  ansible.builtin.shell: mount -o remount /tmp
 
 - name: restart firewalld
   ansible.builtin.service:
@@ -61,7 +61,7 @@
       state: restarted
 
 - name: reload dconf
-  ansible.builtin.command: dconf update
+  ansible.builtin.shell: dconf update
 
 - name: update auditd
   ansible.builtin.template:
@@ -73,7 +73,7 @@
   notify: restart auditd
 
 - name: restart auditd
-  ansible.builtin.command: /sbin/service auditd restart
+  ansible.builtin.shell: /sbin/service auditd restart
   changed_when: false
   check_mode: false
   failed_when: false
@@ -89,7 +89,7 @@
       state: restarted
 
 - name: rhel8cis_grub2cfg
-  ansible.builtin.command: "grub2-mkconfig -o {{ grub_cfg.stat.lnk_source }}"
+  ansible.builtin.shell: "grub2-mkconfig -o {{ grub_cfg.stat.lnk_source }}"
   ignore_errors: true  # noqa ignore-errors
   notify: change_requires_reboot
   tags:

@@ -94,7 +94,7 @@
 - name: Pre Audit | Capture audit data if json format
   block:
       - name: "Pre Audit | capture data {{ pre_audit_outfile }}"
-        ansible.builtin.command: "cat {{ pre_audit_outfile }}"
+        ansible.builtin.shell: "cat {{ pre_audit_outfile }}"
         changed_when: false
         register: pre_audit
 
@@ -109,7 +109,7 @@
 - name: Pre Audit | Capture audit data if documentation format
   block:
       - name: "Pre Audit | capture data {{ pre_audit_outfile }}"
-        ansible.builtin.command: "tail -2 {{ pre_audit_outfile }}"
+        ansible.builtin.shell: "tail -2 {{ pre_audit_outfile }}"
         register: pre_audit
         changed_when: false
 

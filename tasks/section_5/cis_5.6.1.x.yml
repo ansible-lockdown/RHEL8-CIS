@@ -55,7 +55,7 @@
         register: rhel8cis_5_6_1_4_inactive_settings
 
       - name: "5.6.1.4 | PATCH | Ensure inactive password lock is 30 days or less | Set default inactive setting"
-        ansible.builtin.command: useradd -D -f {{ rhel8cis_inactivelock.lock_days }}
+        ansible.builtin.shell: useradd -D -f {{ rhel8cis_inactivelock.lock_days }}
         when: rhel8cis_5_6_1_4_inactive_settings.stdout | length == 0
 
       - name: "5.6.1.4 | AUDIT | Ensure inactive password lock is 30 days or less | Getting user list"
@@ -65,7 +65,7 @@
         register: rhel_8_5_6_1_4_user_list
 
       - name: "5.6.1.4 | PATCH | Ensure inactive password lock is 30 days or less | Apply Inactive setting to existing accounts"
-        ansible.builtin.command: "chage --inactive {{ rhel8cis_inactivelock.lock_days }} {{ item }}"
+        ansible.builtin.shell: "chage --inactive {{ rhel8cis_inactivelock.lock_days }} {{ item }}"
         with_items:
             - "{{ rhel_8_5_6_1_4_user_list.stdout_lines }}"
   when:
@@ -115,7 +115,7 @@
             - not rhel8cis_futurepwchgdate_autofix
 
       - name: "5.6.1.5 | PATCH | Ensure all users last password change date is in the past | Fix accounts with pw change in the future"
-        ansible.builtin.command: passwd --expire {{ item }}
+        ansible.builtin.shell: passwd --expire {{ item }}
         when:
             - rhel8cis_5_6_1_5_user_list | length > 0
             - rhel8cis_futurepwchgdate_autofix

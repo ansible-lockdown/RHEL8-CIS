@@ -17,12 +17,12 @@
 
 - name: Post Audit | Capture audit data if json format
   block:
-      - name: "capture data {{ post_audit_outfile }}"
-        ansible.builtin.command: "cat {{ post_audit_outfile }}"
+      - name: Post Audit |  "capture data {{ post_audit_outfile }}"
+        ansible.builtin.shell: "cat {{ post_audit_outfile }}"
         register: post_audit
         changed_when: false
 
-      - name: Capture post-audit result
+      - name: Post Audit | Capture post-audit result
         ansible.builtin.set_fact:
             post_audit_summary: "{{ post_audit.stdout | from_json | json_query(summary) }}"
         vars:
@@ -33,7 +33,7 @@
 - name: Post Audit | Capture audit data if documentation format
   block:
       - name: "Post Audit | capture data {{ post_audit_outfile }}"
-        ansible.builtin.command: "tail -2 {{ post_audit_outfile }}"
+        ansible.builtin.shell: "tail -2 {{ post_audit_outfile }}"
         register: post_audit
         changed_when: false
 

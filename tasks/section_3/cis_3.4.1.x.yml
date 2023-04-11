@@ -84,7 +84,7 @@
         register: firewalld_zone_set
 
       - name: "3.4.1.5 | AUDIT | Ensure firewalld default zone is set"
-        ansible.builtin.command: firewall-cmd --set-default-zone="{{ rhel8cis_default_zone }}"
+        ansible.builtin.shell: firewall-cmd --set-default-zone="{{ rhel8cis_default_zone }}"
         when:
             - firewalld_zone_set.rc != 0
   when:
