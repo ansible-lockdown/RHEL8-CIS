@@ -1,5 +1,14 @@
 # Changes to rhel8CIS
 
+## 1.5.7
+
+- lint updates
+- command to shell module changes
+- README updates
+- lint standards
+- [#247](https://github.com/ansible-lockdown/RHEL8-CIS/issues/247)
+  - thanks to @boris-stojnev
+
 ## 1.5.6
 
 - updates to yamllint to increase galaxy score - doesnt honour local files or exclusions
