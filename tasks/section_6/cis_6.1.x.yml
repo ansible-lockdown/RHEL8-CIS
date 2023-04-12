@@ -193,12 +193,6 @@
         changed_when: false
         register: rhel_08_6_1_11_perms_results
 
-      - name: "6.1.11 | AUDIT | Ensure no world writable files exist | Alert no world-writable files exist"
-        ansible.builtin.debug:
-            msg: "Good news! We have not found any world-writable files on your system"
-        when:
-            - rhel_08_6_1_11_perms_results.stdout is not defined
-
       - name: "6.1.11 | PATCH | Ensure no world writable files exist | Adjust world-writable files if they exist (Configurable)"
         ansible.builtin.file:
             path: '{{ item }}'
@@ -240,21 +234,25 @@
             label: "{{ item.mount }}"
         when: item['device'].startswith('/dev') and not 'bind' in item['options']
 
+      - name: "6.1.12 | AUDIT | Ensure no unowned files or directories exist | set fact"
+        ansible.builtin.set_fact:
+            rhel_08_6_1_12_unowned_files_found: true
+        loop: "{{ rhel_08_6_1_12_audit.results }}"
+        when: item.stdout | length > 0
+
       - name: "6.1.12 | AUDIT | Ensure no unowned files or directories exist | Displaying any unowned files or directories"
         ansible.builtin.debug:
-            msg: "Manual intervention is required -- missing owner on items in {{ item.item.mount }}: {{ item.stdout_lines | join(', ') }}"
-        with_items: "{{ rhel_08_6_1_12_audit.results }}"
-        register: rhel_08_6_1_12_unowned_files
+            msg: "Warning -- missing owner on items in {{ rhel_08_6_1_12_audit | json_query('results[*].stdout_lines[*]') | flatten }}"
         when:
-            - item.stdout_lines is defined
-            - item.stdout_lines | length > 0
+            - rhel_08_6_1_12_unowned_files_found
 
       - name: "6.1.12 | AUDIT | Ensure no unowned files or directories exist | Warn Count"
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: '6.1.12'
-        when:
-            - not rhel_08_6_1_12_unowned_files.skipped
+        when: rhel_08_6_1_12_unowned_files_found
+  vars:
+      rhel_08_6_1_12_unowned_files_found: false
   when:
       - rhel8cis_rule_6_1_12
   tags:
@@ -279,21 +277,24 @@
             label: "{{ item.mount }}"
         when: item['device'].startswith('/dev') and not 'bind' in item['options']
 
+      - name: "6.1.13 | AUDIT | Ensure no ungrouped files or directories exist | set fact"
+        ansible.builtin.set_fact:
+            rhel_08_6_1_13_ungrouped_files_found: true
+        loop: "{{ rhel_08_6_1_13_audit.results }}"
+        when: item.stdout | length > 0
+
       - name: "6.1.13 | AUDIT | Ensure no ungrouped files or directories exist | Displaying all ungrouped files or directories"
         ansible.builtin.debug:
-            msg: "Manual intervention is required -- missing group on items in {{ item.item.mount }}: {{ item.stdout_lines | join(', ') }}"
-        with_items: "{{ rhel_08_6_1_13_audit.results }}"
-        register: rhel_08_6_1_13_ungrouped_files
-        when:
-            - item.stdout_lines is defined
-            - item.stdout_lines | length > 0
+            msg: "Warning!! -- Missing group on items in {{ rhel_08_6_1_13_audit | json_query('results[*].stdout_lines[*]') | flatten }}"
+        when: rhel_08_6_1_13_ungrouped_files_found
 
       - name: "6.1.13 | AUDIT | Ensure no ungrouped files or directories exist | Warn Count"
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: '6.1.13'
-        when: not rhel_08_6_1_13_ungrouped_files.skipped
-
+        when: rhel_08_6_1_13_ungrouped_files_found
+  vars:
+      rhel_08_6_1_13_ungrouped_files_found: false
   when:
       - rhel8cis_rule_6_1_13
   tags:
@@ -311,24 +312,29 @@
         ansible.builtin.shell: df {{ item.mount }} -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -4000
         failed_when: false
         changed_when: false
-        register: rhel_08_6_1_14_perms_results
+        register: rhel_08_6_1_14_suid_perms
         with_items: "{{ ansible_mounts }}"
         loop_control:
             label: "{{ item.mount }}"
 
+      - name: "6.1.14 | AUDIT | Audit SUID executables | set fact SUID executables"
+        ansible.builtin.set_fact:
+            rhel8cis_6_1_14_suid_found: true
+        loop: "{{ rhel_08_6_1_14_suid_perms.results }}"
+        when: item.stdout | length > 0
+
       - name: "6.1.14 | AUDIT | Audit SUID executables |  Alert SUID executables exist"
         ansible.builtin.debug:
-            msg: "Manual intervention is required -- SUID set on items in {{ item.item.mount }}: {{ item.stout_lines | join(', ') }}"
-        with_items: "{{ rhel_08_6_1_14_perms_results.stdout_lines }}"
-        when:
-            - rhel_08_6_1_14_perms_results.stdout is defined
+            msg: "Warning!! -- SUID set on items in {{ rhel_08_6_1_14_suid_perms | json_query('results[*].stdout_lines[*]') | flatten }}"
+        when: rhel8cis_6_1_14_suid_found
 
       - name: "6.1.14 | AUDIT | Audit SUID executables | Warn Count"
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: '6.1.14'
-        when:
-            - rhel_08_6_1_14_perms_results.stdout is defined
+        when: rhel8cis_6_1_14_suid_found
+  vars:
+      rhel8cis_6_1_14_suid_found: false
   when:
       - rhel8cis_rule_6_1_14
   tags:
@@ -345,24 +351,29 @@
         ansible.builtin.shell: df {{ item.mount }} -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -2000
         failed_when: false
         changed_when: false
-        register: rhel_08_6_1_15_perms_results
-        with_items: "{{ ansible_mounts }}"
+        register: rhel_08_6_1_15_sgid_perms
+        loop: "{{ ansible_mounts }}"
         loop_control:
             label: "{{ item.mount }}"
 
+      - name: "6.1.15 | AUDIT | Audit SGID executables | Set fact SGID executables"
+        ansible.builtin.set_fact:
+            rhel8cis_6_1_15_sgid_found: true
+        loop: "{{ rhel_08_6_1_15_sgid_perms.results }}"
+        when: item.stdout | length > 0
+
       - name: "6.1.15 | AUDIT | Audit SGID executables |  Alert SGID executables exist"
         ansible.builtin.debug:
-            msg: "Manual intervention is required -- SGID set on items in {{ item.item.mount }}: {{ item.stout_lines | join(', ') }}"
-        with_items: "{{ rhel_08_6_1_15_perms_results.stdout_lines }}"
-        when:
-            - rhel_08_6_1_15_perms_results.stdout is defined
+            msg: "Warning!! -- SGID set on items in {{ rhel_08_6_1_15_sgid_perms | json_query('results[*].stdout_lines[*]') | flatten }}"
+        when: rhel8cis_6_1_15_sgid_found
 
       - name: "6.1.15 | AUDIT | Audit SGID executables | Warn Count"
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: '6.1.15'
-        when:
-            - rhel_08_6_1_15_perms_results.stdout is defined
+        when: rhel8cis_6_1_15_sgid_found
+  vars:
+      rhel8cis_6_1_15_guid_found: false
   when:
       - rhel8cis_rule_6_1_15
   tags:
