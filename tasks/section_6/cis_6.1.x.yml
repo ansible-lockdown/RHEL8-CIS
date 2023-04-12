@@ -238,8 +238,7 @@
         ansible.builtin.set_fact:
             rhel_08_6_1_12_unowned_files_found: true
         loop: "{{ rhel_08_6_1_12_audit.results }}"
-        when:
-            - item.stdout | length > 0
+        when: item.stdout | length > 0
 
       - name: "6.1.12 | AUDIT | Ensure no unowned files or directories exist | Displaying any unowned files or directories"
         ansible.builtin.debug:
@@ -251,8 +250,7 @@
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: '6.1.12'
-        when:
-            - rhel_08_6_1_12_unowned_files_found
+        when: rhel_08_6_1_12_unowned_files_found
   vars:
       rhel_08_6_1_12_unowned_files_found: false
   when:
@@ -283,14 +281,12 @@
         ansible.builtin.set_fact:
             rhel_08_6_1_13_ungrouped_files_found: true
         loop: "{{ rhel_08_6_1_13_audit.results }}"
-        when:
-            - item.stdout | length > 0
+        when: item.stdout | length > 0
 
       - name: "6.1.13 | AUDIT | Ensure no ungrouped files or directories exist | Displaying all ungrouped files or directories"
         ansible.builtin.debug:
             msg: "Warning!! -- Missing group on items in {{ rhel_08_6_1_13_audit | json_query('results[*].stdout_lines[*]') | flatten }}"
-        when:
-            - rhel_08_6_1_13_ungrouped_files_found
+        when: rhel_08_6_1_13_ungrouped_files_found
 
       - name: "6.1.13 | AUDIT | Ensure no ungrouped files or directories exist | Warn Count"
         ansible.builtin.import_tasks: warning_facts.yml
@@ -325,21 +321,18 @@
         ansible.builtin.set_fact:
             rhel8cis_6_1_14_suid_found: true
         loop: "{{ rhel_08_6_1_14_suid_perms.results }}"
-        when:
-            - item.stdout | length > 0
+        when: item.stdout | length > 0
 
       - name: "6.1.14 | AUDIT | Audit SUID executables |  Alert SUID executables exist"
         ansible.builtin.debug:
             msg: "Warning!! -- SUID set on items in {{ rhel_08_6_1_14_suid_perms | json_query('results[*].stdout_lines[*]') | flatten }}"
-        when:
-            - rhel8cis_6_1_14_suid_found
+        when: rhel8cis_6_1_14_suid_found
 
       - name: "6.1.14 | AUDIT | Audit SUID executables | Warn Count"
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: '6.1.14'
-        when:
-            - rhel8cis_6_1_14_suid_found
+        when: rhel8cis_6_1_14_suid_found
   vars:
       rhel8cis_6_1_14_suid_found: false
   when:
@@ -367,21 +360,18 @@
         ansible.builtin.set_fact:
             rhel8cis_6_1_15_sgid_found: true
         loop: "{{ rhel_08_6_1_15_sgid_perms.results }}"
-        when:
-            - item.stdout | length > 0
+        when: item.stdout | length > 0
 
       - name: "6.1.15 | AUDIT | Audit SGID executables |  Alert SGID executables exist"
         ansible.builtin.debug:
             msg: "Warning!! -- SGID set on items in {{ rhel_08_6_1_15_sgid_perms | json_query('results[*].stdout_lines[*]') | flatten }}"
-        when:
-            - rhel8cis_6_1_15_sgid_found
+        when: rhel8cis_6_1_15_sgid_found
 
       - name: "6.1.15 | AUDIT | Audit SGID executables | Warn Count"
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: '6.1.15'
-        when:
-            - rhel8cis_6_1_15_sgid_found
+        when: rhel8cis_6_1_15_sgid_found
   vars:
       rhel8cis_6_1_15_guid_found: false
   when:
