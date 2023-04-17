@@ -106,8 +106,11 @@
 - name: "4.2.2.3 | PATCH | Ensure journald is configured to compress large log files"
   ansible.builtin.lineinfile:
       path: /etc/systemd/journald.conf
-      regexp: "^#Compress=|^Compress="
+      regexp: 'Compress='
       line: Compress=yes
+      state: present
+      insertafter: ^#Compress
+      validate: /usr/bin/bash -n %s
   when:
       - rhel8cis_rule_4_2_2_3
   tags:
