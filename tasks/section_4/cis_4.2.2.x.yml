@@ -124,8 +124,11 @@
 - name: "4.2.2.4 | PATCH | Ensure journald is configured to write logfiles to persistent disk"
   ansible.builtin.lineinfile:
       path: /etc/systemd/journald.conf
-      regexp: "^#Storage=|^Storage="
+      regexp: 'Storage='
       line: Storage=persistent
+      state: present
+      insertafter: ^#Storage
+      validate: /usr/bin/bash -n %s
   when:
       - rhel8cis_rule_4_2_2_4
   tags:
