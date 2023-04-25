@@ -78,26 +78,6 @@
       - container_discovery
       - always
 
-- name: "check sugroup exists if used"
-  block:
-      - name: "Check su group exists if defined"
-        ansible.builtin.shell: grep -w "{{ rhel8cis_sugroup }}" /etc/group
-        register: sugroup_exists
-        changed_when: false
-        failed_when: sugroup_exists.rc >= 2
-        tags:
-            - skip_ansible_lint
-
-      - name: Check sugroup if defined exists before continuing
-        ansible.builtin.assert:
-            that: sugroup_exists.rc == 0
-            msg: "The variable rhel8cis_sugroup is defined but does not exist please rectify"
-  when:
-      - rhel8cis_sugroup is defined
-      - rhel8cis_rule_5_7
-  tags:
-      - rule_5.7
-
 - name: Include preliminary steps
   ansible.builtin.import_tasks: prelim.yml
   tags:
