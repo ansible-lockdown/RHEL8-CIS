@@ -1,5 +1,12 @@
 # Changes to rhel8CIS
 
+## 1.5.8
+
+- [#278](https://github.com/ansible-lockdown/RHEL8-CIS/issues/278) thanks to @crayeth
+  - Added new options to allow ipv6 rules if required although ipv6 disabled
+  - ```rhel8cis_ipv6_sysctl_force```  
+  - default: true
+
 ## 1.5.7
 
 - lint updates

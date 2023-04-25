@@ -430,6 +430,7 @@ rhel8cis_is_router: false
 
 # IPv6 required
 rhel8cis_ipv6_required: true
+rhel8cis_ipv6_sysctl_force: true
 
 # AIDE
 rhel8cis_config_aide: true
