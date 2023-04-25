@@ -602,7 +602,7 @@ rhel8cis_sudolog_location: "/var/log/sudo.log"
 rhel8cis_sudo_timestamp_timeout: 15
 
 # 5.3.7
-# rhel8cis_sugroup: sugroup  # change accordingly wheel is default
+rhel8cis_sugroup: sugroup
 
 # wheel users list
 rhel8cis_sugroup_users: "root"
