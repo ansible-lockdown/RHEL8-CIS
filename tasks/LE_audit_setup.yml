@@ -1,6 +1,6 @@
 ---
 
-- name: Download audit binary
+- name: Audit Setup | Download audit binary
   ansible.builtin.get_url:
       url: "{{ goss_url }}"
       dest: "{{ audit_bin }}"
@@ -11,7 +11,7 @@
   when:
       - get_goss_file == 'download'
 
-- name: copy audit binary
+- name: Audit Setup | Copy audit binary
   ansible.builtin.copy:
       src: "{{ copy_goss_from_path }}"
       dest: "{{ audit_bin }}"
