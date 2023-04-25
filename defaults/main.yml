@@ -615,6 +615,9 @@ rhel8cis_authselect:
     default_file_to_copy: "sssd --symlink-meta"
     options: with-sudo with-faillock without-nullok
 
+# This needs to be set to ACCEPT manual changes to the pamd files
+rhel8cis_5_4_2_risks: NEVER
+
 # 5.6.1.1
 # 5.6.1.2
 # 5.6.1.3
