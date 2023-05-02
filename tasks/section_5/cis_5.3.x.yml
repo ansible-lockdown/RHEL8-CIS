@@ -114,16 +114,24 @@
 
 - name: "5.3.7 | PATCH | Ensure access to the su command is restricted"
   block:
+      - name: "5.3.7 | PATCH | Ensure access to the su command is restricted | Ensure sugroup exists"
+        ansible.builtin.group:
+            name: "{{ rhel8cis_sugroup }}"
+            state: present
+        register: rhel8cis_5_3_7_sugroup
+
+      - name: "5.3.7 | PATCH | Ensure access to the su command is restricted | remove users from group"
+        ansible.builtin.lineinfile:
+            path: /etc/group
+            regexp: '^{{ rhel8cis_sugroup }}(:.:.*:).*$'
+            line: '{{ rhel8cis_sugroup }}\g<1>'
+            backrefs: true
+
       - name: "5.3.7 | PATCH | Ensure access to the su command is restricted | Setting pam_wheel to use_uid"
         ansible.builtin.lineinfile:
             path: /etc/pam.d/su
             regexp: '^(#)?auth\s+required\s+pam_wheel\.so'
-            line: 'auth            required        pam_wheel.so use_uid {% if rhel8cis_sugroup is defined %}group={{ rhel8cis_sugroup }}{% endif %}'
-
-      - name: "5.3.7 | PATCH | Ensure access to the su command is restricted | wheel group contains root"
-        ansible.builtin.user:
-            name: "{{ rhel8cis_sugroup_users }}"
-            groups: "{{ rhel8cis_sugroup | default('wheel') }}"
+            line: 'auth           required        pam_wheel.so use_uid group={{ rhel8cis_sugroup }}'
   when:
       - rhel8cis_rule_5_3_7
   tags:

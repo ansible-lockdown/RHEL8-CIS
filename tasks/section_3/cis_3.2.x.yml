@@ -19,7 +19,7 @@
             reload: true
             ignoreerrors: true
         notify: sysctl flush ipv6 route table
-        when: rhel8cis_ipv6_required
+        when: rhel8cis_ipv6_required or rhel8cis_ipv6_sysctl_force
   when:
       - not rhel8cis_is_router
       - rhel8cis_rule_3_2_1

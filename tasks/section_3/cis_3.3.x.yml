@@ -26,7 +26,7 @@
         with_items:
             - { name: net.ipv6.conf.all.accept_source_route, value: 0}
             - { name: net.ipv6.conf.default.accept_source_route, value: 0 }
-        when: rhel8cis_ipv6_required
+        when: rhel8cis_ipv6_required or rhel8cis_ipv6_sysctl_force
   when:
       - rhel8cis_rule_3_3_1
   tags:
@@ -64,7 +64,7 @@
         with_items:
             - { name: net.ipv6.conf.all.accept_redirects, value: 0 }
             - { name: net.ipv6.conf.default.accept_redirects, value: 0 }
-        when: rhel8cis_ipv6_required
+        when: rhel8cis_ipv6_required or rhel8cis_ipv6_sysctl_force
   when:
       - rhel8cis_rule_3_3_2
   tags:
@@ -208,7 +208,7 @@
       - { name: net.ipv6.conf.all.accept_ra, value: 0 }
       - { name: net.ipv6.conf.default.accept_ra, value: 0 }
   when:
-      - rhel8cis_ipv6_required
+      - rhel8cis_ipv6_required or rhel8cis_ipv6_sysctl_force
       - rhel8cis_rule_3_3_9
   tags:
       - level1-server

@@ -1,5 +1,24 @@
 # Changes to rhel8CIS
 
+## 1.5.8
+
+thanks to @crayeth
+
+- [#278](https://github.com/ansible-lockdown/RHEL8-CIS/issues/278) 
+  - Added new options to allow ipv6 rules if required although ipv6 disabled
+  - ```rhel8cis_ipv6_sysctl_force```  
+  - default: true
+
+thanks to @bbaassssiiee
+
+- [#279](https://github.com/ansible-lockdown/RHEL8-CIS/issues/279)
+- [#280](https://github.com/ansible-lockdown/RHEL8-CIS/issues/280)
+- [#281](https://github.com/ansible-lockdown/RHEL8-CIS/issues/281)
+- [#284](https://github.com/ansible-lockdown/RHEL8-CIS/issues/284)
+  - new option to allow manual changes to pamd files without using authconfig
+  - ```rhel8cis_5_4_2_risks```  need sto be set to ACCEPT to run
+  - default: NEVER
+
 ## 1.5.7
 
 - lint updates
