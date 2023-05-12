@@ -1,10 +1,28 @@
 # Changes to rhel8CIS
 
+## 1.5.9
+
+thanks to @bbaassssiiee
+
+- Option to minimise installed kernels further
+- [#287](https://github.com/ansible-lockdown/RHEL8-CIS/issues/287)
+  - new variables as part of rule_1.9
+
+  ```sh
+    rhel8cis_apply_installed_kernel_limit: false
+    rhel8cis_installed_kernel_limit: 2
+    ```
+
+thanks to @Thulium-Drake
+
+- [#286](https://github.com/ansible-lockdown/RHEL8-CIS/issues/286)
+  - revert back to shell due to system impact
+
 ## 1.5.8
 
 thanks to @crayeth
 
-- [#278](https://github.com/ansible-lockdown/RHEL8-CIS/issues/278) 
+- [#278](https://github.com/ansible-lockdown/RHEL8-CIS/issues/278)
   - Added new options to allow ipv6 rules if required although ipv6 disabled
   - ```rhel8cis_ipv6_sysctl_force```  
   - default: true
