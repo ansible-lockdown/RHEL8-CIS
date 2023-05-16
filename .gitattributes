@@ -3,6 +3,7 @@
 * text=auto
 
 # https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings
+# Ensure to read artcile prior to adding
 # Scripts should have Unix endings
 *.py text eol=lf
 *.sh text eol=lf
