@@ -9,6 +9,7 @@
             state: present
             reload: true
             ignoreerrors: true
+            sysctl_file: "{{ rhel8cis_sysctl_file }}"
         notify: sysctl flush ipv4 route table
 
       - name: "3.2.1 | PATCH | Ensure IP forwarding is disabled | Disable IPv6 forwarding"
@@ -18,6 +19,7 @@
             state: present
             reload: true
             ignoreerrors: true
+            sysctl_file: "{{ rhel8cis_sysctl_file }}"
         notify: sysctl flush ipv6 route table
         when: rhel8cis_ipv6_required or rhel8cis_ipv6_sysctl_force
   when:
@@ -39,6 +41,7 @@
       state: present
       reload: true
       ignoreerrors: true
+      sysctl_file: "{{ rhel8cis_sysctl_file }}"
   notify: sysctl flush ipv4 route table
   with_items:
       - { name: net.ipv4.conf.all.send_redirects, value: 0 }

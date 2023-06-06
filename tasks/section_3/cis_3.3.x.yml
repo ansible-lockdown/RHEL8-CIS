@@ -10,6 +10,7 @@
             state: present
             reload: true
             ignoreerrors: true
+            sysctl_file: "{{ rhel8cis_sysctl_file }}"
         notify: sysctl flush ipv4 route table
         with_items:
             - { name: net.ipv4.conf.all.accept_source_route, value: 0 }
@@ -22,6 +23,7 @@
             sysctl_set: true
             reload: true
             ignoreerrors: true
+            sysctl_file: "{{ rhel8cis_sysctl_file }}"
         notify: sysctl flush ipv6 route table
         with_items:
             - { name: net.ipv6.conf.all.accept_source_route, value: 0}
@@ -47,6 +49,7 @@
             state: present
             reload: true
             ignoreerrors: true
+            sysctl_file: "{{ rhel8cis_sysctl_file }}"
         notify: sysctl flush ipv4 route table
         with_items:
             - { name: net.ipv4.conf.all.accept_redirects, value: 0 }
@@ -60,6 +63,7 @@
             state: present
             reload: true
             ignoreerrors: true
+            sysctl_file: "{{ rhel8cis_sysctl_file }}"
         notify: sysctl flush ipv6 route table
         with_items:
             - { name: net.ipv6.conf.all.accept_redirects, value: 0 }
@@ -83,6 +87,7 @@
       state: present
       reload: true
       ignoreerrors: true
+      sysctl_file: "{{ rhel8cis_sysctl_file }}"
   notify: sysctl flush ipv4 route table
   with_items:
       - { name: net.ipv4.conf.all.secure_redirects, value: 0 }
@@ -105,6 +110,7 @@
       state: present
       reload: true
       ignoreerrors: true
+      sysctl_file: "{{ rhel8cis_sysctl_file }}"
   notify: sysctl flush ipv4 route table
   with_items:
       - { name: net.ipv4.conf.all.log_martians, value: 1 }
@@ -126,6 +132,7 @@
       state: present
       reload: true
       ignoreerrors: true
+      sysctl_file: "{{ rhel8cis_sysctl_file }}"
   notify: sysctl flush ipv4 route table
   when:
       - rhel8cis_rule_3_3_5
@@ -142,8 +149,10 @@
       name: net.ipv4.icmp_ignore_bogus_error_responses
       value: '1'
       state: present
+      sysctl_set: true
       reload: true
       ignoreerrors: true
+      sysctl_file: "{{ rhel8cis_sysctl_file }}"
   notify: sysctl flush ipv4 route table
   when:
       - rhel8cis_rule_3_3_6
@@ -163,6 +172,7 @@
       state: present
       reload: true
       ignoreerrors: true
+      sysctl_file: "{{ rhel8cis_sysctl_file }}"
   loop:
       - net.ipv4.conf.all.rp_filter
       - net.ipv4.conf.default.rp_filter
@@ -182,8 +192,10 @@
       name: net.ipv4.tcp_syncookies
       value: '1'
       state: present
+      sysctl_set: true
       reload: true
       ignoreerrors: true
+      sysctl_file: "{{ rhel8cis_sysctl_file }}"
   notify: sysctl flush ipv4 route table
   when:
       - rhel8cis_rule_3_3_8
@@ -203,6 +215,7 @@
       state: present
       reload: true
       ignoreerrors: true
+      sysctl_file: "{{ rhel8cis_sysctl_file }}"
   notify: sysctl flush ipv6 route table
   with_items:
       - { name: net.ipv6.conf.all.accept_ra, value: 0 }

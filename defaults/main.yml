@@ -474,6 +474,10 @@ rhel8cis_chrony_server_options: "minpoll 8"
 rhel8cis_ntp_server_options: "iburst"
 
 ## Section3 vars
+
+# default location for the sysctl overrides.
+rhel8cis_sysctl_file: /etc/sysctl.d/99_cis.conf
+
 # 3.4.2 | PATCH | Ensure /etc/hosts.allow is configured
 rhel8cis_host_allow:
     - "10.0.0.0/255.0.0.0"
