@@ -1,13 +1,25 @@
 ---
 
 - name: "1.10 | PATCH | Ensure system-wide crypto policy is not legacy"
-  ansible.builtin.shell: |
-      update-crypto-policies --set "{{ rhel8cis_crypto_policy }}"
-      update-crypto-policies
-  notify: change_requires_reboot
+  block:
+      - name: "1.10 | PATCH | Ensure system-wide crypto policy is not legacy | set_fact"
+        ansible.builtin.set_fact:
+            rhel8cis_full_crypto_policy: "{{ rhel8cis_crypto_policy }}{% if rhel8cis_crypto_policy_module | length > 0 %}:{{ rhel8cis_crypto_policy_module }}{% endif %}"
+
+      - name: debug
+        ansible.builtin.debug:
+            msg: "{{rhel8cis_full_crypto_policy }}"
+
+      - name: "1.10 | PATCH | Ensure system-wide crypto policy is not legacy"
+        ansible.builtin.shell: |
+            update-crypto-policies --set "{{ rhel8cis_full_crypto_policy }}"
+            update-crypto-policies
+        notify: change_requires_reboot
+        when:
+            - system_wide_crypto_policy.stdout != rhel8cis_full_crypto_policy
   when:
       - rhel8cis_rule_1_10
-      - rhel8cis_crypto_policy|string not in system_wide_crypto_policy['stdout']
+
   tags:
       - level1-server
       - level1-workstation

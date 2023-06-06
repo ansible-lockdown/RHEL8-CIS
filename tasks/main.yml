@@ -23,6 +23,19 @@
 - name: Check crypto-policy input
   ansible.builtin.assert:
       that: rhel8cis_crypto_policy in rhel8cis_allowed_crypto_policies
+  when:
+      - rhel8cis_rule_1_10
+  tags:
+      - rule_1.10
+
+- name: Check crypto-policy module input
+  ansible.builtin.assert:
+      that: rhel8cis_crypto_policy_module in rhel8cis_allowed_crypto_policies_modules
+  when:
+      - rhel8cis_rule_1_10
+      - rhel8cis_crypto_policy_module | length > 0
+  tags:
+      - rule_1.10
 
 - name: Check rhel8cis_bootloader_password_hash variable has been changed
   ansible.builtin.assert:
@@ -44,7 +57,7 @@
         ansible.builtin.include_vars:
             file: "{{ container_vars_file }}"
 
-      - name: output if discovered is a container
+      - name: Output if discovered is a container
         ansible.builtin.debug:
             msg: system has been discovered as a container
         when:
@@ -84,7 +97,7 @@
       - prelim_tasks
       - always
 
-- name: run pre_remediation audit
+- name: Run pre_remediation audit
   ansible.builtin.import_tasks: pre_remediation_audit.yml
   when:
       - run_audit
@@ -102,7 +115,7 @@
   tags:
       - always
 
-- name: capture /etc/password variables
+- name: Capture /etc/password variables
   ansible.builtin.import_tasks: parse_etc_password.yml
   when:
       - rhel8cis_section5 or
@@ -110,28 +123,28 @@
   tags:
       - always
 
-- name: run Section 1 tasks
+- name: Run Section 1 tasks
   ansible.builtin.import_tasks: section_1/main.yml
   when:
       - rhel8cis_section1
   tags:
       - rhel8cis_section1
 
-- name: run Section 2 tasks
+- name: Run Section 2 tasks
   ansible.builtin.import_tasks: section_2/main.yml
   when:
       - rhel8cis_section2
   tags:
       - rhel8cis_section2
 
-- name: run Section 3 tasks
+- name: Run Section 3 tasks
   ansible.builtin.import_tasks: section_3/main.yml
   when:
       - rhel8cis_section3
   tags:
       - rhel8cis_section3
 
-- name: run Section 4 tasks
+- name: Run Section 4 tasks
   ansible.builtin.import_tasks: section_4/main.yml
   when:
       - rhel8cis_section4
@@ -145,14 +158,14 @@
   tags:
       - rhel8cis_section5
 
-- name: run Section 6 tasks
+- name: Run Section 6 tasks
   ansible.builtin.import_tasks: section_6/main.yml
   when:
       - rhel8cis_section6
   tags:
       - rhel8cis_section6
 
-- name: run auditd logic
+- name: Run auditd logic
   ansible.builtin.import_tasks: auditd.yml
   when:
       - update_audit_template
@@ -165,7 +178,7 @@
       - post_tasks
       - always
 
-- name: run post_remediation audit
+- name: Run post_remediation audit
   ansible.builtin.import_tasks: post_remediation_audit.yml
   when:
       - run_audit
