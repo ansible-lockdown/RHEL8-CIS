@@ -82,7 +82,7 @@
         ansible.builtin.assert:
             that: ansible_user_password_set.stdout | length != 0 and ansible_user_password_set.stdout != "!!"
             fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_env.SUDO_USER }} has no password set - It can break access"
-            success_msg: "You a password set for the {{ ansible_env.SUDO_USER }}"
+            success_msg: "You have a password set for the {{ ansible_env.SUDO_USER }} user"
         vars:
             sudo_password_rule: rhel8cis_rule_5_3_4
   when:
