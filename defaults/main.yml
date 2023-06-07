@@ -344,7 +344,7 @@ rhel8cis_rule_6_2_4: true
 rhel8cis_rule_6_2_5: true
 rhel8cis_rule_6_2_6: true
 rhel8cis_rule_6_2_7: true
-rhel8cis_rule_6_2_8: false
+rhel8cis_rule_6_2_8: true
 rhel8cis_rule_6_2_9: true
 rhel8cis_rule_6_2_10: true
 rhel8cis_rule_6_2_11: true
