@@ -1,5 +1,15 @@
 # Changes to rhel8CIS
 
+## 1.5.10
+
+Updates to container discovery and usage within benchmark
+
+- linting
+- aligned ansible version to 2.10.1 +
+- thanks to @bbaassssiiee
+  - [#295](https://github.com/ansible-lockdown/RHEL8-CIS/issues/295) crypto policy option updates
+  - [#296](https://github.com/ansible-lockdown/RHEL8-CIS/issues/296)
+
 ## 1.5.9
 
 thanks to @bbaassssiiee
