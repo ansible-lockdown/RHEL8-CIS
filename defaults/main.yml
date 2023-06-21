@@ -478,12 +478,6 @@ rhel8cis_ntp_server_options: "iburst"
 # default location for the sysctl overrides.
 rhel8cis_sysctl_file: /etc/sysctl.d/99_cis.conf
 
-# 3.4.2 | PATCH | Ensure /etc/hosts.allow is configured
-rhel8cis_host_allow:
-    - "10.0.0.0/255.0.0.0"
-    - "172.16.0.0/255.240.0.0"
-    - "192.168.0.0/255.255.0.0"
-
 # Firewall Service - either firewalld, iptables, or nftables
 rhel8cis_firewall: firewalld
 
