@@ -155,9 +155,14 @@
   changed_when: false
   register: grub_cfg
 
-# - name: debug grub stat
-#   debug:
-#       var: grub_cfg.stat
+- name: "PRELIM | Optional | If IPv6 disable to stop ssh listening"
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: ^AddressFamily
+    line: AddressFamily inet
+  when:
+      - rhel8cis_ipv6_disable_sshd_inet6
+      - not rhel8cis_ipv6_required
 
 - name: "PRELIM | Check for rhnsd service"
   ansible.builtin.shell: "systemctl show rhnsd | grep LoadState | cut -d = -f 2"
