@@ -33,17 +33,7 @@
   vars:
       warn_control_id: Reboot_required
   tags:
-      - grub
-      - level1-server
-      - level1-workstation
-      - level2-server
-      - level2-workstation
-      - rhel8cis_section1
-      - rhel8cis_section2
-      - rhel8cis_section3
-      - rhel8cis_section4
-      - rhel8cis_section5
-      - rhel8cis_section6
+      - always
 
 - name: If Warning count is 0 set fact
   ansible.builtin.set_fact:
