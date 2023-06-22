@@ -55,6 +55,11 @@
       name: sshd
       state: restarted
 
+- name: restart chronyd
+  ansible.builtin.service:
+      name: chronyd
+      state: restarted
+
 - name: restart postfix
   ansible.builtin.service:
       name: postfix

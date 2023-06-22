@@ -8,7 +8,8 @@ thanks to @bbaassssiiee
   - [#298](https://github.com/ansible-lockdown/RHEL8-CIS/issues/298)
 - disable ipv6 options
   - [#299](https://github.com/ansible-lockdown/RHEL8-CIS/issues/299)
-  - disable for sshd - rhel8cis_ipv6_disable_sshd_inet6: false (default) - added to prelim
+  - disable ipv6 for sshd - rhel8cis_ipv6_sshd_disable: false (default) - added to prelim
+  - disable ipv6 for chrony - rhel8cis_ipv6_chrony_disable: false (default) - added to prelim
   - turn off ipv6 for localhost - rhel8cis_ipv6_disable_localhost: false (default) - refer https://access.redhat.com/solutions/8709
 
 ## 1.5.10

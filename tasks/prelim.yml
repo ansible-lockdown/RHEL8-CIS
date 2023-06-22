@@ -157,12 +157,27 @@
 
 - name: "PRELIM | Optional | If IPv6 disable to stop ssh listening"
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: ^AddressFamily
-    line: AddressFamily inet
+      path: /etc/ssh/sshd_config
+      regexp: ^AddressFamily
+      line: AddressFamily inet
+  notify: restart sshd
   when:
-      - rhel8cis_ipv6_disable_sshd_inet6
+      - rhel8cis_ipv6_sshd_disable
       - not rhel8cis_ipv6_required
+  tags: always
+
+- name: "PRELIM | Optional | If IPv6 disable to stop chronyd listening"
+  ansible.builtin.lineinfile:
+      path: /etc/sysconfig/chronyd
+      regexp: ^OPTIONS="(.*)"
+      line: OPTIONS="\1 -4"
+      backrefs: true
+  notify: restart chronyd
+  when:
+      - rhel8cis_ipv6_chrony_disable
+      - not rhel8cis_ipv6_required
+  tags:
+      - always
 
 - name: "PRELIM | Check for rhnsd service"
   ansible.builtin.shell: "systemctl show rhnsd | grep LoadState | cut -d = -f 2"

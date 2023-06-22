@@ -443,11 +443,13 @@ rhel8cis_ipv6_sysctl_force: true
 # By default, we do not disable IPv6 on localhost, as it's important for multiple
 # components.  If you want to disable it anyway, change the following
 # value to true refer https://access.redhat.com/solutions/8709
-# this changes sysctl and /etc/hosts
+# this changes sysctl and /etc/hosts
 # requires reboot
 rhel8cis_ipv6_disable_localhost: false
 # disable ipv6 for sshd
-rhel8cis_ipv6_disable_sshd_inet6: false
+rhel8cis_ipv6_sshd_disable: false
+# disable chrony on ipv6
+rhel8cis_ipv6_chrony_disable: false
 
 # AIDE
 rhel8cis_config_aide: true
