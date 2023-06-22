@@ -7,6 +7,8 @@
           - python3-libselinux
           - python3-rpm
       state: present
+  tags:
+      - always
 
 - name: Gather the package facts before prelim
   ansible.builtin.package_facts:
@@ -20,6 +22,8 @@
   changed_when: false
   check_mode: false
   register: users
+  tags:
+      - always
 
 - name: "PRELIM | Gather interactive user ID min and max"
   block:
@@ -41,23 +45,37 @@
             rhel8uid_interactive_uid_stop: "{{ rhel8cis_max_uid.stdout | string }}"
   when:
       - rhel8uid_info_dynamic
+  tags:
+      - always
 
 - name: "PRELIM | Gather accounts with empty password fields"
   ansible.builtin.shell: "cat /etc/shadow | awk -F: '($2 == \"\" ) {j++;print $1; } END {exit j}'"
   changed_when: false
   check_mode: false
   register: empty_password_accounts
+  when:
+      - rhel8cis_rule_6_2_1
+  tags:
+      - always
 
 - name: "PRELIM | Gather UID 0 accounts other than root"
   ansible.builtin.shell: "cat /etc/passwd | awk -F: '($3 == 0 && $1 != \"root\") {i++;print $1 } END {exit i}'"
   changed_when: false
   check_mode: false
   register: rhel8cis_uid_zero_accounts_except_root
+  when:
+      - rhel8cis_rule_6_2_8
+  tags:
+      - always
 
 - name: "PRELIM | Ensure crypto-policies-scripts package is installed"
   ansible.builtin.package:
       name: crypto-policies-scripts
       state: installed
+  when:
+      - rhel8cis_rule_1_10
+  tags:
+      - always
 
 - name: "PRELIM | Gather system-wide crypto-policy settings"
   block:
@@ -77,6 +95,8 @@
         when: "':' in rhel8cis_system_wide_crypto_policy.stdout"
   when:
       - rhel8cis_rule_1_10
+  tags:
+      - always
 
 - name: "PRELIM | if systemd coredump"
   ansible.builtin.stat:
@@ -84,10 +104,14 @@
   register: systemd_coredump
   when:
       - rhel8cis_rule_1_6_1
+  tags:
+      - always
 
 - name: "PRELIM | Section 1.1 | Create list of mount points"
   ansible.builtin.set_fact:
       mount_names: "{{ ansible_mounts | map(attribute='mount') | list }}"
+  tags:
+      - always
 
 - name: "PRELIM | Install dconf"
   ansible.builtin.package:
@@ -99,17 +123,23 @@
       - rhel8cis_rule_1_8_2 or
         rhel8cis_rule_1_8_3 or
         rhel8cis_rule_1_8_5
+  tags:
+      - always
 
 - name: "PRELIM | Section 4.1 | Configure System Accounting (auditd)"
   ansible.builtin.package:
       name: audit
       state: present
   when: rhel8cis_level_2
+  tags:
+      - always
 
 - name: "PRELIM | Section 5.1 | Configure cron"
   ansible.builtin.package:
       name: cronie
       state: present
+  tags:
+      - always
 
 - name: "PRELIM | Find all sudoers files."
   ansible.builtin.shell: "find /etc/sudoers /etc/sudoers.d/ -type f ! -name '*~' ! -name '*.*'"
@@ -120,6 +150,8 @@
   when:
       - rhel8cis_rule_5_3_4 or
         rhel8cis_rule_5_3_5
+  tags:
+      - always
 
 - name: "PRELIM | Install authconfig"
   ansible.builtin.package:
@@ -130,6 +162,8 @@
       - rhel8cis_rule_5_3_1 or
         rhel8cis_rule_5_3_2 or
         rhel8cis_rule_5_3_3
+  tags:
+      - always
 
 - name: "PRELIM | Set facts based on boot type"
   block:
@@ -148,12 +182,16 @@
         ansible.builtin.set_fact:
             grub2_path: /etc/grub2-efi.cfg
         when: rhel_08_efi_boot.stat.exists
+  tags:
+      - always
 
 - name: "PRELIM | AUDIT | Ensure permissions on bootloader config are configured | Get grub config file stats"
   ansible.builtin.stat:
       path: "{{ grub2_path }}"
   changed_when: false
   register: grub_cfg
+  tags:
+      - always
 
 - name: "PRELIM | Optional | If IPv6 disable to stop ssh listening"
   ansible.builtin.lineinfile:
@@ -164,7 +202,8 @@
   when:
       - rhel8cis_ipv6_sshd_disable
       - not rhel8cis_ipv6_required
-  tags: always
+  tags:
+      - always
 
 - name: "PRELIM | Optional | If IPv6 disable to stop chronyd listening"
   ansible.builtin.lineinfile:
@@ -179,20 +218,10 @@
   tags:
       - always
 
-- name: "PRELIM | Check for rhnsd service"
-  ansible.builtin.shell: "systemctl show rhnsd | grep LoadState | cut -d = -f 2"
-  changed_when: false
-  check_mode: false
-  register: rhnsd_service_status
-  when:
-      - rhel8cis_rule_1_2_2
-  tags:
-      - skip_ansible_lint
-
 # Optional extra keys to extend auditd not part of CIS but can influence a system
 # e.g. admin_space_left: '10%'
 
-- name: PRELIM | Configure other keys for auditd.conf
+- name: PRELIM | Optional | Configure other keys for auditd.conf
   ansible.builtin.lineinfile:
       path: /etc/audit/auditd.conf
       regexp: "^{{ item }}( |=)"
@@ -203,7 +232,4 @@
       - rhel8cis_auditd_extra_conf.keys() | length > 0
       - rhel8cis_level_2
   tags:
-      - level2-server
-      - level2-workstation
-      - patch
-      - auditd
+      - always
