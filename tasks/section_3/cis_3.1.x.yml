@@ -30,10 +30,10 @@
             - rhel8cis_ipv6_disable_localhost
 
       - name: "3.1.1 | PATCH | Verify if IPv6 is enabled on the system | disable localhost /etc/hosts"
-        ansible.posix.lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/hosts
             regexp: '^(::1.*)'
-            line: #\1
+            line: '#\1'
             backrefs: true
         notify: change_requires_reboot
         when:
