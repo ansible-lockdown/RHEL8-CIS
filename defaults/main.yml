@@ -436,7 +436,20 @@ rhel8cis_is_router: false
 
 # IPv6 required
 rhel8cis_ipv6_required: true
+
 rhel8cis_ipv6_sysctl_force: true
+
+##  Optional - Understand the impact of making the following two control to true
+# By default, we do not disable IPv6 on localhost, as it's important for multiple
+# components.  If you want to disable it anyway, change the following
+# value to true refer https://access.redhat.com/solutions/8709
+# this changes sysctl and /etc/hosts
+# requires reboot
+rhel8cis_ipv6_disable_localhost: false
+# disable ipv6 for sshd
+rhel8cis_ipv6_sshd_disable: false
+# disable chrony on ipv6
+rhel8cis_ipv6_chrony_disable: false
 
 # AIDE
 rhel8cis_config_aide: true
@@ -477,12 +490,6 @@ rhel8cis_ntp_server_options: "iburst"
 
 # default location for the sysctl overrides.
 rhel8cis_sysctl_file: /etc/sysctl.d/99_cis.conf
-
-# 3.4.2 | PATCH | Ensure /etc/hosts.allow is configured
-rhel8cis_host_allow:
-    - "10.0.0.0/255.0.0.0"
-    - "172.16.0.0/255.240.0.0"
-    - "192.168.0.0/255.255.0.0"
 
 # Firewall Service - either firewalld, iptables, or nftables
 rhel8cis_firewall: firewalld
