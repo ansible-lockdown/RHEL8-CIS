@@ -125,7 +125,7 @@
         ansible.builtin.shell: nmcli radio all off
         changed_when: false
         failed_when: false
-        when: rhel_08_wifi_enabled is changed
+        when: rhel_08_wifi_enabled is changed  # noqa: no-handler
   when:
       - rhel8cis_rule_3_1_4
   tags:
