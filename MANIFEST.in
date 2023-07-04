@@ -1,0 +1,5 @@
+include site.yml
+include .yamllint
+include .ansible-lint
+recursive-include .github/workflows *
+global-include *.yml *.j2
