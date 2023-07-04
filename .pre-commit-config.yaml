@@ -23,6 +23,14 @@ repos:
     args: [--markdown-linebreak-ext=md]
   - id: end-of-file-fixer
 
+# Scan for passwords
+- repo: https://github.com/Yelp/detect-secrets
+  rev: v1.4.0
+  hooks:
+  - id: detect-secrets
+    args: ['--baseline', '.secrets.baseline']
+    exclude: package.lock.json
+
 - repo: https://github.com/ansible-community/ansible-lint
   rev: v6.17.2
   hooks:

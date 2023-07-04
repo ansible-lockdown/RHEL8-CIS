@@ -2,6 +2,7 @@
 
 include site.yml
 include MANIFEST.in
+include .secrets.baseline
 include *.md *.rst
 include ansible.cfg
 include .ansible-lint .gitattributes .gitignore .yamllint .pre-commit-config.yaml LICENSE
