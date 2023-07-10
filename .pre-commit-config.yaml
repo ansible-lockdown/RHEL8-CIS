@@ -56,8 +56,8 @@ repos:
   - id: yamllint
 
 ## To be moved to main link when PR approved - https://github.com/ansible/ansible-sign.git
-- repo: https://github.com/Thulium-Drake/ansible-sign.git
-  rev: pre_commit_hook
+- repo: https://github.com/ansible-lockdown/ansible-sign.git
+  rev: v0.1.1b
   hooks:
   - id: ansible-sign
     name: Verify Ansible-sign signature
