@@ -11,7 +11,7 @@
       - name: "4.2.3 | AUDIT | Ensure permissions on all logfiles are configured | set_fact"
         ansible.builtin.set_fact:
             rhel8cis_4_2_3_logfiles_flattened: "{{ logfiles.stdout_lines | map(attribute='stdout_lines') | flatten }}"
-        when: 
+        when:
             - rhel8cis_4_2_3_logfiles is defined
             - rhel8cis_4_2_3_logfiles.stdout_lines | length > 0
 
