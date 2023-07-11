@@ -74,7 +74,7 @@
             - { 'regexp': '^account\s+required\s+pam_faillock.so', 'line': 'account     required      pam_faillock.so', 'before':'^account     required      pam_unix.so'}
         when:
             - not rhel8cis_authselect_custom_profile_select
-            - rhel8cis_5_4_2_risks == 'ACCEPT'
+            - rhel8cis_pamd_manual_risks == 'ACCEPT'
             - ansible_distribution_version >= "8.2"
   when:
       - rhel8cis_rule_5_4_2
