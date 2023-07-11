@@ -64,7 +64,6 @@
   block:
       - name: "4.2.1.5 | AUDIT | Ensure logging is configured | rsyslog current config message out"
         ansible.builtin.shell: cat /etc/rsyslog.conf
-        become: true
         changed_when: false
         failed_when: false
         check_mode: false
@@ -79,7 +78,6 @@
       - name: "4.2.1.5 | PATCH | Ensure logging is configured | mail.* log setting"
         ansible.builtin.blockinfile:
             path: /etc/rsyslog.conf
-            state: present
             marker: "# {mark} MAIL LOG SETTINGS (ANSIBLE MANAGED)"
             block: |
               # mail logging additions to meet CIS standards
