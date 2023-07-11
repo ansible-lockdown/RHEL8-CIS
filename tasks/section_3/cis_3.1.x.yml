@@ -2,15 +2,14 @@
 
 # The CIS Control wants IPv6 disabled if not in use.
 # We are using the rhel8cis_ipv6_required to specify if you have IPv6 in use
+
 - name: "3.1.1 | PATCH | Verify if IPv6 is enabled on the system"
   block:
-      - name: "3.1.1 | PATCH | Verify if IPv6 is enabled on the system |disable all except localhost"
+      - name: "3.1.1 | PATCH | Verify if IPv6 is enabled on the system | disable all except localhost"
         ansible.posix.sysctl:
             name: "{{ item }}"
             value: '1'
             sysctl_set: true
-            state: present
-            reload: true
             sysctl_file: "{{ rhel8cis_sysctl_file }}"
         with_items:
             - net.ipv6.conf.all.disable_ipv6
@@ -22,8 +21,6 @@
             name: net.ipv6.conf.lo.disable_ipv6
             value: '1'
             sysctl_set: true
-            state: present
-            reload: true
             sysctl_file: "{{ rhel8cis_sysctl_file }}"
         notify: change_requires_reboot
         when:
