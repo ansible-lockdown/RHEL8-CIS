@@ -10,10 +10,10 @@
 
       - name: "4.2.3 | AUDIT | Ensure permissions on all logfiles are configured | set_fact"
         ansible.builtin.set_fact:
-            rhel8cis_4_2_3_logfiles_flattened: "{{ logfiles.stdout_lines | map(attribute='stdout_lines') | flatten }}"
+            rhel8cis_4_2_3_logfiles_flattened: "{{ rhel8cis_4_2_3_logfiles | json_query('stdout_lines[*]') | flatten }}"
         when:
-            - rhel8cis_4_2_3_logfiles is defined
             - rhel8cis_4_2_3_logfiles.stdout_lines | length > 0
+            - rhel8cis_4_2_3_logfiles is defined
 
       - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | change permissions"
         ansible.builtin.file:
@@ -26,7 +26,7 @@
             - item != "/var/log/utmp"
             - item != "/var/log/wtmp"
   when:
-      - ubtu20cis_rule_4_2_3
+      - rhel8cis_rule_4_2_3
   tags:
       - level1-server
       - level1-workstation
