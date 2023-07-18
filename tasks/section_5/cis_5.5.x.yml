@@ -14,7 +14,6 @@
       - name: "5.5.1 | PATCH | Ensure password creation requirements are configured | Set system-auth and password-auth retry settings"
         ansible.builtin.lineinfile:
             path: "{{ item }}"
-            state: present
             regexp: '^password\s*requisite\s*pam_pwquality.so'
             line: "password    requisite                                    pam_pwquality.so try_first_pass local_users_only enforce_for_root retry=3"
             insertbefore: '^#?password ?'

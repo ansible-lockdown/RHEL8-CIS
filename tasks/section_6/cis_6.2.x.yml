@@ -195,12 +195,12 @@
                 - "The following paths have a dot in the path: {{ rhel8cis_6_2_7_dot_in_path.stdout_lines }}"
 
       - name: "6.2.7 | PATCH | Ensure root PATH Integrity | Determine rights and owner"
-        ansible.builtin.file: >
-          path='{{ item }}'
-          follow=yes
-          state=directory
-          owner=root
-          mode='o-w,g-w'
+        ansible.builtin.file:
+            path: '{{ item }}'
+            follow: true
+            state: directory
+            owner: root
+            mode: 'o-w,g-w'
         with_items: "{{ rhel8cis_6_2_7_dot_in_path.stdout_lines }}"
   when:
       - rhel8cis_rule_6_2_7

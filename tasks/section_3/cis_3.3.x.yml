@@ -7,8 +7,6 @@
             name: '{{ item.name }}'
             value: '{{ item.value }}'
             sysctl_set: true
-            state: present
-            reload: true
             ignoreerrors: true
             sysctl_file: "{{ rhel8cis_sysctl_file }}"
         notify: sysctl flush ipv4 route table
@@ -21,7 +19,6 @@
             name: '{{ item.name }}'
             value: '{{ item.value }}'
             sysctl_set: true
-            reload: true
             ignoreerrors: true
             sysctl_file: "{{ rhel8cis_sysctl_file }}"
         notify: sysctl flush ipv6 route table
@@ -46,8 +43,6 @@
             name: '{{ item.name }}'
             value: '{{ item.value }}'
             sysctl_set: true
-            state: present
-            reload: true
             ignoreerrors: true
             sysctl_file: "{{ rhel8cis_sysctl_file }}"
         notify: sysctl flush ipv4 route table
@@ -60,8 +55,6 @@
             name: '{{ item.name }}'
             value: '{{ item.value }}'
             sysctl_set: true
-            state: present
-            reload: true
             ignoreerrors: true
             sysctl_file: "{{ rhel8cis_sysctl_file }}"
         notify: sysctl flush ipv6 route table
@@ -84,8 +77,6 @@
       name: '{{ item.name }}'
       value: '{{ item.value }}'
       sysctl_set: true
-      state: present
-      reload: true
       ignoreerrors: true
       sysctl_file: "{{ rhel8cis_sysctl_file }}"
   notify: sysctl flush ipv4 route table
@@ -107,8 +98,6 @@
       name: '{{ item.name }}'
       value: '{{ item.value }}'
       sysctl_set: true
-      state: present
-      reload: true
       ignoreerrors: true
       sysctl_file: "{{ rhel8cis_sysctl_file }}"
   notify: sysctl flush ipv4 route table
@@ -129,8 +118,6 @@
   ansible.posix.sysctl:
       name: net.ipv4.icmp_echo_ignore_broadcasts
       value: '1'
-      state: present
-      reload: true
       ignoreerrors: true
       sysctl_file: "{{ rhel8cis_sysctl_file }}"
   notify: sysctl flush ipv4 route table
@@ -149,8 +136,6 @@
       name: net.ipv4.icmp_ignore_bogus_error_responses
       value: '1'
       state: present
-      sysctl_set: true
-      reload: true
       ignoreerrors: true
       sysctl_file: "{{ rhel8cis_sysctl_file }}"
   notify: sysctl flush ipv4 route table
@@ -169,8 +154,6 @@
       name: "{{ item }}"
       value: '1'
       sysctl_set: true
-      state: present
-      reload: true
       ignoreerrors: true
       sysctl_file: "{{ rhel8cis_sysctl_file }}"
   loop:
@@ -191,9 +174,7 @@
   ansible.posix.sysctl:
       name: net.ipv4.tcp_syncookies
       value: '1'
-      state: present
       sysctl_set: true
-      reload: true
       ignoreerrors: true
       sysctl_file: "{{ rhel8cis_sysctl_file }}"
   notify: sysctl flush ipv4 route table
@@ -212,8 +193,6 @@
       name: '{{ item.name }}'
       value: '{{ item.value }}'
       sysctl_set: true
-      state: present
-      reload: true
       ignoreerrors: true
       sysctl_file: "{{ rhel8cis_sysctl_file }}"
   notify: sysctl flush ipv6 route table
