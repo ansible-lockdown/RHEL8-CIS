@@ -3,21 +3,21 @@
 - name: "3.4.3.2.1 | PATCH | Ensure iptables loopback traffic is configured"
   block:
       - name: "3.4.3.2.1 | PATCH | Ensure iptables loopback traffic is configured | INPUT Loopback ACCEPT"
-        iptables:
+        ansible.builtin.iptables:
             action: append
             chain: INPUT
             in_interface: lo
             jump: ACCEPT
 
       - name: "3.4.3.2.1 | PATCH | Ensure iptables loopback traffic is configured | OUTPUT Loopback ACCEPT"
-        iptables:
+        ansible.builtin.iptables:
             action: append
             chain: OUTPUT
             out_interface: lo
             jump: ACCEPT
 
       - name: "3.4.3.2.1 | PATCH | Ensure iptables loopback traffic is configured | INPUT Loopback 127.0.0.0/8"
-        iptables:
+        ansible.builtin.iptables:
             action: append
             chain: INPUT
             source: 127.0.0.0/8
@@ -34,7 +34,7 @@
       - rule_3.4.3.2.1
 
 - name: "3.4.3.2.2 | PATCH | Ensure iptables outbound and established connections are configured"
-  iptables:
+  ansible.builtin.iptables:
       action: append
       chain: '{{ item.chain }}'
       protocol: '{{ item.protocol }}'
@@ -62,19 +62,19 @@
 - name: "3.4.3.2.3 | PATCH | Ensure iptables rules exist for all open ports"
   block:
       - name: "3.4.3.2.3 | AUDIT | Ensure iptables rules exist for all open ports | Get list of TCP open ports"
-        shell: netstat -ant |grep "tcp.*LISTEN" | awk '{ print $4 }'| sed 's/.*://'
+        ansible.builtin.shell: netstat -ant |grep "tcp.*LISTEN" | awk '{ print $4 }'| sed 's/.*://'
         changed_when: false
         failed_when: false
         register: rhel8cis_3_4_3_2_3_otcp
 
       - name: "3.4.3.2.3 | AUDIT | Ensure iptables rules exist for all open ports | Get the list of udp open ports"
-        shell: netstat -ant |grep "udp.*LISTEN" | awk '{ print $4 }'| sed 's/.*://'
+        ansible.builtin.shell: netstat -ant |grep "udp.*LISTEN" | awk '{ print $4 }'| sed 's/.*://'
         changed_when: false
         failed_when: false
         register: rhel8cis_3_4_3_2_3_oudp
 
       - name: "3.4.3.2.3 | PATCH | Ensure iptables rules exist for all open ports | Adjust open tcp ports"
-        iptables:
+        ansible.builtin.iptables:
             action: append
             chain: INPUT
             protocol: tcp
@@ -87,7 +87,7 @@
         when: rhel8cis_3_4_3_2_3_otcp.stdout is defined
 
       - name: "3.4.3.2.3 | PATCH | Ensure iptables rules exist for all open ports | Adjust open udp ports"
-        iptables:
+        ansible.builtin.iptables:
             action: append
             chain: INPUT
             protocol: udp
@@ -112,14 +112,14 @@
 - name: "3.4.3.2.4 | PATCH | Ensure iptables default deny firewall policy"
   block:
       - name: "3.4.3.2.4 | PATCH |  Ensure iptables default deny firewall policy | Configure ssh to be allowed"
-        iptables:
+        ansible.builtin.iptables:
             chain: INPUT
             protocol: tcp
             destination_port: "22"
             jump: ACCEPT
 
       - name: "3.4.3.2.4 | PATCH | Ensure iptables default deny firewall policy | Set drop items"
-        iptables:
+        ansible.builtin.iptables:
             policy: DROP
             chain: "{{ item }}"
         with_items:
@@ -138,7 +138,7 @@
       - rule_3.4.3.2.4
 
 - name: "3.4.3.2.5 | PATCH | Ensure iptables rules are saved"
-  iptables_state:
+  community.general.iptables_state:
       state: saved
       path: /etc/sysconfig/iptables
   when:
@@ -153,7 +153,7 @@
       - rule_3.4.3.2.5
 
 - name: "3.4.3.2.6 | PATCH | Ensure iptables service is enabled and active"
-  service:
+  ansible.builtin.service:
       name: iptables
       enabled: true
       state: started

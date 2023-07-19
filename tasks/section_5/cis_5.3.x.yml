@@ -1,7 +1,7 @@
 ---
 
 - name: "5.3.1 | PATCH | Ensure sudo is installed"
-  package:
+  ansible.builtin.package:
       name: sudo
       state: present
   when:
@@ -15,7 +15,7 @@
       - rule_5.3.1
 
 - name: "5.3.2 | PATCH | Ensure sudo commands use pty"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/sudoers
       line: "Defaults    use_pty"
   when:
@@ -29,7 +29,7 @@
       - rule_5.3.2
 
 - name: "5.3.3 | PATCH | Ensure sudo log file exists"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/sudoers
       regexp: '^Defaults\s+logfile='
       line: 'Defaults logfile={{ rhel8cis_sudolog_location }}'
@@ -44,7 +44,7 @@
       - rule_5.3.3
 
 - name: "5.3.4 | PATCH | Ensure users must provide password for escalation"
-  replace:
+  ansible.builtin.replace:
       path: "{{ item }}"
       regexp: '^([^#|{% if system_is_ec2 %}ec2-user{% endif %}].*)NOPASSWD(.*)'
       replace: '\1PASSWD\2'
@@ -61,7 +61,7 @@
       - rule_5.3.4
 
 - name: "5.3.5 | PATCH | Ensure re-authentication for privilege escalation is not disabled globally"
-  replace:
+  ansible.builtin.replace:
       path: "{{ item }}"
       regexp: '^([^#].*)!authenticate(.*)'
       replace: '\1authenticate\2'
@@ -80,13 +80,13 @@
 - name: "5.3.6 | PATCH | Ensure sudo authentication timeout is configured correctly"
   block:
       - name: "5.3.6 | AUDIT | Ensure sudo authentication timeout is configured correctly | Get files with timeout set"
-        shell: grep -is 'timestamp_timeout' /etc/sudoers /etc/sudoers.d/* | cut -d":" -f1 | uniq | sort
+        ansible.builtin.shell: grep -is 'timestamp_timeout' /etc/sudoers /etc/sudoers.d/* | cut -d":" -f1 | uniq | sort
         changed_when: false
         failed_when: false
         register: rhel8cis_5_3_6_timeout_files
 
       - name: "5.3.6 | PATCH | Ensure sudo authentication timeout is configured correctly | Set value if no results"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/sudoers
             regexp: 'Defaults timestamp_timeout='
             line: "Defaults timestamp_timeout={{ rhel8cis_sudo_timestamp_timeout }}"
@@ -94,7 +94,7 @@
         when: rhel8cis_5_3_6_timeout_files.stdout | length == 0
 
       - name: "5.3.6 | PATCH | Ensure sudo authentication timeout is configured correctly | Set value if has results"
-        replace:
+        ansible.builtin.replace:
             path: "{{ item }}"
             regexp: 'timestamp_timeout=(\d+)'
             replace: "timestamp_timeout={{ rhel8cis_sudo_timestamp_timeout }}"
@@ -114,16 +114,24 @@
 
 - name: "5.3.7 | PATCH | Ensure access to the su command is restricted"
   block:
+      - name: "5.3.7 | PATCH | Ensure access to the su command is restricted | Ensure sugroup exists"
+        ansible.builtin.group:
+            name: "{{ rhel8cis_sugroup }}"
+            state: present
+        register: rhel8cis_5_3_7_sugroup
+
+      - name: "5.3.7 | PATCH | Ensure access to the su command is restricted | remove users from group"
+        ansible.builtin.lineinfile:
+            path: /etc/group
+            regexp: '^{{ rhel8cis_sugroup }}(:.:.*:).*$'
+            line: '{{ rhel8cis_sugroup }}\g<1>'
+            backrefs: true
+
       - name: "5.3.7 | PATCH | Ensure access to the su command is restricted | Setting pam_wheel to use_uid"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/pam.d/su
             regexp: '^(#)?auth\s+required\s+pam_wheel\.so'
-            line: 'auth            required        pam_wheel.so use_uid {% if rhel8cis_sugroup is defined %}group={{ rhel8cis_sugroup }}{% endif %}'
-
-      - name: "5.3.7 | PATCH | Ensure access to the su command is restricted | wheel group contains root"
-        user:
-            name: "{{ rhel8cis_sugroup_users }}"
-            groups: "{{ rhel8cis_sugroup | default('wheel') }}"
+            line: 'auth           required        pam_wheel.so use_uid group={{ rhel8cis_sugroup }}'
   when:
       - rhel8cis_rule_5_3_7
   tags:

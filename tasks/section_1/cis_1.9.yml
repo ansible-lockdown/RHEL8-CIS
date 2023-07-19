@@ -1,7 +1,7 @@
 ---
 
 - name: "1.9 | PATCH | Ensure updates, patches, and additional security software are installed"
-  package:
+  ansible.builtin.package:
       name: "*"
       state: latest
   notify: change_requires_reboot
@@ -15,3 +15,19 @@
       - patch
       - rule_1.9
       - skip_ansible_lint
+
+- name: "1.9 | PATCH | Ensure updates, patches, and additional security software are installed | limit kernels"
+  ansible.builtin.lineinfile:
+      path: /etc/dnf/dnf.conf
+      regexp: ^installonly_limit=
+      line: installonly_limit={{ rhel8cis_installed_kernel_limit }}
+  when:
+      - rhel8cis_rule_1_9
+      - rhel8cis_apply_installed_kernel_limit
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - kernel_limit
+      - rule_1.9

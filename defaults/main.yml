@@ -344,7 +344,7 @@ rhel8cis_rule_6_2_4: true
 rhel8cis_rule_6_2_5: true
 rhel8cis_rule_6_2_6: true
 rhel8cis_rule_6_2_7: true
-rhel8cis_rule_6_2_8: false
+rhel8cis_rule_6_2_8: true
 rhel8cis_rule_6_2_9: true
 rhel8cis_rule_6_2_10: true
 rhel8cis_rule_6_2_11: true
@@ -421,15 +421,35 @@ rhel8cis_bootloader_password_hash: 'grub.pbkdf2.sha512.changethispassword'
 rhel8cis_bootloader_password: random
 rhel8cis_set_boot_pass: false
 
+# 1.9 patch system
+rhel8cis_apply_installed_kernel_limit: false
+rhel8cis_installed_kernel_limit: 2
+
 # 1.10/1.11 Set crypto policy (LEGACY, DEFAULT, FUTURE, FIPS)
 # Control 1.10 states do not use LEGACY and control 1.11 says to use FUTURE or FIPS.
-rhel8cis_crypto_policy: "DEFAULT"
+rhel8cis_crypto_policy: 'DEFAULT'
+# Added module to be allowed as default setting (Allowed options in vars/main.yml)
+rhel8cis_crypto_policy_module: ''
 
 # System network parameters (host only OR host and router)
 rhel8cis_is_router: false
 
 # IPv6 required
 rhel8cis_ipv6_required: true
+
+rhel8cis_ipv6_sysctl_force: true
+
+##  Optional - Understand the impact of making the following two control to true
+# By default, we do not disable IPv6 on localhost, as it's important for multiple
+# components.  If you want to disable it anyway, change the following
+# value to true refer https://access.redhat.com/solutions/8709
+# this changes sysctl and /etc/hosts
+# requires reboot
+rhel8cis_ipv6_disable_localhost: false
+# disable ipv6 for sshd
+rhel8cis_ipv6_sshd_disable: false
+# disable chrony on ipv6
+rhel8cis_ipv6_chrony_disable: false
 
 # AIDE
 rhel8cis_config_aide: true
@@ -467,11 +487,9 @@ rhel8cis_chrony_server_options: "minpoll 8"
 rhel8cis_ntp_server_options: "iburst"
 
 ## Section3 vars
-# 3.4.2 | PATCH | Ensure /etc/hosts.allow is configured
-rhel8cis_host_allow:
-    - "10.0.0.0/255.0.0.0"
-    - "172.16.0.0/255.240.0.0"
-    - "192.168.0.0/255.255.0.0"
+
+# default location for the sysctl overrides.
+rhel8cis_sysctl_file: /etc/sysctl.d/99_cis.conf
 
 # Firewall Service - either firewalld, iptables, or nftables
 rhel8cis_firewall: firewalld
@@ -601,7 +619,7 @@ rhel8cis_sudolog_location: "/var/log/sudo.log"
 rhel8cis_sudo_timestamp_timeout: 15
 
 # 5.3.7
-# rhel8cis_sugroup: sugroup  # change accordingly wheel is default
+rhel8cis_sugroup: sugroup
 
 # wheel users list
 rhel8cis_sugroup_users: "root"
@@ -613,6 +631,11 @@ rhel8cis_authselect:
     custom_profile_name: custom-profile
     default_file_to_copy: "sssd --symlink-meta"
     options: with-sudo with-faillock without-nullok
+
+# Its not provider recommended to run changes to pam files manually that affects authentication
+# This control needs to be set to ACCEPT this so that the changes do take place
+# Any other value does nothing
+rhel8cis_pamd_manual_risks: NEVER
 
 # 5.6.1.1
 # 5.6.1.2

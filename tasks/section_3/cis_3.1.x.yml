@@ -2,16 +2,40 @@
 
 # The CIS Control wants IPv6 disabled if not in use.
 # We are using the rhel8cis_ipv6_required to specify if you have IPv6 in use
+
 - name: "3.1.1 | PATCH | Verify if IPv6 is enabled on the system"
-  sysctl:
-      name: "{{ item }}"
-      value: '1'
-      state: present
-      reload: true
-  with_items:
-      - net.ipv6.conf.all.disable_ipv6
-      - net.ipv6.conf.default.disable_ipv6
-      - net.ipv6.conf.lo.disable_ipv6
+  block:
+      - name: "3.1.1 | PATCH | Verify if IPv6 is enabled on the system | disable all except localhost"
+        ansible.posix.sysctl:
+            name: "{{ item }}"
+            value: '1'
+            sysctl_set: true
+            sysctl_file: "{{ rhel8cis_sysctl_file }}"
+        with_items:
+            - net.ipv6.conf.all.disable_ipv6
+            - net.ipv6.conf.default.disable_ipv6
+            - net.ipv6.conf.lo.disable_ipv6
+
+      - name: "3.1.1 | PATCH | Verify if IPv6 is enabled on the system | disable localhost sysctl"
+        ansible.posix.sysctl:
+            name: net.ipv6.conf.lo.disable_ipv6
+            value: '1'
+            sysctl_set: true
+            sysctl_file: "{{ rhel8cis_sysctl_file }}"
+        notify: change_requires_reboot
+        when:
+            - rhel8cis_ipv6_disable_localhost
+
+      - name: "3.1.1 | PATCH | Verify if IPv6 is enabled on the system | disable localhost /etc/hosts"
+        ansible.builtin.lineinfile:
+            path: /etc/hosts
+            regexp: '^(::1.*)'
+            line: '#\1'
+            backrefs: true
+        notify: change_requires_reboot
+        when:
+            - rhel8cis_ipv6_disable_localhost
+
   when:
       - not rhel8cis_ipv6_required
       - rhel8cis_rule_3_1_1
@@ -27,7 +51,7 @@
 - name: "3.1.2 | PATCH | Ensure SCTP is disabled"
   block:
       - name: "3.1.2 | PATCH | Ensure SCTP is disabled | CIS"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/modprobe.d/CIS.conf
             regexp: "^(#)?install sctp(\\s|$)"
             line: "install sctp /bin/true"
@@ -35,7 +59,7 @@
             mode: 0600
 
       - name: "3.1.2 | PATCH | Ensure SCTP is disabled | blacklist"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/modprobe.d/blacklist.conf
             regexp: "^(#)?blacklist sctp(\\s|$)"
             line: "blacklist sctp"
@@ -54,7 +78,7 @@
 - name: "3.1.3 | PATCH | Ensure DCCP is disabled"
   block:
       - name: "3.1.3 | PATCH | Ensure DCCP is disabled | CIS"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/modprobe.d/CIS.conf
             regexp: "^(#)?install dccp(\\s|$)"
             line: "install dccp /bin/true"
@@ -62,7 +86,7 @@
             mode: 0600
 
       - name: "3.1.3 | PATCH | Ensure DCCP is disabled | blacklist"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/modprobe.d/CIS.conf
             regexp: "^(#)?blacklist dccp(\\s|$)"
             line: "blacklist dccp"
@@ -81,24 +105,24 @@
 - name: "3.1.4 | PATCH | Ensure wireless interfaces are disabled"
   block:
       - name: "3.1.4 | AUDIT | Ensure wireless interfaces are disabled | Check if nmcli command is available"
-        command: rpm -q NetworkManager
+        ansible.builtin.shell: rpm -q NetworkManager
         changed_when: false
         failed_when: false
         check_mode: false
         register: rhel_08_nmcli_available
 
       - name: "3.1.4 | AUDIT | Ensure wireless interfaces are disabled | Check if wifi is enabled"
-        command: nmcli radio wifi
+        ansible.builtin.shell: nmcli radio wifi
         register: rhel_08_wifi_enabled
         changed_when: rhel_08_wifi_enabled.stdout != "disabled"
         failed_when: false
         when: rhel_08_nmcli_available.rc == 0
 
       - name: "3.1.4 | PATCH | Ensure wireless interfaces are disabled | Disable wifi if enabled"
-        command: nmcli radio all off
+        ansible.builtin.shell: nmcli radio all off
         changed_when: false
         failed_when: false
-        when: rhel_08_wifi_enabled is changed
+        when: rhel_08_wifi_enabled is changed  # noqa: no-handler
   when:
       - rhel8cis_rule_3_1_4
   tags:

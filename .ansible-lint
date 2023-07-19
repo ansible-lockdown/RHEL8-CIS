@@ -11,6 +11,7 @@ skip_list:
     - 'name[casing]'
     - 'name[template]'
     - 'fqcn[action]'
+    - 'key-order[task]'
     - '204'
     - '305'
     - '303'

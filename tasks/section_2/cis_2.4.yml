@@ -3,14 +3,14 @@
 - name: "2.4 | AUDIT | Ensure nonessential services are removed or masked"
   block:
       - name: "2.4 | AUDIT | Ensure nonessential services are removed or masked | Get list of services"
-        shell: systemctl list-units --type=service
+        ansible.builtin.shell: systemctl list-units --type=service
         changed_when: false
         failed_when: false
         check_mode: false
         register: rhel8cis_2_4_services
 
       - name: "2.4 | AUDIT | Ensure nonessential services are removed or masked | Display list of services"
-        debug:
+        ansible.builtin.debug:
             msg:
                 - "Warning!! Below are the list of services, both active and inactive"
                 - "Please review to make sure all are essential"

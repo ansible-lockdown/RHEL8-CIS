@@ -1,7 +1,7 @@
 ---
 
 - name: "1.4.1 | PATCH | Ensure bootloader password is set"
-  copy:
+  ansible.builtin.copy:
       dest: /boot/grub2/user.cfg  # noqa template-instead-of-copy
       content: "GRUB2_PASSWORD={{ rhel8cis_bootloader_password_hash }}"
       owner: root
@@ -22,14 +22,14 @@
 - name: "1.4.2 | PATCH | Ensure permissions on bootloader config are configured"
   block:
       - name: "1.4.2 | PATCH | Ensure permissions on bootloader config are configured"
-        file:
+        ansible.builtin.file:
             path: "{{ grub_cfg.stat.lnk_source }}"
             owner: root
             group: root
             mode: 0600
 
       - name: "1.4.2 | PATCH | Ensure permissions on bootloader config are configured | UEFI"
-        mount:
+        ansible.posix.mount:
             name: /boot/efi
             src: "UUID={{ item.uuid }}"
             fstype: vfat
@@ -56,7 +56,7 @@
       - rule_1.4.2
 
 - name: "1.4.3 | PATCH | Ensure authentication is required when booting into rescue mode"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/systemd/system/rescue.service.d/00-require-auth.conf
       regexp: '^ExecStart='
       line: "ExecStart=-/usr/lib/systemd/systemd-sulogin-shell rescue"

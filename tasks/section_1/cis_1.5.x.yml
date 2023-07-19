@@ -1,7 +1,7 @@
 ---
 
 - name: "1.5.1 | PATCH | Ensure core dump storage is disabled"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/systemd/coredump.conf
       regexp: 'Storage='
       line: 'Storage=none'
@@ -17,7 +17,7 @@
       - rule_1.5.1
 
 - name: "1.5.2 | PATCH | Ensure core dump backtraces are disabled"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/systemd/coredump.conf
       regexp: 'ProcessSizeMax='
       line: 'ProcessSizeMax=0'
@@ -32,11 +32,9 @@
       - rule_1.5.2
 
 - name: "1.5.3 | PATCH | Ensure address space layout randomization (ASLR) is enabled"
-  sysctl:
+  ansible.posix.sysctl:
       name: kernel.randomize_va_space
       value: '2'
-      state: present
-      reload: true
       sysctl_set: true
       ignoreerrors: true
   when:

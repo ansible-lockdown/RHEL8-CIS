@@ -8,7 +8,7 @@
           - scap-security-guide
 
 - name: Run CIS oscap scan and create /tmp/report.html
-  ansible.builtin.command:
+  ansible.builtin.shell:
       oscap xccdf eval \
           --report /tmp/report.html
           --profile cis
@@ -16,4 +16,4 @@
           /usr/share/xml/scap/ssg/content/ssg-almalinux8-ds.xml
   changed_when: true
   no_log: false
-  ignore_errors: true
+  ignore_errors: true  # noqa: ignore-errors

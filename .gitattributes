@@ -1,3 +1,17 @@
+# https://docs.github.com/en/repositories/working-with-files/managing-files/customizing-how-changed-files-appear-on-github
+# Default behaviour
+* text=auto
+
+# https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings
+# Ensure to read artcile prior to adding
+# Scripts should have Unix endings
+*.py text eol=lf
+*.sh text eol=lf
+
+# Windows Batch or PowerShell scripts should have CRLF endings
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+
 # adding github settings to show correct language
 *.sh linguist-detectable=true
 *.yml linguist-detectable=true

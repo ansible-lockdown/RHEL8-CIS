@@ -1,5 +1,73 @@
 # Changes to rhel8CIS
 
+## 1.5.11
+
+thanks to @bbaassssiiee
+
+- removed legacy tcp_wrappers information
+  - [#298](https://github.com/ansible-lockdown/RHEL8-CIS/issues/298)
+- disable ipv6 options
+  - [#299](https://github.com/ansible-lockdown/RHEL8-CIS/issues/299)
+  - disable ipv6 for sshd - rhel8cis_ipv6_sshd_disable: false (default) - added to prelim
+  - disable ipv6 for chrony - rhel8cis_ipv6_chrony_disable: false (default) - added to prelim
+  - turn off ipv6 for localhost - rhel8cis_ipv6_disable_localhost: false (default) - refer https://access.redhat.com/solutions/8709
+
+## 1.5.10
+
+Updates to container discovery and usage within benchmark
+
+- linting
+- aligned ansible version to 2.10.1 +
+- thanks to @bbaassssiiee
+  - [#295](https://github.com/ansible-lockdown/RHEL8-CIS/issues/295) crypto policy option updates
+  - [#296](https://github.com/ansible-lockdown/RHEL8-CIS/issues/296)
+
+## 1.5.9
+
+thanks to @bbaassssiiee
+
+- Option to minimise installed kernels further
+- [#287](https://github.com/ansible-lockdown/RHEL8-CIS/issues/287)
+  - new variables as part of rule_1.9
+
+  ```sh
+    rhel8cis_apply_installed_kernel_limit: false
+    rhel8cis_installed_kernel_limit: 2
+    ```
+
+thanks to @Thulium-Drake
+
+- [#286](https://github.com/ansible-lockdown/RHEL8-CIS/issues/286)
+  - revert back to shell due to system impact
+
+## 1.5.8
+
+thanks to @crayeth
+
+- [#278](https://github.com/ansible-lockdown/RHEL8-CIS/issues/278)
+  - Added new options to allow ipv6 rules if required although ipv6 disabled
+  - ```rhel8cis_ipv6_sysctl_force```  
+  - default: true
+
+thanks to @bbaassssiiee
+
+- [#279](https://github.com/ansible-lockdown/RHEL8-CIS/issues/279)
+- [#280](https://github.com/ansible-lockdown/RHEL8-CIS/issues/280)
+- [#281](https://github.com/ansible-lockdown/RHEL8-CIS/issues/281)
+- [#284](https://github.com/ansible-lockdown/RHEL8-CIS/issues/284)
+  - new option to allow manual changes to pamd files without using authconfig
+  - ```rhel8cis_5_4_2_risks```  need sto be set to ACCEPT to run
+  - default: NEVER
+
+## 1.5.7
+
+- lint updates
+- command to shell module changes
+- README updates
+- lint standards
+- [#247](https://github.com/ansible-lockdown/RHEL8-CIS/issues/247)
+  - thanks to @boris-stojnev
+
 ## 1.5.6
 
 - updates to yamllint to increase galaxy score - doesnt honour local files or exclusions

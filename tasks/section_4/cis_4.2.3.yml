@@ -2,78 +2,34 @@
 
 - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured"
   block:
-      - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Find log files"
-        find:
-            paths: "/var/log"
-            file_type: file
-            recurse: true
+      - name: "4.2.3 | AUDIT | Ensure permissions on all logfiles are configured | find files"
+        ansible.builtin.shell: find /var/log/ -type f -perm /g+wx,o+rwx -exec ls {} \;
+        changed_when: false
+        failed_when: false
         register: rhel8cis_4_2_3_logfiles
 
-      - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Apply permissions to existing logfiles"
-        file:
-            path: "{{ item.path }}"
-            mode: g-w,o-rwx
-        loop: "{{ rhel8cis_4_2_3_logfiles.files }}"
-        loop_control:
-            label: "{{ item.path }}"
+      - name: "4.2.3 | AUDIT | Ensure permissions on all logfiles are configured | set_fact"
+        ansible.builtin.set_fact:
+            rhel8cis_4_2_3_logfiles_flattened: "{{ rhel8cis_4_2_3_logfiles | json_query('stdout_lines[*]') | flatten }}"
         when:
-            - item.path != "/var/log/btmp"
-            - item.path != "/var/log/utmp"
-            - item.path != "/var/log/wtmp"
+            - rhel8cis_4_2_3_logfiles.stdout_lines | length > 0
+            - rhel8cis_4_2_3_logfiles is defined
 
-      - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured"
-        block:
-            - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Find logrotate conf files"
-              find:
-                  paths: /etc/logrotate.d
-                  contains: '^\s+create 06[5-7][0-7]'
-              register: rhel8cis_4_2_3_logrotate_conf_files
-
-            - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | output found logrotate file"
-              debug:
-                  msg: "{{ item }}"
-              loop: "{{ rhel8cis_4_2_3_logrotate_conf_files.files }}"
-              loop_control:
-                  label: "{{ item.path }}"
-
-            - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | update logrotate.conf"
-              lineinfile:
-                  path: /etc/logrotate.conf
-                  regexp: '^create'
-                  line: "create 0640"
-
-            - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | update logrotate.d conf files"
-              replace:
-                  path: "{{ item.path }}"
-                  regexp: 'create [0-7][0-7][0-7][0-7]'
-                  replace: 'create'
-              loop: "{{ rhel8cis_4_2_3_logrotate_conf_files.files }}"
-              loop_control:
-                  label: "{{ item.path }}"
-              when:
-                  - rhel8cis_4_2_3_logrotate_conf_files.files | length >= 1
-                  - allow_logrotate_conf_umask_updates
-
-            - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | warning logrotate.d conf files"
-              debug:
-                  msg: "Warning!! logrotate.d conf file have create mode that will not match CIS requirements upon rotation"
-              when:
-                  - rhel8cis_4_2_3_logrotate_conf_files.files | length >= 1
-                  - not allow_logrotate_conf_umask_updates
-
-            - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Warn Count"
-              ansible.builtin.import_tasks: warning_facts.yml
-              vars:
-                  warn_control_id: '4.2.3'
-              when:
-                  - rhel8cis_4_2_3_logrotate_conf_files.files | length >= 1
-                  - not allow_logrotate_conf_umask_updates
+      - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | change permissions"
+        ansible.builtin.file:
+            path: "{{ item }}"
+            mode: 0640
+        loop: "{{ rhel8cis_4_2_3_logfiles_flattened }}"
+        when:
+            - rhel8cis_4_2_3_logfiles_flattened is defined
+            - item != "/var/log/btmp"
+            - item != "/var/log/utmp"
+            - item != "/var/log/wtmp"
   when:
       - rhel8cis_rule_4_2_3
   tags:
       - level1-server
       - level1-workstation
-      - automated
       - patch
       - logfiles
       - rule_4.2.3
