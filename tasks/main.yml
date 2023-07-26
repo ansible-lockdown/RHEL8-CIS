@@ -87,6 +87,7 @@
             sudo_password_rule: rhel8cis_rule_5_3_4
   when:
       - rhel8cis_rule_5_3_4
+      - ansible_env.SUDO_USER is defined
       - not system_is_ec2
   tags:
       - user_passwd
