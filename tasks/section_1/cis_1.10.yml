@@ -10,7 +10,7 @@
         ansible.builtin.shell: |
             update-crypto-policies --set "{{ rhel8cis_full_crypto_policy }}"
             update-crypto-policies
-        notify: Change_requires_reboot
+        notify: change_requires_reboot
         when:
             - rhel8cis_system_wide_crypto_policy.stdout != rhel8cis_full_crypto_policy
   when:
