@@ -1,5 +1,10 @@
 # Changes to rhel8CIS
 
+## 1.5.12
+
+- [#304](https://github.com/ansible-lockdown/RHEL8-CIS/issues/304)
+  - improve passwd check for user only is using sudo thanks to manish on discord community for highlighting issue.
+
 ## 1.5.11
 
 thanks to @bbaassssiiee

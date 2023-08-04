@@ -35,8 +35,6 @@
   ansible.posix.sysctl:
       name: kernel.randomize_va_space
       value: '2'
-      state: present
-      reload: true
       sysctl_set: true
       ignoreerrors: true
   when:

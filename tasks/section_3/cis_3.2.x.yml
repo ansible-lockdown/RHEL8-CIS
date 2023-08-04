@@ -6,8 +6,6 @@
         ansible.posix.sysctl:
             name: net.ipv4.ip_forward
             value: '0'
-            state: present
-            reload: true
             ignoreerrors: true
             sysctl_file: "{{ rhel8cis_sysctl_file }}"
         notify: sysctl flush ipv4 route table
@@ -16,12 +14,12 @@
         ansible.posix.sysctl:
             name: net.ipv6.conf.all.forwarding
             value: '0'
-            state: present
-            reload: true
             ignoreerrors: true
             sysctl_file: "{{ rhel8cis_sysctl_file }}"
         notify: sysctl flush ipv6 route table
-        when: rhel8cis_ipv6_required or rhel8cis_ipv6_sysctl_force
+        when:
+            - rhel8cis_ipv6_required or
+              rhel8cis_ipv6_sysctl_force
   when:
       - not rhel8cis_is_router
       - rhel8cis_rule_3_2_1
@@ -38,8 +36,6 @@
       name: '{{ item.name }}'
       value: '{{ item.value }}'
       sysctl_set: true
-      state: present
-      reload: true
       ignoreerrors: true
       sysctl_file: "{{ rhel8cis_sysctl_file }}"
   notify: sysctl flush ipv4 route table

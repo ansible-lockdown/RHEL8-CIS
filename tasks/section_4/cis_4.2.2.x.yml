@@ -108,7 +108,6 @@
       path: /etc/systemd/journald.conf
       regexp: 'Compress='
       line: Compress=yes
-      state: present
       insertafter: ^#Compress
       validate: /usr/bin/bash -n %s
   when:
