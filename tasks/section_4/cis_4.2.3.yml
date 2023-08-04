@@ -10,7 +10,7 @@
 
       - name: "4.2.3 | AUDIT | Ensure permissions on all logfiles are configured | set_fact"
         ansible.builtin.set_fact:
-            rhel8cis_4_2_3_logfiles_flattened: "{{ rhel8cis_4_2_3_logfiles | json_query('stdout_lines[*]') | flatten }}"
+            rhel8cis_4_2_3_logfiles_flattened: "{{ rhel8cis_4_2_3_logfiles | json_query('stdout_lines[*]') | flatten }}"  # noqa: jinja[invalid]
         when:
             - rhel8cis_4_2_3_logfiles.stdout_lines | length > 0
             - rhel8cis_4_2_3_logfiles is defined
