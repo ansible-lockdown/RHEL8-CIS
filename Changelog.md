@@ -6,7 +6,7 @@
   - README updated with badges and labels to use the new workflow
 - pre-commit added and several checks, pre-commit-ci added to repo to ensure content
   - README updated
-- [#306](https://github.com/ansible-lockdown/RHEL8-CIS/issues/306)
+- [#306](https://github.com/ansible-lockdown/RHEL8-CIS/issues/306) thanks to @bbaassssiiee
 
 - some linting on files
 
