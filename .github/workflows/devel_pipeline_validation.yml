@@ -29,21 +29,6 @@
                       Congrats on opening your first pull request and thank you for taking the time to help improve Ansible-Lockdown!
                       Please join in the conversation happening on the [Discord Server](https://discord.io/ansible-lockdown) as well.
 
-      # Carries out lint tests on the content
-        lint:
-          runs-on: ubuntu-latest
-          steps:
-            - name: Clone ${{ github.event.repository.name }}
-              uses: actions/checkout@v3
-              with:
-                fetch-depth: 0
-                ref: ${{ github.event.pull_request.head.sha }}
-
-            - name: Run ansible-lint
-              uses: ansible/ansible-lint-action@v6
-              with:
-                path: ./site.yml
-
         # This workflow contains a single job which tests the playbook
         playbook-test:
           # The type of runner that the job will run on
