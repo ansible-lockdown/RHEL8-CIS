@@ -242,7 +242,7 @@
         loop: "{{ rhel_08_6_1_12_audit.results }}"
         when:
             - item | length > 0
-            - item.stdout is defined # skipped items are part of results list, but don't have the registered module properties
+            - item.stdout is defined  # skipped items are part of results list, but don't have the registered module properties
             - item.stdout | length > 0
 
       - name: "6.1.12 | AUDIT | Ensure no unowned files or directories exist | Displaying any unowned files or directories"
@@ -290,7 +290,7 @@
         loop: "{{ rhel_08_6_1_13_audit.results }}"
         when:
             - item | length > 0
-            - item.stdout is defined # skipped items are part of results list, but don't have the registered module properties
+            - item.stdout is defined  # skipped items are part of results list, but don't have the registered module properties
             - item.stdout | length > 0
 
       - name: "6.1.13 | AUDIT | Ensure no ungrouped files or directories exist | Displaying all ungrouped files or directories"
@@ -333,7 +333,7 @@
         loop: "{{ rhel_08_6_1_14_suid_perms.results }}"
         when:
             - item | length > 0
-            - item.stdout is defined # skipped items are part of results list, but don't have the registered module properties
+            - item.stdout is defined  # skipped items are part of results list, but don't have the registered module properties
             - item.stdout | length > 0
 
       - name: "6.1.14 | AUDIT | Audit SUID executables |  Alert SUID executables exist"
@@ -375,7 +375,7 @@
         loop: "{{ rhel_08_6_1_15_sgid_perms.results }}"
         when:
             - item | length > 0
-            - item.stdout is defined # skipped items are part of results list, but don't have the registered module properties
+            - item.stdout is defined  # skipped items are part of results list, but don't have the registered module properties
             - item.stdout | length > 0
 
       - name: "6.1.15 | AUDIT | Audit SGID executables |  Alert SGID executables exist"
