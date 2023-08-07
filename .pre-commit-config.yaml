@@ -36,6 +36,12 @@ repos:
     args: ['--baseline', '.config/.secrets.baseline']
     exclude: package.lock.json
 
+- repo: https://github.com/gitleaks/gitleaks
+  rev: v8.17.0
+  hooks:
+  - id: gitleaks
+    args: ['--baseline-path','.config/.gitleaks-report.json']
+
 - repo: https://github.com/ansible-community/ansible-lint
   rev: v6.17.2
   hooks:
