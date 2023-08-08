@@ -15,13 +15,14 @@
 ![Ansible Galaxy Quality](https://img.shields.io/ansible/quality/56380?label=Quality&&logo=ansible)
 ![Discord Badge](https://img.shields.io/discord/925818806838919229?logo=discord)
 
-![Devel Build Status](https://img.shields.io/github/actions/workflow/status/ansible-lockdown/RHEL8-CIS/linux_benchmark_testing.yml?label=Devel%20Build%20Status)
-![Devel Commits](https://img.shields.io/github/commit-activity/m/ansible-lockdown/RHEL8-CIS/devel?color=dark%20green&label=Devel%20Branch%20commits)
+![Release Branch](https://img.shields.io/badge/Release%20Branch-Main-brightgreen)
+![Release Tag](https://img.shields.io/github/v/release/ansible-lockdown/RHEL8-CIS)
+![Release Date](https://img.shields.io/github/release-date/ansible-lockdown/RHEL8-CIS)
 
-![Release Branch](https://img.shields.io/badge/Release%20Branch-Main-brightgreen) 
-![Main Build Status](https://img.shields.io/github/actions/workflow/status/ansible-lockdown/RHEL8-CIS/linux_benchmark_testing.yml?label=Build%20Status)
-![Main Release Date](https://img.shields.io/github/release-date/ansible-lockdown/RHEL8-CIS?label=Release%20Date)
-![Release Tag](https://img.shields.io/github/v/tag/ansible-lockdown/RHEL8-CIS?label=Release%20Tag&&color=success)
+[![Main Pipeline Status](https://github.com/ansible-lockdown/RHEL8-CIS/actions/workflows/main_pipeline_validation.yml/badge.svg?)](https://github.com/ansible-lockdown/RHEL8-CIS/actions/workflows/main_pipeline_validation.yml)
+
+[![Devel Pipeline Status](https://github.com/ansible-lockdown/RHEL8-CIS/actions/workflows/devel_pipeline_validation.yml/badge.svg?)](https://github.com/ansible-lockdown/RHEL8-CIS/actions/workflows/devel_pipeline_validation.yml)
+![Devel Commits](https://img.shields.io/github/commit-activity/m/ansible-lockdown/RHEL8-CIS/devel?color=dark%20green&label=Devel%20Branch%20commits)
 
 ![Issues Open](https://img.shields.io/github/issues-raw/ansible-lockdown/RHEL8-CIS?label=Open%20Issues)
 ![Issues Closed](https://img.shields.io/github/issues-closed-raw/ansible-lockdown/RHEL8-CIS?label=Closed%20Issues&&color=success)
@@ -131,7 +132,7 @@ default                    : ok=270  changed=23   unreachable=0    failed=0    s
 RHEL/AlmaLinux/Rocky/Oracle 8 - Other versions are not supported.
 
 - AlmaLinux/Rocky Has been tested on 8.4(enabling crypto (sections 1.10&1.11) breaks updating or installs : July 01 2021
-- Access to download or add the goss binary and content to the system if using auditing 
+- Access to download or add the goss binary and content to the system if using auditing
 (other options are available on how to get the content to the system.)
 - Python3
 - Ansible 2.9+
@@ -188,7 +189,7 @@ uses:
 
 Molecule can be used to work on this role and test in distinct _scenarios_.
 
-**examples**
+### examples
 
 ```bash
 molecule test -s default
@@ -204,3 +205,10 @@ local testing uses:
 - molecule-podman 2.0.2
 - molecule-vagrant 1.0.0
 - molecule-azure 0.5.0
+
+pre-commit can be tested
+Is run from with the directory
+
+```sh
+pre-commit run
+```

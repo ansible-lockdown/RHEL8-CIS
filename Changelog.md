@@ -1,5 +1,15 @@
 # Changes to rhel8CIS
 
+## 1.5.13
+
+- Improvements for workflow and new pipeline methods
+  - README updated with badges and labels to use the new workflow
+- pre-commit added and several checks, pre-commit-ci added to repo to ensure content
+  - README updated
+- [#306](https://github.com/ansible-lockdown/RHEL8-CIS/issues/306) thanks to @bbaassssiiee
+
+- some linting on files
+
 ## 1.5.12
 
 - [#304](https://github.com/ansible-lockdown/RHEL8-CIS/issues/304)
@@ -131,7 +141,7 @@ Issues.
 
 - #227 thanks to OscarElits
   - chrony files now RH expected locations
-- #228 Thanks to benbulll 
+- #228 Thanks to benbulll
   - audit binary copy var missing
 
 <<<<<<< HEAD
