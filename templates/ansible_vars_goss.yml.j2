@@ -432,8 +432,8 @@ rhel8cis_sudolog_location: {{ rhel8cis_sudolog_location }}
 rhel8cis_firewall: {{ rhel8cis_firewall }}
 #rhel8cis_firewall: iptables
 rhel8cis_default_firewall_zone: {{ rhel8cis_default_zone }}
-rhel8cis_firewall_interface: 
-- enp0s3 
+rhel8cis_firewall_interface:
+- enp0s3
 - enp0s8
 
 rhel8cis_firewall_services: {% for svc in rhel8cis_firewall_services %}{{ svc }} {% endfor %}

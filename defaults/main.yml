@@ -667,7 +667,7 @@ rhel8uid_info_dynamic: true
 # Timeout value is in seconds. (60 seconds * 10 = 600)
 rhel8cis_shell_session_timeout:
     file: /etc/profile.d/tmout.sh
-    timeout: 600
+    timeout: 900
 
 ## Section6 vars
 

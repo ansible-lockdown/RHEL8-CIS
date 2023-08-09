@@ -206,8 +206,9 @@ local testing uses:
 - molecule-vagrant 1.0.0
 - molecule-azure 0.5.0
 
-pre-commit can be tested
-Is run from with the directory
+## Added Extras
+
+- [pre-commit](https://pre-commit.com) can be tested and can be run from within the directory
 
 ```sh
 pre-commit run
