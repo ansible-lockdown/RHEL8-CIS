@@ -232,17 +232,22 @@
         with_items: "{{ ansible_mounts }}"
         loop_control:
             label: "{{ item.mount }}"
-        when: item['device'].startswith('/dev') and not 'bind' in item['options']
+        when:
+            - item['device'].startswith('/dev')
+            - not 'bind' in item['options']
 
       - name: "6.1.12 | AUDIT | Ensure no unowned files or directories exist | set fact"
         ansible.builtin.set_fact:
             rhel_08_6_1_12_unowned_files_found: true
         loop: "{{ rhel_08_6_1_12_audit.results }}"
-        when: item.stdout | length > 0
+        when:
+            - item | length > 0
+            - item.stdout is defined  # skipped items are part of results list, but don't have the registered module properties
+            - item.stdout | length > 0
 
       - name: "6.1.12 | AUDIT | Ensure no unowned files or directories exist | Displaying any unowned files or directories"
         ansible.builtin.debug:
-            msg: "Warning -- missing owner on items in {{ rhel_08_6_1_12_audit | json_query('results[*].stdout_lines[*]') | flatten }}"
+            msg: "Warning -- missing owner on items in {{ rhel_08_6_1_12_audit | json_query('results[*].stdout_lines[*]') | flatten }}"  # noqa: jinja[invalid]
         when:
             - rhel_08_6_1_12_unowned_files_found
 
@@ -275,17 +280,22 @@
         with_items: "{{ ansible_mounts }}"
         loop_control:
             label: "{{ item.mount }}"
-        when: item['device'].startswith('/dev') and not 'bind' in item['options']
+        when:
+            - item['device'].startswith('/dev')
+            - not 'bind' in item['options']
 
       - name: "6.1.13 | AUDIT | Ensure no ungrouped files or directories exist | set fact"
         ansible.builtin.set_fact:
             rhel_08_6_1_13_ungrouped_files_found: true
         loop: "{{ rhel_08_6_1_13_audit.results }}"
-        when: item.stdout | length > 0
+        when:
+            - item | length > 0
+            - item.stdout is defined  # skipped items are part of results list, but don't have the registered module properties
+            - item.stdout | length > 0
 
       - name: "6.1.13 | AUDIT | Ensure no ungrouped files or directories exist | Displaying all ungrouped files or directories"
         ansible.builtin.debug:
-            msg: "Warning!! -- Missing group on items in {{ rhel_08_6_1_13_audit | json_query('results[*].stdout_lines[*]') | flatten }}"
+            msg: "Warning!! -- Missing group on items in {{ rhel_08_6_1_13_audit | json_query('results[*].stdout_lines[*]') | flatten }}"  # noqa: jinja[invalid]
         when: rhel_08_6_1_13_ungrouped_files_found
 
       - name: "6.1.13 | AUDIT | Ensure no ungrouped files or directories exist | Warn Count"
@@ -321,11 +331,14 @@
         ansible.builtin.set_fact:
             rhel8cis_6_1_14_suid_found: true
         loop: "{{ rhel_08_6_1_14_suid_perms.results }}"
-        when: item.stdout | length > 0
+        when:
+            - item | length > 0
+            - item.stdout is defined  # skipped items are part of results list, but don't have the registered module properties
+            - item.stdout | length > 0
 
       - name: "6.1.14 | AUDIT | Audit SUID executables |  Alert SUID executables exist"
         ansible.builtin.debug:
-            msg: "Warning!! -- SUID set on items in {{ rhel_08_6_1_14_suid_perms | json_query('results[*].stdout_lines[*]') | flatten }}"
+            msg: "Warning!! -- SUID set on items in {{ rhel_08_6_1_14_suid_perms | json_query('results[*].stdout_lines[*]') | flatten }}"  # noqa: jinja[invalid]
         when: rhel8cis_6_1_14_suid_found
 
       - name: "6.1.14 | AUDIT | Audit SUID executables | Warn Count"
@@ -360,11 +373,14 @@
         ansible.builtin.set_fact:
             rhel8cis_6_1_15_sgid_found: true
         loop: "{{ rhel_08_6_1_15_sgid_perms.results }}"
-        when: item.stdout | length > 0
+        when:
+            - item | length > 0
+            - item.stdout is defined  # skipped items are part of results list, but don't have the registered module properties
+            - item.stdout | length > 0
 
       - name: "6.1.15 | AUDIT | Audit SGID executables |  Alert SGID executables exist"
         ansible.builtin.debug:
-            msg: "Warning!! -- SGID set on items in {{ rhel_08_6_1_15_sgid_perms | json_query('results[*].stdout_lines[*]') | flatten }}"
+            msg: "Warning!! -- SGID set on items in {{ rhel_08_6_1_15_sgid_perms | json_query('results[*].stdout_lines[*]') | flatten }}"  # noqa: jinja[invalid]
         when: rhel8cis_6_1_15_sgid_found
 
       - name: "6.1.15 | AUDIT | Audit SGID executables | Warn Count"

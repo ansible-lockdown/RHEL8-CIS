@@ -1,5 +1,20 @@
 # Changes to rhel8CIS
 
+## 1.5.13
+
+- Improvements for workflow and new pipeline methods
+  - README updated with badges and labels to use the new workflow
+- pre-commit added and several checks, pre-commit-ci added to repo to ensure content
+  - README updated
+- [#306](https://github.com/ansible-lockdown/RHEL8-CIS/issues/306) thanks to @bbaassssiiee
+
+- some linting on files
+
+## 1.5.12
+
+- [#304](https://github.com/ansible-lockdown/RHEL8-CIS/issues/304)
+  - improve passwd check for user only is using sudo thanks to manish on discord community for highlighting issue.
+
 ## 1.5.11
 
 thanks to @bbaassssiiee
@@ -46,7 +61,7 @@ thanks to @crayeth
 
 - [#278](https://github.com/ansible-lockdown/RHEL8-CIS/issues/278)
   - Added new options to allow ipv6 rules if required although ipv6 disabled
-  - ```rhel8cis_ipv6_sysctl_force```  
+  - ```rhel8cis_ipv6_sysctl_force```
   - default: true
 
 thanks to @bbaassssiiee
@@ -81,8 +96,8 @@ thanks to @bbaassssiiee
 
 ## 1.5.4
 
-Many thanks to @dulin-gnet and community feedback on this one  
-Changed default to not follow symlinks due to number of issues it has been causing.  
+Many thanks to @dulin-gnet and community feedback on this one
+Changed default to not follow symlinks due to number of issues it has been causing.
 Can still be changed using the new variable rhel_08_6_2_9_follow_home_symlinks
 
 - [#252](https://github.com/ansible-lockdown/RHEL8-CIS/pull/252)
@@ -126,7 +141,7 @@ Issues.
 
 - #227 thanks to OscarElits
   - chrony files now RH expected locations
-- #228 Thanks to benbulll 
+- #228 Thanks to benbulll
   - audit binary copy var missing
 
 <<<<<<< HEAD
