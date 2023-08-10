@@ -1,7 +1,7 @@
 ---
 # Preliminary tasks that should always be run
 
-- name: Add the required packages
+- name: "PRELIM | Add the required packages"
   ansible.builtin.package:
       name:
           - python3-libselinux
@@ -10,7 +10,7 @@
   tags:
       - always
 
-- name: Gather the package facts before prelim
+- name: "PRELIM | Gather the package facts before prelim"
   ansible.builtin.package_facts:
       manager: auto
   tags:
