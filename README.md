@@ -22,7 +22,7 @@
 [![Main Pipeline Status](https://github.com/ansible-lockdown/RHEL8-CIS/actions/workflows/main_pipeline_validation.yml/badge.svg?)](https://github.com/ansible-lockdown/RHEL8-CIS/actions/workflows/main_pipeline_validation.yml)
 
 [![Devel Pipeline Status](https://github.com/ansible-lockdown/RHEL8-CIS/actions/workflows/devel_pipeline_validation.yml/badge.svg?)](https://github.com/ansible-lockdown/RHEL8-CIS/actions/workflows/devel_pipeline_validation.yml)
-![Devel Commits](https://img.shields.io/github/commit-activity/m/ansible-lockdown/RHEL8-CIS/devel?color=dark%20green&label=Devel%20Branch%20commits)
+![Devel Commits](https://img.shields.io/github/commit-activity/m/ansible-lockdown/RHEL8-CIS/devel?color=dark%20green&label=Devel%20Branch%20Commits)
 
 ![Issues Open](https://img.shields.io/github/issues-raw/ansible-lockdown/RHEL8-CIS?label=Open%20Issues)
 ![Issues Closed](https://img.shields.io/github/issues-closed-raw/ansible-lockdown/RHEL8-CIS?label=Closed%20Issues&&color=success)
