@@ -63,7 +63,7 @@
                 pwd
                 ls
               env:
-                # Imported from github variables this is used to load the relvent OS.tfvars file
+                # Imported from github variables
                 OSVAR: ${{ vars.OSVAR }}
                 benchmark_type: ${{ vars.BENCHMARK_TYPE }}
 
@@ -71,7 +71,7 @@
               id: init
               run: terraform init
               env:
-                # Imported from github variables this is used to load the relvent OS.tfvars file
+                # Imported from github variables
                 OSVAR: ${{ vars.OSVAR }}
                 TF_VAR_benchmark_type: ${{ vars.BENCHMARK_TYPE }}
 
@@ -79,7 +79,7 @@
               id: validate
               run: terraform validate
               env:
-                # Imported from github variables this is used to load the relvent OS.tfvars file
+                # Imported from github variables
                 OSVAR: ${{ vars.OSVAR }}
                 TF_VAR_benchmark_type: ${{ vars.BENCHMARK_TYPE }}
 
