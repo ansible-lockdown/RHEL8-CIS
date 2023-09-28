@@ -1,6 +1,6 @@
 ---
-- hosts: all  # noqa: name[play]
-  become: true
+- name: Run RHEL8 CIS hardening
+  hosts: all
 
   roles:
 
