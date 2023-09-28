@@ -125,17 +125,17 @@ default                    : ok=270  changed=23   unreachable=0    failed=0    s
   - [Tower User Guide](https://docs.ansible.com/ansible-tower/latest/html/userguide/index.html)
   - [Ansible Community Info](https://docs.ansible.com/ansible/latest/community/index.html)
 - Functioning Ansible and/or Tower Installed, configured, and running. This includes all of the base Ansible/Tower configurations, needed packages installed, and infrastructure setup.
-- Please read through the tasks in this role to gain an understanding of what each control is doing. Some of the tasks are disruptive and can have unintended consiquences in a live production system. Also familiarize yourself with the variables in the defaults/main.yml file.
+- Please read through the tasks in this role to gain an understanding of what each control is doing. Some of the tasks are disruptive and can have unintended consequences in a live production system. Also familiarize yourself with the variables in the defaults/main.yml file.
 
 **Technical Dependencies:**
 
 RHEL/AlmaLinux/Rocky/Oracle 8 - Other versions are not supported.
 
-- AlmaLinux/Rocky Has been tested on 8.4(enabling crypto (sections 1.10&1.11) breaks updating or installs : July 01 2021
+- AlmaLinux/Rocky Has been tested on 8.8(enabling crypto (sections 1.10 & 1.11) breaks updating or installs : July 01 2021
 - Access to download or add the goss binary and content to the system if using auditing
 (other options are available on how to get the content to the system.)
 - Python3
-- Ansible 2.9+
+- Ansible 2.10+
 - python-def (should be included in RHEL 8)
 - libselinux-python
 
