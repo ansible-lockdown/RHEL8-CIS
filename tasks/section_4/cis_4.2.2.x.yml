@@ -6,6 +6,7 @@
       state: present
   when:
       - rhel8cis_rule_4_2_2_1_1
+      - rhel8cis_syslog == 'journald'
   tags:
       - level1-server
       - level1-workstation
@@ -27,6 +28,7 @@
       - { regexp: 'TrustedCertificateFile=', line: 'TrustedCertificateFile={{ rhel8cis_journal_trustedcertificatefile }}'}
   when:
       - rhel8cis_rule_4_2_2_1_2
+      - rhel8cis_syslog == 'journald'
   tags:
       - level1-server
       - level1-workstation
@@ -43,6 +45,7 @@
   when:
       - rhel8cis_system_is_log_server
       - rhel8cis_rule_4_2_2_1_3
+      - rhel8cis_syslog == 'journald'
   tags:
       - level1-server
       - level1-workstation
@@ -60,6 +63,7 @@
   when:
       - not rhel8cis_system_is_log_server
       - rhel8cis_rule_4_2_2_1_4
+      - rhel8cis_syslog == 'journald'
   tags:
       - level1-server
       - level1-workstation
@@ -95,6 +99,7 @@
         when: "'static' not in rhel8cis_4_2_2_2_status.stdout"
   when:
       - rhel8cis_rule_4_2_2_2
+      - rhel8cis_syslog == 'journald'
   tags:
       - level1-server
       - level1-workstation
@@ -147,6 +152,7 @@
   notify: restart systemd_journal_upload
   when:
       - rhel8cis_rule_4_2_2_5
+      - rhel8cis_syslog == 'journald'
   tags:
       - level1-server
       - level2-workstation
@@ -169,6 +175,7 @@
       - { regexp: '^#MaxFileSec=|^MaxFileSec=', line: 'MaxFileSec={{ rhel8cis_journald_maxfilesec }}'}
   when:
       - rhel8cis_rule_4_2_2_6
+      - rhel8cis_syslog == 'journald'
   tags:
       - level1-server
       - level1-workstation
@@ -211,6 +218,7 @@
             warn_control_id: '4.2.2.7'
   when:
       - rhel8cis_rule_4_2_2_7
+      - rhel8cis_syslog == 'journald'
   tags:
       - level1-server
       - level1-workstation
