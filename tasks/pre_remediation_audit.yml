@@ -32,8 +32,7 @@
   ansible.builtin.copy:
       src: "{{ audit_local_copy }}"
       dest: "{{ audit_conf_dir }}"
-      mode: 0644
-      preserve: true
+      mode: preserve
   when:
       - audit_content == 'copy'
 
