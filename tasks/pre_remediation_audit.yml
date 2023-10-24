@@ -15,7 +15,7 @@
 
 - name: Pre Audit | If using git for content set up
   block:
-      - name: Pre Audit | Install git (rh8 python3)
+      - name: Pre Audit | Install git
         ansible.builtin.package:
             name: git
             state: present
