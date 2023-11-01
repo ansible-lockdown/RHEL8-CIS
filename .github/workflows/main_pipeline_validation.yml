@@ -102,7 +102,7 @@
             - name: Sleep for 60 seconds
               run: sleep ${{ vars.BUILD_SLEEPTIME }}
 
-          # Run the Ansibleplaybook
+          # Run the Ansible playbook
             - name: Run_Ansible_Playbook
               uses: arillso/action.playbook@master
               with:
