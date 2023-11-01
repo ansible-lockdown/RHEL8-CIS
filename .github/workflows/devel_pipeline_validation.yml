@@ -29,7 +29,7 @@
                       Congrats on opening your first pull request and thank you for taking the time to help improve Ansible-Lockdown!
                       Please join in the conversation happening on the [Discord Server](https://www.lockdownenterprise.com/discord) as well.
 
-        # This workflow contains a single job which tests the playbook
+        # This workflow contains a single job that tests the playbook
         playbook-test:
           # The type of runner that the job will run on
           runs-on: ubuntu-latest
@@ -44,13 +44,13 @@
 
           steps:
             - name: Clone ${{ github.event.repository.name }}
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
               with:
                 ref: ${{ github.event.pull_request.head.sha }}
 
             # Pull in terraform code for linux servers
-            - name: Clone github IaC plan
-              uses: actions/checkout@v3
+            - name: Clone GitHub IaC plan
+              uses: actions/checkout@v4
               with:
                 repository: ansible-lockdown/github_linux_IaC
                 path: .github/workflows/github_linux_IaC
@@ -74,7 +74,7 @@
                 pwd
                 ls
               env:
-                # Imported from github variables
+                # Imported from GitHub variables this is used to load the relevant OS.tfvars file
                 OSVAR: ${{ vars.OSVAR }}
                 benchmark_type: ${{ vars.BENCHMARK_TYPE }}
 
@@ -82,7 +82,7 @@
               id: init
               run: terraform init
               env:
-                # Imported from github variables
+                # Imported from GitHub variables this is used to load the relevant OS.tfvars file
                 OSVAR: ${{ vars.OSVAR }}
                 TF_VAR_benchmark_type: ${{ vars.BENCHMARK_TYPE }}
 
@@ -90,7 +90,7 @@
               id: validate
               run: terraform validate
               env:
-                # Imported from github variables
+                # Imported from GitHub variables this is used to load the relevant OS.tfvars file
                 OSVAR: ${{ vars.OSVAR }}
                 TF_VAR_benchmark_type: ${{ vars.BENCHMARK_TYPE }}
 
@@ -111,9 +111,9 @@
       # Aws deployments taking a while to come up insert sleep or playbook fails
 
             - name: Sleep for 60 seconds
-              run: sleep 60s
+              run: sleep ${{ vars.BUILD_SLEEPTIME }}
 
-          # Run the ansible playbook
+          # Run the Ansible playbook
             - name: Run_Ansible_Playbook
               uses: arillso/action.playbook@master
               with:
