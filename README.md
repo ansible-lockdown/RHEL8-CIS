@@ -12,7 +12,6 @@
 ![followers](https://img.shields.io/github/followers/ansible-lockdown?style=social)
 [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/AnsibleLockdown.svg?style=social&label=Follow%20%40AnsibleLockdown)](https://twitter.com/AnsibleLockdown)
 
-![Ansible Galaxy Quality](https://img.shields.io/ansible/quality/56380?label=Quality&&logo=ansible)
 ![Discord Badge](https://img.shields.io/discord/925818806838919229?logo=discord)
 
 ![Release Branch](https://img.shields.io/badge/Release%20Branch-Main-brightgreen)
@@ -40,7 +39,7 @@
 
 ### Community
 
-Join us on our [Discord Server](https://discord.io/ansible-lockdown) to ask questions, discuss features, or just chat with other Ansible-Lockdown users.
+Join us on our [Discord Server](https://www.lockdownenterprise.com/discord) to ask questions, discuss features, or just chat with other Ansible-Lockdown users.
 
 ---
 
@@ -125,17 +124,17 @@ default                    : ok=270  changed=23   unreachable=0    failed=0    s
   - [Tower User Guide](https://docs.ansible.com/ansible-tower/latest/html/userguide/index.html)
   - [Ansible Community Info](https://docs.ansible.com/ansible/latest/community/index.html)
 - Functioning Ansible and/or Tower Installed, configured, and running. This includes all of the base Ansible/Tower configurations, needed packages installed, and infrastructure setup.
-- Please read through the tasks in this role to gain an understanding of what each control is doing. Some of the tasks are disruptive and can have unintended consiquences in a live production system. Also familiarize yourself with the variables in the defaults/main.yml file.
+- Please read through the tasks in this role to gain an understanding of what each control is doing. Some of the tasks are disruptive and can have unintended consequences in a live production system. Also familiarize yourself with the variables in the defaults/main.yml file.
 
 **Technical Dependencies:**
 
 RHEL/AlmaLinux/Rocky/Oracle 8 - Other versions are not supported.
 
-- AlmaLinux/Rocky Has been tested on 8.4(enabling crypto (sections 1.10&1.11) breaks updating or installs : July 01 2021
+- AlmaLinux/Rocky Has been tested on 8.8(enabling crypto (sections 1.10 & 1.11) breaks updating or installs : July 01 2021
 - Access to download or add the goss binary and content to the system if using auditing
 (other options are available on how to get the content to the system.)
 - Python3
-- Ansible 2.9+
+- Ansible 2.10+
 - python-def (should be included in RHEL 8)
 - libselinux-python
 

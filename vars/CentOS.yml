@@ -5,4 +5,4 @@ rpm_gpg_key: /etc/pki/rpm-gpg/RPM-GPG-KEY-{{ ansible_distribution | lower }}offi
 rpm_packager: "The CentOS Project"
 
 # found on https://www.centos.org/keys/
-rpm_key: "8483C65D"
+rpm_key: "8483C65D"  # pragma: allowlist secret

@@ -238,7 +238,7 @@
         with_items: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8uid_interactive_uid_start | int ) | selectattr('uid', '<=', rhel8uid_interactive_uid_stop | int ) | map(attribute='dir') | list }}"
 
       - name: "6.2.9 | AUDIT | Ensure all users' home directories exist"
-        ansible.builtin.shell: find -H {{ item.0 | quote }} -not -type l -perm /027
+        ansible.builtin.shell: find -H {{ item.0 | quote }} -type d -not -type l -perm /027
         check_mode: false
         changed_when: rhel_08_6_2_9_patch_audit.stdout | length > 0
         register: rhel_08_6_2_9_patch_audit
@@ -254,7 +254,7 @@
       - name: "6.2.9 | PATCH | Ensure all users' home directories exist"
         ansible.builtin.file:
             path: "{{ item.0 }}"
-            recurse: true
+            recurse: false
             mode: a-st,g-w,o-rwx
         register: rhel_08_6_2_9_patch
         when:
@@ -327,7 +327,7 @@
         register: rhel_08_6_2_11_audit
 
       - name: "6.2.11 | AUDIT | Ensure users' home directories permissions are 750 or more restrictive"
-        ansible.builtin.shell: find -H {{ item.0 | quote }} -not -type l -perm /027
+        ansible.builtin.shell: find -H {{ item.0 | quote }} type -d -not -type l -perm /027
         check_mode: false
         changed_when: rhel_08_6_2_11_patch_audit.stdout | length > 0
         register: rhel_08_6_2_11_patch_audit
@@ -345,6 +345,7 @@
             path: "{{ item.0 }}"
             recurse: true
             mode: a-st,g-w,o-rwx
+            follow: false
         register: rhel_08_6_2_11_patch
         when:
             - not ansible_check_mode

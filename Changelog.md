@@ -1,5 +1,18 @@
 # Changes to rhel8CIS
 
+## 1.5.14 based on CIS v2.0.0
+
+- audit updates
+  - pre and post and format type updates
+  - #323 thanks to @cobrin preserve copied audit files permissions
+  - python 3 only
+
+- journald
+  - #320 thanks to @bbbbaassiieeee set files even if rsyslog chosen
+
+- home directories files change links
+  - #322 thanks to @mballon
+
 ## 1.5.13
 
 - Improvements for workflow and new pipeline methods

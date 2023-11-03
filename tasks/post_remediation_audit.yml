@@ -1,7 +1,7 @@
 ---
 
 - name: "Post Audit | Run post_remediation {{ benchmark }} audit"
-  ansible.builtin.shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -o {{ post_audit_outfile }} -g {{ group_names }}"
+  ansible.builtin.shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path | quote }} -o {{ post_audit_outfile | quote }} -g {{ group_names | quote }}"
   environment: "{{ audit_run_script_environment | default ({}) }}"
   vars:
       warn: false
@@ -18,7 +18,7 @@
 - name: Post Audit | Capture audit data if json format
   block:
       - name: Post Audit |  "capture data {{ post_audit_outfile }}"
-        ansible.builtin.shell: "cat {{ post_audit_outfile }}"
+        ansible.builtin.shell: "cat {{ post_audit_outfile | quote }}"
         register: post_audit
         changed_when: false
 
@@ -33,7 +33,7 @@
 - name: Post Audit | Capture audit data if documentation format
   block:
       - name: "Post Audit | capture data {{ post_audit_outfile }}"
-        ansible.builtin.shell: "tail -2 {{ post_audit_outfile }}"
+        ansible.builtin.shell: "tail -2 {{ post_audit_outfile | quote }}"
         register: post_audit
         changed_when: false
 

@@ -406,7 +406,7 @@ rhel8cis_tmp_svc: false
 # DO NOT USE PLAIN TEXT PASSWORDS!!!!!
 # The intent here is to use a password utility like Ansible Vault here
 rhel8cis_rh_sub_user: user
-rhel8cis_rh_sub_password: password
+rhel8cis_rh_sub_password: password  # pragma: allowlist secret
 
 # 1.2.2
 # Do you require rhnsd
@@ -417,8 +417,8 @@ rhel8cis_rhnsd_required: false
 rhel8cis_xinetd_required: false
 
 # 1.4.1 Bootloader password
-rhel8cis_bootloader_password_hash: 'grub.pbkdf2.sha512.changethispassword'
-rhel8cis_bootloader_password: random
+rhel8cis_bootloader_password_hash: 'grub.pbkdf2.sha512.changethispassword'  # pragma: allowlist secret
+rhel8cis_bootloader_password: random  # pragma: allowlist secret
 rhel8cis_set_boot_pass: false
 
 # 1.9 patch system
