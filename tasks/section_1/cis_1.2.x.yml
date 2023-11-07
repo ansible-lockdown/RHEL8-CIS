@@ -35,7 +35,7 @@
       - patch
       - rule_1.2.2
 
-- name: "1.2.3| PATCH | Ensure gpgcheck is globally activated"
+- name: "1.2.3 | PATCH | Ensure gpgcheck is globally activated"
   block:
       - name: "1.2.3 | AUDIT | Ensure gpgcheck is globally activated | Find repos"
         ansible.builtin.find:
