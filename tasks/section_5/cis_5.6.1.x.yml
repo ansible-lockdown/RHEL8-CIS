@@ -78,7 +78,7 @@
       - password
       - rule_5.6.1.4
 
-- name: "5.6.1.5 |  PATCH | Ensure all users last password change date is in the past"
+- name: "5.6.1.5 | PATCH | Ensure all users last password change date is in the past"
   block:
       - name: "5.6.1.5 | AUDIT | Ensure all users last password change date is in the past | Get current date in Unix Time"
         ansible.builtin.shell: echo $(($(date --utc --date "$1" +%s)/86400))
