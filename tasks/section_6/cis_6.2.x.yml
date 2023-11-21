@@ -46,7 +46,7 @@
       - groups
       - rule_6.2.2
 
-- name: "6.2.3 | AUDIT Ensure no duplicate UIDs exist"
+- name: "6.2.3 | AUDIT | Ensure no duplicate UIDs exist"
   block:
       - name: "6.2.3 | AUDIT | Ensure no duplicate UIDs exist | Check for duplicate UIDs"
         ansible.builtin.shell: "pwck -r | awk -F: '{if ($3 in uid) print $1 ; else uid[$3]}' /etc/passwd"
@@ -134,7 +134,7 @@
       - users
       - rule_6.2.5
 
-- name: "6.2.6 | AUDIT |Ensure no duplicate group names exist"
+- name: "6.2.6 | AUDIT | Ensure no duplicate group names exist"
   block:
       - name: "6.2.6 | AUDIT | Ensure no duplicate group names exist | Check for duplicate group names"
         ansible.builtin.shell: 'getent passwd | cut -d: -f1 | sort -n | uniq -d'

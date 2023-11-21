@@ -225,13 +225,13 @@
         failed_when: false
         register: rhel8cis_3_4_2_8_inconnectionrule
 
-      - name: "3.4.2.8| AUDIT | Ensure nftables outbound and established connections are configured | Gather outbound connection rules"
+      - name: "3.4.2.8 | AUDIT | Ensure nftables outbound and established connections are configured | Gather outbound connection rules"
         ansible.builtin.shell: nft list ruleset | awk '/hook output/,/}/' | grep -E 'ip protocol (tcp|udp|icmp) ct state'
         changed_when: false
         failed_when: false
         register: rhel8cis_3_4_2_8_outconnectionrule
 
-      - name: "3.4.2.8| PATCH | Ensure nftables outbound and established connections are configured | Add input tcp established accept policy"
+      - name: "3.4.2.8 | PATCH | Ensure nftables outbound and established connections are configured | Add input tcp established accept policy"
         ansible.builtin.shell: nft add rule inet "{{ rhel8cis_nft_tables_tablename }}" input ip protocol tcp ct state established accept
         when: '"ip protocol tcp ct state established accept" not in rhel8cis_3_4_2_8_inconnectionrule.stdout'
 
