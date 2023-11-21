@@ -37,7 +37,7 @@ repos:
     exclude: package.lock.json
 
 - repo: https://github.com/gitleaks/gitleaks
-  rev: v8.18.0
+  rev: v8.18.1
   hooks:
   - id: gitleaks
     args: ['--baseline-path', '.config/.gitleaks-report.json']
