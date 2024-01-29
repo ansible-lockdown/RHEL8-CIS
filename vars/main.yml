@@ -6,6 +6,7 @@ rhel8cis_allowed_crypto_policies:
     - 'DEFAULT'
     - 'FUTURE'
     - 'FIPS'
+rhel8cis_crypto_override: false
 
 rhel8cis_allowed_crypto_policies_modules:
     - 'OSPP'

@@ -8,7 +8,7 @@
 
       - name: "1.10 | PATCH | Ensure system-wide crypto policy is not legacy"
         ansible.builtin.shell: |
-            update-crypto-policies --set "{{ rhel8cis_full_crypto_policy }}"
+            update-crypto-policies --set "{{ rhel8cis_full_crypto_policy }}{% if rhel8cis_crypto_override %}:RSA-2048{% endif %}"
             update-crypto-policies
         notify: change_requires_reboot
         when:

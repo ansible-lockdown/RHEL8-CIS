@@ -442,7 +442,7 @@ rhel8cis_ipv6_required: true
 
 rhel8cis_ipv6_sysctl_force: true
 
-##  Optional - Understand the impact of making the following two control to true
+##  Optional - Understand the impact of making the following controls to true
 # By default, we do not disable IPv6 on localhost, as it's important for multiple
 # components.  If you want to disable it anyway, change the following
 # value to true refer https://access.redhat.com/solutions/8709
@@ -453,6 +453,13 @@ rhel8cis_ipv6_disable_localhost: false
 rhel8cis_ipv6_sshd_disable: false
 # disable chrony on ipv6
 rhel8cis_ipv6_chrony_disable: false
+##
+# Pam Change remove null ok from system/password-auth files manual change for 5.4.1 if not using authselect
+rhel8cis_remove_nullok: true
+# Allow override of crypto polices tyo enable some alternate repos etc when policy is FIPS or FUTURE
+rhel8cis_optional_crypto_module: false
+rhel8cis_optional_key_exchange: 'ECDHE RSA DHE DHE-RSA PSK DHE-PSK ECDHE-PSK ECDHE-GSS DHE-GSS'
+rhel8cis_optional_rsa_size: 2048
 
 # AIDE
 rhel8cis_config_aide: true
