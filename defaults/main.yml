@@ -53,7 +53,10 @@ audit_content: git
 run_audit: false
 
 # Timeout for those cmds that take longer to run where timeout set
-audit_cmd_timeout: 30000
+audit_cmd_timeout: 120000
+
+# Run heavy tests allow audit to run tests that could have an impact on the system resources while checking
+run_heavy_tests: true
 
 ### End Goss enablements ####
 #### Detailed settings found at the end of this document ####

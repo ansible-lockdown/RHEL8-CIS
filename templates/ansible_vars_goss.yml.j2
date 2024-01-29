@@ -10,6 +10,9 @@ host_os_distribution: {{ ansible_distribution }}
 # timeout for each command to run where set - default = 10seconds/10000ms
 timeout_ms: {{ audit_cmd_timeout }}
 
+# Allow the audit to run heavy tests which may utilise resources and impact performance
+run_heavy_tests: {{ run_heavy_tests }}
+
 # Taken from LE rhel8-cis
 rhel8cis_section1: {{ rhel8cis_section1 }}
 rhel8cis_section2: {{ rhel8cis_section2 }}
