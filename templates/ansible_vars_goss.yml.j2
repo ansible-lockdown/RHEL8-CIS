@@ -69,7 +69,7 @@ rhel8cis_rule_1_1_8_3: {{ rhel8cis_rule_1_1_8_3 }}
 rhel8cis_rule_1_1_9: {{ rhel8cis_rule_1_1_9 }}
 rhel8cis_rule_1_1_10: {{ rhel8cis_rule_1_1_10 }}
 
-rhel8cis_rule_1_2_1: {% if ansible_distribution == "RedHat" %}True{% else %}False{% endif %}  # Only run if Redhat and Subscribed
+rhel8cis_rule_1_2_1: {% if ansible_distribution == "RedHat" and rhel8cis_rule_1_2_1 %}True{% else %}False{% endif %}  # Only run if Redhat and Subscribed
 rhel8cis_rule_1_2_2: {{ rhel8cis_rule_1_2_2 }}
 rhel8cis_rule_1_2_3: {{ rhel8cis_rule_1_2_3 }}
 rhel8cis_rule_1_2_4: {{ rhel8cis_rule_1_2_4 }}
