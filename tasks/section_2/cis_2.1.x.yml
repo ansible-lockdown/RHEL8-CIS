@@ -24,13 +24,15 @@
             group: root
             mode: 0644
 
-      - name: "2.1.2 | PATCH | Ensure chrony is configured | modify /etc/sysconfig/chronyd | 1"
+      - name: "2.1.2 | PATCH | Ensure chrony is configured | modify /etc/sysconfig/chronyd"
         ansible.builtin.lineinfile:
             path: /etc/sysconfig/chronyd
-            regexp: "^(#)?OPTIONS"
-            line: "OPTIONS=\"-u chrony\""
+            regexp: OPTIONS=\"(.*)(?!-u chrony)(.*)"
+            line: OPTIONS="\1\2 -u chrony"
             create: true
-            mode: 0644
+            backrefs: true
+            mode: '0644'
+
   when:
       - rhel8cis_time_synchronization == "chrony"
       - rhel8cis_rule_2_1_2
