@@ -1,5 +1,18 @@
 # Changes to rhel8CIS
 
+## 1.5.15 - based on CIS v2.0.0
+
+- Update to 2.1.2. sysconfig for chronyd
+
+- Added optional control thanks to @bbaassssiiee
+  - #273 - ability to use crypto Future with options - optional control added
+  - #329 - pam remove nullok - optional control added
+
+- update to audit thanks you @aaosopra
+  - #336
+  - #337
+  - #338
+
 ## 1.5.14 based on CIS v2.0.0
 
 - audit updates
