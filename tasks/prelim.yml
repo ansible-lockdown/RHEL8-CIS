@@ -237,7 +237,7 @@
 # Not assigned directly to any control but a requirement - manual change for 5.4.1 if not using authselect
 - name: "PRELIM | Optional | Remove the ability to login without a password"
   ansible.builtin.replace:
-      file: "{{ item }}"
+      path: "{{ item }}"
       regexp: '\snullok'
       replace: ''
   loop:

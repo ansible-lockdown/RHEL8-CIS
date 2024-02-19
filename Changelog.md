@@ -2,6 +2,15 @@
 
 ## 1.5.15 - based on CIS v2.0.0
 
+### Audit
+
+- ability to run audit_only
+  - var audit_only: true
+  - tidy up of audit variables to var/audit.yml and some in defaults/main.ym
+- goss version increased to 0.3.23 - Doesn't run with latest version 0.4+
+
+- updated 5.4.1 a,d 5.4.2 for authselect
+
 - Update to 2.1.2. sysconfig for chronyd
 
 - Added optional control thanks to @bbaassssiiee
