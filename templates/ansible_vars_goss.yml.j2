@@ -10,6 +10,9 @@ host_os_distribution: {{ ansible_distribution }}
 # timeout for each command to run where set - default = 10seconds/10000ms
 timeout_ms: {{ audit_cmd_timeout }}
 
+# Allow the audit to run heavy tests which may utilise resources and impact performance
+run_heavy_tests: {{ audit_run_heavy_tests }}
+
 # Taken from LE rhel8-cis
 rhel8cis_section1: {{ rhel8cis_section1 }}
 rhel8cis_section2: {{ rhel8cis_section2 }}
@@ -29,7 +32,6 @@ run_heavy_tests: true
 rhel8cis_legacy_boot: {{ rhel8cis_legacy_boot }}
 {% endif %}
 
-rhel8cis_set_boot_pass: {{ rhel8cis_set_boot_pass }}
 # These variables correspond with the CIS rule IDs or paragraph numbers defined in
 # the CIS benchmark documents.
 # PLEASE NOTE: These work in coordination with the section # group variables and tags.
@@ -69,7 +71,7 @@ rhel8cis_rule_1_1_8_3: {{ rhel8cis_rule_1_1_8_3 }}
 rhel8cis_rule_1_1_9: {{ rhel8cis_rule_1_1_9 }}
 rhel8cis_rule_1_1_10: {{ rhel8cis_rule_1_1_10 }}
 
-rhel8cis_rule_1_2_1: {% if ansible_distribution == "RedHat" %}True{% else %}False{% endif %}  # Only run if Redhat and Subscribed
+rhel8cis_rule_1_2_1: {% if ansible_distribution == "RedHat" and rhel8cis_rule_1_2_1 %}True{% else %}False{% endif %}  # Only run if Redhat and Subscribed
 rhel8cis_rule_1_2_2: {{ rhel8cis_rule_1_2_2 }}
 rhel8cis_rule_1_2_3: {{ rhel8cis_rule_1_2_3 }}
 rhel8cis_rule_1_2_4: {{ rhel8cis_rule_1_2_4 }}

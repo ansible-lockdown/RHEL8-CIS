@@ -3,7 +3,7 @@
 - name: "5.4.1 | PATCH | Ensure custom authselect profile is used"
   block:
       - name: "5.4.1 | AUDIT | Ensure custom authselect profile is used | Gather profiles"
-        ansible.builtin.shell: 'authselect current | grep "Profile ID: custom/"'
+        ansible.builtin.shell: authselect list | grep custom | awk '{print $2}'
         failed_when: false
         changed_when: false
         check_mode: false
@@ -15,9 +15,22 @@
                 - "Below are the current custom profiles"
                 - "{{ rhel8cis_5_4_1_profiles.stdout_lines }}"
 
+      - name: "5.4.1 | AUDIT | Ensure custom authselect profile is used | see if profile already exists"
+        ansible.builtin.stat:
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}"
+        register: rhel8cis_5_4_1_auth_select_profile
+
       - name: "5.4.1 | PATCH | Ensure custom authselect profile is used | Create custom profiles"
         ansible.builtin.shell: authselect create-profile {{ rhel8cis_authselect['custom_profile_name'] }} -b {{ rhel8cis_authselect['default_file_to_copy'] }}
-        when: rhel8cis_authselect_custom_profile_create
+        when:
+            - not rhel8cis_5_4_1_auth_select_profile.stat.exists
+            - rhel8cis_authselect_custom_profile_create
+
+      - name: "5.4.1 | PATCH | Ensure custom authselect profile is used | select custom profiles"
+        ansible.builtin.shell: authselect select custom/{{ rhel8cis_authselect['custom_profile_name'] }} --force
+        when:
+            - rhel8cis_5_4_1_auth_select_profile.stat.exists
+            - rhel8cis_authselect_custom_profile_create
   when:
       - rhel8cis_rule_5_4_1
   tags:
@@ -44,7 +57,7 @@
                 - "{{ rhel8cis_5_4_2_profiles_faillock.stdout_lines }}"
 
       - name: "5.4.2 | PATCH | Ensure authselect includes with-faillock | Create custom profiles"
-        ansible.builtin.shell: "authselect select custom/{{ rhel8cis_authselect['custom_profile_name'] }} with-faillock"
+        ansible.builtin.shell: "authselect select custom/{{ rhel8cis_authselect['custom_profile_name'] }} with-faillock without-nullok --force"
         when: rhel8cis_authselect_custom_profile_select
 
       - name: 5.4.2 | PATCH | Ensure authselect includes with-faillock | not auth select profile"
