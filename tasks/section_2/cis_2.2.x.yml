@@ -127,7 +127,7 @@
       - vsftpd
       - rule_2.2.8
 
-- name: "2.2.9 | PACH | Ensure TFTP Server is not installed"
+- name: "2.2.9 | PATCH | Ensure TFTP Server is not installed"
   ansible.builtin.package:
       name: tftp-server
       state: absent
