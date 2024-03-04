@@ -103,7 +103,7 @@
       path: /etc/systemd/coredump.conf
   register: systemd_coredump
   when:
-      - rhel8cis_rule_1_6_1
+      - rhel8cis_rule_1_5_1
   tags:
       - always
 
