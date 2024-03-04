@@ -497,7 +497,16 @@ rhel8cis_aide_cron:
     aide_weekday: '*'
 
 # SELinux policy
-rhel8cis_selinux_pol: targeted
+
+# SELinux can run in one of three modes: disabled, permissive, or enforcing:
+# CIS strongly discourages disabled
+# NOTE:
+# Section 1.6.1.5 forces Enforcing to be set. So If rhel8cis_rule_1_6_1_3: true
+# make sure enforcing is set below for idempotency for taks 1.6.1.3 - 5
+rhel8cis_selinux_state: enforcing
+# Configure SELinux to meet or exceed the default targeted policy, which constrains daemons and system software only.
+# Valid Inputs: targeted or mls
+rhel8cis_selinux_policy: targeted
 
 # Whether or not to run tasks related to auditing/patching the desktop environment
 rhel8cis_gui: false

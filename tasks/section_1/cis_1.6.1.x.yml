@@ -34,7 +34,7 @@
   ansible.posix.selinux:
       conf: /etc/selinux/config
       policy: "{{ rhel8cis_selinux_pol }}"
-      state: enforcing
+      state: "{{ rhel8cis_selinux_state }}"
   when:
       - not rhel8cis_selinux_disable
       - rhel8cis_rule_1_6_1_3
@@ -51,14 +51,14 @@
   ansible.posix.selinux:
       conf: /etc/selinux/config
       policy: "{{ rhel8cis_selinux_pol }}"
-      state: enforcing
+      state: "{{ rhel8cis_selinux_state }}"
   when:
       - not rhel8cis_selinux_disable
       - rhel8cis_rule_1_6_1_4
   tags:
       - level1-server
       - level1-workstation
-      - auotmated
+      - automated
       - selinux
       - patch
       - rule_1.6.1.4
