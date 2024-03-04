@@ -520,6 +520,10 @@ rhel8cis_time_synchronization_servers:
     - 2.pool.ntp.org
     - 3.pool.ntp.org
 
+# rhel8cis_ansible_chrony_managed uses the template built into this remediation to be copied to /etc/chrony.conf
+# If you are using your own self managed /etc/chrony.conf set this to false.
+rhel8cis_chrony_ansible_managed: true
+
 rhel8cis_chrony_server_options: "minpoll 8"
 rhel8cis_ntp_server_options: "iburst"
 
