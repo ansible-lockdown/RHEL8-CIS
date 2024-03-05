@@ -235,7 +235,7 @@
         ansible.builtin.stat:
             path: "{{ item }}"
         register: rhel_08_6_2_9_audit
-        with_items: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8uid_interactive_uid_start | int ) | selectattr('uid', '<=', rhel8uid_interactive_uid_stop | int ) | map(attribute='dir') | list }}"
+        with_items: "{{ rhel8cis_passwd | selectattr('shell', '!=', '/bin/false') | selectattr('shell', '!=', '/usr/bin/nologin') | selectattr('uid', '>=', rhel8uid_interactive_uid_start | int ) | selectattr('uid', '<=', rhel8uid_interactive_uid_stop | int ) | map(attribute='dir') | list }}"
 
       - name: "6.2.9 | AUDIT | Ensure all users' home directories exist"
         ansible.builtin.shell: find -H {{ item.0 | quote }} -type d -not -type l -perm /027
@@ -323,7 +323,7 @@
       - name: "6.2.11 | AUDIT | Ensure users' home directories permissions are 750 or more restrictive"
         ansible.builtin.stat:
             path: "{{ item }}"
-        with_items: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8uid_interactive_uid_start | int) | selectattr('uid', '<=', rhel8uid_interactive_uid_stop | int) | map(attribute='dir') | list }}"
+        with_items: "{{ rhel8cis_passwd | selectattr('shell', '!=', '/bin/false') | selectattr('shell', '!=', '/usr/bin/nologin') | selectattr('uid', '>=', rhel8uid_interactive_uid_start | int) | selectattr('uid', '<=', rhel8uid_interactive_uid_stop | int) | map(attribute='dir') | list }}"
         register: rhel_08_6_2_11_audit
 
       - name: "6.2.11 | AUDIT | Ensure users' home directories permissions are 750 or more restrictive"
