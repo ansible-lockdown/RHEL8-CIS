@@ -29,7 +29,7 @@
               ansible.builtin.debug:
                   msg: |
                     "Warning!! The following account are set beyond the expected expiration date:
-                     {{ rhel8cis_5_6_1_1_set_max_expiry.stdout_lines }}"
+                     {{ rhel8cis_5_6_1_1_pass_max_expire.stdout_lines | default([]) }}"
 
             - name: "5.6.1.1 | PATCH | Ensure password expiration is 365 days or less | set warning fact"
               ansible.builtin.import_tasks: warning_facts.yml
