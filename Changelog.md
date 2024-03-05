@@ -8,6 +8,8 @@
   - ability to change current users
   - variables added to defaults/main.yml to enable
 
+- ability to choose remove for mask for nfs,rpc and rsync
+
 ## 1.5.15 - based on CIS v2.0.0
 
 ### Audit
