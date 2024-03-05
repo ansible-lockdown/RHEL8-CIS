@@ -1,11 +1,12 @@
 ---
 # vars file for RHEL8-CIS
 
-min_ansible_version: 2.10.1
+min_ansible_version: 2.11.1
 rhel8cis_allowed_crypto_policies:
     - 'DEFAULT'
     - 'FUTURE'
     - 'FIPS'
+rhel8cis_crypto_override: false
 
 rhel8cis_allowed_crypto_policies_modules:
     - 'OSPP'

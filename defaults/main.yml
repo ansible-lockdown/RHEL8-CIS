@@ -35,25 +35,50 @@ benchmark_version: v2.0.0
 # Whether to skip the reboot
 skip_reboot: true
 
-#### Basic external goss audit enablement settings ####
-#### Precise details - per setting can be found at the bottom of this file ####
+###
+### Settings for associated Audit role using Goss
+###
 
-### Goss is required on the remote host
+##########################################
+### Goss is required on the remote host ###
+## Refer to vars/auditd.yml for any other settings ##
+
+# Allow audit to setup the requirements including installing git (if option chosen and downloading and adding goss binary to system)
 setup_audit: false
-# How to retrive goss
-# Options are copy or download - detailed settings at the bottom of this file
-# you will need to access to either github or the file already dowmloaded
-get_goss_file: download
 
-# how to get audit files onto host options
-# options are git/copy/get_url - use local if already available to to the host (adjust paths accordingly)
-audit_content: git
-
-# enable audits to run - this  runs the audit and get the latest content
+# enable audits to run - this runs the audit and get the latest content
 run_audit: false
 
-# Timeout for those cmds that take longer to run where timeout set
-audit_cmd_timeout: 30000
+# Only run Audit do not remediate
+audit_only: false
+# As part of audit_only
+# This will enable files to be copied back to control node
+fetch_audit_files: false
+# Path to copy the files to will create dir structure
+audit_capture_files_dir: /some/location to copy to on control node
+
+# How to retrieve audit binary
+# Options are copy or download - detailed settings at the bottom of this file
+# you will need to access to either github or the file already dowmloaded
+get_audit_binary_method: download
+
+## if get_audit_binary_method - copy the following needs to be updated for your environment
+## it is expected that it will be copied from somewhere accessible to the control node
+## e.g copy from ansible control node to remote host
+audit_bin_copy_location: /some/accessible/path
+
+# how to get audit files onto host options
+# options are git/copy/get_url other e.g. if you wish to run from already downloaded conf
+audit_content: git
+
+# archive or copy:
+audit_conf_copy: "some path to copy from"
+
+# get_url:
+audit_files_url: "some url maybe s3?"
+
+# Run heavy tests - some tests can have more impact on a system enabling these can have greater impact on a system
+audit_run_heavy_tests: true
 
 ### End Goss enablements ####
 #### Detailed settings found at the end of this document ####
@@ -94,10 +119,6 @@ rhel8cis_rule_1_1_7_5: true
 rhel8cis_rule_1_1_8_1: true
 rhel8cis_rule_1_1_8_2: true
 rhel8cis_rule_1_1_8_3: true
-rhel8cis_rule_1_1_18: true
-rhel8cis_rule_1_1_19: true
-rhel8cis_rule_1_1_20: true
-rhel8cis_rule_1_1_21: true
 rhel8cis_rule_1_1_9: true
 rhel8cis_rule_1_1_10: true
 rhel8cis_rule_1_2_1: true
@@ -367,11 +388,17 @@ rhel8cis_ftp_server: false
 rhel8cis_httpd_server: false
 rhel8cis_is_mail_server: false
 rhel8cis_net_snmp_server: false
+# Ability to choose between remove or mask(default)
 rhel8cis_nfs_server: false
+rhel8cis_nfs_mask: true
 rhel8cis_nginx_server: false
 rhel8cis_nis_server: false
+# Ability to choose between remove or mask(default)
 rhel8cis_rpc_server: false
+rhel8cis_rpc_mask: true
+# Ability to choose between remove or mask(default)
 rhel8cis_rsync_server: false
+rhel8cis_rsync_mask: true
 rhel8cis_samba_server: false
 rhel8cis_squid_server: false
 rhel8cis_telnet_server: false
@@ -439,7 +466,7 @@ rhel8cis_ipv6_required: true
 
 rhel8cis_ipv6_sysctl_force: true
 
-##  Optional - Understand the impact of making the following two control to true
+##  Optional - Understand the impact of making the following controls to true
 # By default, we do not disable IPv6 on localhost, as it's important for multiple
 # components.  If you want to disable it anyway, change the following
 # value to true refer https://access.redhat.com/solutions/8709
@@ -450,6 +477,13 @@ rhel8cis_ipv6_disable_localhost: false
 rhel8cis_ipv6_sshd_disable: false
 # disable chrony on ipv6
 rhel8cis_ipv6_chrony_disable: false
+##
+# Pam Change remove null ok from system/password-auth files manual change for 5.4.1 if not using authselect
+rhel8cis_remove_nullok: true
+# Allow override of crypto polices tyo enable some alternate repos etc when policy is FIPS or FUTURE
+rhel8cis_optional_crypto_module: false
+rhel8cis_optional_key_exchange: 'ECDHE RSA DHE DHE-RSA PSK DHE-PSK ECDHE-PSK ECDHE-GSS DHE-GSS'
+rhel8cis_optional_rsa_size: 2048
 
 # AIDE
 rhel8cis_config_aide: true
@@ -465,7 +499,16 @@ rhel8cis_aide_cron:
     aide_weekday: '*'
 
 # SELinux policy
-rhel8cis_selinux_pol: targeted
+
+# SELinux can run in one of three modes: disabled, permissive, or enforcing:
+# CIS strongly discourages disabled
+# NOTE:
+# Section 1.6.1.5 forces Enforcing to be set. So If rhel8cis_rule_1_6_1_3: true
+# make sure enforcing is set below for idempotency for taks 1.6.1.3 - 5
+rhel8cis_selinux_state: enforcing
+# Configure SELinux to meet or exceed the default targeted policy, which constrains daemons and system software only.
+# Valid Inputs: targeted or mls
+rhel8cis_selinux_policy: targeted
 
 # Whether or not to run tasks related to auditing/patching the desktop environment
 rhel8cis_gui: false
@@ -482,6 +525,10 @@ rhel8cis_time_synchronization_servers:
     - 1.pool.ntp.org
     - 2.pool.ntp.org
     - 3.pool.ntp.org
+
+# rhel8cis_ansible_chrony_managed uses the template built into this remediation to be copied to /etc/chrony.conf
+# If you are using your own self managed /etc/chrony.conf set this to false.
+rhel8cis_chrony_ansible_managed: true
 
 rhel8cis_chrony_server_options: "minpoll 8"
 rhel8cis_ntp_server_options: "iburst"
@@ -637,13 +684,27 @@ rhel8cis_authselect:
 # Any other value does nothing
 rhel8cis_pamd_manual_risks: NEVER
 
-# 5.6.1.1
-# 5.6.1.2
-# 5.6.1.3
+# 5.6.1.x
 rhel8cis_pass:
     max_days: 365
     min_days: 7
     warn_age: 7
+
+# 5.6.1.1
+## Set the following to true if you wish to adjust accounts greater than rhel8cis_pass['max_days']
+rhel8cis_5_6_1_1_set_max_expiry: false
+
+## Add users to be skipped if required
+rhel8cis_5_6_1_1_user_skip_list:
+    root
+
+# 5.6.1.2
+## Set the following to true if you wish to adjust accounts greater than rhel8cis_pass['min_days']
+rhel8cis_5_6_1_1_set_min_days_change: false
+
+# 5.6.1.3
+## Set the following to true if you wish to adjust accounts greater than rhel8cis_pass['warn_age']
+rhel8cis_5_6_1_3_set_warn_age_change: false
 
 # 5.6.1.4
 rhel8cis_inactivelock:
@@ -686,52 +747,3 @@ rhel_08_6_2_9_follow_home_symlinks: false
 
 # 6.2.12
 rhel8cis_dotperm_ansiblemanaged: true
-#### Goss Configuration Settings ####
-
-### Goss binary settings ###
-goss_version:
-    release: v0.3.21
-    checksum: 'sha256:9a9200779603acf0353d2c0e85ae46e083596c10838eaf4ee050c924678e4fe3'
-audit_bin_path: /usr/local/bin/
-audit_bin: "{{ audit_bin_path }}goss"
-audit_format: json
-
-# if get_goss_file == download change accordingly
-goss_url: "https://github.com/goss-org/goss/releases/download/{{ goss_version.release }}/goss-linux-amd64"
-
-## if get_goss_file - copy the following needs to be updated for your environment
-## it is expected that it will be copied from somewhere accessible to the control node
-## e.g copy from ansible control node to remote host
-copy_goss_from_path: /some/accessible/path
-
-### Goss Audit Benchmark file ###
-## managed by the control audit_content
-# git
-audit_file_git: "https://github.com/ansible-lockdown/{{ benchmark }}-Audit.git"
-audit_git_version: "benchmark_{{ benchmark_version }}_rh8"
-
-# copy:
-audit_local_copy: "some path to copy from"
-
-# get_url:
-audit_files_url: "some url maybe s3?"
-
-## Goss configuration information
-# Set correct env for the run_audit.sh script from https://github.com/ansible-lockdown/{{ benchmark }}-Audit.git"
-audit_run_script_environment:
-    AUDIT_BIN: "{{ audit_bin }}"
-    AUDIT_FILE: 'goss.yml'
-    AUDIT_CONTENT_LOCATION: "{{ audit_out_dir }}"
-# Where the goss configs and outputs are stored
-audit_out_dir: '/opt'
-audit_conf_dir: "{{ audit_out_dir }}/{{ benchmark }}-Audit"
-pre_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}-{{ benchmark }}_pre_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
-post_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}-{{ benchmark }}_post_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
-
-## The following should not need changing
-goss_file: "{{ audit_conf_dir }}goss.yml"
-audit_vars_path: "{{ audit_conf_dir }}/vars/{{ ansible_hostname }}.yml"
-audit_results: |
-      The pre remediation results are: {{ pre_audit_summary }}.
-      The post remediation results are: {{ post_audit_summary }}.
-      Full breakdown can be found in {{ audit_out_dir }}

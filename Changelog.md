@@ -1,5 +1,37 @@
 # Changes to rhel8CIS
 
+## 1.5.16 - Based on CIS v2.0.0
+
+- updated min ansibleversion to 2.11.1
+
+- changes to 5.6.1.[ 1, 2, 3]
+  - ability to change current users
+  - variables added to defaults/main.yml to enable
+
+- ability to choose remove for mask for nfs,rpc and rsync
+
+## 1.5.15 - based on CIS v2.0.0
+
+### Audit
+
+- ability to run audit_only
+  - var audit_only: true
+  - tidy up of audit variables to var/audit.yml and some in defaults/main.ym
+- goss version increased to 0.3.23 - Doesn't run with latest version 0.4+
+
+- updated 5.4.1 and 5.4.2 for authselect
+
+- Update to 2.1.2. sysconfig for chronyd
+
+- Added optional control thanks to @bbaassssiiee
+  - #273 - ability to use crypto Future with options - optional control added
+  - #329 - pam remove nullok - optional control added
+
+- update to audit thanks you @aaosopra
+  - #336
+  - #337
+  - #338
+
 ## 1.5.14 based on CIS v2.0.0
 
 - audit updates
@@ -157,10 +189,6 @@ Issues.
 - #228 Thanks to benbulll
   - audit binary copy var missing
 
-<<<<<<< HEAD
-=======
-
->>>>>>> devel
 ## 1.4.0
 
 - workflow improvements

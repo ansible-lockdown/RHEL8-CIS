@@ -127,7 +127,7 @@
               local2,local3.*                                          -/var/log/localmessages
               local4,local5.*                                          -/var/log/localmessages
               local6,local7.*                                          -/var/log/localmessages
-              *.emrg                                                    :omusrmsg:*
+              *.emerg                                                    :omusrmsg:*
             insertafter: '#### RULES ####'
         notify: restart rsyslog
 

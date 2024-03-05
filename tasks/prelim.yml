@@ -103,7 +103,7 @@
       path: /etc/systemd/coredump.conf
   register: systemd_coredump
   when:
-      - rhel8cis_rule_1_6_1
+      - rhel8cis_rule_1_5_1
   tags:
       - always
 
@@ -233,3 +233,36 @@
       - rhel8cis_level_2
   tags:
       - always
+
+# Not assigned directly to any control but a requirement - manual change for 5.4.1 if not using authselect
+- name: "PRELIM | Optional | Remove the ability to login without a password"
+  ansible.builtin.replace:
+      path: "{{ item }}"
+      regexp: '\snullok'
+      replace: ''
+  loop:
+      - /etc/pam.d/system-auth
+      - /etc/pam.d/password-auth
+  when: rhel8cis_remove_nullok
+
+# Allow other keys to be used while setting FUTURE or FIPS in crypto Policy
+# These settings may need to be changed to personal preference
+- name: "PRELIM | Optional | Override Ciphers/Keys/Macs if required on some crypto policies"
+  block:
+      - name: "PRELIM | Optional | Add Override file Ciphers/Keys/Macs if required on some crypto policies"
+        ansible.builtin.template:
+            src: crypto_policy_RSA.j2
+            dest: /etc/crypto-policies/policies/modules/RSA-2048
+            mode: '0440'
+            owner: root
+            group: root
+        register: rhel8cis_crypto_override_added
+
+      - name: "PRELIM | Optional | Add fact to append crypto_update_command"
+        ansible.builtin.set_fact:
+            rhel8cis_crypto_override: true
+        when: rhel8cis_crypto_override_added is defined
+  when:
+      - rhel8cis_optional_crypto_module
+      - rhel8cis_crypto_policy == 'FIPS' or rhel8cis_crypto_policy == 'FUTURE'
+      - rhel8cis_rule_1_10
