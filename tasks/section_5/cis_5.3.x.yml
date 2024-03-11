@@ -1,143 +1,96 @@
 ---
 
-- name: "5.3.1 | PATCH | Ensure sudo is installed"
-  ansible.builtin.package:
-      name: sudo
-      state: present
+- name: "5.3.1 | PATCH | Ensure AIDE is installed"
   when:
+      - rhel8cis_config_aide
       - rhel8cis_rule_5_3_1
   tags:
       - level1-server
       - level1-workstation
       - automated
+      - aide
+      - NIST800-53R5_AU-2
       - patch
-      - sudo
       - rule_5.3.1
-
-- name: "5.3.2 | PATCH | Ensure sudo commands use pty"
-  ansible.builtin.lineinfile:
-      path: /etc/sudoers
-      line: "Defaults    use_pty"
-  when:
-      - rhel8cis_rule_5_3_2
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - sudo
-      - rule_5.3.2
-
-- name: "5.3.3 | PATCH | Ensure sudo log file exists"
-  ansible.builtin.lineinfile:
-      path: /etc/sudoers
-      regexp: '^Defaults\s+logfile='
-      line: 'Defaults logfile={{ rhel8cis_sudolog_location }}'
-  when:
-      - rhel8cis_rule_5_3_3
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - sudo
-      - rule_5.3.3
-
-- name: "5.3.4 | PATCH | Ensure users must provide password for escalation"
-  ansible.builtin.replace:
-      path: "{{ item }}"
-      regexp: '^([^#|{% if system_is_ec2 %}ec2-user{% endif %}].*)NOPASSWD(.*)'
-      replace: '\1PASSWD\2'
-  with_items:
-      - "{{ rhel8cis_sudoers_files.stdout_lines }}"
-  when:
-      - rhel8cis_rule_5_3_4
-  tags:
-      - level2-server
-      - level2-workstation
-      - automated
-      - patch
-      - sudo
-      - rule_5.3.4
-
-- name: "5.3.5 | PATCH | Ensure re-authentication for privilege escalation is not disabled globally"
-  ansible.builtin.replace:
-      path: "{{ item }}"
-      regexp: '^([^#].*)!authenticate(.*)'
-      replace: '\1authenticate\2'
-  with_items:
-      - "{{ rhel8cis_sudoers_files.stdout_lines }}"
-  when:
-      - rhel8cis_rule_5_3_5
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - sudo
-      - rule_5.3.5
-
-- name: "5.3.6 | PATCH | Ensure sudo authentication timeout is configured correctly"
   block:
-      - name: "5.3.6 | AUDIT | Ensure sudo authentication timeout is configured correctly | Get files with timeout set"
-        ansible.builtin.shell: grep -is 'timestamp_timeout' /etc/sudoers /etc/sudoers.d/* | cut -d":" -f1 | uniq | sort
+      - name: "5.3.1 | PATCH | Ensure AIDE is installed | Install AIDE"
+        ansible.builtin.package:
+            name: aide
+            state: present
+
+      - name: "5.3.1 | PATCH | Ensure AIDE is installed | Configure AIDE"
+        ansible.builtin.shell: /usr/sbin/aide --init
         changed_when: false
         failed_when: false
-        register: rhel8cis_5_3_6_timeout_files
+        async: 45
+        poll: 0
+        args:
+            creates: /var/lib/aide/aide.db.new.gz
+        when: not ansible_check_mode
 
-      - name: "5.3.6 | PATCH | Ensure sudo authentication timeout is configured correctly | Set value if no results"
-        ansible.builtin.lineinfile:
-            path: /etc/sudoers
-            regexp: 'Defaults timestamp_timeout='
-            line: "Defaults timestamp_timeout={{ rhel8cis_sudo_timestamp_timeout }}"
-            validate: '/usr/sbin/visudo -cf %s'
-        when: rhel8cis_5_3_6_timeout_files.stdout | length == 0
+      - name: "5.3.1 | PATCH | Ensure AIDE is installed  | copy AIDE DB"
+        ansible.builtin.copy:
+            src: /var/lib/aide/aide.db.new.gz
+            dest: /var/lib/aide/aide.db.gz
+            remote_src: true
 
-      - name: "5.3.6 | PATCH | Ensure sudo authentication timeout is configured correctly | Set value if has results"
-        ansible.builtin.replace:
-            path: "{{ item }}"
-            regexp: 'timestamp_timeout=(\d+)'
-            replace: "timestamp_timeout={{ rhel8cis_sudo_timestamp_timeout }}"
-            validate: '/usr/sbin/visudo -cf %s'
-        with_items:
-            - "{{ rhel8cis_5_3_6_timeout_files.stdout_lines }}"
-        when: rhel8cis_5_3_6_timeout_files.stdout | length > 0
+- name: "5.3.2 | PATCH | Ensure filesystem integrity is regularly checked"
   when:
-      - rhel8cis_rule_5_3_6
+      - rhel8cis_rule_5_3_2
+      - rhel8cis_config_aide
+      - not system_is_ec2
   tags:
       - level1-server
       - level1-workstation
       - automated
+      - aide
+      - NIST800-53R5_AU-2
+      - file_integrity
       - patch
-      - sudo
-      - rule_5.3.6
-
-- name: "5.3.7 | PATCH | Ensure access to the su command is restricted"
+      - rule_5.3.2
   block:
-      - name: "5.3.7 | PATCH | Ensure access to the su command is restricted | Ensure sugroup exists"
-        ansible.builtin.group:
-            name: "{{ rhel8cis_sugroup }}"
-            state: present
-        register: rhel8cis_5_3_7_sugroup
+      - name: "5.3.2 | PATCH | Ensure filesystem integrity is regularly checked | cron"
+        when: rhel8cis_aide_scan == "cron"
+        ansible.builtin.cron:
+            name: Run AIDE integrity check
+            cron_file: "{{ rhel8cis_aide_cron['cron_file'] }}"
+            user: "{{ rhel8cis_aide_cron['cron_user'] }}"
+            minute: "{{ rhel8cis_aide_cron['aide_minute'] | default('0') }}"
+            hour: "{{ rhel8cis_aide_cron['aide_hour'] | default('5') }}"
+            day: "{{ rhel8cis_aide_cron['aide_day'] | default('*') }}"
+            month: "{{ rhel8cis_aide_cron['aide_month'] | default('*') }}"
+            weekday: "{{ rhel8cis_aide_cron['aide_weekday'] | default('*') }}"
+            job: "{{ rhel8cis_aide_cron['aide_job'] }}"
 
-      - name: "5.3.7 | PATCH | Ensure access to the su command is restricted | remove users from group"
-        ansible.builtin.lineinfile:
-            path: /etc/group
-            regexp: '^{{ rhel8cis_sugroup }}(:.:.*:).*$'
-            line: '{{ rhel8cis_sugroup }}\g<1>'
-            backrefs: true
+      - name: "5.3.2 | PATCH | Ensure filesystem integrity is regularly checked | timer"
+        when: rhel8cis_aide_scan == "timer"
+        ansible.builtin.systemd:
+            name: "{{ item.name }}"
+            enabled: true
+            state: "{{ item.state | default(omit)}}"
+        loop:
+            - { name: 'aidecheck.service' }
+            - { name: 'aidecheck.timer', state: started }
 
-      - name: "5.3.7 | PATCH | Ensure access to the su command is restricted | Setting pam_wheel to use_uid"
-        ansible.builtin.lineinfile:
-            path: /etc/pam.d/su
-            regexp: '^(#)?auth\s+required\s+pam_wheel\.so'
-            line: 'auth           required        pam_wheel.so use_uid group={{ rhel8cis_sugroup }}'
+- name: "5.3.3 | Ensure cryptographic mechanisms are used to protect the integrity of audit tools"
   when:
-      - rhel8cis_rule_5_3_7
+      - rhel8cis_rule_5_3_3
+      - not system_is_ec2
   tags:
       - level1-server
       - level1-workstation
-      - automated
+      - aide
+      - file_integrity
       - patch
-      - sudo
-      - rule_5.3.7
+      - rule_5.3.3
+  ansible.builtin.blockinfile:
+      path: /etc/aide.conf
+      marker: "# {mark} Audit tools - CIS benchmark - Ansible-lockdown"
+      block: |
+        /sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512
+        /sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512
+        /sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512
+        /sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512
+        /sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512
+        /sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512
+      validate: aide -D --config %s

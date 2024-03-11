@@ -9,6 +9,6 @@
       mode: 0600
   register: audit_rules_updated
   notify:
-      - auditd_immutable_check
-      - audit_immutable_fact
-      - restart auditd
+      - Auditd_immutable_check
+      - Audit_immutable_fact
+      - Restart_auditd

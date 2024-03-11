@@ -2,52 +2,76 @@
 # tasks file for RHEL8-CIS
 
 - name: Check OS version and family
-  ansible.builtin.assert:
-      that: (ansible_distribution != 'CentOS' and ansible_os_family == 'RedHat' or ansible_os_family == "Rocky") and ansible_distribution_major_version is version_compare('8', '==')
-      fail_msg: "This role can only be run against Supported OSs. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
-      success_msg: "This role is running against a supported OS {{ ansible_distribution }} {{ ansible_distribution_major_version }}"
   when:
       - os_check
       - not system_is_ec2
   tags:
       - always
+  ansible.builtin.assert:
+      that: (ansible_distribution != 'CentOS' and ansible_os_family == 'RedHat' or ansible_os_family == "Rocky") and ansible_distribution_major_version is version_compare('8', '==')
+      fail_msg: "This role can only be run against Supported OSs. {{ ansible_facts.distribution }} {{ ansible_facts.distribution_major_version }} is not supported."
+      success_msg: "This role is running against a supported OS {{ ansible_facts.distribution }} {{ ansible_distribution_major_version }}"
 
 - name: Check ansible version
+  tags:
+      - always
   ansible.builtin.assert:
       that: ansible_version.full is version_compare(min_ansible_version, '>=')
       fail_msg: "You must use Ansible {{ min_ansible_version }} or greater"
       success_msg: "This role is running a supported version of ansible {{ ansible_version.full }} >= {{ min_ansible_version }}"
-  tags:
-      - always
 
 - name: Check crypto-policy input
+  when:
+      - rhel8cis_rule_1_6_1
+  tags:
+      - rule_1.6.1
   ansible.builtin.assert:
       that: rhel8cis_crypto_policy in rhel8cis_allowed_crypto_policies
-  when:
-      - rhel8cis_rule_1_10
-  tags:
-      - rule_1.10
 
 - name: Check crypto-policy module input
-  ansible.builtin.assert:
-      that: rhel8cis_crypto_policy_module in rhel8cis_allowed_crypto_policies_modules
   when:
-      - rhel8cis_rule_1_10
+      - rhel8cis_rule_1_6_1
       - rhel8cis_crypto_policy_module | length > 0
   tags:
-      - rule_1.10
+      - rule_1.6.1
+  ansible.builtin.assert:
+      that: rhel8cis_crypto_policy_module in rhel8cis_allowed_crypto_policies_modules
 
 - name: Check rhel8cis_bootloader_password_hash variable has been changed
-  ansible.builtin.assert:
-      that: rhel8cis_bootloader_password_hash.find('grub.pbkdf2.sha512') != -1 and rhel8cis_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'  # pragma: allowlist secret
-      msg: "This role will not be able to run single user password commands as rhel8cis_bootloader_password_hash variable has not been set correctly"  # pragma: allowlist secret
   when:
       - rhel8cis_set_boot_pass
       - rhel8cis_rule_1_4_1
   tags:
       - always
+  ansible.builtin.assert:
+      that: rhel8cis_bootloader_password_hash.find('grub.pbkdf2.sha512') != -1 and rhel8cis_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'  # pragma: allowlist secret
+      msg: "This role will not be able to run single user password commands as rhel8cis_bootloader_password_hash variable has not been set correctly"  # pragma: allowlist secret
+
+- name: Ensure root password is set
+  when:
+      - rhel8cis_rule_4_5_2_4
+  tags:
+      - always
+  block:
+      - name: Ensure root password is set
+        ansible.builtin.shell: passwd -S root | egrep -e "(Password set, SHA512 crypt|Password locked)"
+        changed_when: false
+        failed_when: false
+        register: root_passwd_set
+
+      - name: Ensure root password is set
+        ansible.builtin.assert:
+            that: root_passwd_set.rc == 0
+            fail_msg: "You have rule 4.5.2.4 enabled this requires that you have a root password set"
+            success_msg: "You have a root password set"
 
 - name: Setup rules if container
+  when:
+      - ansible_connection == 'docker' or
+        ansible_facts.virtualization_type in ["docker", "lxc", "openvz", "podman", "container"]
+  tags:
+      - container_discovery
+      - always
   block:
       - name: Discover and set container variable if required
         ansible.builtin.set_fact:
@@ -58,18 +82,16 @@
             file: "{{ container_vars_file }}"
 
       - name: Output if discovered is a container
-        ansible.builtin.debug:
-            msg: system has been discovered as a container
         when:
             - system_is_container
-  when:
-      - ansible_connection == 'docker' or
-        ansible_virtualization_type in ["docker", "lxc", "openvz", "podman", "container"]
-  tags:
-      - container_discovery
-      - always
+        ansible.builtin.debug:
+            msg: system has been discovered as a container
 
 - name: "Check password set for {{ ansible_user }}"
+  when:
+      - ansible_env.SUDO_USER is defined
+      - not system_is_ec2
+      - not audit_only
   block:
       - name: Capture current password state of connecting user"
         ansible.builtin.shell: "grep {{ ansible_env.SUDO_USER }} /etc/shadow | awk -F: '{print $2}'"
@@ -85,126 +107,135 @@
             success_msg: "You have a password set for the {{ ansible_env.SUDO_USER }} user"
         vars:
             sudo_password_rule: rhel8cis_rule_5_3_4  # pragma: allowlist secret
-  when:
-      - rhel8cis_rule_5_3_4
-      - ansible_env.SUDO_USER is defined
-      - not system_is_ec2
-  tags:
-      - user_passwd
 
-- name: Include preliminary steps
-  ansible.builtin.import_tasks: prelim.yml
+- name: Include prelim tasks
   tags:
       - prelim_tasks
-      - always
+      - run_audit
+  ansible.builtin.import_tasks:
+      file: prelim.yml
 
 - name: Include audit specific variables
-  ansible.builtin.include_vars: audit.yml
   when:
       - run_audit or audit_only
       - setup_audit
   tags:
       - setup_audit
       - run_audit
+  ansible.builtin.include_vars:
+      file: audit.yml
 
 - name: Include pre-remediation audit tasks
-  ansible.builtin.import_tasks: pre_remediation_audit.yml
   when:
       - run_audit or audit_only
       - setup_audit
   tags:
       - run_audit
+  ansible.builtin.import_tasks:
+      file: pre_remediation_audit.yml
 
 - name: Gather the package facts after prelim
+  tags:
+      - always
   ansible.builtin.package_facts:
       manager: auto
-  tags:
-      - always
 
 - name: Include OS specific variables
-  ansible.builtin.include_vars: "{{ ansible_distribution }}.yml"
   tags:
       - always
+  ansible.builtin.include_vars:
+      file: "{{ ansible_distribution }}.yml"
 
 - name: Capture /etc/password variables
-  ansible.builtin.import_tasks: parse_etc_password.yml
   when:
       - rhel8cis_section5 or
         rhel8cis_section6
   tags:
       - always
+  ansible.builtin.import_tasks:
+      file: parse_etc_password.yml
 
 - name: Run Section 1 tasks
-  ansible.builtin.import_tasks: section_1/main.yml
   when:
       - rhel8cis_section1
   tags:
       - rhel8cis_section1
+  ansible.builtin.import_tasks:
+      file: section_1/main.yml
 
 - name: Run Section 2 tasks
-  ansible.builtin.import_tasks: section_2/main.yml
   when:
       - rhel8cis_section2
   tags:
       - rhel8cis_section2
+  ansible.builtin.import_tasks:
+      file: section_2/main.yml
 
 - name: Run Section 3 tasks
-  ansible.builtin.import_tasks: section_3/main.yml
   when:
       - rhel8cis_section3
   tags:
       - rhel8cis_section3
+  ansible.builtin.import_tasks:
+      file: section_3/main.yml
 
 - name: Run Section 4 tasks
-  ansible.builtin.import_tasks: section_4/main.yml
   when:
       - rhel8cis_section4
   tags:
       - rhel8cis_section4
+  ansible.builtin.import_tasks:
+      file: section_4/main.yml
 
 - name: run Section 5 tasks
-  ansible.builtin.import_tasks: section_5/main.yml
   when:
       - rhel8cis_section5
   tags:
       - rhel8cis_section5
+  ansible.builtin.import_tasks:
+      file: section_5/main.yml
 
 - name: Run Section 6 tasks
-  ansible.builtin.import_tasks: section_6/main.yml
   when:
       - rhel8cis_section6
   tags:
       - rhel8cis_section6
+  ansible.builtin.import_tasks:
+      file: section_6/main.yml
 
 - name: Run auditd logic
-  ansible.builtin.import_tasks: auditd.yml
   when:
       - update_audit_template
   tags:
       - always
+  ansible.builtin.import_tasks:
+      file: auditd.yml
 
-- name: run post remediation tasks
-  ansible.builtin.import_tasks: post.yml
+- name: Run post remediation tasks
   tags:
       - post_tasks
       - always
+  ansible.builtin.import_tasks:
+      file: post.yml
 
-- name: Run post audit
+- name: Run post_remediation audit
+  when:
+      - run_audit
+  tags:
+      - run_audit
   ansible.builtin.import_tasks:
       file: post_remediation_audit.yml
-  when:
-      - run_audit
 
 - name: Show Audit Summary
-  ansible.builtin.debug:
-      msg: "{{ audit_results.split('\n') }}"
   when:
       - run_audit
   tags:
       - run_audit
+  ansible.builtin.debug:
+      msg: "{{ audit_results.split('\n') }}"
 
 - name: Output Warning count and control IDs affected
-  ansible.builtin.debug:
-      msg: "You have {{ warn_count }} warning(s) that require investigating that are related to the following benchmark ID(s) {{ warn_control_list }}"
   tags:
       - always
+  ansible.builtin.debug:
+      msg: "You have {{ warn_count }} warning(s) that require investigating that are related to the following benchmark ID(s) {{ warn_control_list }}"

@@ -1,109 +1,164 @@
 ---
 
-- name: "4.1.1.1 | PATCH | Ensure auditd is installed"
-  block:
-      - name: "4.1.1.1 | PATCH | Ensure auditd is installed | Install auditd packages"
-        ansible.builtin.package:
-            name: audit
-            state: present
-        when: '"auditd" not in ansible_facts.packages'
-
-      - name: "4.1.1.1 | PATCH | Ensure auditd is installed | Install auditd-lib packages"
-        ansible.builtin.package:
-            name: audit-libs
-            state: present
-        when: '"auditd-lib" not in ansible_facts.packages'
+- name: "4.1.1.1 | PATCH | Ensure cron daemon is enabled and active"
   when:
       - rhel8cis_rule_4_1_1_1
   tags:
-      - level2-server
-      - level2-workstation
+      - level1-server
+      - level1-workstation
       - automated
       - patch
-      - auditd
+      - cron
+      - NIST800-53R5_CM-1
+      - NIST800-53R5_CM-2
+      - NIST800-53R5_CM-6
+      - NIST800-53R5_CM-7
+      - NIST800-53R5_IA-5
       - rule_4.1.1.1
-
-- name: "4.1.1.2 | PATCH | Ensure auditd service is enabled"
-  ansible.builtin.service:
-      name: auditd
-      state: started
+  ansible.builtin.systemd:
+      name: crond
       enabled: true
+      state: started
+
+- name: "4.1.1.2 | PATCH | Ensure permissions on /etc/crontab are configured"
   when:
       - rhel8cis_rule_4_1_1_2
   tags:
-      - level2-server
-      - level2-workstation
+      - level1-server
+      - level1-workstation
       - automated
       - patch
-      - auditd
+      - cron
+      - NIST800-53R5_AC-3
+      - NIST800-53R5_MP-2
       - rule_4.1.1.2
+  ansible.builtin.file:
+      path: /etc/crontab
+      owner: root
+      group: root
+      mode: '0600'
 
-- name: "4.1.1.3 | PATCH | Ensure auditing for processes that start prior to auditd is enabled"
-  block:
-      - name: "4.1.1.3 | AUDIT | Ensure auditing for processes that start prior to auditd is enabled | Get GRUB_CMDLINE_LINUX"
-        ansible.builtin.shell: grep 'GRUB_CMDLINE_LINUX=' /etc/default/grub | sed 's/.$//'
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        register: rhel8cis_4_1_1_3_grub_cmdline_linux
-
-      - name: "4.1.1.3 | PATCH | Ensure auditing for processes that start prior to auditd is enabled | Replace existing setting"
-        ansible.builtin.replace:
-            path: /etc/default/grub
-            regexp: 'audit=.'
-            replace: 'audit=1'
-        notify: rhel8cis_grub2cfg
-        when: "'audit=' in rhel8cis_4_1_1_3_grub_cmdline_linux.stdout"
-
-      - name: "4.1.1.3 | PATCH | Ensure auditing for processes that start prior to auditd is enabled | Add audit setting if missing"
-        ansible.builtin.lineinfile:
-            path: /etc/default/grub
-            regexp: '^GRUB_CMDLINE_LINUX='
-            line: '{{ rhel8cis_4_1_1_3_grub_cmdline_linux.stdout }} audit=1"'
-        notify: rhel8cis_grub2cfg
-        when: "'audit=' not in rhel8cis_4_1_1_3_grub_cmdline_linux.stdout"
+- name: "4.1.1.3 | PATCH | Ensure permissions on /etc/cron.hourly are configured"
   when:
       - rhel8cis_rule_4_1_1_3
   tags:
-      - level2-server
-      - level2-workstation
+      - level1-server
+      - level1-workstation
       - automated
       - patch
-      - auditd
-      - grub
+      - cron
+      - NIST800-53R5_AC-3
+      - NIST800-53R5_MP-2
       - rule_4.1.1.3
+  ansible.builtin.file:
+      path: /etc/cron.hourly
+      state: directory
+      owner: root
+      group: root
+      mode: '0700'
 
-- name: "4.1.1.4 | PATCH | Ensure audit_backlog_limit is sufficient"
-  block:
-      - name: "4.1.1.4 | AUDIT | Ensure audit_backlog_limit is sufficient | Get GRUB_CMDLINE_LINUX"
-        ansible.builtin.shell: grep 'GRUB_CMDLINE_LINUX=' /etc/default/grub | sed 's/.$//'
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        register: rhel8cis_4_1_1_4_grub_cmdline_linux
-
-      - name: "4.1.1.4 | PATCH | Ensure audit_backlog_limit is sufficient | Replace existing setting"
-        ansible.builtin.replace:
-            path: /etc/default/grub
-            regexp: 'audit_backlog_limit=\d+'
-            replace: 'audit_backlog_limit={{ rhel8cis_audit_back_log_limit }}'
-        notify: rhel8cis_grub2cfg
-        when: "'audit_backlog_limit=' in rhel8cis_4_1_1_4_grub_cmdline_linux.stdout"
-
-      - name: "4.1.1.4 | PATCH | Ensure audit_backlog_limit is sufficient | Add audit_backlog_limit setting if missing"
-        ansible.builtin.lineinfile:
-            path: /etc/default/grub
-            regexp: '^GRUB_CMDLINE_LINUX='
-            line: '{{ rhel8cis_4_1_1_4_grub_cmdline_linux.stdout }} audit_backlog_limit={{ rhel8cis_audit_back_log_limit }}"'
-        notify: rhel8cis_grub2cfg
-        when: "'audit_backlog_limit=' not in rhel8cis_4_1_1_4_grub_cmdline_linux.stdout"
+- name: "4.1.1.4 | PATCH | Ensure permissions on /etc/cron.daily are configured"
   when:
       - rhel8cis_rule_4_1_1_4
   tags:
-      - level2-server
-      - level2-workstation
+      - level1-server
+      - level1-workstation
       - automated
       - patch
-      - auditd
-      - grub
+      - cron
+      - NIST800-53R5_AC-3
+      - NIST800-53R5_MP-2
       - rule_4.1.1.4
+  ansible.builtin.file:
+      path: /etc/cron.daily
+      state: directory
+      owner: root
+      group: root
+      mode: '0700'
+
+- name: "4.1.1.5 | PATCH | Ensure permissions on /etc/cron.weekly are configured"
+  when:
+      - rhel8cis_rule_4_1_1_5
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - cron
+      - NIST800-53R5_AC-3
+      - NIST800-53R5_MP-2
+      - rule_4.1.1.5
+  ansible.builtin.file:
+      path: /etc/cron.weekly
+      state: directory
+      owner: root
+      group: root
+      mode: '0700'
+
+- name: "4.1.1.6 | PATCH | Ensure permissions on /etc/cron.monthly are configured"
+  when:
+      - rhel8cis_rule_4_1_1_6
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - cron
+      - NIST800-53R5_AC-3
+      - NIST800-53R5_MP-2
+      - rule_4.1.1.6
+  ansible.builtin.file:
+      path: /etc/cron.monthly
+      state: directory
+      owner: root
+      group: root
+      mode: '0700'
+
+- name: "4.1.1.7 | PATCH | Ensure permissions on /etc/cron.d are configured"
+  when:
+      - rhel8cis_rule_4_1_1_7
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - cron
+      - NIST800-53R5_AC-3
+      - NIST800-53R5_MP-2
+      - rule_4.1.1.7
+  ansible.builtin.file:
+      path: /etc/cron.d
+      state: directory
+      owner: root
+      group: root
+      mode: 0700
+
+- name: "4.1.1.8 | PATCH | Ensure cron is restricted to authorized users"
+  when:
+      - rhel8cis_rule_4_1_1_8
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - cron
+      - NIST800-53R5_AC-3
+      - NIST800-53R5_MP-2
+      - rule_4.1.1.8
+  block:
+      - name: "4.1.1.8 | PATCH | Ensure cron is restricted to authorized users | Remove cron.deny"
+        ansible.builtin.file:
+            path: /etc/cron.deny
+            state: absent
+
+      - name: "4.1.1.8 | PATCH | Ensure cron is restricted to authorized users | Check if cron.allow exists"
+        ansible.builtin.stat:
+            path: "/etc/cron.allow"
+        register: rhel8cis_4_1_1_8_cron_allow_state
+
+      - name: "4.1.1.8 | PATCH | Ensure cron is restricted to authorized users | Ensure cron.allow is restricted to authorized users"
+        ansible.builtin.file:
+            path: /etc/cron.allow
+            state: '{{ "file" if  rhel8cis_4_1_1_8_cron_allow_state.stat.exists else "touch" }}'
+            owner: root
+            group: root
+            mode: g-wx,o-rwx

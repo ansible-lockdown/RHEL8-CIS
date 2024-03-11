@@ -1,0 +1,37 @@
+---
+
+- name: "4.4.1.1 | PATCH | Ensure latest version of pam is installed"
+  when:
+      - rhel8cis_rule_4_4_1_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - pam
+      - rule_4.4.1.1
+  ansible.builtin.package:
+      name: pam
+      state: latest
+
+- name: "4.4.1.2 | PATCH | Ensure latest version of authselect is installed"
+  when:
+      - rhel8cis_rule_4_4_1_2
+      - rhel8cis_authselect_pkg_update
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - pam
+      - rule_4.4.1.2
+  ansible.builtin.package:
+      name: authselect
+      state: latest
+
+- name: "4.4.1.1 and 4.4.1.2 | Update package facts"
+  when:
+      - rhel8cis_rule_4_4_1_1 or
+        rhel8cis_rule_4_4_1_2
+  ansible.builtin.package_facts:
+      manager: auto

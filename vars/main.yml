@@ -6,7 +6,6 @@ rhel8cis_allowed_crypto_policies:
     - 'DEFAULT'
     - 'FUTURE'
     - 'FIPS'
-rhel8cis_crypto_override: false
 
 rhel8cis_allowed_crypto_policies_modules:
     - 'OSPP'
@@ -14,7 +13,9 @@ rhel8cis_allowed_crypto_policies_modules:
 
 # default setting, this should not be changed
 # and is overridden if a task that changed sets the value if required.
-change_requires_reboot: false
+reboot_required: false
+
+rhel8cis_legacy_boot: false
 
 # Used to control warning summary
 warn_control_list: ""
