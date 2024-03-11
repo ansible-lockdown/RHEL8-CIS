@@ -16,8 +16,8 @@
   block:
       - name: "4.4.2.1 | PATCH | Ensure custom authselect profile is used | Create custom profiles"
         when:
-            - "rhel8cis_authselect['custom_profile_name'] not in authselect_running_config.stdout"
             - rhel8cis_authselect_custom_profile_create
+            - authselect_running_config.stdout is not defined
             - not rhel8cis_4_4_2_1_profile.stat.exists
         ansible.builtin.shell: "/usr/bin/authselect create-profile {{ rhel8cis_authselect['custom_profile_name'] }} -b {{ rhel8cis_authselect['default_file_to_copy'] }}"
         args:
@@ -25,8 +25,8 @@
 
       - name: "4.4.2.1 | PATCH | Ensure custom authselect profile is used | Select profiles"
         when:
-            - "rhel8cis_authselect['custom_profile_name'] not in authselect_running_config.stdout"
             - rhel8cis_authselect_custom_profile_select
+            - (authselect_running_config.stdout is defined and "rhel8cis_authselect['custom_profile_name'] not in authselect_running_config.stdout")
         ansible.builtin.shell: "/usr/bin/authselect select custom/{{ rhel8cis_authselect['custom_profile_name'] }}{% if rhel8cis_rule_4_4_2_2 %} with-faillock{% endif %}{% if rhel8cis_rule_4_4_2_4 %} with-pwhistory{% endif %}{% if rhel8cis_rule_4_4_3_4_1 %} without-nullok{% endif %} --force"
 
 - name: "4.4.2.2 | PATCH | Ensure pam_faillock module is enabled"
