@@ -38,7 +38,6 @@
   when:
       - rhel8cis_rule_5_3_2
       - rhel8cis_config_aide
-      - not system_is_ec2
   tags:
       - level1-server
       - level1-workstation
@@ -75,7 +74,6 @@
 - name: "5.3.3 | Ensure cryptographic mechanisms are used to protect the integrity of audit tools"
   when:
       - rhel8cis_rule_5_3_3
-      - not system_is_ec2
   tags:
       - level1-server
       - level1-workstation

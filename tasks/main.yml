@@ -4,7 +4,6 @@
 - name: Check OS version and family
   when:
       - os_check
-      - not system_is_ec2
   tags:
       - always
   ansible.builtin.assert:

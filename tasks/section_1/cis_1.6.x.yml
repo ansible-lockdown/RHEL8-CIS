@@ -7,7 +7,6 @@
       - level1-server
       - level1-workstation
       - automated
-      - no system_is_ec2
       - patch
       - NIST800-53R5_SC-8
       - rule_1.6.1
@@ -32,7 +31,6 @@
       - level1-server
       - level1-workstation
       - automated
-      - no system_is_ec2
       - patch
       - NIST800-53R5_SC-8
       - rule_1.6.2
@@ -54,7 +52,6 @@
       - level1-server
       - level1-workstation
       - automated
-      - no system_is_ec2
       - patch
       - NIST800-53R5_SC-8
       - rule_1.6.3
@@ -76,7 +73,6 @@
       - level1-server
       - level1-workstation
       - automated
-      - no system_is_ec2
       - patch
       - NIST800-53R5_SC-8
       - rule_1.6.4
