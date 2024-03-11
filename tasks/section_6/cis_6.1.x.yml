@@ -420,7 +420,7 @@
               when: rhel8cis_6_1_14_packages_rpm.stdout | length > 0
               ansible.builtin.debug:
                   msg: |
-                     "Warning!! You have some package descrepancies issues.
+                     "Warning!! We have discovered package discrepancies.
                       The file list can be found in {{ rhel8cis_rpm_audit_file }}"
 
             - name: "6.1.14 | AUDIT | Audit system file permissions | Warn Count"
