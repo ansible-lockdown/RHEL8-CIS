@@ -35,9 +35,9 @@
   ansible.builtin.import_tasks:
       file: cis_5.2.3.x.yml
 
-- name: "SECTION | 5.2.3.x | Audit file permissions"
+- name: "SECTION | 5.2.4.x | Audit file permissions"
   ansible.builtin.import_tasks:
-      file: cis_5.2.3.x.yml
+      file: cis_5.2.4.x.yml
 
 - name: "SECTION | 5.3.x | Aide"
   ansible.builtin.import_tasks:

@@ -275,6 +275,46 @@
       name: audit
       state: present
 
+- name: "PRELIM | 5.2.4.x | Ensure audit log files are mode 0640 or less permissive | discover file"
+  ansible.builtin.shell: "grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'"
+  changed_when: false
+  failed_when: audit_discovered_logfile.rc not in [0, 1]
+  register: audit_discovered_logfile
+  when:
+      - rhel8cis_rule_5_2_4_1
+      - rhel8cis_rule_5_2_4_2
+      - rhel8cis_rule_5_2_4_3
+      - rhel8cis_rule_5_2_4_4
+  tags:
+      - level2-server
+      - level2-workstation
+      - patch
+      - auditd
+      - rule_5.2.4.1
+      - rule_5.2.4.2
+      - rule_5.2.4.3
+      - rule_5.2.4.4
+
+- name: "PRELIM | 5.2.4.5/6/7 | Audit conf and rules files | list files"
+  ansible.builtin.find:
+      path: /etc/audit
+      file_type: file
+      recurse: true
+      patterns: '*.conf,*.rules'
+  register: auditd_conf_files
+  when:
+      - rhel8cis_rule_5_2_4_5 or
+        rhel8cis_rule_5_2_4_6 or
+        rhel8cis_rule_5_2_4_7
+  tags:
+      - level2-server
+      - level2-workstation
+      - patch
+      - auditd
+      - rule_5.2.4.5
+      - rule_5.2.4.6
+      - rule_5.2.4.7
+
 - name: "PRELIM | Gather accounts with empty password fields"
   when:
       - rhel8cis_rule_6_2_1
