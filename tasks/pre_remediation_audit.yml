@@ -5,7 +5,8 @@
       - setup_audit
   tags:
       - setup_audit
-  ansible.builtin.include_tasks: LE_audit_setup.yml
+  ansible.builtin.include_tasks:
+      file: LE_audit_setup.yml
 
 - name: Pre Audit Setup | Ensure {{ audit_conf_dir }} exists
   ansible.builtin.file:
@@ -60,16 +61,15 @@
         register: goss_available
 
       - name: Pre Audit Setup | If audit ensure goss is available
-        when:
-            - not goss_available.stat.exists
         ansible.builtin.assert:
+            that: goss_available.stat.exists
             msg: "Audit has been selected: unable to find goss binary at {{ audit_bin }}"
 
 - name: Pre Audit Setup | Copy ansible default vars values to test audit
+  when:
+      - run_audit
   tags:
       - goss_template
-      - run_audit
-  when:
       - run_audit
   ansible.builtin.template:
       src: ansible_vars_goss.yml.j2
@@ -77,7 +77,7 @@
       mode: '0600'
 
 - name: Pre Audit | Run pre_remediation {{ benchmark }} audit
-  ansible.builtin.shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -o {{ pre_audit_outfile }} -g \"{{ group_names }}\""
+  ansible.builtin.shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -o {{ pre_audit_outfile }} -g {{ group_names }}"
   changed_when: true
   environment:
       AUDIT_BIN: "{{ audit_bin }}"
@@ -115,4 +115,5 @@
 - name: Audit_Only | Run Audit Only
   when:
       - audit_only
-  ansible.builtin.import_tasks: audit_only.yml
+  ansible.builtin.import_tasks:
+      file: audit_only.yml

@@ -1,0 +1,118 @@
+---
+
+- name: "4.4.3.3.1 | PATCH | Ensure password history remember is configured"
+  when:
+      - rhel8cis_rule_4_4_3_3_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_IA-5
+      - pam
+      - rule_4.4.3.3.1
+  block:
+      - name: "4.4.3.3.1 | PATCH | Ensure password history remember is configured | pwhistory.conf"
+        ansible.builtin.lineinfile:
+            path: /etc/security/pwhistory.conf
+            state: present
+            regexp: '^(#|)\s*remember\s*=\s*\d'
+            line: "remember = {{ rhel8cis_pam_pwhistory['remember'] }}"
+
+      - name: "4.4.3.3.1 | PATCH | Ensure password number of changed characters is configured | authselect_files"
+        when:
+            - rhel8cis_allow_authselect_updates
+            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+        notify: Update_authselect
+        ansible.builtin.replace:
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwhistory\.so)(.*)\s+remember\s*=\s*\S+(.*$)
+            replace: \1\2\3
+        loop:
+            - password
+            - system
+
+- name: "4.4.3.3.2 | PATCH | Ensure password history is enforced for the root user"
+  when:
+      - rhel8cis_rule_4_4_3_3_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_IA-5
+      - pam
+      - rule_4.4.3.3.2
+  block:
+      - name: "4.4.3.3.2 | PATCH | Ensure password history is enforced for the root user | pwhistory.conf"
+        ansible.builtin.lineinfile:
+            path: /etc/security/pwhistory.conf
+            state: present
+            regexp: '^(#|)\s*enforce_for_root'
+            line: "enforce_for_root"
+
+      - name: "4.4.3.3.2 | PATCH | Ensure password history is enforced for the root user | pam_files"
+        when: not rhel8cis_allow_authselect_updates
+        ansible.builtin.replace:
+            path: "/etc/pam.d/{{ item }}-auth"
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwhistory\.so)(.*)\s+enforce_for_root(.*$)
+            replace: \1\2\3
+        loop:
+            - password
+            - system
+
+      - name: "4.4.3.3.2 | PATCH | Ensure password history is enforced for the root user | authselect_files"
+        when:
+            - rhel8cis_allow_authselect_updates
+            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+        notify: Update_authselect
+        ansible.builtin.replace:
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwhistory\.so)(.*)\s+enforce_for_root(.*$)
+            replace: \1\2\3
+        loop:
+            - password
+            - system
+
+- name: "4.4.3.3.3 | PATCH | Ensure pam_pwhistory includes use_authtok"
+  when:
+      - rhel8cis_rule_4_4_3_3_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_IA-5
+      - pam
+      - rule_4.4.3.3.3
+  block:
+      - name: "4.4.3.3.3 | PATCH | Ensure pam_pwhistory includes use_authtok | pwhistory.conf"
+        ansible.builtin.lineinfile:
+            path: /etc/security/pwhistory.conf
+            state: present
+            regexp: '^(#|)\s*use_authtok'
+            line: "use_authtok"
+
+      - name: "4.4.3.3.3 | AUDIT | Ensure pam_pwhistory includes use_authtok | Get current state"
+        ansible.builtin.shell: |
+            grep -P -- '^\h*password\h+([^#\n\r]+)\h+pam_pwhistory\.so\h+([^#\n\r]+\h+)?use_authtok\ b' /etc/pam.d/{password,system}-auth
+        changed_when: false
+        failed_when: rhel8cis_pwhistory_authtok.rc not in [ 0, 1 ]
+        register: rhel8cis_pwhistory_authtok
+
+      - name: "4.4.3.3.3 | PATCH | Ensure pam_pwhistory includes use_authtok | authselect_files"
+        when:
+            - rhel8cis_allow_authselect_updates
+            - rhel8cis_pwhistory_authtok.rc != 0
+        notify: Update_authselect
+        community.general.pamd:
+            name: "{{ item }}-auth"
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}"
+            type: password
+            control: requisite
+            module_path: pam_pwhistory.so
+            module_arguments: 'use_authtok'
+            state: updated
+        loop:
+            - password
+            - system

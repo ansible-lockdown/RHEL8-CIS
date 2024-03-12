@@ -1,35 +1,21 @@
 ---
 
-- name: "SECTION | 3.1.x | Disable unused network protocols and devices"
-  ansible.builtin.import_tasks: cis_3.1.x.yml
+- name: "SECTION | 3.1.x | Configure network devices"
+  ansible.builtin.import_tasks:
+      file: cis_3.1.x.yml
 
-- name: "SECTION | 3.2.x | Network Parameters (Host Only)"
-  ansible.builtin.import_tasks: cis_3.2.x.yml
+- name: "SECTION | 3.2.x | Network kernel modules"
+  ansible.builtin.import_tasks:
+      file: cis_3.2.x.yml
 
-- name: "SECTION | 3.3.x | Network Parameters (Host and Router)"
-  ansible.builtin.import_tasks: cis_3.3.x.yml
+- name: "SECTION | 3.3.x | Network kernel Parameters"
+  ansible.builtin.import_tasks:
+      file: cis_3.3.x.yml
 
-- name: "SECTION | 3.4.1.x | Configure firewalld"
-  ansible.builtin.import_tasks: cis_3.4.1.x.yml
-  when:
-      - rhel8cis_firewall == "firewalld"
+- name: "SECTION | 3.4.1.x | Configure firewall utility"
+  ansible.builtin.import_tasks:
+      file: cis_3.4.1.x.yml
 
-- name: "SECTION | 3.4.2.x | Configure nftables"
-  ansible.builtin.import_tasks: cis_3.4.2.x.yml
-  when:
-      - rhel8cis_firewall == "nftables"
-
-- name: "SECTION | 3.4.3.1.x | Configure iptables software"
-  ansible.builtin.import_tasks: cis_3.4.3.1.x.yml
-  when:
-      - rhel8cis_firewall == "iptables"
-
-- name: "SECTION | 3.4.3.2.x | Configure IPv4 iptables"
-  ansible.builtin.import_tasks: cis_3.4.3.2.x.yml
-  when:
-      - rhel8cis_firewall == "iptables"
-
-- name: "SECTION | 3.4.3.3.x | Configure IPv6 iptables"
-  ansible.builtin.import_tasks: cis_3.4.3.3.x.yml
-  when:
-      - ( rhel8cis_firewall == "iptables" and rhel8cis_ipv6_required )
+- name: "SECTION | 3.4.2.x | Configure firewall rules"
+  ansible.builtin.import_tasks:
+      file: cis_3.4.2.x.yml
