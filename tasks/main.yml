@@ -53,7 +53,7 @@
       - always
   block:
       - name: Ensure root password is set
-        ansible.builtin.shell: passwd -S root | egrep -e "(Password set, SHA512 crypt|Password locked)"
+        ansible.builtin.shell: passwd -S root | grep -E "(Password set, SHA512 crypt|Password locked|root\s(LK|L)\s)"
         changed_when: false
         failed_when: false
         register: root_passwd_set
