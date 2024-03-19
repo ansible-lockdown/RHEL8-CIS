@@ -4,6 +4,15 @@
 
 ### This is not an upgrade for CIS v2.0.0 due to the number of changes treat as a new baseline
 
+### Changes and improvements (March24)
+
+thanks to @bbaassssiiee
+
+- #353
+- #354
+
+#### Initial
+
 Inline with new CIS baseline
 Rewrite and ordering of nearly all controls
 Many new controls added
