@@ -53,7 +53,7 @@
       - always
   block:
       - name: Ensure root password is set
-        ansible.builtin.shell: passwd -S root | egrep -e "(Password set, SHA512 crypt|Password locked)"
+        ansible.builtin.shell: passwd -S root | grep -E "(Password set, SHA512 crypt|Password locked|root\s(LK|L)\s)"
         changed_when: false
         failed_when: false
         register: root_passwd_set
@@ -91,6 +91,7 @@
       - ansible_env.SUDO_USER is defined
       - not system_is_ec2
       - not audit_only
+      - rhel8cis_rule_4_3_4
   block:
       - name: Capture current password state of connecting user"
         ansible.builtin.shell: "grep {{ ansible_env.SUDO_USER }} /etc/shadow | awk -F: '{print $2}'"
@@ -105,7 +106,7 @@
             fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_env.SUDO_USER }} has no password set - It can break access"
             success_msg: "You have a password set for the {{ ansible_env.SUDO_USER }} user"
         vars:
-            sudo_password_rule: rhel8cis_rule_5_3_4  # pragma: allowlist secret
+            sudo_password_rule: rhel8cis_rule_4_3_4  # pragma: allowlist secret
 
 - name: Include prelim tasks
   tags:
@@ -113,25 +114,6 @@
       - run_audit
   ansible.builtin.import_tasks:
       file: prelim.yml
-
-- name: Include audit specific variables
-  when:
-      - run_audit or audit_only
-      - setup_audit
-  tags:
-      - setup_audit
-      - run_audit
-  ansible.builtin.include_vars:
-      file: audit.yml
-
-- name: Include pre-remediation audit tasks
-  when:
-      - run_audit or audit_only
-      - setup_audit
-  tags:
-      - run_audit
-  ansible.builtin.import_tasks:
-      file: pre_remediation_audit.yml
 
 - name: Gather the package facts after prelim
   tags:
