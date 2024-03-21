@@ -492,7 +492,14 @@ rhel8cis_selinux_policy: targeted
 
 # 1.6 Set crypto policy (LEGACY, DEFAULT, FUTURE, FIPS)
 rhel8cis_crypto_policy: 'DEFAULT'
-# Added module to be loaded - (Allowed options in vars/main.yml - OSPP and AD-SUPPORT)
+
+# 1.6.1 Allowed crypto-policy modules
+rhel8cis_allowed_crypto_policies_modules:
+    - 'AD-SUPPORT'
+    - 'NO-SHA1'
+    - 'OSPP'
+
+# Added module to be loaded
 rhel8cis_crypto_policy_module: ''
 
 # 1.7

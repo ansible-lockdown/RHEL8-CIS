@@ -7,10 +7,6 @@ rhel8cis_allowed_crypto_policies:
     - 'FUTURE'
     - 'FIPS'
 
-rhel8cis_allowed_crypto_policies_modules:
-    - 'OSPP'
-    - 'AD-SUPPORT'
-
 # default setting, this should not be changed
 # and is overridden if a task that changed sets the value if required.
 reboot_required: false
