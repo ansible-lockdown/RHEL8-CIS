@@ -10,6 +10,8 @@ thanks to @bbaassssiiee
 
 - #353
 - #354
+- #359
+- #360
 
 Audit and audit_only changed to run prior to any significant changes
 
