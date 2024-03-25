@@ -1,8 +1,8 @@
 ---
 
 ## Example file that maybe used for containers
-## This Is still dependant in the container usage
-## Please confirm before running
+## This is still dependant in the container usage
+## Please confirm before running that it is suitable for your environment
 
 rhel8cis_section1: true
 rhel8cis_section2: true
