@@ -98,25 +98,25 @@
       - name: "4.4.3.4.3 | AUDIT | Ensure pam_unix includes a strong password hashing algorithm | capture state"
         ansible.builtin.shell: grep -P -- '^\h*password\h+([^#\n\r]+)\h+pam_unix\.so\h+([^#\n\r]+\h+)?(sha512|yescrypt)\b' /etc/pam.d/{password,system}-auth | grep -v {{ rhel8cis_pam_pwhash }}
         changed_when: false
-        failed_when: rhel8cis_pam_pwhash.rc not in [ 0, 1 ]
-        register: rhel8cis_pam_pwhash
+        failed_when: rhel8cis_4_4_3_4_3_hash_state.rc not in [ 0, 1 ]
+        register: rhel8cis_4_4_3_4_3_hash_state
 
       - name: "4.4.3.4.3 | PATCH | Ensure pam_unix includes a strong password hashing algorithm | pam_files"
         when:
-            - rhel8cis_pam_pwhash is defined
-            - rhel8cis_pam_pwhash | length > 0
+            - rhel8cis_4_4_3_4_3_hash_state is defined
+            - rhel8cis_4_4_3_4_3_hash_state | length > 0
         ansible.builtin.replace:
             path: "/etc/pam.d/{{ item }}-auth"
             regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)(sha512|yescrypt)\s*=\s*\d+(.*$)
-            replace: \1\2\4 {{ rhel8cis_pam_pwhash }}
+            replace: \1\2\4 {{ rhel8cis_4_4_3_4_3_hash_state.stdout }}
         loop:
             - password
             - system
 
       - name: "4.4.3.4.3 | PATCH | Ensure pam_unix includes a strong password hashing algorithm | authselect_files"
         when:
-            - rhel8cis_pam_pwhash is defined
-            - rhel8cis_pam_pwhash | length > 0
+            - rhel8cis_4_4_3_4_3_hash_state is defined
+            - rhel8cis_4_4_3_4_3_hash_state | length > 0
             - rhel8cis_allow_authselect_updates
             - "'example' not in rhel8cis_authselect['custom_profile_name']"
         notify: Update_authselect
