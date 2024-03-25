@@ -16,9 +16,7 @@
       state: reloaded
 
 - name: Reload_sysctl
-  ansible.posix.sysctl:
-      reload: true
-      ignore_errors: true
+  ansible.builtin.shell: sysctl --system
 
 - name: Sysctl_flush_ipv4_routes
   ansible.posix.sysctl:
