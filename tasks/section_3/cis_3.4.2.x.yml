@@ -105,7 +105,7 @@
       - rule_3.4.2.2
   ansible.posix.firewalld:
       rich_rule: "{{ item }}"
-      zone: "{{ rhel8cis_default_zone }}"
+      zone: trusted
       permanent: true
       immediate: true
       state: enabled
