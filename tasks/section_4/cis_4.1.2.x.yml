@@ -21,12 +21,12 @@
       - name: "4.1.2.1 | PATCH | Ensure at is restricted to authorized users  | Check if at.allow exists"
         ansible.builtin.stat:
             path: "/etc/at.allow"
-        register: rhel8cis_4_1_2_1_at_allow_state
+        register: discovered_at_allow_state
 
       - name: "4.1.2.1 | PATCH | Ensure at is restricted to authorized users | Ensure at.allow is restricted to authorized users"
         ansible.builtin.file:
             path: /etc/at.allow
-            state: '{{ "file" if  rhel8cis_4_1_2_1_at_allow_state.stat.exists else "touch" }}'
+            state: '{{ "file" if discovered_at_allow_state.stat.exists else "touch" }}'
             owner: root
             group: root
-            mode: 0600
+            mode: '0600'

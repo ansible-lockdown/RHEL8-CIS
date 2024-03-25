@@ -720,16 +720,16 @@
       - name: "2.2.22 | AUDIT | Ensure only approved services are listening on a network interface | Get list of services"
         ansible.builtin.shell: systemctl list-units --type=service
         changed_when: false
-        failed_when: rhel8cis_2_2_22_services.rc not in [ 0, 1 ]
+        failed_when: discovered_services.rc not in [ 0, 1 ]
         check_mode: false
-        register: rhel8cis_2_2_22_services
+        register: discovered_services
 
       - name: "2.2.22 | AUDIT | Ensure only approved services are listening on a network interface | Display list of services"
         ansible.builtin.debug:
             msg:
                 - "Warning!! Below are the list of services, both active and inactive"
                 - "Please review to make sure all are essential"
-                - "{{ rhel8cis_2_2_22_services.stdout_lines }}"
+                - "{{ discovered_services.stdout_lines }}"
 
       - name: "2.2.22 | AUDIT | Ensure only approved services are listening on a network interface | Warn Count"
         ansible.builtin.import_tasks:

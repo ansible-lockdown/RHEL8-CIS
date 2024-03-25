@@ -130,7 +130,7 @@
       state: directory
       owner: root
       group: root
-      mode: 0700
+      mode: '0700'
 
 - name: "4.1.1.8 | PATCH | Ensure cron is restricted to authorized users"
   when:
@@ -153,12 +153,12 @@
       - name: "4.1.1.8 | PATCH | Ensure cron is restricted to authorized users | Check if cron.allow exists"
         ansible.builtin.stat:
             path: "/etc/cron.allow"
-        register: rhel8cis_4_1_1_8_cron_allow_state
+        register: discovered_cron_allow_state
 
       - name: "4.1.1.8 | PATCH | Ensure cron is restricted to authorized users | Ensure cron.allow is restricted to authorized users"
         ansible.builtin.file:
             path: /etc/cron.allow
-            state: '{{ "file" if  rhel8cis_4_1_1_8_cron_allow_state.stat.exists else "touch" }}'
+            state: '{{ "file" if discovered_cron_allow_state.stat.exists else "touch" }}'
             owner: root
             group: root
             mode: g-wx,o-rwx

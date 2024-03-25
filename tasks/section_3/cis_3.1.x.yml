@@ -62,17 +62,17 @@
         changed_when: false
         failed_when: false
         check_mode: false
-        register: rhel_08_nmcli_available
+        register: discovered_nmcli_available
 
       - name: "3.1.2 | AUDIT | Ensure wireless interfaces are disabled | Check if wifi is enabled"
-        when: rhel_08_nmcli_available.rc == 0
+        when: discovered_nmcli_available.rc == 0
         ansible.builtin.shell: nmcli radio wifi
-        register: rhel_08_wifi_enabled
-        changed_when: rhel_08_wifi_enabled.stdout != "disabled"
+        register: discovered_wifi_enabled
+        changed_when: discovered_wifi_enabled.stdout != "disabled"
         failed_when: false
 
       - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | Disable wifi if enabled"
-        when: rhel_08_wifi_enabled is changed  # noqa: no-handler
+        when: discovered_wifi_enabled is changed  # noqa: no-handler
         ansible.builtin.shell: nmcli radio all off
         changed_when: false
         failed_when: false
