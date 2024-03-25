@@ -6,6 +6,9 @@
 
 ### Changes and improvements (March24)
 
+Changes to variable naming for those variables discovered
+some lint updates
+
 thanks to @bbaassssiiee
 
 - #353
@@ -14,6 +17,7 @@ thanks to @bbaassssiiee
 - #360
 - #361
 - #363
+- #364
 
 Audit and audit_only changed to run prior to any significant changes
 
