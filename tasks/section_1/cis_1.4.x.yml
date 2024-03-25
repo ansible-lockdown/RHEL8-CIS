@@ -11,13 +11,11 @@
       - sysctl
       - NIST800-53R5_CM-6
       - rule_1.4.1
-  ansible.posix.sysctl:
-      name: kernel.randomize_va_space
-      value: '2'
-      reload: true
-      sysctl_file: /etc/sysctl.d/60-kernel_sysctl.conf
-      sysctl_set: true
-      ignoreerrors: true
+  notify: Reload_sysctl
+  ansible.builtin.lineinfile:
+      path: /etc/sysctl.d/60-kernel_sysctl.conf
+      regexp: kernel.randomize_va_space
+      line: kernel.randomize_va_space = 2
 
 - name: "1.4.2 | PATCH | Ensure ptrace_scope is restricted"
   when:
@@ -30,13 +28,11 @@
       - sysctl
       - NIST800-53R5_CM-6
       - rule_1.4.2
-  ansible.posix.sysctl:
-      name: kernel.yama.ptrace_scope
-      value: '1'
-      reload: true
-      sysctl_file: /etc/sysctl.d/60-kernel_sysctl.conf
-      sysctl_set: true
-      ignoreerrors: true
+  notify: Reload_sysctl
+  ansible.builtin.lineinfile:
+      path: /etc/sysctl.d/60-kernel_sysctl.conf
+      regexp: kernel.yama.ptrace_scope
+      line: kernel.yama.ptrace_scope = 1
 
 - name: "1.4.3 | PATCH | Ensure core dump backtraces are disabled"
   tags:

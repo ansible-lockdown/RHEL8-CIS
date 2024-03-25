@@ -15,6 +15,11 @@
       masked: false
       state: reloaded
 
+- name: Reload_sysctl
+  ansible.posix.sysctl:
+      reload: true
+      ignore_errors: true
+
 - name: Sysctl_flush_ipv4_routes
   ansible.posix.sysctl:
       name: net.ipv4.route.flush
