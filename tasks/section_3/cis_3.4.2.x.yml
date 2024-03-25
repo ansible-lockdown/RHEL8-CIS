@@ -95,7 +95,7 @@
 - name: "3.4.2.2 | PATCH | Ensure host based firewall loopback traffic is configured | firewalld"
   when:
       - rhel8cis_firewall == "firewalld"
-      - rhel8cis_rule_3_4_2_4
+      - rhel8cis_rule_3_4_2_2
   tags:
       - level1-server
       - level1-workstation
@@ -103,15 +103,23 @@
       - nftables
       - NIST800-53R5_CA-9
       - rule_3.4.2.2
-  ansible.posix.firewalld:
-      rich_rule: "{{ item }}"
-      zone: "{{ rhel8cis_default_zone }}"
-      permanent: true
-      immediate: true
-      state: enabled
-  loop:
-      - rule family="ipv4" source address="127.0.0.1" destination not address="127.0.0.1" drop
-      - rule family="ipv6" source address="::1" destination not address="::1" drop
+  block:
+      - name: "3.4.2.2 | PATCH | Ensure host based firewall loopback traffic is configured | add interface"
+        ansible.posix.firewalld:
+            zone: trusted
+            interface: lo
+            state: enabled
+
+      - name: "3.4.2.2 | PATCH | Ensure host based firewall loopback traffic is configured | add interface"
+        ansible.posix.firewalld:
+            rich_rule: "{{ item }}"
+            zone: trusted
+            permanent: true
+            immediate: true
+            state: enabled
+        loop:
+            - rule family="ipv4" source address="127.0.0.1" destination not address="127.0.0.1" drop
+            - rule family="ipv6" source address="::1" destination not address="::1" drop
 
 - name: "3.4.2.3 | AUDIT | Ensure firewalld drops unnecessary services and ports"
   when:
