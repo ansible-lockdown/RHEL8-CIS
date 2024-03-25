@@ -16,6 +16,7 @@
       path: /etc/sysctl.d/60-kernel_sysctl.conf
       regexp: kernel.randomize_va_space
       line: kernel.randomize_va_space = 2
+      create: true
 
 - name: "1.4.2 | PATCH | Ensure ptrace_scope is restricted"
   when:
@@ -33,6 +34,7 @@
       path: /etc/sysctl.d/60-kernel_sysctl.conf
       regexp: kernel.yama.ptrace_scope
       line: kernel.yama.ptrace_scope = 1
+      create: true
 
 - name: "1.4.3 | PATCH | Ensure core dump backtraces are disabled"
   tags:
@@ -47,13 +49,14 @@
       path: /etc/systemd/coredump.conf
       regexp: 'ProcessSizeMax='
       line: 'ProcessSizeMax=0'
+      create: true
   when:
       - rhel8cis_rule_1_4_3
 
 - name: "1.4.4 | PATCH | Ensure core dump storage is disabled"
   when:
       - rhel8cis_rule_1_4_4
-      - systemd_coredump.stat.exists
+      - discovered_systemd_coredump.stat.exists
   tags:
       - level1-server
       - level1-workstation

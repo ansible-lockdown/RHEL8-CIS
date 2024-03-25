@@ -18,7 +18,7 @@
 
       - name: "1.6.1 | PATCH | Ensure system-wide crypto policy is not legacy"
         when:
-            - rhel8cis_system_wide_crypto_policy.stdout not in rhel8cis_crypto_policy
+            - discovered_system_wide_crypto_policy.stdout not in rhel8cis_crypto_policy
         ansible.builtin.shell: |
             update-crypto-policies --set "{{ rhel8cis_full_crypto_policy }}"
             update-crypto-policies
@@ -26,7 +26,7 @@
 - name: "1.6.2 | PATCH | Ensure system wide crypto policy disables sha1 hash and signature support"
   when:
       - rhel8cis_rule_1_6_2
-      - "'NO-SHA1' not in rhel8cis_system_wide_crypto_policy.stdout"
+      - "'NO-SHA1' not in discovered_system_wide_crypto_policy.stdout"
   tags:
       - level1-server
       - level1-workstation
@@ -47,7 +47,7 @@
 - name: "1.6.3 | PATCH | Ensure system wide crypto policy disables cbc for ssh"
   when:
       - rhel8cis_rule_1_6_3
-      - "'NO-SSHCBC' not in rhel8cis_system_wide_crypto_policy.stdout"
+      - "'NO-SSHCBC' not in discovered_system_wide_crypto_policy.stdout"
   tags:
       - level1-server
       - level1-workstation
@@ -68,7 +68,7 @@
 - name: "1.6.4 | PATCH | Ensure system wide crypto policy disables macs less than 128 bits"
   when:
       - rhel8cis_rule_1_6_4
-      - "'NO-WEAKMAC' not in rhel8cis_system_wide_crypto_policy.stdout"
+      - "'NO-WEAKMAC' not in discovered_system_wide_crypto_policy.stdout"
   tags:
       - level1-server
       - level1-workstation
