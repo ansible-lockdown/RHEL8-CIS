@@ -47,7 +47,8 @@ Join us on our [Discord Server](https://www.lockdownenterprise.com/discord) to a
 
 This role **will make changes to the system** which may have unintended consequences. This is not an auditing tool but rather a remediation tool to be used after an audit has been conducted.
 
-- **TEST**
+- Testing is the most important thing you can do.
+
 - Check Mode is not supported! The role will complete in check mode without errors, but it is not supported and should be used with caution. The RHEL8-CIS-Audit role or a compliance scanner should be used for compliance checking over check mode.
 
 - This role was developed against a clean install of the Operating System. If you are implementing to an existing system please review this role for any site specific changes that are needed.
@@ -58,7 +59,7 @@ This role **will make changes to the system** which may have unintended conseque
 
 - Containers references vars/is_container.yml this is an example and to be updates for your requirements
 
-- **TEST**
+- Did we mention testing??
 
 ---
 
