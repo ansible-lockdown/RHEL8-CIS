@@ -30,11 +30,21 @@
       - NIST800-53R5_CM-6
       - rule_1.4.2
   notify: Reload_sysctl
-  ansible.builtin.lineinfile:
-      path: /etc/sysctl.d/60-kernel_sysctl.conf
-      regexp: kernel.yama.ptrace_scope
-      line: kernel.yama.ptrace_scope = 1
-      create: true
+  block:
+      - name: Ensure ptrace_scope is restricted | Set file
+        ansible.builtin.lineinfile:
+            path: /etc/sysctl.d/60-kernel_sysctl.conf
+            regexp: kernel.yama.ptrace_scope
+            line: kernel.yama.ptrace_scope = 1
+            create: true
+
+      - name: Ensure ptrace_scope is restricted | comment out other entry
+        ansible.builtin.lineinfile:
+            path: /lib/sysctl.d/10-default-yama-scope.conf
+            backrefs: true
+            regexp: ^\s*kernel.yama.ptrace_scope.*
+            line: '# \1'
+            create: true
 
 - name: "1.4.3 | PATCH | Ensure core dump backtraces are disabled"
   tags:
