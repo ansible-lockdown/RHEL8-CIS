@@ -42,7 +42,7 @@
         ansible.builtin.lineinfile:
             path: /lib/sysctl.d/10-default-yama-scope.conf
             backrefs: true
-            regexp: ^\s*kernel.yama.ptrace_scope.*
+            regexp: ^(\s*kernel.yama.ptrace_scope.*)
             line: '# \1'
             create: true
 
