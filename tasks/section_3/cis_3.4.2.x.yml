@@ -108,9 +108,11 @@
         ansible.posix.firewalld:
             zone: trusted
             interface: lo
+            permanent: true
+            immediate: true
             state: enabled
 
-      - name: "3.4.2.2 | PATCH | Ensure host based firewall loopback traffic is configured | add interface"
+      - name: "3.4.2.2 | PATCH | Ensure host based firewall loopback traffic is configured | add loopback rule"
         ansible.posix.firewalld:
             rich_rule: "{{ item }}"
             zone: trusted
