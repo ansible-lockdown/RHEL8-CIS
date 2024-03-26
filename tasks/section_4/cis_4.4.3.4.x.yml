@@ -152,8 +152,8 @@
             - discovered_pam_authtok | length > 0
         ansible.builtin.replace:
             path: "/etc/pam.d/{{ item }}-auth"
-            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwhistory\.so)(.*)\s+use_authtok\s*=\s*\S+(.*$)
-            replace: \1\2\3 use_authtok
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)\s+use_authtok(.*$)
+            replace: \1\3\4 use_authtok
         loop:
             - password
             - system
@@ -167,8 +167,8 @@
         notify: Update_authselect
         ansible.builtin.replace:
             path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
-            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwhistory\.so)(.*)\s+use_authtok\s*=\s*\S+(.*$)
-            replace: \1\2\3 use_authtok
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)\s+use_authtok(.*$)
+            replace: \1\3\4 use_authtok
         loop:
             - password
             - system
