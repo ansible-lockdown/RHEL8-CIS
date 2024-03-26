@@ -57,7 +57,7 @@ This role **will make changes to the system** which may have unintended conseque
 
 - If moving across major releases e.g. v2.0.0 - v3.0.0 there are significant changes to the benchmarks and controls it is suggested to start as a new standard not to upgrade.
 
-- Containers references vars/is_container.yml this is an example and to be updates for your requirements
+- Containers references vars/is_container.yml this is an example and to be updated for your requirements
 
 - Did we mention testing??
 
