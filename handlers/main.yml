@@ -15,6 +15,9 @@
       masked: false
       state: reloaded
 
+- name: Reload_sysctl
+  ansible.builtin.shell: sysctl --system
+
 - name: Sysctl_flush_ipv4_routes
   ansible.posix.sysctl:
       name: net.ipv4.route.flush
@@ -71,7 +74,7 @@
       state: restarted
 
 - name: Rebuild_grub
-  ansible.builtin.shell: "grub2-mkconfig -o {{ grub_cfg.stat.lnk_source }}"
+  ansible.builtin.shell: "grub2-mkconfig -o {{ discovered_grub_cfg.stat.lnk_source }}"
   ignore_errors: true  # noqa ignore-errors
   notify: Change_requires_reboot
   tags:
@@ -91,14 +94,14 @@
 - name: Auditd_immutable_check
   ansible.builtin.shell: grep -c "^-e 2" /etc/audit/rules.d/99_auditd.rules
   changed_when: false
-  register: auditd_immutable_check
+  register: discovered_auditd_immutable_check
 
 - name: Audit_immutable_fact
   ansible.builtin.debug:
       msg: "Reboot required for auditd to apply new rules as immutable set"
   notify: Change_requires_reboot
   when:
-      - auditd_immutable_check.stdout == '1'
+      - discovered_auditd_immutable_check.stdout == '1'
 
 - name: Restart_auditd
   ansible.builtin.shell: /sbin/service auditd restart

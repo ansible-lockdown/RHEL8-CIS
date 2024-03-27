@@ -20,8 +20,8 @@
       - name: "1.1.2.5.1 | AUDIT | Ensure separate partition exists for /var/tmp | Warn if partition is absent"
         ansible.builtin.debug:
             msg: "Warning!! {{ required_mount }} doesn't exist. This is a manual task"
-        register: var_tmp_mount_absent
-        changed_when: var_tmp_mount_absent.skipped is undefined
+        register: discovered_var_tmp_mount_absent
+        changed_when: discovered_var_tmp_mount_absent.skipped is undefined
 
       - name: "1.1.2.5.1 | AUDIT | Ensure separate partition exists for /var/tmp | Present"
         ansible.builtin.import_tasks:

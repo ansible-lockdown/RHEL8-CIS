@@ -33,7 +33,7 @@
         ansible.builtin.find:
             paths: /etc/yum.repos.d
             patterns: "*.repo"
-        register: yum_repos
+        register: discovered_yum_repos
         changed_when: false
 
       - name: "1.2.2 | PATCH | Ensure gpgcheck is globally activated | Update yum.repos"
@@ -41,7 +41,7 @@
             name: "{{ item.path }}"
             regexp: "^gpgcheck=0"
             replace: "gpgcheck=1"
-        loop: "{{ yum_repos.files }}"
+        loop: "{{ discovered_yum_repos.files }}"
         loop_control:
             label: "{{ item.path }}"
 
@@ -66,7 +66,7 @@
         ansible.builtin.find:
             paths: /etc/yum.repos.d
             patterns: "*.repo"
-        register: yum_repos
+        register: discovered_yum_repos
         changed_when: false
 
       - name: "1.2.3 | PATCH | Ensure repo_gpgcheck is globally activated | Update yum.repos"
@@ -74,7 +74,7 @@
             name: "{{ item.path }}"
             regexp: "^repo_gpgcheck=0"
             replace: "repo_gpgcheck=1"
-        loop: "{{ yum_repos.files }}"
+        loop: "{{ discovered_yum_repos.files }}"
         loop_control:
             label: "{{ item.path }}"
 
@@ -101,14 +101,14 @@
         ansible.builtin.shell: dnf repolist
         changed_when: false
         failed_when: false
-        register: dnf_configured
+        register: discovered_dnf_configured
         check_mode: false
 
       - name: "1.2.4 | AUDIT | Ensure package manager repositories are configured | Display repo list"
         ansible.builtin.debug:
             msg:
                 - "Warning!! Below are the configured repos. Please review and make sure all align with site policy"
-                - "{{ dnf_configured.stdout_lines }}"
+                - "{{ discovered_dnf_configured.stdout_lines }}"
 
       - name: "1.2.4 | AUDIT | Ensure package manager repositories are configured | Warn Count"
         ansible.builtin.import_tasks:

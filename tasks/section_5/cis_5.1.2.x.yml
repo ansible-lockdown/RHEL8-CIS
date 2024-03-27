@@ -103,20 +103,20 @@
         ansible.builtin.shell: systemctl is-enabled systemd-journald.service
         changed_when: false
         failed_when: false
-        register: rhel8cis_5_1_2_2_status
+        register: discovered_journald_status
 
       - name: "5.1.2.2 | AUDIT | Ensure journald service is enabled | Alert on bad status"
         ansible.builtin.debug:
             msg:
                 - "Warning!! The status of systemd-journald should be static and it is not. Please investigate"
-        when: "'static' not in rhel8cis_5_1_2_2_status.stdout"
+        when: "'static' not in discovered_journald_status.stdout"
 
       - name: "5.1.2.2 | AUDIT | Ensure journald service is enabled | Warn Count"
         ansible.builtin.import_tasks:
             file: warning_facts.yml
         vars:
             warn_control_id: '5.1.2.2'
-        when: "'static' not in rhel8cis_5_1_2_2_status.stdout"
+        when: "'static' not in discovered_journald_status.stdout"
 
 - name: "5.1.2.3 | PATCH | Ensure journald is configured to compress large log files"
   when:

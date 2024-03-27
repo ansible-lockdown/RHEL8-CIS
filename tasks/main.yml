@@ -56,11 +56,11 @@
         ansible.builtin.shell: passwd -S root | grep -E "(Password set, SHA512 crypt|Password locked|root\s(LK|L)\s)"
         changed_when: false
         failed_when: false
-        register: root_passwd_set
+        register: discovered_root_passwd_set
 
       - name: Ensure root password is set
         ansible.builtin.assert:
-            that: root_passwd_set.rc == 0
+            that: discovered_root_passwd_set.rc == 0
             fail_msg: "You have rule 4.5.2.4 enabled this requires that you have a root password set"
             success_msg: "You have a root password set"
 
@@ -98,11 +98,11 @@
         changed_when: false
         failed_when: false
         check_mode: false
-        register: ansible_user_password_set
+        register: discovered_ansible_user_password_set
 
       - name: "Assert that password set for {{ ansible_env.SUDO_USER }} and account not locked"
         ansible.builtin.assert:
-            that: ansible_user_password_set.stdout | length != 0 and ansible_user_password_set.stdout != "!!"
+            that: discovered_ansible_user_password_set.stdout | length != 0 and discovered_ansible_user_password_set.stdout != "!!"
             fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_env.SUDO_USER }} has no password set - It can break access"
             success_msg: "You have a password set for the {{ ansible_env.SUDO_USER }} user"
         vars:

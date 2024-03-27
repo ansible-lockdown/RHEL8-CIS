@@ -201,17 +201,17 @@
         ansible.builtin.shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -0002
         failed_when: false
         changed_when: false
-        register: rhel_08_6_1_11_perms_results
+        register: discovered_perms_results
 
       - name: "6.1.11 | PATCH | Adjust world-writable files if they exist (Configurable)"
         when:
-            - rhel_08_6_1_11_perms_results.stdout_lines is defined
+            - discovered_perms_results.stdout_lines is defined
             - rhel8cis_no_world_write_adjust
         ansible.builtin.file:
             path: '{{ item }}'
             mode: o-w
             state: touch
-        with_items: "{{ rhel_08_6_1_11_perms_results.stdout_lines }}"
+        with_items: "{{ discovered_perms_results.stdout_lines }}"
 
       - name: "6.1.11 | PATCH | Ensure world writable files and directories are secured | sticky bit set on world-writable directories"
         ansible.builtin.shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d -perm -0002 2>/dev/null | xargs chmod a+t
@@ -220,14 +220,14 @@
 
       - name: "6.1.11 | AUDIT | Ensure world writable files and directories are secured | Warning"
         when:
-            - rhel_08_6_1_11_perms_results.stdout_lines is defined
+            - discovered_perms_results.stdout_lines is defined
             - not rhel8cis_no_world_write_adjust
         ansible.builtin.debug:
             msg: "Warning!! - WorldWritable files have been found"
 
       - name: "6.1.11 | AUDIT | Ensure world writable files and directories are secured | Warn Count"
         when:
-            - rhel_08_6_1_11_perms_results.stdout_lines is defined
+            - discovered_perms_results.stdout_lines is defined
             - not rhel8cis_no_world_write_adjust
         ansible.builtin.import_tasks:
             file: warning_facts.yml
@@ -253,7 +253,7 @@
         changed_when: false
         failed_when: false
         check_mode: false
-        register: rhel8cis_6_1_12_ungrouped_items
+        register: discovered_ungrouped_items
         with_items:
             - "{{ ansible_facts.mounts }}"
         loop_control:
@@ -261,32 +261,32 @@
 
       - name: "6.1.12 | AUDIT | Ensure no ungrouped files or directories exist | Flatten ungrouped_items results for easier use"
         ansible.builtin.set_fact:
-            rhel8cis_6_1_12_ungrouped_items_flatten: "{{ rhel8cis_6_1_12_ungrouped_items.results | map(attribute='stdout_lines') | flatten }}"
+            discovered_ungrouped_items_flatten: "{{ discovered_ungrouped_items.results | map(attribute='stdout_lines') | flatten }}"
 
       - name: "6.1.12 | AUDIT | Ensure no ungrouped files or directories exist | Alert on ungrouped files and directories"
         when:
             - not rhel8cis_ungrouped_adjust
-            - rhel8cis_6_1_12_ungrouped_items_flatten | length > 0
+            - discovered_ungrouped_items_flatten | length > 0
         ansible.builtin.debug:
             msg:
                 - "Warning!! You have ungrouped files/directories and are configured to not auto-remediate for this task"
                 - "Please review the files/directories below and assign a group"
-                - "{{ rhel8cis_6_1_12_ungrouped_items_flatten }}"
+                - "{{ discovered_ungrouped_items_flatten }}"
 
       - name: "6.1.12 | PATCH | Ensure no ungrouped files or directories exist | Set ungrouped files/directories to configured group"
         when:
             - rhel8cis_ungrouped_adjust
-            - rhel8cis_6_1_12_ungrouped_items_flatten | length > 0
+            - discovered_ungrouped_items_flatten | length > 0
         ansible.builtin.file:
             path: "{{ item }}"
             group: "{{ rhel8cis_ungrouped_group }}"
         loop:
-            - "{{ rhel8cis_6_1_12_ungrouped_items_flatten }}"
+            - "{{ discovered_ungrouped_items_flatten }}"
 
       - name: "6.1.12 | AUDIT | Ensure no ungrouped files or directories exist | Warn Count"
         when:
             - rhel8cis_ungrouped_adjust
-            - rhel8cis_6_1_12_ungrouped_items_flatten | length > 0
+            - discovered_ungrouped_items_flatten | length > 0
         ansible.builtin.import_tasks:
             file: warning_facts.yml
 
@@ -309,7 +309,7 @@
         changed_when: false
         failed_when: false
         check_mode: false
-        register: rhel8cis_6_1_13_suid_executables
+        register: discovered_suid_executables
         loop: "{{ ansible_facts.mounts }}"
         loop_control:
             label: "{{ item.mount }}"
@@ -319,63 +319,63 @@
         changed_when: false
         failed_when: false
         check_mode: false
-        register: rhel8cis_6_1_13_sgid_executables
+        register: discovered_sgid_executables
         loop: "{{ ansible_facts.mounts }}"
         loop_control:
             label: "{{ item.mount }}"
 
       - name: "6.1.13 | AUDIT | Ensure SUID and SGID files are reviewed | Flatten suid_executables results for easier use"
         ansible.builtin.set_fact:
-            rhel8cis_6_1_13_suid_executables_flatten: "{{ rhel8cis_6_1_13_suid_executables.results | map(attribute='stdout_lines') | flatten }}"
+            discovered_suid_executables_flatten: "{{ discovered_suid_executables.results | map(attribute='stdout_lines') | flatten }}"
 
       - name: "6.1.13 | AUDIT | Ensure SUID and SGID files are reviewed | Set fact SGID executables"
         ansible.builtin.set_fact:
-            rhel8cis_6_1_13_sgid_executables_flatten: "{{ rhel8cis_6_1_13_sgid_executables.results | map(attribute='stdout_lines') | flatten }}"
+            discovered_sgid_executables_flatten: "{{ discovered_sgid_executables.results | map(attribute='stdout_lines') | flatten }}"
 
       - name: "6.1.13 | PATCH | Ensure SUID and SGID files are reviewed | Remove SUID bit"
         when:
             - rhel8cis_suid_adjust
-            - rhel8cis_6_1_13_suid_executables_flatten | length > 0
+            - discovered_suid_executables_flatten | length > 0
         ansible.builtin.file:
             path: "{{ item }}"
             mode: 'u-s'
         loop:
-            - "{{ rhel8cis_6_1_13_suid_executables_flatten }}"
+            - "{{ discovered_suid_executables_flatten }}"
 
       - name: "6.1.13 | PATCH | Audit SGID executables | Remove SGID bit"
         ansible.builtin.file:
             path: "{{ item }}"
             mode: 'g-s'
         with_items:
-            - "{{ rhel8cis_6_1_13_sgid_executables_flatten }}"
+            - "{{ discovered_sgid_executables_flatten }}"
         when:
             - rhel8cis_sgid_adjust
-            - rhel8cis_6_1_13_sgid_executables_flatten | length > 0
+            - discovered_sgid_executables_flatten | length > 0
 
       - name: "6.1.13 | WARN | Ensure SUID and SGID files are reviewed | Alert SUID executables exist"
         when:
-            - rhel8cis_6_1_13_suid_executables_flatten | length > 0
+            - discovered_suid_executables_flatten | length > 0
             - not rhel8cis_suid_adjust
         ansible.builtin.debug:
             msg:
                 - "Warning!! You have SUID executables"
                 - "The files are listed below, please confirm the integrity of these binaries"
-                - "{{ rhel8cis_6_1_13_suid_executables_flatten }}"
+                - "{{ discovered_suid_executables_flatten }}"
 
       - name: "6.1.13 | WARN | Ensure SUID and SGID files are reviewed |  Alert SGID executables exist"
         when:
-            - rhel8cis_6_1_13_sgid_executables_flatten | length > 0
+            - discovered_sgid_executables_flatten | length > 0
             - not rhel8cis_sgid_adjust
         ansible.builtin.debug:
             msg:
                 - "Warning!! You have SGID executables"
                 - "The files are listed below, please review the integrity of these binaries"
-                - "{{ rhel8cis_6_1_13_sgid_executables_flatten }}"
+                - "{{ discovered_sgid_executables_flatten }}"
 
       - name: "6.1.13 | WARN | Ensure SUID and SGID files are reviewed | Warn Count"
         when:
-            - (rhel8cis_6_1_13_suid_executables_flatten | length > 0 and not rhel8cis_suid_adjust) or
-              (rhel8cis_6_1_13_sgid_executables_flatten | length > 0 and not rhel8cis_sgid_adjust)
+            - (discovered_suid_executables_flatten | length > 0 and not rhel8cis_suid_adjust) or
+              (discovered_sgid_executables_flatten | length > 0 and not rhel8cis_sgid_adjust)
         ansible.builtin.import_tasks:
             file: warning_facts.yml
 
@@ -404,26 +404,26 @@
         ansible.builtin.shell: rpm -Va --nomtime --nosize --nomd5 --nolinkto
         changed_when: false
         failed_when: false
-        register: rhel8cis_6_1_14_packages_rpm
+        register: discovered_packages_rpm
 
       - name: "6.1.14 | AUDIT | Audit system file permissions | Create list and warning"
         block:
             - name: "6.1.14 | AUDIT | Audit system file permissions | Add file discrepancy list to system"
               ansible.builtin.copy:
                   dest: "{{ rhel8cis_rpm_audit_file }}"  # noqa template-instead-of-copy
-                  content: "{{ rhel8cis_6_1_14_packages_rpm.stdout }}"
+                  content: "{{ discovered_packages_rpm.stdout }}"
                   owner: root
                   group: root
                   mode: '0644'
 
             - name: "6.1.14 | AUDIT | Audit system file permissions | Message out alert for package descrepancies"
-              when: rhel8cis_6_1_14_packages_rpm.stdout | length > 0
+              when: discovered_packages_rpm.stdout | length > 0
               ansible.builtin.debug:
                   msg: |
                      "Warning!! We have discovered package discrepancies.
                       The file list can be found in {{ rhel8cis_rpm_audit_file }}"
 
             - name: "6.1.14 | AUDIT | Audit system file permissions | Warn Count"
-              when: rhel8cis_6_1_14_packages_rpm.stdout | length > 0
+              when: discovered_packages_rpm.stdout | length > 0
               ansible.builtin.import_tasks:
                   file: warning_facts.yml

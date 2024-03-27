@@ -18,17 +18,17 @@
         ansible.builtin.shell: awk -F':' '($2 != "x" ) { print $1}' /etc/passwd
         changed_when: false
         failed_when: false
-        register: rhel8cis_6_2_1_nonshadowed_users
+        register: discovered_nonshadowed_users
 
       - name: "6.2.1 | AUDIT | Ensure accounts in /etc/passwd use shadowed passwords | Warn on findings"
-        when: rhel8cis_6_2_1_nonshadowed_users.stdout | length > 0
+        when: discovered_nonshadowed_users.stdout | length > 0
         ansible.builtin.debug:
             msg:
                 - "Warning!! You have users that are not using a shadowed password. Please convert the below accounts to use a shadowed password"
-                - "{{ rhel8cis_6_2_1_nonshadowed_users.stdout_lines }}"
+                - "{{ discovered_nonshadowed_users.stdout_lines }}"
 
       - name: "6.2.1 | WARN | Ensure accounts in /etc/passwd use shadowed passwords | warn_count"
-        when: rhel8cis_6_2_1_nonshadowed_users.stdout | length > 0
+        when: discovered_nonshadowed_users.stdout | length > 0
         ansible.builtin.import_tasks:
             file: warning_facts.yml
 
@@ -49,15 +49,15 @@
         ansible.builtin.shell: awk -F":" '($2 == "" ) { print $1 }' /etc/shadow
         changed_when: false
         check_mode: false
-        register: rhel8cis_6_2_2_empty_password_acct
+        register: discovered_empty_password_acct
 
       - name: "6.2.2 | PATCH | Ensure /etc/shadow password fields are not empty | Lock users with empty password"
-        when: rhel8cis_6_2_2_empty_password_acct.stdout | length > 0
+        when: discovered_empty_password_acct.stdout | length > 0
         ansible.builtin.user:
             name: "{{ item }}"
             password_lock: true
         loop:
-            - "{{ rhel8cis_6_2_2_empty_password_acct.stdout_lines }}"
+            - "{{ discovered_empty_password_acct.stdout_lines }}"
 
 - name: "6.2.3 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group"
   when:
@@ -82,15 +82,15 @@
         changed_when: false
         failed_when: false
         check_mode: false
-        register: rhel8cis_6_2_3_passwd_gid_check
+        register: discovered_passwd_gid_check
 
       - name: "6.2.3 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Print warning about users with invalid GIDs missing GID entries in /etc/group"
-        when: rhel8cis_6_2_3_passwd_gid_check.stdout | length > 0
+        when: discovered_passwd_gid_check.stdout | length > 0
         ansible.builtin.debug:
-            msg: "Warning!! The following users have non-existent GIDs (Groups): {{ rhel8cis_6_2_3_passwd_gid_check.stdout_lines | join (', ') }}"
+            msg: "Warning!! The following users have non-existent GIDs (Groups): {{ discovered_passwd_gid_check.stdout_lines | join (', ') }}"
 
       - name: "6.2.3 | WARN | Ensure all groups in /etc/passwd exist in /etc/group | warn_count"
-        when: rhel8cis_6_2_3_passwd_gid_check.stdout | length > 0
+        when: discovered_passwd_gid_check.stdout | length > 0
         ansible.builtin.import_tasks:
             file: warning_facts.yml
 
@@ -117,15 +117,15 @@
         changed_when: false
         failed_when: false
         check_mode: false
-        register: rhel8cis_6_2_4_user_uid_check
+        register: discovered_user_uid_check
 
       - name: "6.2.4 | AUDIT | Ensure no duplicate UIDs exist | Print warning about users with duplicate UIDs"
-        when: rhel8cis_6_2_4_user_uid_check.stdout | length > 0
+        when: discovered_user_uid_check.stdout | length > 0
         ansible.builtin.debug:
-            msg: "Warning!! The following users have UIDs that are duplicates: {{ rhel8cis_6_2_4_user_uid_check.stdout_lines }}"
+            msg: "Warning!! The following users have UIDs that are duplicates: {{ discovered_user_uid_check.stdout_lines }}"
 
       - name: "6.2.4 | AUDIT | Ensure no duplicate UIDs exist | Set warning count"
-        when: rhel8cis_6_2_4_user_uid_check.stdout | length > 0
+        when: discovered_user_uid_check.stdout | length > 0
         ansible.builtin.import_tasks:
             file: warning_facts.yml
 
@@ -152,15 +152,15 @@
         changed_when: false
         failed_when: false
         check_mode: false
-        register: rhel8cis_6_2_5_user_user_check
+        register: discovered_user_gid_check
 
       - name: "6.2.5 | AUDIT | Ensure no duplicate GIDs exist | Print warning about users with duplicate GIDs"
-        when: rhel8cis_6_2_5_user_user_check.stdout | length > 0
+        when: discovered_user_gid_check.stdout | length > 0
         ansible.builtin.debug:
-            msg: "Warning!! The following groups have duplicate GIDs: {{ rhel8cis_6_2_5_user_user_check.stdout_lines }}"
+            msg: "Warning!! The following groups have duplicate GIDs: {{ discovered_user_gid_check.stdout_lines }}"
 
       - name: "6.2.5 | AUDIT | Ensure no duplicate GIDs exist | Set warning count"
-        when: rhel8cis_6_2_5_user_user_check.stdout | length > 0
+        when: discovered_user_gid_check.stdout | length > 0
         ansible.builtin.import_tasks:
             file: warning_facts.yml
 
@@ -187,15 +187,15 @@
         changed_when: false
         failed_when: false
         check_mode: false
-        register: rhel8cis_6_2_6_username_check
+        register: discovered_username_check
 
       - name: "6.2.6 | WARN | Ensure no duplicate user names exist | Print warning about users with duplicate User Names"
-        when: rhel8cis_6_2_6_username_check.stdout | length > 0
+        when: discovered_username_check.stdout | length > 0
         ansible.builtin.debug:
-            msg: "Warning!! The following user names are duplicates: {{ rhel8cis_6_2_6_user_username_check.stdout_lines }}"
+            msg: "Warning!! The following user names are duplicates: {{ discovered_user_username_check.stdout_lines }}"
 
       - name: "6.2.6 | WARN | Ensure no duplicate user names exist | Set warning count"
-        when: rhel8cis_6_2_6_username_check.stdout | length > 0
+        when: discovered_username_check.stdout | length > 0
         ansible.builtin.import_tasks:
             file: warning_facts.yml
 
@@ -222,15 +222,15 @@
         changed_when: false
         failed_when: false
         check_mode: false
-        register: rhel8cis_6_2_7_group_check
+        register: discovered_group_check
 
       - name: "6.2.7 | AUDIT | Ensure no duplicate group names exist | Print warning about users with duplicate group names"
-        when: rhel8cis_6_2_7_group_check.stdout | length > 0
+        when: discovered_group_check.stdout | length > 0
         ansible.builtin.debug:
-            msg: "Warning!! The following group names are duplicates: {{ rhel8cis_6_2_7_group_group_check.stdout_lines }}"
+            msg: "Warning!! The following group names are duplicates: {{ discovered_group_group_check.stdout_lines }}"
 
       - name: "6.2.7 | AUDIT | Ensure no duplicate group names exist | Set warning count"
-        when: rhel8cis_6_2_7_group_check.stdout | length > 0
+        when: discovered_group_check.stdout | length > 0
         ansible.builtin.import_tasks:
             file: warning_facts.yml
 
@@ -252,36 +252,36 @@
       - name: "6.2.8 | AUDIT | Ensure root PATH Integrity | Get root paths"
         ansible.builtin.shell: sudo -Hiu root env | grep '^PATH' | cut -d= -f2
         changed_when: false
-        register: rhel8cis_6_2_8_root_paths
+        register: discovered_root_paths
 
       - name: "6.2.8 | AUDIT | Ensure root PATH Integrity | Get root paths"
         ansible.builtin.shell: sudo -Hiu root env | grep '^PATH' | cut -d= -f2 | tr ":" "\n"
         changed_when: false
-        register: rhel8cis_6_2_8_root_paths_split
+        register: discovered_root_paths_split
 
       - name: "6.2.8 | AUDIT | Ensure root PATH Integrity | Set fact"
         ansible.builtin.set_fact:
-            root_paths: "{{ rhel8cis_6_2_8_root_paths.stdout }}"
+            root_paths: "{{ discovered_root_paths.stdout }}"
 
       - name: "6.2.8 | AUDIT | Ensure root PATH Integrity | Check for empty dirs"
         ansible.builtin.shell: 'echo {{ root_paths }} | grep -q "::" && echo "roots path contains a empty directory (::)"'
         changed_when: false
-        failed_when: root_path_empty_dir.rc not in [ 0, 1 ]
-        register: root_path_empty_dir
+        failed_when: discovered_root_path_empty_dir.rc not in [ 0, 1 ]
+        register: discovered_root_path_empty_dir
 
       - name: "6.2.8 | AUDIT | Ensure root PATH Integrity | Check for trailing ':'"
         ansible.builtin.shell: '{{ root_paths }} | cut -d= -f2 | grep -q ":$" && echo "roots path contains a trailing (:)"'
         changed_when: false
-        failed_when: root_path_trailing_colon.rc not in [ 0, 1 ]
-        register: root_path_trailing_colon
+        failed_when: discovered_root_path_trailing_colon.rc not in [ 0, 1 ]
+        register: discovered_root_path_trailing_colon
 
       - name: "6.2.8 | AUDIT | Ensure root PATH Integrity | Check for owner and permissions"
         block:
             - name: "6.2.8 | AUDIT | Ensure root PATH Integrity | Check for owner and permissions"
               ansible.builtin.stat:
                   path: "{{ item }}"
-              register: root_path_perms
-              loop: "{{ rhel8cis_6_2_8_root_paths_split.stdout_lines }}"
+              register: discovered_root_path_perms
+              loop: "{{ discovered_root_paths_split.stdout_lines }}"
 
             - name: "6.2.8 | AUDIT | Ensure root PATH Integrity | Set permissions"
               when:
@@ -296,13 +296,13 @@
                   group: root
                   mode: '0755'
                   follow: false
-              loop: "{{ root_path_perms.results }}"
+              loop: "{{ discovered_root_path_perms.results }}"
               loop_control:
                   label: "{{ item }}"
 
 - name: "6.2.9 | PATCH | Ensure root is the only UID 0 account"
   when:
-      - rhel8cis_uid_zero_accounts_except_root.rc
+      - discovered_uid_zero_accounts_except_root.rc
       - rhel8cis_rule_6_2_9
   tags:
       - level1-server
@@ -319,7 +319,7 @@
   ansible.builtin.shell: passwd -l {{ item }}
   changed_when: false
   failed_when: false
-  loop: "{{ rhel8cis_uid_zero_accounts_except_root.stdout_lines }}"
+  loop: "{{ discovered_uid_zero_accounts_except_root.stdout_lines }}"
 
 - name: "6.2.10 | PATCH | Ensure local interactive user home directories exist"
   when:
@@ -342,29 +342,29 @@
             state: directory
             owner: "{{ item.id }}"
             group: "{{ item.gid }}"
-        register: rhel8cis_6_2_10_home_dir
-        loop: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8cis_min_uid.stdout | int ) | selectattr('uid', '<=', rhel8cis_max_uid.stdout | int ) | list }}"
+        register: discovered_home_dirs
+        loop: "{{ rhel8cis_passwd | selectattr('uid', '>=', discovered_min_uid.stdout | int ) | selectattr('uid', '<=', discovered_max_uid.stdout | int ) | list }}"
         loop_control:
             label: "{{ item.id }}"
 
       - name: "6.2.10 | AUDIT | Ensure local interactive user home directories exist | Get perms stat"
         ansible.builtin.stat:
             path: "{{ item }}"
-        register: rhel_09_6_2_10_home_dir_perms
-        loop: "{{ interactive_users_home.stdout_lines }}"
+        register: discovered_home_dir_perms
+        loop: "{{ discovered_interactive_users_home.stdout_lines }}"
 
       - name: "6.2.10 | PATCH | Ensure local interactive user home directories exist | Set perms if needed"
         ansible.builtin.file:
             path: "{{ item.stat.path }}"
             state: directory
             mode: g-w,o-rwx
-        loop: "{{ rhel_09_6_2_10_home_dir_perms.results }}"
+        loop: "{{ discovered_home_dir_perms.results }}"
         loop_control:
             label: "{{ item }}"
 
       - name: "6.2.10 | PATCH | Ensure local interactive user home directories exist | Own their home directories"
         when:
-            - item.uid >= rhel8cis_min_uid | int
+            - item.uid >= discovered_min_uid.stdout | int
             - item.id != 'nobody'
             - (item.id != 'tss' and item.dir != '/dev/null')
             - item.shell != '/sbin/nologin'
@@ -374,7 +374,7 @@
             path: "{{ item.dir }}"
             owner: "{{ item.id }}"
             state: directory
-        loop: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8cis_min_uid.stdout | int ) | selectattr('uid', '<=', rhel8cis_max_uid.stdout | int ) | list }}"
+        loop: "{{ rhel8cis_passwd | selectattr('uid', '>=', discovered_min_uid.stdout | int ) | selectattr('uid', '<=', discovered_max_uid.stdout | int ) | list }}"
         loop_control:
             label: "{{ item.id }}"
 
@@ -386,7 +386,7 @@
             etype: group
             permissions: rx
             state: present
-        loop: "{{ interactive_users_home.stdout_lines }}"
+        loop: "{{ discovered_interactive_users_home.stdout_lines }}"
         when: not system_is_container
 
       - name: "6.2.10 | PATCH | Ensure local interactive user home directories exist | Set other ACL"
@@ -396,7 +396,7 @@
             etype: other
             permissions: 0
             state: present
-        loop: "{{ interactive_users_home.stdout_lines }}"
+        loop: "{{ discovered_interactive_users_home.stdout_lines }}"
         when: not system_is_container
 
 - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured"
@@ -421,13 +421,13 @@
       - name: "6.2.11 | AUDIT | Ensure local interactive user dot files access is configured | Check for files"
         ansible.builtin.shell: find /home/ -name "\.*" -perm /g+w,o+w
         changed_when: false
-        failed_when: rhel8cis_6_2_11_audit.rc not in [ 0, 1 ]
+        failed_when: discovered_dot_files.rc not in [ 0, 1 ]
         check_mode: false
-        register: rhel8cis_6_2_11_audit
+        register: discovered_dot_files
 
       - name: "6.2.11 | AUDIT | Ensure local interactive user dot files access is configured | Warning on files found"
         when:
-            - rhel8cis_6_2_11_audit.stdout | length > 0
+            - discovered_dot_files.stdout | length > 0
             - rhel8cis_dotperm_ansiblemanaged
 
         ansible.builtin.debug:
@@ -436,7 +436,7 @@
 
       - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured | Set warning count"
         when:
-            - rhel8cis_6_2_11_audit.stdout | length > 0
+            - discovered_dot_files.stdout | length > 0
             - rhel8cis_dotperm_ansiblemanaged
 
         ansible.builtin.import_tasks:
@@ -444,10 +444,10 @@
 
       - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured | Changes files if configured"
         when:
-            - rhel8cis_6_2_11_audit.stdout | length > 0
+            - discovered_dot_files.stdout | length > 0
             - rhel8cis_dotperm_ansiblemanaged
 
         ansible.builtin.file:
             path: '{{ item }}'
             mode: go-w
-        with_items: "{{ rhel8cis_6_2_11_audit.stdout_lines }}"
+        with_items: "{{ discovered_dot_files.stdout_lines }}"

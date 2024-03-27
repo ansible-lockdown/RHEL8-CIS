@@ -97,13 +97,13 @@
         ansible.builtin.shell: |
             grep -P -- '^\h*password\h+([^#\n\r]+)\h+pam_pwhistory\.so\h+([^#\n\r]+\h+)?use_authtok\ b' /etc/pam.d/{password,system}-auth
         changed_when: false
-        failed_when: rhel8cis_pwhistory_authtok.rc not in [ 0, 1 ]
-        register: rhel8cis_pwhistory_authtok
+        failed_when: discovered_pwhistory_authtok.rc not in [ 0, 1 ]
+        register: discovered_pwhistory_authtok
 
       - name: "4.4.3.3.3 | PATCH | Ensure pam_pwhistory includes use_authtok | authselect_files"
         when:
             - rhel8cis_allow_authselect_updates
-            - rhel8cis_pwhistory_authtok.rc != 0
+            - discovered_pwhistory_authtok.rc != 0
         notify: Update_authselect
         community.general.pamd:
             name: "{{ item }}-auth"

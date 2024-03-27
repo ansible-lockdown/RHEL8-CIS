@@ -705,10 +705,10 @@ rhel8cis_pass:
     warn_age: 7
 
 ## Set the following to true if you wish to adjust accounts greater than rhel8cis_pass['max_days']
-rhel8cis_4_5_1_2_set_max_expiry: false
+rhel8cis_set_max_expiry: false
 
 ## Add users to be skipped if required
-rhel8cis_4_5_1_2_user_skip_list:
+rhel8cis_user_skip_list:
     root
 
 rhel8cis_root_umask: '0027'  # 0027 or more restrictive

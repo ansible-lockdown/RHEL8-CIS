@@ -39,15 +39,15 @@
             patterns: 'ssh_host_*_key'
             recurse: true
             file_type: any
-        register: rhel8cis_4_2_2_ssh_private_host_key
+        register: discovered_ssh_private_host_key
 
       - name: "4.2.2 | PATCH | Ensure permissions on SSH private host key files are configured | Set permissions on SSH private host keys"
         ansible.builtin.file:
             path: "{{ item.path }}"
             owner: root
             group: root
-            mode: 0600
-        loop: "{{ rhel8cis_4_2_2_ssh_private_host_key.files }}"
+            mode: '0600'
+        loop: "{{ discovered_ssh_private_host_key.files }}"
         loop_control:
             label: "{{ item.path }}"
 
@@ -70,15 +70,15 @@
             patterns: 'ssh_host_*_key.pub'
             recurse: true
             file_type: any
-        register: rhel8cis_4_2_3_ssh_public_host_key
+        register: discovered_ssh_public_host_key
 
       - name: "4.2.3 | PATCH | Ensure permissions on SSH public host key files are configured | Set permissions on SSH public host keys"
         ansible.builtin.file:
             path: "{{ item.path }}"
             owner: root
             group: root
-            mode: 0644
-        loop: "{{ rhel8cis_4_2_3_ssh_public_host_key.files }}"
+            mode: '0644'
+        loop: "{{ discovered_ssh_public_host_key.files }}"
         loop_control:
             label: "{{ item.path }}"
 
@@ -477,12 +477,12 @@
   block:
       - name: "4.2.22 | AUDIT | Ensure system-wide crypto policy is not over-ridden"
         ansible.builtin.shell: grep -i '^\s*CRYPTO_POLICY=' /etc/sysconfig/sshd
-        failed_when: ( crypto_policy_override.rc not in [ 0, 1 ] )
+        failed_when: ( discovered_crypto_policy_override.rc not in [ 0, 1 ] )
         changed_when: false
-        register: crypto_policy_override
+        register: discovered_crypto_policy_override
 
       - name: "4.2.22 | PATCH | Ensure system-wide crypto policy is not over-ridden"
         ansible.builtin.shell: sed -ri "s/^\s*(CRYPTO_POLICY\s*=.*)$/# \1/" /etc/sysconfig/sshd
         notify: Restart_sshd
         when:
-            - crypto_policy_override.stdout | length > 0
+            - discovered_crypto_policy_override.stdout | length > 0

@@ -33,13 +33,13 @@
             - rhel8cis_allow_authselect_updates
         ansible.builtin.shell: authselect current
         changed_when: false
-        failed_when: rhel8cis_authselect_current.rc not in [ 0, 1 ]
-        register: rhel8cis_authselect_current
+        failed_when: discovered_authselect_current.rc not in [ 0, 1 ]
+        register: discovered_authselect_current
 
       - name: "4.4.3.1.1 | PATCH | Ensure password failed attempts lockout is configured | authselect_files"
         when:
             - rhel8cis_allow_authselect_updates
-            - rhel8cis_authselect_current.rc != 0
+            - discovered_authselect_current.rc != 0
         ansible.builtin.replace:
             path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
             regexp: ^(\s*auth\s+(requisite|required|sufficient)\s+pam_faillock\.so)(.*)\s+deny\s*=\s*\S+(.*$)

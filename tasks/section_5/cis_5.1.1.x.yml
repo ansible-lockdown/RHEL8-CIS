@@ -85,13 +85,13 @@
         changed_when: false
         failed_when: false
         check_mode: false
-        register: rhel_09_5_1_1_5_audit
+        register: discovered_captured_rsyslog_conf
 
       - name: "5.1.1.5 | AUDIT | Ensure logging is configured | rsyslog current config message out"
         ansible.builtin.debug:
             msg:
                 - "These are the current logging configurations for rsyslog, please review:"
-                - "{{ rhel_09_5_1_1_5_audit.stdout_lines }}"
+                - "{{ discovered_captured_rsyslog_conf.stdout_lines }}"
 
       - name: "5.1.1.5 | PATCH | Ensure logging is configured | mail.* log setting"
         when: rhel8cis_rsyslog_ansiblemanaged
@@ -171,10 +171,10 @@
         # target can be IP or FQDN
         *.* action(type="omfwd" target="{{ rhel8cis_remote_log_host }}" port="{{ rhel8cis_remote_log_port }}" protocol="{{ rhel8cis_remote_log_protocol }}" action.resumeRetryCount="{{ rhel8cis_remote_log_retrycount }}" queue.type="LinkedList" queue.size="{{ rhel8cis_remote_log_queuesize }}")
       insertafter: EOF
-  register: result
+  register: set_remote_syslog
   failed_when:
-      - result is failed
-      - result.rc != 257
+      - set_remote_syslog is failed
+      - set_remote_syslog.rc != 257
 
 - name: "5.1.1.7 | PATCH | Ensure rsyslog is not configured to recieve logs from a remote client"
   when:

@@ -11,13 +11,12 @@
       - sysctl
       - NIST800-53R5_CM-6
       - rule_1.4.1
-  ansible.posix.sysctl:
-      name: kernel.randomize_va_space
-      value: '2'
-      reload: true
-      sysctl_file: /etc/sysctl.d/60-kernel_sysctl.conf
-      sysctl_set: true
-      ignoreerrors: true
+  notify: Reload_sysctl
+  ansible.builtin.lineinfile:
+      path: /etc/sysctl.d/60-kernel_sysctl.conf
+      regexp: kernel.randomize_va_space
+      line: kernel.randomize_va_space = 2
+      create: true
 
 - name: "1.4.2 | PATCH | Ensure ptrace_scope is restricted"
   when:
@@ -30,13 +29,22 @@
       - sysctl
       - NIST800-53R5_CM-6
       - rule_1.4.2
-  ansible.posix.sysctl:
-      name: kernel.yama.ptrace_scope
-      value: '1'
-      reload: true
-      sysctl_file: /etc/sysctl.d/60-kernel_sysctl.conf
-      sysctl_set: true
-      ignoreerrors: true
+  notify: Reload_sysctl
+  block:
+      - name: Ensure ptrace_scope is restricted | Set file
+        ansible.builtin.lineinfile:
+            path: /etc/sysctl.d/60-kernel_sysctl.conf
+            regexp: kernel.yama.ptrace_scope
+            line: kernel.yama.ptrace_scope = 1
+            create: true
+
+      - name: Ensure ptrace_scope is restricted | comment out other entry
+        ansible.builtin.lineinfile:
+            path: /lib/sysctl.d/10-default-yama-scope.conf
+            backrefs: true
+            regexp: ^(\s*kernel.yama.ptrace_scope.*)
+            line: '# \1'
+            create: true
 
 - name: "1.4.3 | PATCH | Ensure core dump backtraces are disabled"
   tags:
@@ -51,13 +59,14 @@
       path: /etc/systemd/coredump.conf
       regexp: 'ProcessSizeMax='
       line: 'ProcessSizeMax=0'
+      create: true
   when:
       - rhel8cis_rule_1_4_3
 
 - name: "1.4.4 | PATCH | Ensure core dump storage is disabled"
   when:
       - rhel8cis_rule_1_4_4
-      - systemd_coredump.stat.exists
+      - discovered_systemd_coredump.stat.exists
   tags:
       - level1-server
       - level1-workstation

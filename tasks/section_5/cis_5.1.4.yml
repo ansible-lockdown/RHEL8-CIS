@@ -16,20 +16,20 @@
         ansible.builtin.shell: find /var/log/ -type f -perm /g+wx,o+rwx -exec ls {} \;
         changed_when: false
         failed_when: false
-        register: rhel8cis_5_1_4_logfiles
+        register: discovered_logfiles
 
       - name: "5.1.4 | AUDIT | Ensure permissions on all logfiles are configured | set_fact"
         ansible.builtin.set_fact:
-            rhel8cis_4_2_3_logfiles_flattened: "{{ rhel8cis_5_1_4_logfiles | json_query('stdout_lines[*]') | flatten }}"  # noqa: jinja[invalid]
+            discovered_logfiles_flattened: "{{ discovered_logfiles | json_query('stdout_lines[*]') | flatten }}"  # noqa: jinja[invalid]
         when:
-            - rhel8cis_5_1_4_logfiles.stdout_lines | length > 0
-            - rhel8cis_5_1_4_logfiles is defined
+            - discovered_logfiles.stdout_lines | length > 0
+            - discovered_logfiles is defined
 
       - name: "5.1.4 | PATCH | Ensure permissions on all logfiles are configured | change permissions"
         ansible.builtin.file:
             path: "{{ item }}"
             mode: '0640'
-        loop: "{{ rhel8cis_5_1_4_logfiles_flattened }}"
+        loop: "{{ discovered_logfiles_flattened }}"
         when:
             - rhel8cis_5_1_4_logfiles_flattened is defined
             - item != "/var/log/btmp"

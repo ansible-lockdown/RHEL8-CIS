@@ -58,11 +58,11 @@
       - name: Pre Audit Setup | Check for goss file
         ansible.builtin.stat:
             path: "{{ audit_bin }}"
-        register: goss_available
+        register: discovered_goss_available
 
       - name: Pre Audit Setup | If audit ensure goss is available
         ansible.builtin.assert:
-            that: goss_available.stat.exists
+            that: discovered_goss_available.stat.exists
             msg: "Audit has been selected: unable to find goss binary at {{ audit_bin }}"
 
 - name: Pre Audit Setup | Copy ansible default vars values to test audit
@@ -77,7 +77,7 @@
       mode: '0600'
 
 - name: Pre Audit | Run pre_remediation {{ benchmark }} audit
-  ansible.builtin.shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -f {{ audit_format }} -o {{ pre_audit_outfile }} -g {{ group_names }}"
+  ansible.builtin.shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -f {{ audit_format }} -o {{ pre_audit_outfile }} -g \"{{ group_names }}\""
   changed_when: true
   environment:
       AUDIT_BIN: "{{ audit_bin }}"
@@ -88,14 +88,14 @@
   when:
       - audit_format == "json"
   block:
-      - name: capture data {{ pre_audit_outfile }}
+      - name: Pre Audit | Capture data {{ pre_audit_outfile }}
         ansible.builtin.shell: cat {{ pre_audit_outfile }}
-        register: pre_audit
+        register: discovered_pre_audit
         changed_when: false
 
       - name: Pre Audit | Capture pre-audit result
         ansible.builtin.set_fact:
-            pre_audit_summary: "{{ pre_audit.stdout | from_json | json_query(summary) }}"
+            pre_audit_summary: "{{ discovered_pre_audit.stdout | from_json | json_query(summary) }}"
         vars:
             summary: summary."summary-line"
 
@@ -103,14 +103,14 @@
   when:
       - audit_format == "documentation"
   block:
-      - name: Pre Audit | capture data {{ pre_audit_outfile }} | documentation format
+      - name: Pre Audit | Capture data {{ pre_audit_outfile }} | documentation format
         ansible.builtin.shell: tail -2 {{ pre_audit_outfile }}
-        register: pre_audit
+        register: discovered_pre_audit
         changed_when: false
 
       - name: Pre Audit | Capture pre-audit result | documentation format
         ansible.builtin.set_fact:
-            pre_audit_summary: "{{ pre_audit.stdout_lines }}"
+            pre_audit_summary: "{{ discovered_pre_audit.stdout_lines }}"
 
 - name: Audit_Only | Run Audit Only
   when:
