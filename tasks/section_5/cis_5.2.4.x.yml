@@ -35,7 +35,7 @@
         ansible.builtin.stat:
             path: "{{ discovered_audit_logfile.stdout }}"
         changed_when: false
-        register: auditlog_discovered
+        register: discovered_auditlog_info
 
       - name: |
             "5.2.4.2 | PATCH | Ensure audit log files are mode 0640 or less permissive"
@@ -43,7 +43,7 @@
             "5.2.4.4 | PATCH | Ensure only authorized groups are assigned ownership of audit log files"
         ansible.builtin.file:
             path: "{{ discovered_audit_logfile.stdout }}"
-            mode: "{% if auditlog_discovered.stat.mode != '0600' %}0640{% endif %}"
+            mode: "{% if discovered_auditlog_info.stat.mode != '0600' %}0640{% endif %}"
             owner: root
             group: root
 
