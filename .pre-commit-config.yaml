@@ -44,7 +44,7 @@ repos:
     exclude: .config/.secrets.baseline
 
 - repo: https://github.com/ansible-community/ansible-lint
-  rev: v24.2.1
+  rev: v24.2.2
   hooks:
   - id: ansible-lint
     name: Ansible-lint
