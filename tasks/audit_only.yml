@@ -22,7 +22,7 @@
   when:
       - audit_only
   ansible.builtin.debug:
-      msg: "The Audit results are: {{ pre_audit_summary }}."
+      msg: "{{ audit_results.split('\n') }}"
 
 - name: Audit_only | Stop Playbook Audit Only selected
   when:
