@@ -33,23 +33,25 @@
   when:
       - audit_content == 'copy'
   ansible.builtin.copy:
-      src: "{{ audit_local_copy }}"
+      src: "{{ audit_conf_source }}"
       dest: "{{ audit_conf_dest }}"
       mode: preserve
 
 - name: Pre Audit Setup | Unarchive audit content files on server
   when:
-      - audit_content == 'archived'
+      - audit_content == 'archive'
   ansible.builtin.unarchive:
-      src: "{{ audit_conf_copy  }}"
-      dest: "{{ audit_conf_dir }}"
+      src: "{{ audit_conf_source }}"
+      dest: "{{ audit_conf_dest }}"
 
 - name: Pre Audit Setup | Get audit content from url
   when:
       - audit_content == 'get_url'
-  ansible.builtin.get_url:
-      url: "{{ audit_files_url }}"
-      dest: "{{ audit_conf_dir }}"
+  ansible.builtin.unarchive:
+      src: "{{ audit_conf_source }}"
+      dest: "{{ audit_conf_dest }}/{{ benchmark }}-Audit"
+      remote_src: "{{ ( audit_conf_source is contains ('http'))| ternary(true, false ) }}"
+      extra_opts: "{{ (audit_conf_source is contains ('github')) | ternary('--strip-components=1', [] ) }}"
 
 - name: Pre Audit Setup | Check Goss is available
   when:
@@ -81,7 +83,7 @@
   changed_when: true
   environment:
       AUDIT_BIN: "{{ audit_bin }}"
-      AUDIT_CONTENT_LOCATION: "{{ audit_out_dir }}"
+      AUDIT_CONTENT_LOCATION: "{{ audit_conf_dest | default('/opt') }}"
       AUDIT_FILE: goss.yml
 
 - name: Pre Audit | Capture audit data if json format
@@ -89,7 +91,7 @@
       - audit_format == "json"
   block:
       - name: Pre Audit | Capture data {{ pre_audit_outfile }}
-        ansible.builtin.shell: cat {{ pre_audit_outfile }}
+        ansible.builtin.shell: "cat {{ pre_audit_outfile }}"
         register: discovered_pre_audit
         changed_when: false
 
@@ -104,7 +106,7 @@
       - audit_format == "documentation"
   block:
       - name: Pre Audit | Capture data {{ pre_audit_outfile }} | documentation format
-        ansible.builtin.shell: tail -2 {{ pre_audit_outfile }}
+        ansible.builtin.shell: "tail -2 {{ pre_audit_outfile }}"
         register: discovered_pre_audit
         changed_when: false
 

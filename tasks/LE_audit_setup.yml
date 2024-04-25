@@ -3,12 +3,12 @@
 - name: Pre Audit Setup | Set audit package name
   block:
       - name: Pre Audit Setup | Set audit package name | 64bit
-        when: ansible_machine == "x86_64"
+        when: ansible_facts.machine == "x86_64"
         ansible.builtin.set_fact:
             audit_pkg_arch_name: AMD64
 
       - name: Pre Audit Setup | Set audit package name | ARM64
-        when: ansible_machine == "arm64"
+        when: ansible_facts.machine == "arm64"
         ansible.builtin.set_fact:
             audit_pkg_arch_name: ARM64
 

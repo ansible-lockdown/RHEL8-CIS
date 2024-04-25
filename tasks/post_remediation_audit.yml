@@ -5,7 +5,7 @@
   changed_when: true
   environment:
       AUDIT_BIN: "{{ audit_bin }}"
-      AUDIT_CONTENT_LOCATION: "{{ audit_out_dir }}"
+      AUDIT_CONTENT_LOCATION: "{{ audit_conf_dest | default('/opt') }}"
       AUDIT_FILE: goss.yml
 
 - name: Post Audit | Ensure audit files readable by users
@@ -22,7 +22,7 @@
       - audit_format == "json"
   block:
       - name: Post Audit | Capture data {{ post_audit_outfile }}
-        ansible.builtin.shell: cat {{ post_audit_outfile }}
+        ansible.builtin.shell: "cat {{ post_audit_outfile }}"
         register: discovered_post_audit
         changed_when: false
 
@@ -37,7 +37,7 @@
       - audit_format == "documentation"
   block:
       - name: Post Audit | Capture data {{ post_audit_outfile }}
-        ansible.builtin.shell: tail -2 {{ post_audit_outfile }}
+        ansible.builtin.shell: "tail -2 {{ post_audit_outfile }}"
         register: discovered_post_audit
         changed_when: false
 
