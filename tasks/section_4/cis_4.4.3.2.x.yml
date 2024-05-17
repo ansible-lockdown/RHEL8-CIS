@@ -224,9 +224,10 @@
   block:
       - name: "4.4.3.2.6 | PATCH | Ensure password dictionary check is enabled | pwquality.conf"
         ansible.builtin.lineinfile:
+            line: 'dictcheck = 1'
             path: /etc/security/pwquality.conf
-            state: absent
             regexp: '^(#|)\s*dictcheck\s*=\s*\d'
+            state: present
 
       - name: "4.4.3.2.6 | PATCH | Ensure password dictionary check is enabled | pam_files"
         when: not rhel8cis_allow_authselect_updates
