@@ -82,7 +82,7 @@
       regexp: '^([^#].*)!authenticate(.*)'
       replace: '\1authenticate\2'
       validate: '/usr/sbin/visudo -cf %s'
-  loop: "{{ discovered_sudoers_filess.stdout_lines }}"
+  loop: "{{ discovered_sudoers_files.stdout_lines }}"
 
 - name: "4.3.6 | PATCH | Ensure sudo authentication timeout is configured correctly"
   when:
