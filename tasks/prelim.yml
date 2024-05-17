@@ -180,7 +180,7 @@
   changed_when: false
   failed_when: false
   check_mode: false
-  register: discovered_sudoers_filess
+  register: discovered_sudoers_files
 
 - name: "PRELIM | AUDIT | Check authselect package versions"
   tags:
