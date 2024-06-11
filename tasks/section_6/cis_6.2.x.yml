@@ -342,39 +342,7 @@
             state: directory
             owner: "{{ item.id }}"
             group: "{{ item.gid }}"
-        register: discovered_home_dirs
-        loop: "{{ rhel8cis_passwd | selectattr('uid', '>=', discovered_min_uid.stdout | int ) | selectattr('uid', '<=', discovered_max_uid.stdout | int ) | list }}"
-        loop_control:
-            label: "{{ item.id }}"
-
-      - name: "6.2.10 | AUDIT | Ensure local interactive user home directories exist | Get perms stat"
-        ansible.builtin.stat:
-            path: "{{ item }}"
-        register: discovered_home_dir_perms
-        loop: "{{ discovered_interactive_users_home.stdout_lines }}"
-
-      - name: "6.2.10 | PATCH | Ensure local interactive user home directories exist | Set perms if needed"
-        ansible.builtin.file:
-            path: "{{ item.stat.path }}"
-            state: directory
-            mode: g-w,o-rwx
-        loop: "{{ discovered_home_dir_perms.results }}"
-        loop_control:
-            label: "{{ item }}"
-
-      - name: "6.2.10 | PATCH | Ensure local interactive user home directories exist | Own their home directories"
-        when:
-            - item.uid >= discovered_min_uid.stdout | int
-            - item.id != 'nobody'
-            - (item.id != 'tss' and item.dir != '/dev/null')
-            - item.shell != '/sbin/nologin'
-            - "'bin/nologin' not in item.shell"
-            - "'bin/false' not in item.shell"
-        ansible.builtin.file:
-            path: "{{ item.dir }}"
-            owner: "{{ item.id }}"
-            state: directory
-        loop: "{{ rhel8cis_passwd | selectattr('uid', '>=', discovered_min_uid.stdout | int ) | selectattr('uid', '<=', discovered_max_uid.stdout | int ) | list }}"
+        loop: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8uid_uid_start | int ) | selectattr('uid', '<=', rhel8uid_uid_stop | int ) | list }}"
         loop_control:
             label: "{{ item.id }}"
 
