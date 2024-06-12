@@ -352,7 +352,7 @@
             - rhel8cis_sgid_adjust
             - discovered_sgid_executables_flatten | length > 0
 
-      - name: "6.1.13 | WARN | Ensure SUID and SGID files are reviewed | Alert SUID executables exist"
+      - name: "6.1.13 | WARNING | Ensure SUID and SGID files are reviewed | Alert SUID executables exist"
         when:
             - discovered_suid_executables_flatten | length > 0
             - not rhel8cis_suid_adjust
@@ -362,7 +362,7 @@
                 - "The files are listed below, please confirm the integrity of these binaries"
                 - "{{ discovered_suid_executables_flatten }}"
 
-      - name: "6.1.13 | WARN | Ensure SUID and SGID files are reviewed |  Alert SGID executables exist"
+      - name: "6.1.13 | WARNING | Ensure SUID and SGID files are reviewed |  Alert SGID executables exist"
         when:
             - discovered_sgid_executables_flatten | length > 0
             - not rhel8cis_sgid_adjust
@@ -372,7 +372,7 @@
                 - "The files are listed below, please review the integrity of these binaries"
                 - "{{ discovered_sgid_executables_flatten }}"
 
-      - name: "6.1.13 | WARN | Ensure SUID and SGID files are reviewed | Warn Count"
+      - name: "6.1.13 | WARNING | Ensure SUID and SGID files are reviewed | Warn Count"
         when:
             - (discovered_suid_executables_flatten | length > 0 and not rhel8cis_suid_adjust) or
               (discovered_sgid_executables_flatten | length > 0 and not rhel8cis_sgid_adjust)

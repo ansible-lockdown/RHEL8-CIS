@@ -179,7 +179,7 @@
         failed_when: discovered_users_user_future.rc not in [ 0, 1 ]
         register: discovered_users_user_future
 
-      - name: "4.5.1.5 | WARN | Ensure inactive password lock is 30 days or less | Warn Users in future"
+      - name: "4.5.1.5 | WARNING | Ensure inactive password lock is 30 days or less | Warn Users in future"
         when:
             - discovered_users_user_future is defined
             - discovered_users_user_future.stdout | length > 0
@@ -188,7 +188,7 @@
                 - "Warning!! - The following users have passwords set in the future please investigate"
                 - "{{ discovered_users_user_future.stdout_lines }}"
 
-      - name: "4.5.1.5 | WARN | Ensure inactive password lock is 30 days or less | Warn Users in future"
+      - name: "4.5.1.5 | WARNING | Ensure inactive password lock is 30 days or less | Warn Users in future"
         when:
             - rhel8cis_users_user_future is defined
             - rhel8cis_users_user_future.stdout | length > 0

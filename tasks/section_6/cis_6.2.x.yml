@@ -27,7 +27,7 @@
                 - "Warning!! You have users that are not using a shadowed password. Please convert the below accounts to use a shadowed password"
                 - "{{ discovered_nonshadowed_users.stdout_lines }}"
 
-      - name: "6.2.1 | WARN | Ensure accounts in /etc/passwd use shadowed passwords | warn_count"
+      - name: "6.2.1 | WARNING | Ensure accounts in /etc/passwd use shadowed passwords | warn_count"
         when: discovered_nonshadowed_users.stdout | length > 0
         ansible.builtin.import_tasks:
             file: warning_facts.yml
@@ -89,7 +89,7 @@
         ansible.builtin.debug:
             msg: "Warning!! The following users have non-existent GIDs (Groups): {{ discovered_passwd_gid_check.stdout_lines | join (', ') }}"
 
-      - name: "6.2.3 | WARN | Ensure all groups in /etc/passwd exist in /etc/group | warn_count"
+      - name: "6.2.3 | WARNING | Ensure all groups in /etc/passwd exist in /etc/group | warn_count"
         when: discovered_passwd_gid_check.stdout | length > 0
         ansible.builtin.import_tasks:
             file: warning_facts.yml
@@ -189,12 +189,12 @@
         check_mode: false
         register: discovered_username_check
 
-      - name: "6.2.6 | WARN | Ensure no duplicate user names exist | Print warning about users with duplicate User Names"
+      - name: "6.2.6 | WARNING | Ensure no duplicate user names exist | Print warning about users with duplicate User Names"
         when: discovered_username_check.stdout | length > 0
         ansible.builtin.debug:
             msg: "Warning!! The following user names are duplicates: {{ discovered_user_username_check.stdout_lines }}"
 
-      - name: "6.2.6 | WARN | Ensure no duplicate user names exist | Set warning count"
+      - name: "6.2.6 | WARNING | Ensure no duplicate user names exist | Set warning count"
         when: discovered_username_check.stdout | length > 0
         ansible.builtin.import_tasks:
             file: warning_facts.yml

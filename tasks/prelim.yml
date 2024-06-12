@@ -189,12 +189,12 @@
         ansible.builtin.set_fact:
             authselect_version: OK
 
-      - name: "PRELIM | WARN | Check authselect package versions | Warning"
+      - name: "PRELIM | WARNING | Check authselect package versions | Warning"
         when: ansible_facts.packages.authselect[0].version is version(authselect_pkg_version, '<')
         ansible.builtin.debug:
             msg: "Warning!! Authselect controls won't run as authselect pkg version too low"
 
-      - name: "PRELIM | WARN | Check authselect package versions | Warning"
+      - name: "PRELIM | WARNING | Check authselect package versions | Warning"
         when: ansible_facts.packages.authselect[0].version is version(authselect_pkg_version, '<')
         ansible.builtin.import_tasks:
             file: warning_facts.yml
@@ -214,14 +214,14 @@
         ansible.builtin.set_fact:
             pam_version: OK
 
-      - name: "PRELIM | WARN | Check pam package versions | Warning"
+      - name: "PRELIM | WARNING | Check pam package versions | Warning"
         when:
             - ansible_facts.packages.pam[0].version is version(pam_pkg_version, '<')
             - ansible_facts.packages.pam[0].release is version (pam_pkg_release, '<')
         ansible.builtin.debug:
             msg: "Warning!! Authselect controls won't run as pam package version too low"
 
-      - name: "PRELIM | WARN | Check pam package versions | Warning"
+      - name: "PRELIM | WARNING | Check pam package versions | Warning"
         when:
             - ansible_facts.packages.pam[0].version is version(pam_pkg_version, '<')
             - ansible_facts.packages.pam[0].release is version (pam_pkg_release, '<')
