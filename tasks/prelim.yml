@@ -119,6 +119,7 @@
   register: discovered_systemd_coredump
 
 - name: "PRELIM | AUDIT | Ensure crypto-policies-scripts package is installed"
+  when: "'crypto-policies-scripts' not in ansible_facts.packages"
   tags:
       - always
   ansible.builtin.package:
@@ -156,6 +157,7 @@
       state: present
 
 - name: "PRELIM | PATCH | Cron Package"
+  when: "'cronie' not in ansible_facts.packages"
   tags:
       - always
   ansible.builtin.package:
@@ -279,7 +281,9 @@
   register: discovered_interactive_users_home
 
 - name: "PRELIM | PATCH | Section 5.1 | Configure System Accounting (auditd)"
-  when: rhel8cis_level_2
+  when:
+      - rhel8cis_level_2
+      - "'audit' not in ansible_facts.packages"
   tags:
       - always
   ansible.builtin.package:
