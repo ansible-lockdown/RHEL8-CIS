@@ -4,4 +4,4 @@
 rpm_gpg_key: /etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux
 rpm_packager: "AlmaLinux Packaging Team"
 # found on https://wiki.almalinux.org/cloud/Generic-cloud.html#download-and-verification note lower cas
-rpm_key: "gpg-pubkey-ced7258b-6525146f"  # pragma: allowlist secret https://almalinux.org/blog/2023-12-20-almalinux-8-key-update/
+rpm_key: "2ae81e8aced7258b"  # pragma: allowlist secret https://almalinux.org/blog/2023-12-20-almalinux-8-key-update/
