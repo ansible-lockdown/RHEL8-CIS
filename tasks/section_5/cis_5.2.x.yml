@@ -227,10 +227,10 @@
       - rule_5.2.11
 
 - name: "5.2.12 | PATCH | Ensure SSH X11 forwarding is disabled"
-  ansible.builtin.lineinfile:
+  ansible.builtin.replace:
       path: /etc/ssh/sshd_config
-      regexp: "^#X11Forwarding|^X11Forwarding"
-      line: 'X11Forwarding no'
+      regexp: '^(\s*)X11Forwarding.*'
+      replace: '\1X11Forwarding no'
   when:
       - rhel8cis_rule_5_2_12
   tags:
