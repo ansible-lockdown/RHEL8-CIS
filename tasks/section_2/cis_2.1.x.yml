@@ -45,8 +45,9 @@
       - rule_2.1.3
   ansible.builtin.lineinfile:
       path: /etc/sysconfig/chronyd
-      regexp: OPTIONS=\"(.*)(?!-u chrony)(.*)"
-      line: OPTIONS="\1\2 -u chrony"
+      regexp: '^OPTIONS="(?!.* -u chrony.*)(.*)"'
+      line: OPTIONS="\1 -u chrony"
       create: true
       backrefs: true
       mode: '0644'
+  notify: Restart_chronyd

@@ -206,16 +206,16 @@
       - rule_4.2.8
   block:
       - name: "4.2.8 | PATCH | Ensure sshd DisableForwarding is enabled"
-        ansible.builtin.lineinfile:
+        ansible.builtin.replace:
             path: /etc/ssh/sshd_config
-            regexp: "^#DisableForwarding|^DisableForwarding"
-            line: 'DisableForwarding yes'
+            regexp: '^(#|)\s*DisableForwarding.*'
+            replace: 'DisableForwarding yes'
 
       - name: "4.2.8 | PATCH | Ensure sshd DisableForwarding is enabled | ensure x11 disabled"
-        ansible.builtin.lineinfile:
+        ansible.builtin.replace:
             path: /etc/ssh/sshd_config
             regexp: ^X11Forwarding (yes|no)
-            line: '#DisableForwarding yes'
+            replace: '#DisableForwarding yes'
 
 - name: "4.2.9 | PATCH | Ensure SSH HostbasedAuthentication is disabled"
   when:

@@ -23,7 +23,6 @@
             - not rhel8cis_allow_authselect_updates
         ansible.builtin.replace:
             path: "/etc/pam.d/{{ item }}-auth"
-            #regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)nullok(.*$)
             regexp: nullok
             replace: ''
         loop:
