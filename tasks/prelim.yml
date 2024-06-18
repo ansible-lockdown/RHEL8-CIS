@@ -208,7 +208,7 @@
 - name: "PRELIM | Optional | If IPv6 disable to stop chronyd listening"
   ansible.builtin.lineinfile:
       path: /etc/sysconfig/chronyd
-      regexp: ^OPTIONS="(.*)"
+      regexp: '^OPTIONS="(?!.* -4.*)(.*)"'
       line: OPTIONS="\1 -4"
       backrefs: true
   notify: restart chronyd
