@@ -104,11 +104,11 @@
             - { path: /etc/libuser.conf, regexp: '^crypt_style\s*=\s*.*$', replace: 'crypt_style = sha512' }
             - { path: /etc/login.defs, regexp: '^ENCRYPT_METHOD.*', replace: 'ENCRYPT_METHOD SHA512' }
 
-      - name: "5.5.4 | PATCH | Ensure password reuse is limited | pwhistory"
+      - name: "5.5.4 | PATCH | Ensure password hashing algorithm is SHA-512 | pam files"
         ansible.builtin.replace:
             path: "{{ item }}"
-            regexp: '^password\s*sufficient\s*pam_unix.so.*$'
-            replace: 'password    sufficient                                   pam_unix.so sha512 shadow try_first_pass use_authtok remember={{ rhel8cis_pam_faillock.remember }}'
+            regexp: '(md5|blowfish|bigcrypt|sha256)'
+            replace: 'sha512'
         with_items:
             - /etc/pam.d/password-auth
             - /etc/pam.d/system-auth
