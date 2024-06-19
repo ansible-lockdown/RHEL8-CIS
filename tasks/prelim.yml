@@ -174,7 +174,7 @@
   changed_when: false
   failed_when: false
   check_mode: false
-  register: discovered_sudoers_filess
+  register: discovered_sudoers_files
 
 - name: "PRELIM | AUDIT | Check authselect package versions"
   tags:
@@ -371,10 +371,10 @@
       - name: "PRELIM | Optional | If IPv6 disable to stop chronyd listening"
         when: discovered_chrony_ipv6_exists.stdout | length == 0
         ansible.builtin.lineinfile:
-            backrefs: true
             path: /etc/sysconfig/chronyd
-            regexp: ^OPTIONS="(.*)"
+            regexp: '^OPTIONS="(?!.* -4.*)(.*)"'
             line: OPTIONS="\1 -4"
+            backrefs: true
 
 # Optional extra keys to extend auditd not part of CIS but can influence a system
 # e.g. admin_space_left: '10%'

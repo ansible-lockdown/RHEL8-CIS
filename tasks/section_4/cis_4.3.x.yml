@@ -64,7 +64,7 @@
       regexp: '^([^#|{% if system_is_ec2 %}ec2-user{% endif %}].*)NOPASSWD(.*)'
       replace: '\1PASSWD\2'
       validate: '/usr/sbin/visudo -cf %s'
-  loop: "{{ discovered_sudoers_filess.stdout_lines }}"
+  loop: "{{ discovered_sudoers_files.stdout_lines }}"
 
 - name: "4.3.5 | PATCH | Ensure re-authentication for privilege escalation is not disabled globally"
   when:
@@ -82,7 +82,7 @@
       regexp: '^([^#].*)!authenticate(.*)'
       replace: '\1authenticate\2'
       validate: '/usr/sbin/visudo -cf %s'
-  loop: "{{ discovered_sudoers_filess.stdout_lines }}"
+  loop: "{{ discovered_sudoers_files.stdout_lines }}"
 
 - name: "4.3.6 | PATCH | Ensure sudo authentication timeout is configured correctly"
   when:
@@ -135,17 +135,9 @@
         ansible.builtin.group:
             name: "{{ rhel8cis_sugroup }}"
             state: present
-        register: discovered_sugroup
-
-      - name: "4.3.7 | PATCH | Ensure access to the su command is restricted | remove users from group"
-        ansible.builtin.lineinfile:
-            path: /etc/group
-            regexp: '^{{ discovered_sugroup }}(:.:.*:).*$'
-            line: '{{ discovered_sugroup }}\g<1>'
-            backrefs: true
 
       - name: "4.3.7 | PATCH | Ensure access to the su command is restricted | Setting pam_wheel to use_uid"
         ansible.builtin.lineinfile:
             path: /etc/pam.d/su
             regexp: '^(#)?auth\s+required\s+pam_wheel\.so'
-            line: 'auth           required        pam_wheel.so use_uid group={{ discovered_sugroup }}'
+            line: 'auth           required        pam_wheel.so use_uid group={{ rhel8cis_sugroup }}'

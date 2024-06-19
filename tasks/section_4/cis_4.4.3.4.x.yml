@@ -23,8 +23,8 @@
             - not rhel8cis_allow_authselect_updates
         ansible.builtin.replace:
             path: "/etc/pam.d/{{ item }}-auth"
-            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)nullok(.*$)
-            replace: \1\2\3
+            regexp: nullok
+            replace: ''
         loop:
             - password
             - system
@@ -107,8 +107,8 @@
             - discovered_hash_state | length > 0
         ansible.builtin.replace:
             path: "/etc/pam.d/{{ item }}-auth"
-            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)(sha512|yescrypt)\s*=\s*\d+(.*$)
-            replace: \1\2\4 {{ discovered_hash_state.stdout }}
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)(sha512|yescrypt)(.*$)
+            replace: \1\2\4 {{ rhel8cis_pam_pwhash }}
         loop:
             - password
             - system
