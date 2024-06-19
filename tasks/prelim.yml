@@ -10,37 +10,29 @@
           - python3-rpm
       state: present
 
-# List users in order to look files inside each home directory
-# - name: "PRELIM | AUDIT | List users accounts"
-#   tags:
-#       - always
-#   ansible.builtin.shell: "awk -F: '{print $1}' /etc/passwd"
-#   changed_when: false
-#   check_mode: false
-#   register: discovered_users
-
-- name: "PRELIM | AUDIT | Gather interactive user ID min and max"
-  when:
-      - rhel8uid_info_dynamic
+- name: "PRELIM | AUDIT | Interactive Users"
   tags:
       - always
-  block:
-      - name: "PRELIM | AUDIT | Gather interactive user ID min"
-        ansible.builtin.shell: grep ^UID_MIN /etc/login.defs | awk '{print $2}'
-        changed_when: false
-        failed_when: false
-        register: discovered_min_uid
+  ansible.builtin.shell: >
+      grep -E -v '^(root|halt|sync|shutdown)' /etc/passwd | awk -F: '(!index($7, "sbin/nologin") && $7 != "/bin/nologin" && $7 != "/bin/false" && $7 != "/dev/null") { print $1 }'
+  changed_when: false
+  register: discovered_interactive_usernames
 
-      - name: "PRELIM | AUDIT | Gather interactive user ID max"
-        ansible.builtin.shell: grep ^UID_MAX /etc/login.defs | awk '{print $2}'
-        changed_when: false
-        failed_when: false
-        register: discovered_max_uid
+- name: "PRELIM | AUDIT | Interactive User accounts home directories"
+  tags:
+      - always
+  ansible.builtin.shell: >
+      grep -E -v '^(root|halt|sync|shutdown)' /etc/passwd | awk -F: '(!index($7, "sbin/nologin") && $7 != "/bin/nologin" && $7 != "/bin/false" && $7 != "/dev/null") { print $6 }'
+  changed_when: false
+  register: discovered_interactive_users_home
 
-      - name: "PRELIM | AUDIT | Setting the fact"
-        ansible.builtin.set_fact:
-            rhel8uid_interactive_uid_start: "{{ discovered_min_uid.stdout | string }}"
-            rhel8uid_interactive_uid_stop: "{{ discovered_max_uid.stdout | string }}"
+- name: "PRELIM | AUDIT | Interactive UIDs"
+  tags:
+      - always
+  ansible.builtin.shell: >
+      grep -E -v '^(root|halt|sync|shutdown)' /etc/passwd | awk -F: '(!index($7, "sbin/nologin") && $7 != "/bin/nologin" && $7 != "/bin/false") { print $3 }'
+  changed_when: false
+  register: discovered_interactive_uids
 
 - name: "PRELIM | AUDIT | Set facts based on boot type"
   tags:
@@ -127,6 +119,7 @@
   register: discovered_systemd_coredump
 
 - name: "PRELIM | AUDIT | Ensure crypto-policies-scripts package is installed"
+  when: "'crypto-policies-scripts' not in ansible_facts.packages"
   tags:
       - always
   ansible.builtin.package:
@@ -164,6 +157,7 @@
       state: present
 
 - name: "PRELIM | PATCH | Cron Package"
+  when: "'cronie' not in ansible_facts.packages"
   tags:
       - always
   ansible.builtin.package:
@@ -195,12 +189,12 @@
         ansible.builtin.set_fact:
             authselect_version: OK
 
-      - name: "PRELIM | WARN | Check authselect package versions | Warning"
+      - name: "PRELIM | WARNING | Check authselect package versions | Warning"
         when: ansible_facts.packages.authselect[0].version is version(authselect_pkg_version, '<')
         ansible.builtin.debug:
             msg: "Warning!! Authselect controls won't run as authselect pkg version too low"
 
-      - name: "PRELIM | WARN | Check authselect package versions | Warning"
+      - name: "PRELIM | WARNING | Check authselect package versions | Warning"
         when: ansible_facts.packages.authselect[0].version is version(authselect_pkg_version, '<')
         ansible.builtin.import_tasks:
             file: warning_facts.yml
@@ -220,14 +214,14 @@
         ansible.builtin.set_fact:
             pam_version: OK
 
-      - name: "PRELIM | WARN | Check pam package versions | Warning"
+      - name: "PRELIM | WARNING | Check pam package versions | Warning"
         when:
             - ansible_facts.packages.pam[0].version is version(pam_pkg_version, '<')
             - ansible_facts.packages.pam[0].release is version (pam_pkg_release, '<')
         ansible.builtin.debug:
             msg: "Warning!! Authselect controls won't run as pam package version too low"
 
-      - name: "PRELIM | WARN | Check pam package versions | Warning"
+      - name: "PRELIM | WARNING | Check pam package versions | Warning"
         when:
             - ansible_facts.packages.pam[0].version is version(pam_pkg_version, '<')
             - ansible_facts.packages.pam[0].release is version (pam_pkg_release, '<')
@@ -287,7 +281,9 @@
   register: discovered_interactive_users_home
 
 - name: "PRELIM | PATCH | Section 5.1 | Configure System Accounting (auditd)"
-  when: rhel8cis_level_2
+  when:
+      - rhel8cis_level_2
+      - "'audit' not in ansible_facts.packages"
   tags:
       - always
   ansible.builtin.package:
@@ -333,16 +329,6 @@
       recurse: true
       patterns: '*.conf,*.rules'
   register: discovered_auditd_conf_files
-
-# - name: "PRELIM | AUDIT | Gather accounts with empty password fields"
-#   when:
-#       - rhel8cis_rule_6_2_1
-#   tags:
-#       - always
-#   ansible.builtin.shell: "cat /etc/shadow | awk -F: '($2 == \"\" ) {j++;print $1; } END {exit j}'"
-#   changed_when: false
-#   check_mode: false
-#   register: discovered_empty_password_accounts
 
 - name: "PRELIM | AUDIT | Gather UID 0 accounts other than root"
   when:

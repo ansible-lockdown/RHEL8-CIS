@@ -106,14 +106,14 @@
         failed_when: false
         changed_when: false
 
-      - name: "1.5.1.6 | WARN | Ensure no unconfined services exist | Message on unconfined services"
+      - name: "1.5.1.6 | WARNING | Ensure no unconfined services exist | Message on unconfined services"
         when:
             - discovered_unconf_services is defined
             - discovered_unconf_services.stdout | length > 0
         ansible.builtin.debug:
             msg: "Warning!! You have unconfined services: {{ discovered_unconf_services.stdout_lines }}"
 
-      - name: "1.5.1.6 | WARN | Ensure no unconfined services exist | warning count"
+      - name: "1.5.1.6 | WARNING | Ensure no unconfined services exist | warning count"
         when:
             - discovered_unconf_services is defined
             - discovered_unconf_services.stdout | length > 0

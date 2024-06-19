@@ -53,14 +53,8 @@
   block:
       - name: "4.5.2.3 | PATCH | | Ensure system accounts are secured | Set nologin"
         when:
-            - item.id != "root"
-            - item.id != "sync"
-            - item.id != "shutdown"
-            - item.id != "halt"
-            - item.id != "nfsnobody"
-            - item.uid < discovered_min_uid.stdout | int
-            - item.shell != "      /bin/false"
-            - item.shell != "      /usr/sbin/nologin"
+            - item.id not in discovered_interactive_usernames.stdout
+            - "'root' not in item.id"
         ansible.builtin.user:
             name: "{{ item.id }}"
             shell: /usr/sbin/nologin
@@ -70,14 +64,8 @@
 
       - name: "4.5.2.3 | PATCH | | Ensure system accounts are secured | Lock accounts"
         when:
-            - item.id != "root"
-            - item.id != "sync"
-            - item.id != "shutdown"
-            - item.id != "halt"
-            - item.id != "nfsnobody"
-            - item.uid < discovered_min_uid.stdout | int
-            - item.shell != "      /bin/false"
-            - item.shell != "      /usr/sbin/nologin"
+            - "item.id not in discovered_interactive_usernames.stdout"
+            - "'root' not in item.id"
         ansible.builtin.user:
             name: "{{ item.id }}"
             password_lock: true

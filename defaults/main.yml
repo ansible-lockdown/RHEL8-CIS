@@ -757,10 +757,8 @@ rhel8cis_inactivelock:
 # Allow ansible to expire password for account with a last changed date in the future. False will just display users in violation, true will expire those users passwords
 rhel8cis_futurepwchgdate_autofix: true
 
-# This is a dynamic check but can be overridden here marking it as false and uncomment
-rhel8uid_info_dynamic: true
-# rhel8uid_interactive_uid_start: 1000
-# rhel8uid_interactive_uid_stop: 60000
+rhel8uid_uid_start: 1000
+rhel8uid_uid_stop: 60000
 
 ## Section5 vars
 

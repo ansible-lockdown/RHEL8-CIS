@@ -27,7 +27,7 @@
                 - "Warning!! You have users that are not using a shadowed password. Please convert the below accounts to use a shadowed password"
                 - "{{ discovered_nonshadowed_users.stdout_lines }}"
 
-      - name: "6.2.1 | WARN | Ensure accounts in /etc/passwd use shadowed passwords | warn_count"
+      - name: "6.2.1 | WARNING | Ensure accounts in /etc/passwd use shadowed passwords | warn_count"
         when: discovered_nonshadowed_users.stdout | length > 0
         ansible.builtin.import_tasks:
             file: warning_facts.yml
@@ -89,7 +89,7 @@
         ansible.builtin.debug:
             msg: "Warning!! The following users have non-existent GIDs (Groups): {{ discovered_passwd_gid_check.stdout_lines | join (', ') }}"
 
-      - name: "6.2.3 | WARN | Ensure all groups in /etc/passwd exist in /etc/group | warn_count"
+      - name: "6.2.3 | WARNING | Ensure all groups in /etc/passwd exist in /etc/group | warn_count"
         when: discovered_passwd_gid_check.stdout | length > 0
         ansible.builtin.import_tasks:
             file: warning_facts.yml
@@ -189,12 +189,12 @@
         check_mode: false
         register: discovered_username_check
 
-      - name: "6.2.6 | WARN | Ensure no duplicate user names exist | Print warning about users with duplicate User Names"
+      - name: "6.2.6 | WARNING | Ensure no duplicate user names exist | Print warning about users with duplicate User Names"
         when: discovered_username_check.stdout | length > 0
         ansible.builtin.debug:
             msg: "Warning!! The following user names are duplicates: {{ discovered_user_username_check.stdout_lines }}"
 
-      - name: "6.2.6 | WARN | Ensure no duplicate user names exist | Set warning count"
+      - name: "6.2.6 | WARNING | Ensure no duplicate user names exist | Set warning count"
         when: discovered_username_check.stdout | length > 0
         ansible.builtin.import_tasks:
             file: warning_facts.yml
@@ -342,39 +342,7 @@
             state: directory
             owner: "{{ item.id }}"
             group: "{{ item.gid }}"
-        register: discovered_home_dirs
-        loop: "{{ rhel8cis_passwd | selectattr('uid', '>=', discovered_min_uid.stdout | int ) | selectattr('uid', '<=', discovered_max_uid.stdout | int ) | list }}"
-        loop_control:
-            label: "{{ item.id }}"
-
-      - name: "6.2.10 | AUDIT | Ensure local interactive user home directories exist | Get perms stat"
-        ansible.builtin.stat:
-            path: "{{ item }}"
-        register: discovered_home_dir_perms
-        loop: "{{ discovered_interactive_users_home.stdout_lines }}"
-
-      - name: "6.2.10 | PATCH | Ensure local interactive user home directories exist | Set perms if needed"
-        ansible.builtin.file:
-            path: "{{ item.stat.path }}"
-            state: directory
-            mode: g-w,o-rwx
-        loop: "{{ discovered_home_dir_perms.results }}"
-        loop_control:
-            label: "{{ item }}"
-
-      - name: "6.2.10 | PATCH | Ensure local interactive user home directories exist | Own their home directories"
-        when:
-            - item.uid >= discovered_min_uid.stdout | int
-            - item.id != 'nobody'
-            - (item.id != 'tss' and item.dir != '/dev/null')
-            - item.shell != '/sbin/nologin'
-            - "'bin/nologin' not in item.shell"
-            - "'bin/false' not in item.shell"
-        ansible.builtin.file:
-            path: "{{ item.dir }}"
-            owner: "{{ item.id }}"
-            state: directory
-        loop: "{{ rhel8cis_passwd | selectattr('uid', '>=', discovered_min_uid.stdout | int ) | selectattr('uid', '<=', discovered_max_uid.stdout | int ) | list }}"
+        loop: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8uid_uid_start | int ) | selectattr('uid', '<=', rhel8uid_uid_stop | int ) | list }}"
         loop_control:
             label: "{{ item.id }}"
 
