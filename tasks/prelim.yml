@@ -1,268 +1,393 @@
 ---
 # Preliminary tasks that should always be run
 
-- name: "PRELIM | Add the required packages"
+- name: "PRELIM | PATCH | Add the required packages"
+  tags:
+      - always
   ansible.builtin.package:
       name:
           - python3-libselinux
           - python3-rpm
       state: present
+
+- name: "PRELIM | AUDIT | Interactive Users"
   tags:
       - always
+  ansible.builtin.shell: >
+      grep -E -v '^(root|halt|sync|shutdown)' /etc/passwd | awk -F: '(!index($7, "sbin/nologin") && $7 != "/bin/nologin" && $7 != "/bin/false" && $7 != "/dev/null") { print $1 }'
+  changed_when: false
+  register: discovered_interactive_usernames
 
-- name: "PRELIM | Gather the package facts before prelim"
+- name: "PRELIM | AUDIT | Interactive User accounts home directories"
+  tags:
+      - always
+  ansible.builtin.shell: >
+      grep -E -v '^(root|halt|sync|shutdown)' /etc/passwd | awk -F: '(!index($7, "sbin/nologin") && $7 != "/bin/nologin" && $7 != "/bin/false" && $7 != "/dev/null") { print $6 }'
+  changed_when: false
+  register: discovered_interactive_users_home
+
+- name: "PRELIM | AUDIT | Interactive UIDs"
+  tags:
+      - always
+  ansible.builtin.shell: >
+      grep -E -v '^(root|halt|sync|shutdown)' /etc/passwd | awk -F: '(!index($7, "sbin/nologin") && $7 != "/bin/nologin" && $7 != "/bin/false") { print $3 }'
+  changed_when: false
+  register: discovered_interactive_uids
+
+- name: "PRELIM | AUDIT | Set facts based on boot type"
+  tags:
+      - always
+  block:
+      - name: "PRELIM | AUDIT | Check whether machine is UEFI-based"
+        ansible.builtin.stat:
+            path: /sys/firmware/efi
+        register: discovered_efi_boot
+
+      - name: "PRELIM | AUDIT | set legacy boot and grub path fact | Bios"
+        when: not discovered_efi_boot.stat.exists
+        ansible.builtin.set_fact:
+            rhel8cis_legacy_boot: true
+            grub2_path: /etc/grub2.cfg
+            rhel8cis_boot_path: /boot/grub2/
+
+      - name: "PRELIM | AUDIT | set grub fact | UEFI"
+        when: discovered_efi_boot.stat.exists
+        ansible.builtin.set_fact:
+            grub2_path: /etc/grub2-efi.cfg
+            rhel8cis_boot_path: "/boot/efi/EFI/{{ansible_facts.distribution | lower }}/"
+
+- name: "PRELIM | AUDIT | Ensure permissions on bootloader config are configured | Get grub config file stats"
+  tags:
+      - always
+  ansible.builtin.stat:
+      path: "{{ grub2_path }}"
+  changed_when: false
+  register: discovered_grub_cfg
+
+- name: "PRELIM | AUDIT | Gather the package facts before prelim"
+  tags:
+      - always
   ansible.builtin.package_facts:
       manager: auto
-  tags:
-      - always
 
-# List users in order to look files inside each home directory
-- name: "PRELIM | List users accounts"
-  ansible.builtin.shell: "awk -F: '{print $1}' /etc/passwd"
-  changed_when: false
-  check_mode: false
-  register: users
-  tags:
-      - always
-
-- name: "PRELIM | Gather interactive user ID min and max"
-  block:
-      - name: "PRELIM | Gather interactive user ID min"
-        ansible.builtin.shell: grep ^UID_MIN /etc/login.defs | awk '{print $2}'
-        changed_when: false
-        failed_when: false
-        register: rhel8cis_min_uid
-
-      - name: "PRELIM | Gather interactive user ID max"
-        ansible.builtin.shell: grep ^UID_MAX /etc/login.defs | awk '{print $2}'
-        changed_when: false
-        failed_when: false
-        register: rhel8cis_max_uid
-
-      - name: "PRELIM | Setting the fact"
-        ansible.builtin.set_fact:
-            rhel8uid_interactive_uid_start: "{{ rhel8cis_min_uid.stdout | string }}"
-            rhel8uid_interactive_uid_stop: "{{ rhel8cis_max_uid.stdout | string }}"
+- name: Include audit specific variables
   when:
-      - rhel8uid_info_dynamic
+      - run_audit or audit_only
+      - setup_audit
   tags:
-      - always
+      - setup_audit
+      - run_audit
+  ansible.builtin.include_vars:
+      file: audit.yml
 
-- name: "PRELIM | Gather accounts with empty password fields"
-  ansible.builtin.shell: "cat /etc/shadow | awk -F: '($2 == \"\" ) {j++;print $1; } END {exit j}'"
-  changed_when: false
-  check_mode: false
-  register: empty_password_accounts
+- name: Include pre-remediation audit tasks
   when:
-      - rhel8cis_rule_6_2_1
+      - run_audit or audit_only
+      - setup_audit
+  tags:
+      - run_audit
+  ansible.builtin.import_tasks:
+      file: pre_remediation_audit.yml
+
+##### Section requirements #####
+- name: "PRELIM | AUDIT | Section 1.1 | Create list of mount points"
   tags:
       - always
+  ansible.builtin.set_fact:
+      mount_names: "{{ ansible_mounts | map(attribute='mount') | list }}"
 
-- name: "PRELIM | Gather UID 0 accounts other than root"
-  ansible.builtin.shell: "cat /etc/passwd | awk -F: '($3 == 0 && $1 != \"root\") {i++;print $1 } END {exit i}'"
-  changed_when: false
-  check_mode: false
-  register: rhel8cis_uid_zero_accounts_except_root
+- name: "PRELIM | AUDIT | Ensure /dev/shm is a separate partition | discover"
   when:
-      - rhel8cis_rule_6_2_8
+      - rhel8cis_rule_1_1_2_2_1 or
+        rhel8cis_rule_1_1_2_2_2 or
+        rhel8cis_rule_1_1_2_2_3 or
+        rhel8cis_rule_1_1_2_2_4
   tags:
       - always
+  ansible.builtin.shell: findmnt -kn /dev/shm
+  changed_when: false
+  failed_when: discovered_dev_shm_present.rc not in [ 0, 1 ]
+  register: discovered_dev_shm_present
 
-- name: "PRELIM | Ensure crypto-policies-scripts package is installed"
+- name: "PRELIM | AUDIT | systemd coredump file check"
+  when:
+      - rhel8cis_rule_1_4_4
+  tags:
+      - always
+  ansible.builtin.stat:
+      path: /etc/systemd/coredump.conf
+  register: discovered_systemd_coredump
+
+- name: "PRELIM | AUDIT | Ensure crypto-policies-scripts package is installed"
+  when: "'crypto-policies-scripts' not in ansible_facts.packages"
+  tags:
+      - always
   ansible.builtin.package:
       name: crypto-policies-scripts
       state: installed
-  when:
-      - rhel8cis_rule_1_10
+
+- name: "PRELIM | AUDIT | Gather system-wide crypto-policy settings"
   tags:
       - always
-
-- name: "PRELIM | Gather system-wide crypto-policy settings"
   block:
-      - name: "PRELIM | Gather system-wide crypto-policy settings"
+      - name: "PRELIM | AUDIT | Gather system-wide crypto-policy settings"
         ansible.builtin.shell: 'update-crypto-policies --show'
         changed_when: false
         check_mode: false
-        register: rhel8cis_system_wide_crypto_policy
+        register: discovered_system_wide_crypto_policy
 
-      - name: "PRELIM | Gather system-wide crypto-policy | set fact for crypto policy"
+      - name: "PRELIM | AUDIT | Gather system-wide crypto-policy | set fact for crypto policy"
         ansible.builtin.set_fact:
-            current_crypto_policy: "{{ rhel8cis_system_wide_crypto_policy.stdout.split(':')[0] }}"
+            current_crypto_policy: "{{ discovered_system_wide_crypto_policy.stdout.split(':')[0] }}"
 
-      - name: "PRELIM | Gather system-wide crypto-policy module | set fact for crypto submodule"
+      - name: "PRELIM | AUDIT | Gather system-wide crypto-policy module | set fact for crypto submodule"
+        when: "':' in discovered_system_wide_crypto_policy.stdout"
         ansible.builtin.set_fact:
-            current_crypto_module: "{{ rhel8cis_system_wide_crypto_policy.stdout.split(':')[1] }}"
-        when: "':' in rhel8cis_system_wide_crypto_policy.stdout"
-  when:
-      - rhel8cis_rule_1_10
-  tags:
-      - always
+            current_crypto_module: "{{ discovered_system_wide_crypto_policy.stdout.split(':')[1] }}"
 
-- name: "PRELIM | if systemd coredump"
-  ansible.builtin.stat:
-      path: /etc/systemd/coredump.conf
-  register: systemd_coredump
-  when:
-      - rhel8cis_rule_1_5_1
-  tags:
-      - always
-
-- name: "PRELIM | Section 1.1 | Create list of mount points"
-  ansible.builtin.set_fact:
-      mount_names: "{{ ansible_mounts | map(attribute='mount') | list }}"
-  tags:
-      - always
-
-- name: "PRELIM | Install dconf"
-  ansible.builtin.package:
-      name: dconf
-      state: present
+- name: "PRELIM | PATCH | Install dconf if gui"
   when:
       - "'gdm' in ansible_facts.packages"
       - "'dconf' not in ansible_facts.packages"
-      - rhel8cis_rule_1_8_2 or
-        rhel8cis_rule_1_8_3 or
-        rhel8cis_rule_1_8_5
+      - rhel8cis_gui
   tags:
       - always
-
-- name: "PRELIM | Section 4.1 | Configure System Accounting (auditd)"
   ansible.builtin.package:
-      name: audit
+      name: dconf
       state: present
-  when: rhel8cis_level_2
+
+- name: "PRELIM | PATCH | Cron Package"
+  when: "'cronie' not in ansible_facts.packages"
   tags:
       - always
-
-- name: "PRELIM | Section 5.1 | Configure cron"
   ansible.builtin.package:
       name: cronie
       state: present
+
+- name: "PRELIM | AUDIT | Find all sudoers files."
+  when:
+      - rhel8cis_rule_4_3_4 or
+        rhel8cis_rule_4_3_5
   tags:
       - always
-
-- name: "PRELIM | Find all sudoers files."
   ansible.builtin.shell: "find /etc/sudoers /etc/sudoers.d/ -type f ! -name '*~' ! -name '*.*'"
   changed_when: false
   failed_when: false
   check_mode: false
-  register: rhel8cis_sudoers_files
-  when:
-      - rhel8cis_rule_5_3_4 or
-        rhel8cis_rule_5_3_5
+  register: discovered_sudoers_files
+
+- name: "PRELIM | AUDIT | Check authselect package versions"
   tags:
       - always
-
-- name: "PRELIM | Install authconfig"
-  ansible.builtin.package:
-      name: authconfig
-      state: present
-  when:
-      - rhel8cis_use_authconfig
-      - rhel8cis_rule_5_3_1 or
-        rhel8cis_rule_5_3_2 or
-        rhel8cis_rule_5_3_3
-  tags:
-      - always
-
-- name: "PRELIM | Set facts based on boot type"
+      - authselect
+  vars:
+      warn_control_id: 'authselect_pkg_version_too_low'
+      authselect_pkg_version: 1.2.6
   block:
-      - name: "PRELIM | Check whether machine is UEFI-based"
+      - name: "PRELIM | AUDIT | Check authselect package versions | set fact"
+        when: ansible_facts.packages.authselect[0].version is version(authselect_pkg_version, '>=')
+        ansible.builtin.set_fact:
+            authselect_version: OK
+
+      - name: "PRELIM | WARNING | Check authselect package versions | Warning"
+        when: ansible_facts.packages.authselect[0].version is version(authselect_pkg_version, '<')
+        ansible.builtin.debug:
+            msg: "Warning!! Authselect controls won't run as authselect pkg version too low"
+
+      - name: "PRELIM | WARNING | Check authselect package versions | Warning"
+        when: ansible_facts.packages.authselect[0].version is version(authselect_pkg_version, '<')
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
+
+- name: "PRELIM | AUDIT | Check pam package versions"
+  tags:
+      - always
+  vars:
+      warn_control_id: 'pam_pkg_version_too_low'
+      pam_pkg_version: 1.3.1
+      pam_pkg_release: 25
+  block:
+      - name: "PRELIM | AUDIT | Check pam package versions | set fact"
+        when:
+            - ansible_facts.packages.pam[0].version is version(pam_pkg_version, '>=')
+            - ansible_facts.packages.pam[0].release is version (pam_pkg_release, '>=')
+        ansible.builtin.set_fact:
+            pam_version: OK
+
+      - name: "PRELIM | WARNING | Check pam package versions | Warning"
+        when:
+            - ansible_facts.packages.pam[0].version is version(pam_pkg_version, '<')
+            - ansible_facts.packages.pam[0].release is version (pam_pkg_release, '<')
+        ansible.builtin.debug:
+            msg: "Warning!! Authselect controls won't run as pam package version too low"
+
+      - name: "PRELIM | WARNING | Check pam package versions | Warning"
+        when:
+            - ansible_facts.packages.pam[0].version is version(pam_pkg_version, '<')
+            - ansible_facts.packages.pam[0].release is version (pam_pkg_release, '<')
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
+
+- name: "PRELIM | AUDIT | Check authselect profile is selected"
+  when:
+      - rhel8cis_allow_authselect_updates
+      - rhel8cis_rule_4_4_2_1 or
+        rhel8cis_rule_4_4_2_2 or
+        rhel8cis_rule_4_4_2_3 or
+        rhel8cis_rule_4_4_2_4 or
+        rhel8cis_rule_4_4_2_5 or
+        rhel8cis_rule_4_4_3_1_1 or
+        rhel8cis_rule_4_4_3_1_2 or
+        rhel8cis_rule_4_4_3_1_3
+  tags:
+      - always
+  block:
+      - name: "PRELIM | AUDIT | Check authselect profile name has been updated"
+        ansible.builtin.assert:
+            that: rhel8cis_authselect['custom_profile_name'] != 'cis_example_profile'
+            fail_msg: "You still have the default name for your authselect profile"
+
+      - name: "PRELIM | AUDIT | Check authselect profile is selected"
+        when: not rhel8cis_authselect_custom_profile_create
+        ansible.builtin.shell: authselect current
+        changed_when: false
+        failed_when: discovered_authselect_running_config.rc not in [ 0, 1 ]
+        register: discovered_authselect_running_config
+
+      - name: "PRELIM | AUDIT | Check authselect profile is selected"
+        ansible.builtin.assert:
+            that: not rhel8cis_authselect_custom_profile_create and "'example' not in rhel8cis_authselect['custom_profile_name']" or discovered_authselect_running_config is defined
+            success_msg: "Authselect is running and profile is selected"
+            fail_msg: Authselect updates have been selected there are issues with profile selection"
+
+      - name: "PRELIM | AUDIT | Check profile exists if not created"
         ansible.builtin.stat:
-            path: /sys/firmware/efi
-        register: rhel_08_efi_boot
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}"
+        register: discovered_authselect_profile
 
-      - name: "PRELIM | AUDIT | set legacy boot and grub path | Bios"
-        ansible.builtin.set_fact:
-            rhel8cis_legacy_boot: true
-            grub2_path: /etc/grub2.cfg
-        when: not rhel_08_efi_boot.stat.exists
+      - name: "PRELIM | AUDIT | Check authselect profile exists if not created"
+        when: discovered_authselect_profile.stat.exists
+        ansible.builtin.assert:
+            that: not rhel8cis_authselect_custom_profile_create
+            success_msg: "Authselect is running and profile is selected"
+            fail_msg: Authselect updates have been selected but you have stated create and profile already exists"
 
-      - name: "PRELIM | set grub fact | UEFI"
-        ansible.builtin.set_fact:
-            grub2_path: /etc/grub2-efi.cfg
-        when: rhel_08_efi_boot.stat.exists
+- name: "PRELIM | AUDIT | Interactive User accounts home directories"
   tags:
       - always
-
-- name: "PRELIM | AUDIT | Ensure permissions on bootloader config are configured | Get grub config file stats"
-  ansible.builtin.stat:
-      path: "{{ grub2_path }}"
+  ansible.builtin.shell: >
+      grep -E -v '^(root|halt|sync|shutdown)' /etc/passwd | awk -F: '(!index($7, "sbin/nologin") && $7 != "/bin/nologin" && $7 != "/bin/false") { print $6 }'
   changed_when: false
-  register: grub_cfg
+  register: discovered_interactive_users_home
+
+- name: "PRELIM | PATCH | Section 5.1 | Configure System Accounting (auditd)"
+  when:
+      - rhel8cis_level_2
+      - "'audit' not in ansible_facts.packages"
   tags:
       - always
+  ansible.builtin.package:
+      name: audit
+      state: present
+
+- name: "PRELIM | AUDIT | 5.2.4.x | Ensure audit log files are mode 0640 or less permissive | discover file"
+  ansible.builtin.shell: "grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'"
+  changed_when: false
+  failed_when: discovered_audit_logfile.rc not in [0, 1]
+  register: discovered_audit_logfile
+  when:
+      - rhel8cis_rule_5_2_4_1
+      - rhel8cis_rule_5_2_4_2
+      - rhel8cis_rule_5_2_4_3
+      - rhel8cis_rule_5_2_4_4
+  tags:
+      - level2-server
+      - level2-workstation
+      - patch
+      - auditd
+      - rule_5.2.4.1
+      - rule_5.2.4.2
+      - rule_5.2.4.3
+      - rule_5.2.4.4
+
+- name: "PRELIM | AUDIT | 5.2.4.5/6/7 | Audit conf and rules files | list files"
+  when:
+      - rhel8cis_rule_5_2_4_5 or
+        rhel8cis_rule_5_2_4_6 or
+        rhel8cis_rule_5_2_4_7
+  tags:
+      - level2-server
+      - level2-workstation
+      - patch
+      - auditd
+      - rule_5.2.4.5
+      - rule_5.2.4.6
+      - rule_5.2.4.7
+  ansible.builtin.find:
+      path: /etc/audit
+      file_type: file
+      recurse: true
+      patterns: '*.conf,*.rules'
+  register: discovered_auditd_conf_files
+
+- name: "PRELIM | AUDIT | Gather UID 0 accounts other than root"
+  when:
+      - rhel8cis_rule_6_2_8
+  tags:
+      - always
+  ansible.builtin.shell: "cat /etc/passwd | awk -F: '($3 == 0 && $1 != \"root\") {i++;print $1 } END {exit i}'"
+  changed_when: false
+  check_mode: false
+  register: discovered_uid_zero_accounts_except_root
+
+##### Optional #####
 
 - name: "PRELIM | Optional | If IPv6 disable to stop ssh listening"
-  ansible.builtin.lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: ^AddressFamily
-      line: AddressFamily inet
-  notify: restart sshd
   when:
       - rhel8cis_ipv6_sshd_disable
       - not rhel8cis_ipv6_required
   tags:
       - always
+  ansible.builtin.lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: ^AddressFamily
+      line: AddressFamily inet
+  notify: Restart_sshd
 
 - name: "PRELIM | Optional | If IPv6 disable to stop chronyd listening"
-  ansible.builtin.lineinfile:
-      path: /etc/sysconfig/chronyd
-      regexp: ^OPTIONS="(.*)"
-      line: OPTIONS="\1 -4"
-      backrefs: true
-  notify: restart chronyd
   when:
       - rhel8cis_ipv6_chrony_disable
       - not rhel8cis_ipv6_required
   tags:
       - always
+  notify: Restart_chronyd
+  block:
+      - name: "PRELIM | Optional | If IPv6 disable to stop chronyd listening | Check existence"
+        ansible.builtin.shell: grep -E "OPTIONS=.*-4" /etc/sysconfig/chronyd
+        changed_when: false
+        failed_when: discovered_chrony_ipv6_exists.rc not in [ 0, 1]
+        register: discovered_chrony_ipv6_exists
+
+      - name: "PRELIM | Optional | If IPv6 disable to stop chronyd listening"
+        when: discovered_chrony_ipv6_exists.stdout | length == 0
+        ansible.builtin.lineinfile:
+            path: /etc/sysconfig/chronyd
+            regexp: '^OPTIONS="(?!.* -4.*)(.*)"'
+            line: OPTIONS="\1 -4"
+            backrefs: true
 
 # Optional extra keys to extend auditd not part of CIS but can influence a system
 # e.g. admin_space_left: '10%'
 
 - name: PRELIM | Optional | Configure other keys for auditd.conf
-  ansible.builtin.lineinfile:
-      path: /etc/audit/auditd.conf
-      regexp: "^{{ item }}( |=)"
-      line: "{{ item }} = {{ rhel8cis_auditd_extra_conf[item] }}"
-  notify: restart auditd
-  loop: "{{ rhel8cis_auditd_extra_conf.keys() }}"
   when:
       - rhel8cis_auditd_extra_conf.keys() | length > 0
       - rhel8cis_level_2
   tags:
       - always
-
-# Not assigned directly to any control but a requirement - manual change for 5.4.1 if not using authselect
-- name: "PRELIM | Optional | Remove the ability to login without a password"
-  ansible.builtin.replace:
-      path: "{{ item }}"
-      regexp: '\snullok'
-      replace: ''
-  loop:
-      - /etc/pam.d/system-auth
-      - /etc/pam.d/password-auth
-  when: rhel8cis_remove_nullok
-
-# Allow other keys to be used while setting FUTURE or FIPS in crypto Policy
-# These settings may need to be changed to personal preference
-- name: "PRELIM | Optional | Override Ciphers/Keys/Macs if required on some crypto policies"
-  block:
-      - name: "PRELIM | Optional | Add Override file Ciphers/Keys/Macs if required on some crypto policies"
-        ansible.builtin.template:
-            src: crypto_policy_RSA.j2
-            dest: /etc/crypto-policies/policies/modules/RSA-2048
-            mode: '0440'
-            owner: root
-            group: root
-        register: rhel8cis_crypto_override_added
-
-      - name: "PRELIM | Optional | Add fact to append crypto_update_command"
-        ansible.builtin.set_fact:
-            rhel8cis_crypto_override: true
-        when: rhel8cis_crypto_override_added is defined
-  when:
-      - rhel8cis_optional_crypto_module
-      - rhel8cis_crypto_policy == 'FIPS' or rhel8cis_crypto_policy == 'FUTURE'
-      - rhel8cis_rule_1_10
+  ansible.builtin.lineinfile:
+      path: /etc/audit/auditd.conf
+      regexp: "^{{ item }}( |=)"
+      line: "{{ item }} = {{ rhel8cis_auditd_extra_conf[item] }}"
+  notify: Restart_auditd
+  loop: "{{ rhel8cis_auditd_extra_conf.keys() }}"

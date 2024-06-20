@@ -1,0 +1,295 @@
+---
+
+- name: "4.4.3.2.1 | PATCH | Ensure password number of changed characters is configured"
+  when:
+      - rhel8cis_rule_4_4_3_2_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_IA-5
+      - pam
+      - rule_4.4.3.2.1
+  block:
+      - name: "4.4.3.2.1 | PATCH | Ensure password number of changed characters is configured | pwquality.conf"
+        ansible.builtin.lineinfile:
+            path: /etc/security/pwquality.conf
+            state: present
+            regexp: '^(#|)\s*difok\s*=\s*\d'
+            line: "difok = {{ rhel8cis_pam_pwquality['difok'] }}"
+
+      - name: "4.4.3.2.1 | PATCH | Ensure password number of changed characters is configured | pam_files"
+        when: not rhel8cis_allow_authselect_updates
+        ansible.builtin.replace:
+            path: "/etc/pam.d/{{ item }}-auth"
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+difok\s*=\s*\S+(.*$)
+            replace: \1\2\3
+        loop:
+            - password
+            - system
+
+      - name: "4.4.3.2.1 | PATCH | Ensure password number of changed characters is configured | authselect_files"
+        when:
+            - rhel8cis_allow_authselect_updates
+            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+        notify: Update_authselect
+        ansible.builtin.replace:
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+difok\s*=\s*\S+(.*$)
+            replace: \1\2\3
+        loop:
+            - password
+            - system
+
+- name: "4.4.3.2.2 | PATCH | Ensure password length is configured"
+  when:
+      - rhel8cis_rule_4_4_3_2_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_IA-5
+      - pam
+      - rule_4.4.3.2.2
+  block:
+      - name: "4.4.3.2.2 | PATCH | Ensure password length is configured | pwquality.conf"
+        ansible.builtin.lineinfile:
+            path: /etc/security/pwquality.conf
+            state: present
+            regexp: '^(#|)\s*minlen\s*=\s*\d'
+            line: "minlen = {{ rhel8cis_pam_pwquality['minlen'] }}"
+
+      - name: "4.4.3.2.2 | PATCH | Ensure password length is configured | pam_files"
+        when: not rhel8cis_allow_authselect_updates
+        ansible.builtin.replace:
+            path: "/etc/pam.d/{{ item }}-auth"
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+minlen\s*=\s*\S+(.*$)
+            replace: \1\2\3
+        loop:
+            - password
+            - system
+
+      - name: "4.4.3.2.2 | PATCH | Ensure password length is configured | authselect_files"
+        when:
+            - rhel8cis_allow_authselect_updates
+            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+        notify: Update_authselect
+        ansible.builtin.replace:
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+minlen\s*=\s*\S+(.*$)
+            replace: \1\2\3
+        loop:
+            - password
+            - system
+
+- name: "4.4.3.2.3 | PATCH | Ensure password complexity is configured"
+  when:
+      - rhel8cis_rule_4_4_3_2_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_IA-5
+      - pam
+      - rule_4.4.3.2.3
+  block:
+      - name: "4.4.3.2.3 | PATCH | Ensure password complexity is configured | pwquality.conf"
+        ansible.builtin.lineinfile:
+            path: /etc/security/pwquality.conf
+            state: present
+            regexp: '^(#|)\s*minclass\s*=\s*\d'
+            line: "minclass = {{ rhel8cis_pam_pwquality['minclass'] }}"
+
+      - name: "4.4.3.2.3 | PATCH | Ensure password complexity is configured | pam_files"
+        when: not rhel8cis_allow_authselect_updates
+        ansible.builtin.replace:
+            path: "/etc/pam.d/{{ item }}-auth"
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+minclass\s*=\s*\S+(.*$)
+            replace: \1\2\3
+        loop:
+            - password
+            - system
+
+      - name: "4.4.3.2.3 | PATCH | Ensure password complexity is configured | authselect_files"
+        when:
+            - rhel8cis_allow_authselect_updates
+            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+        notify: Update_authselect
+        ansible.builtin.replace:
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+minclass\s*=\s*\S+(.*$)
+            replace: \1\2\3
+        loop:
+            - password
+            - system
+
+- name: "4.4.3.2.4 | PATCH | Ensure password same consecutive characters is configured"
+  when:
+      - rhel8cis_rule_4_4_3_2_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_IA-5
+      - pam
+      - rule_4.4.3.2.4
+  block:
+      - name: "4.4.3.2.4 | PATCH | Ensure password same consecutive characters is configured | pwquality.conf"
+        ansible.builtin.lineinfile:
+            path: /etc/security/pwquality.conf
+            state: present
+            regexp: '^(#|)\s*maxrepeat\s*=\s*\d'
+            line: "maxrepeat = {{ rhel8cis_pam_pwquality['maxrepeat'] }}"
+
+      - name: "4.4.3.2.4 | PATCH | Ensure password same consecutive characters is configured | pam_files"
+        when: not rhel8cis_allow_authselect_updates
+        ansible.builtin.replace:
+            path: "/etc/pam.d/{{ item }}-auth"
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+maxrepeat\s*=\s*\S+(.*$)
+            replace: \1\2\3
+        loop:
+            - password
+            - system
+
+      - name: "4.4.3.2.4 | PATCH | Ensure password same consecutive characters is configured | authselect_files"
+        when:
+            - rhel8cis_allow_authselect_updates
+            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+        notify: Update_authselect
+        ansible.builtin.replace:
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+maxrepeat\s*=\s*\S+(.*$)
+            replace: \1\2\3
+        loop:
+            - password
+            - system
+
+- name: "4.4.3.2.5 | PATCH | Ensure password maximum sequential characters is configured"
+  when:
+      - rhel8cis_rule_4_4_3_2_5
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_IA-5
+      - pam
+      - rule_4.4.3.2.5
+  block:
+      - name: "4.4.3.2.5 | PATCH | Ensure password maximum sequential characters is configured | pwquality.conf"
+        ansible.builtin.lineinfile:
+            path: /etc/security/pwquality.conf
+            state: present
+            regexp: '^(#|)\s*maxseq\s*=\s*\d'
+            line: "maxseq = {{ rhel8cis_pam_pwquality['maxseq'] }}"
+
+      - name: "4.4.3.2.5 | PATCH | Ensure password maximum sequential characters is configured | pam_files"
+        when: not rhel8cis_allow_authselect_updates
+        ansible.builtin.replace:
+            path: "/etc/pam.d/{{ item }}-auth"
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+maxseq\s*=\s*\S+(.*$)
+            replace: \1\2\3
+        loop:
+            - password
+            - system
+
+      - name: "4.4.3.2.5 | PATCH | Ensure password same consecutive characters is configured | authselect_files"
+        when:
+            - rhel8cis_allow_authselect_updates
+            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+        notify: Update_authselect
+        ansible.builtin.replace:
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+maxseq\s*=\s*\S+(.*$)
+            replace: \1\2\3
+        loop:
+            - password
+            - system
+
+- name: "4.4.3.2.6 | PATCH | Ensure password dictionary check is enabled"
+  when:
+      - rhel8cis_rule_4_4_3_2_6
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_IA-5
+      - pam
+      - rule_4.4.3.2.6
+  block:
+      - name: "4.4.3.2.6 | PATCH | Ensure password dictionary check is enabled | pwquality.conf"
+        ansible.builtin.lineinfile:
+            line: 'dictcheck = 1'
+            path: /etc/security/pwquality.conf
+            regexp: '^(#|)\s*dictcheck\s*=\s*\d'
+            state: present
+
+      - name: "4.4.3.2.6 | PATCH | Ensure password dictionary check is enabled | pam_files"
+        when: not rhel8cis_allow_authselect_updates
+        ansible.builtin.replace:
+            path: "/etc/pam.d/{{ item }}-auth"
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+dictcheck\s*=\s*\S+(.*$)
+            replace: \1\2\3
+        loop:
+            - password
+            - system
+
+      - name: "4.4.3.2.6 | PATCH | Ensure password dictionary check is enabled | authselect_files"
+        when:
+            - rhel8cis_allow_authselect_updates
+            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+        notify: Update_authselect
+        ansible.builtin.replace:
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+dictcheck\s*=\s*\S+(.*$)
+            replace: \1\2\3
+        loop:
+            - password
+            - system
+
+- name: "4.4.3.2.7 | PATCH | Ensure password quality is enforced for the root user"
+  when:
+      - rhel8cis_rule_4_4_3_2_7
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_IA-5
+      - pam
+      - rule_4.4.3.2.7
+  block:
+      - name: "4.4.3.2.7 | PATCH | Ensure password quality is enforced for the root user | pwquality.conf"
+        ansible.builtin.lineinfile:
+            line: enforce_for_root
+            path: /etc/security/pwquality.conf
+            state: present
+            regexp: '^(#|)\s*enforce_for_root'
+
+      - name: "4.4.3.2.7 | PATCH | Ensure password dictionary check is enabled | pam_files"
+        when: not rhel8cis_allow_authselect_updates
+        ansible.builtin.replace:
+            path: "/etc/pam.d/{{ item }}-auth"
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+enforce_for_root(.*$)
+            replace: \1\2\3
+        loop:
+            - password
+            - system
+
+      - name: "4.4.3.2.7 | PATCH | Ensure password dictionary check is enabled | authselect_files"
+        when:
+            - rhel8cis_allow_authselect_updates
+            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+        notify: Update_authselect
+        ansible.builtin.replace:
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+enforce_for_root(.*$)
+            replace: \1\2\3
+        loop:
+            - password
+            - system

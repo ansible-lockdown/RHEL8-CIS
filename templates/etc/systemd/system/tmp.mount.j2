@@ -1,4 +1,4 @@
-{{ ansible_managed | comment }}
+## This file is managed by Ansible, YOUR CHANGED WILL BE LOST!
 
 #  SPDX-License-Identifier: LGPL-2.1+
 #
@@ -23,7 +23,7 @@ After=swap.target
 What=tmpfs
 Where=/tmp
 Type=tmpfs
-Options=mode=1777,strictatime,{% if rhel8cis_rule_1_1_2_2 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_2_4 %}nosuid,{% endif %}{% if rhel8cis_rule_1_1_2_3 %}noexec{% endif %}
+Options=mode=1777,strictatime,{% if rhel8cis_rule_1_1_2_1_2 %}nodev,{% endif %}{% if rhel8cis_rule_1_1_2_1_3 %}nosuid,{% endif %}{% if rhel8cis_rule_1_1_2_1_4 %}noexec{% endif %}
 
 # Make 'systemctl enable tmp.mount' work:
 [Install]

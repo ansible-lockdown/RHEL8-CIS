@@ -21,7 +21,9 @@ rhel8cis_level_1: true
 rhel8cis_level_2: true
 
 rhel8cis_selinux_disable: false
-rhel8cis_legacy_boot: false
+
+# Some tests can have a heavy impact on systen e.g. find on all filesystems etc
+rhel8cis_disruption_high: false
 
 ## Python Binary
 ## This is used for python3 Installations where python2 OS modules are used in ansible
@@ -30,7 +32,7 @@ python2_bin: /bin/python2.7
 ## Benchmark name used by audting control role
 # The audit variable found at the base
 benchmark: RHEL8-CIS
-benchmark_version: v2.0.0
+benchmark_version: v3.0.0
 
 # Whether to skip the reboot
 skip_reboot: true
@@ -39,23 +41,26 @@ skip_reboot: true
 ### Settings for associated Audit role using Goss
 ###
 
-##########################################
+###########################################
 ### Goss is required on the remote host ###
-## Refer to vars/auditd.yml for any other settings ##
+### vars/auditd.yml for other settings  ###
 
 # Allow audit to setup the requirements including installing git (if option chosen and downloading and adding goss binary to system)
 setup_audit: false
 
 # enable audits to run - this runs the audit and get the latest content
 run_audit: false
+# Run heavy tests - some tests can have more impact on a system enabling these can have greater impact on a system
+audit_run_heavy_tests: true
 
-# Only run Audit do not remediate
+## Only run Audit do not remediate
 audit_only: false
-# As part of audit_only
-# This will enable files to be copied back to control node
+### As part of audit_only ###
+# This will enable files to be copied back to control node in audit_only mode
 fetch_audit_files: false
-# Path to copy the files to will create dir structure
+# Path to copy the files to will create dir structure in audit_only mode
 audit_capture_files_dir: /some/location to copy to on control node
+#############################
 
 # How to retrieve audit binary
 # Options are copy or download - detailed settings at the bottom of this file
@@ -68,20 +73,24 @@ get_audit_binary_method: download
 audit_bin_copy_location: /some/accessible/path
 
 # how to get audit files onto host options
-# options are git/copy/get_url other e.g. if you wish to run from already downloaded conf
+# options are git/copy/archive/get_url other e.g. if you wish to run from already downloaded conf
 audit_content: git
 
-# archive or copy:
-audit_conf_copy: "some path to copy from"
+# If using either archive, copy, get_url:
+## Note will work with .tar files - zip will require extra configuration
+### If using get_url this is expecting github url in tar.gz format e.g.
+### https://github.com/ansible-lockdown/UBUNTU22-CIS-Audit/archive/refs/heads/benchmark-v1.0.0.tar.gz
+audit_conf_source: "some path or url to copy from"
 
-# get_url:
-audit_files_url: "some url maybe s3?"
+# Destination for the audit content to be placed on managed node
+# note may not need full path e.g. /opt with the directory being the {{ benchmark }}-Audit directory
+audit_conf_dest: "/opt"
 
-# Run heavy tests - some tests can have more impact on a system enabling these can have greater impact on a system
-audit_run_heavy_tests: true
+# Where the audit logs are stored
+audit_log_dir: '/opt'
 
-### End Goss enablements ####
-#### Detailed settings found at the end of this document ####
+### Goss Settings ##
+####### END ########
 
 # These variables correspond with the CIS rule IDs or paragraph numbers defined in
 # the CIS benchmark documents.
@@ -91,76 +100,112 @@ audit_run_heavy_tests: true
 rhel8cis_rule_1_1_1_1: true
 rhel8cis_rule_1_1_1_2: true
 rhel8cis_rule_1_1_1_3: true
-rhel8cis_rule_1_1_2_1: true
-rhel8cis_rule_1_1_2_2: true
-rhel8cis_rule_1_1_2_3: true
-rhel8cis_rule_1_1_2_4: true
-rhel8cis_rule_1_1_3_1: true
-rhel8cis_rule_1_1_3_2: true
-rhel8cis_rule_1_1_3_3: true
-rhel8cis_rule_1_1_3_4: true
-rhel8cis_rule_1_1_4_1: true
-rhel8cis_rule_1_1_4_2: true
-rhel8cis_rule_1_1_4_3: true
-rhel8cis_rule_1_1_4_4: true
-rhel8cis_rule_1_1_5_1: true
-rhel8cis_rule_1_1_5_2: true
-rhel8cis_rule_1_1_5_3: true
-rhel8cis_rule_1_1_5_4: true
-rhel8cis_rule_1_1_6_1: true
-rhel8cis_rule_1_1_6_2: true
-rhel8cis_rule_1_1_6_3: true
-rhel8cis_rule_1_1_6_4: true
-rhel8cis_rule_1_1_7_1: true
-rhel8cis_rule_1_1_7_2: true
-rhel8cis_rule_1_1_7_3: true
-rhel8cis_rule_1_1_7_4: true
-rhel8cis_rule_1_1_7_5: true
-rhel8cis_rule_1_1_8_1: true
-rhel8cis_rule_1_1_8_2: true
-rhel8cis_rule_1_1_8_3: true
-rhel8cis_rule_1_1_9: true
-rhel8cis_rule_1_1_10: true
+rhel8cis_rule_1_1_1_4: true
+rhel8cis_rule_1_1_1_5: true
+rhel8cis_rule_1_1_1_6: true
+rhel8cis_rule_1_1_1_7: true
+rhel8cis_rule_1_1_1_8: true
+
+# /tmp
+rhel8cis_rule_1_1_2_1_1: true
+rhel8cis_rule_1_1_2_1_2: true
+rhel8cis_rule_1_1_2_1_3: true
+rhel8cis_rule_1_1_2_1_4: true
+
+# /dev/shm
+rhel8cis_rule_1_1_2_2_1: true
+rhel8cis_rule_1_1_2_2_2: true
+rhel8cis_rule_1_1_2_2_3: true
+rhel8cis_rule_1_1_2_2_4: true
+
+# /home
+rhel8cis_rule_1_1_2_3_1: true
+rhel8cis_rule_1_1_2_3_2: true
+rhel8cis_rule_1_1_2_3_3: true
+
+# /var
+rhel8cis_rule_1_1_2_4_1: true
+rhel8cis_rule_1_1_2_4_2: true
+rhel8cis_rule_1_1_2_4_3: true
+
+# /var/tmp
+rhel8cis_rule_1_1_2_5_1: true
+rhel8cis_rule_1_1_2_5_2: true
+rhel8cis_rule_1_1_2_5_3: true
+rhel8cis_rule_1_1_2_5_4: true
+
+# /var/log
+rhel8cis_rule_1_1_2_6_1: true
+rhel8cis_rule_1_1_2_6_2: true
+rhel8cis_rule_1_1_2_6_3: true
+rhel8cis_rule_1_1_2_6_4: true
+
+# /var/log/audit
+rhel8cis_rule_1_1_2_7_1: true
+rhel8cis_rule_1_1_2_7_2: true
+rhel8cis_rule_1_1_2_7_3: true
+rhel8cis_rule_1_1_2_7_4: true
+
+# DNF - Patching
 rhel8cis_rule_1_2_1: true
 rhel8cis_rule_1_2_2: true
 rhel8cis_rule_1_2_3: true
 rhel8cis_rule_1_2_4: true
+rhel8cis_rule_1_2_5: true
+
+# bootloader grub
 rhel8cis_rule_1_3_1: true
 rhel8cis_rule_1_3_2: true
+
+# kernel sysctl and coredumps
 rhel8cis_rule_1_4_1: true
 rhel8cis_rule_1_4_2: true
 rhel8cis_rule_1_4_3: true
-rhel8cis_rule_1_5_1: true
-rhel8cis_rule_1_5_2: true
-rhel8cis_rule_1_5_3: true
+rhel8cis_rule_1_4_4: true
+
+# SElinux
+rhel8cis_rule_1_5_1_1: true
+rhel8cis_rule_1_5_1_2: true
+rhel8cis_rule_1_5_1_3: true
+rhel8cis_rule_1_5_1_4: true
+rhel8cis_rule_1_5_1_5: true
+rhel8cis_rule_1_5_1_6: true
+rhel8cis_rule_1_5_1_7: true
+rhel8cis_rule_1_5_1_8: true
+
+# Crypto Policies
 rhel8cis_rule_1_6_1: true
 rhel8cis_rule_1_6_2: true
-rhel8cis_rule_1_6_1_1: true
-rhel8cis_rule_1_6_1_2: true
-rhel8cis_rule_1_6_1_3: true
-rhel8cis_rule_1_6_1_4: true
-rhel8cis_rule_1_6_1_5: true
-rhel8cis_rule_1_6_1_6: true
-rhel8cis_rule_1_6_1_7: true
-rhel8cis_rule_1_6_1_8: true
+rhel8cis_rule_1_6_3: true
+rhel8cis_rule_1_6_4: true
+
+# MOTD and messages
 rhel8cis_rule_1_7_1: true
 rhel8cis_rule_1_7_2: true
 rhel8cis_rule_1_7_3: true
 rhel8cis_rule_1_7_4: true
 rhel8cis_rule_1_7_5: true
 rhel8cis_rule_1_7_6: true
+
+# Gnome desktop
 rhel8cis_rule_1_8_1: true
 rhel8cis_rule_1_8_2: true
 rhel8cis_rule_1_8_3: true
 rhel8cis_rule_1_8_4: true
 rhel8cis_rule_1_8_5: true
-rhel8cis_rule_1_9: true
-rhel8cis_rule_1_10: true
-rhel8cis_rule_1_11: true
+rhel8cis_rule_1_8_6: true
+rhel8cis_rule_1_8_7: true
+rhel8cis_rule_1_8_8: true
+rhel8cis_rule_1_8_9: true
+rhel8cis_rule_1_8_10: true
 
 # Section 2 rules
+# time sync
 rhel8cis_rule_2_1_1: true
 rhel8cis_rule_2_1_2: true
+rhel8cis_rule_2_1_3: true
+
+# Server services
 rhel8cis_rule_2_2_1: true
 rhel8cis_rule_2_2_2: true
 rhel8cis_rule_2_2_3: true
@@ -181,21 +226,29 @@ rhel8cis_rule_2_2_17: true
 rhel8cis_rule_2_2_18: true
 rhel8cis_rule_2_2_19: true
 rhel8cis_rule_2_2_20: true
+rhel8cis_rule_2_2_21: true
+rhel8cis_rule_2_2_22: true
+
+# Client services
 rhel8cis_rule_2_3_1: true
 rhel8cis_rule_2_3_2: true
 rhel8cis_rule_2_3_3: true
 rhel8cis_rule_2_3_4: true
 rhel8cis_rule_2_3_5: true
-rhel8cis_rule_2_3_6: true
-rhel8cis_rule_2_4: true
 
 # Section 3 rules
+# network connectivity wifi/bluetooth/ipv6
 rhel8cis_rule_3_1_1: true
 rhel8cis_rule_3_1_2: true
 rhel8cis_rule_3_1_3: true
-rhel8cis_rule_3_1_4: true
+
+# Network Kernel module
 rhel8cis_rule_3_2_1: true
 rhel8cis_rule_3_2_2: true
+rhel8cis_rule_3_2_3: true
+rhel8cis_rule_3_2_4: true
+
+# Network Kernel Params
 rhel8cis_rule_3_3_1: true
 rhel8cis_rule_3_3_2: true
 rhel8cis_rule_3_3_3: true
@@ -205,144 +258,206 @@ rhel8cis_rule_3_3_6: true
 rhel8cis_rule_3_3_7: true
 rhel8cis_rule_3_3_8: true
 rhel8cis_rule_3_3_9: true
+rhel8cis_rule_3_3_10: true
+rhel8cis_rule_3_3_11: true
+
+# Firewall
 rhel8cis_rule_3_4_1_1: true
 rhel8cis_rule_3_4_1_2: true
-rhel8cis_rule_3_4_1_3: true
-rhel8cis_rule_3_4_1_4: true
-rhel8cis_rule_3_4_1_5: true
-rhel8cis_rule_3_4_1_6: true
-rhel8cis_rule_3_4_1_7: true
+
+# Firewall rules
 rhel8cis_rule_3_4_2_1: true
 rhel8cis_rule_3_4_2_2: true
 rhel8cis_rule_3_4_2_3: true
 rhel8cis_rule_3_4_2_4: true
 rhel8cis_rule_3_4_2_5: true
-rhel8cis_rule_3_4_2_6: true
-rhel8cis_rule_3_4_2_7: true
-rhel8cis_rule_3_4_2_8: true
-rhel8cis_rule_3_4_2_9: true
-rhel8cis_rule_3_4_2_10: true
-rhel8cis_rule_3_4_2_11: true
-rhel8cis_rule_3_4_3_1_1: true
-rhel8cis_rule_3_4_3_1_2: true
-rhel8cis_rule_3_4_3_1_3: true
-rhel8cis_rule_3_4_3_2_1: true
-rhel8cis_rule_3_4_3_2_2: true
-rhel8cis_rule_3_4_3_2_3: true
-rhel8cis_rule_3_4_3_2_4: true
-rhel8cis_rule_3_4_3_2_5: true
-rhel8cis_rule_3_4_3_2_6: true
-rhel8cis_rule_3_4_3_3_1: true
-rhel8cis_rule_3_4_3_3_2: true
-rhel8cis_rule_3_4_3_3_3: true
-rhel8cis_rule_3_4_3_3_4: true
-rhel8cis_rule_3_4_3_3_5: true
-rhel8cis_rule_3_4_3_3_6: true
 
-# Section 4 rules
+##
+## Section 4 rules
+##
+# cron
 rhel8cis_rule_4_1_1_1: true
 rhel8cis_rule_4_1_1_2: true
 rhel8cis_rule_4_1_1_3: true
 rhel8cis_rule_4_1_1_4: true
-rhel8cis_rule_4_1_2_1: true
-rhel8cis_rule_4_1_2_2: true
-rhel8cis_rule_4_1_2_3: true
-rhel8cis_rule_4_1_3_1: true
-rhel8cis_rule_4_1_3_2: true
-rhel8cis_rule_4_1_3_3: true
-rhel8cis_rule_4_1_3_4: true
-rhel8cis_rule_4_1_3_5: true
-rhel8cis_rule_4_1_3_6: true
-rhel8cis_rule_4_1_3_7: true
-rhel8cis_rule_4_1_3_8: true
-rhel8cis_rule_4_1_3_9: true
-rhel8cis_rule_4_1_3_10: true
-rhel8cis_rule_4_1_3_11: true
-rhel8cis_rule_4_1_3_12: true
-rhel8cis_rule_4_1_3_13: true
-rhel8cis_rule_4_1_3_14: true
-rhel8cis_rule_4_1_3_15: true
-rhel8cis_rule_4_1_3_16: true
-rhel8cis_rule_4_1_3_17: true
-rhel8cis_rule_4_1_3_18: true
-rhel8cis_rule_4_1_3_19: true
-rhel8cis_rule_4_1_3_20: true
-rhel8cis_rule_4_1_3_21: true
-rhel8cis_rule_4_2_1_1: true
-rhel8cis_rule_4_2_1_2: true
-rhel8cis_rule_4_2_1_3: true
-rhel8cis_rule_4_2_1_4: true
-rhel8cis_rule_4_2_1_5: true
-rhel8cis_rule_4_2_1_6: true
-rhel8cis_rule_4_2_1_7: true
-rhel8cis_rule_4_2_2_1_1: true
-rhel8cis_rule_4_2_2_1_2: true
-rhel8cis_rule_4_2_2_1_3: true
-rhel8cis_rule_4_2_2_1_4: true
-rhel8cis_rule_4_2_2_2: true
-rhel8cis_rule_4_2_2_3: true
-rhel8cis_rule_4_2_2_4: true
-rhel8cis_rule_4_2_2_5: true
-rhel8cis_rule_4_2_2_6: true
-rhel8cis_rule_4_2_2_7: true
-rhel8cis_rule_4_2_3: true
-rhel8cis_rule_4_3: true
+rhel8cis_rule_4_1_1_5: true
+rhel8cis_rule_4_1_1_6: true
+rhel8cis_rule_4_1_1_7: true
+rhel8cis_rule_4_1_1_8: true
 
-# Section 5 rules
-rhel8cis_rule_5_1_1: true
-rhel8cis_rule_5_1_2: true
+# at
+rhel8cis_rule_4_1_2_1: true
+
+# sshd
+rhel8cis_rule_4_2_1: true
+rhel8cis_rule_4_2_2: true
+rhel8cis_rule_4_2_3: true
+rhel8cis_rule_4_2_4: true
+rhel8cis_rule_4_2_5: true
+rhel8cis_rule_4_2_6: true
+rhel8cis_rule_4_2_7: true
+rhel8cis_rule_4_2_8: true
+rhel8cis_rule_4_2_9: true
+rhel8cis_rule_4_2_10: true
+rhel8cis_rule_4_2_12: true
+rhel8cis_rule_4_2_11: true
+rhel8cis_rule_4_2_13: true
+rhel8cis_rule_4_2_14: true
+rhel8cis_rule_4_2_15: true
+rhel8cis_rule_4_2_16: true
+rhel8cis_rule_4_2_17: true
+rhel8cis_rule_4_2_18: true
+rhel8cis_rule_4_2_19: true
+rhel8cis_rule_4_2_20: true
+rhel8cis_rule_4_2_21: true
+rhel8cis_rule_4_2_22: true
+
+# sudo
+rhel8cis_rule_4_3_1: true
+rhel8cis_rule_4_3_2: true
+rhel8cis_rule_4_3_3: true
+rhel8cis_rule_4_3_4: true
+rhel8cis_rule_4_3_5: true
+rhel8cis_rule_4_3_6: true
+rhel8cis_rule_4_3_7: true
+
+# Pam software pkgs
+rhel8cis_rule_4_4_1_1: true
+rhel8cis_rule_4_4_1_2: true
+
+# authselect
+rhel8cis_rule_4_4_2_1: true
+rhel8cis_rule_4_4_2_2: true
+rhel8cis_rule_4_4_2_3: true
+rhel8cis_rule_4_4_2_4: true
+rhel8cis_rule_4_4_2_5: true
+
+# pam faillock
+rhel8cis_rule_4_4_3_1_1: true
+rhel8cis_rule_4_4_3_1_2: true
+rhel8cis_rule_4_4_3_1_3: true
+
+# pam pwquality
+rhel8cis_rule_4_4_3_2_1: true
+rhel8cis_rule_4_4_3_2_2: true
+rhel8cis_rule_4_4_3_2_3: true
+rhel8cis_rule_4_4_3_2_4: true
+rhel8cis_rule_4_4_3_2_5: true
+rhel8cis_rule_4_4_3_2_6: true
+rhel8cis_rule_4_4_3_2_7: true
+
+# pam pwhistory
+rhel8cis_rule_4_4_3_3_1: true
+rhel8cis_rule_4_4_3_3_2: true
+rhel8cis_rule_4_4_3_3_3: true
+
+# pam pam_unix
+rhel8cis_rule_4_4_3_4_1: true
+rhel8cis_rule_4_4_3_4_2: true
+rhel8cis_rule_4_4_3_4_3: true
+rhel8cis_rule_4_4_3_4_4: true
+
+# Shadow user settings
+rhel8cis_rule_4_5_1_1: true
+rhel8cis_rule_4_5_1_2: true
+rhel8cis_rule_4_5_1_3: true
+rhel8cis_rule_4_5_1_4: true
+rhel8cis_rule_4_5_1_5: true
+
+# root and sys accts and env
+rhel8cis_rule_4_5_2_1: true
+rhel8cis_rule_4_5_2_2: true
+rhel8cis_rule_4_5_2_3: true
+rhel8cis_rule_4_5_2_4: true
+rhel8cis_rule_4_5_2_5: true
+
+# User enviroment
+rhel8cis_rule_4_5_3_1: true
+rhel8cis_rule_4_5_3_2: true
+rhel8cis_rule_4_5_3_3: true
+
+##
+## Section 5 rules
+##
+
+# Rsyslog
+rhel8cis_rule_5_1_1_1: true
+rhel8cis_rule_5_1_1_2: true
+rhel8cis_rule_5_1_1_3: true
+rhel8cis_rule_5_1_1_4: true
+rhel8cis_rule_5_1_1_5: true
+rhel8cis_rule_5_1_1_6: true
+rhel8cis_rule_5_1_1_7: true
+
+# Journald
+rhel8cis_rule_5_1_2_1_1: true
+rhel8cis_rule_5_1_2_1_2: true
+rhel8cis_rule_5_1_2_1_3: true
+rhel8cis_rule_5_1_2_1_4: true
+rhel8cis_rule_5_1_2_2: true
+rhel8cis_rule_5_1_2_3: true
+rhel8cis_rule_5_1_2_4: true
+rhel8cis_rule_5_1_2_5: true
+rhel8cis_rule_5_1_2_6: true
 rhel8cis_rule_5_1_3: true
 rhel8cis_rule_5_1_4: true
-rhel8cis_rule_5_1_5: true
-rhel8cis_rule_5_1_6: true
-rhel8cis_rule_5_1_7: true
-rhel8cis_rule_5_1_8: true
-rhel8cis_rule_5_1_9: true
-rhel8cis_rule_5_2_1: true
-rhel8cis_rule_5_2_2: true
-rhel8cis_rule_5_2_3: true
-rhel8cis_rule_5_2_4: true
-rhel8cis_rule_5_2_5: true
-rhel8cis_rule_5_2_6: true
-rhel8cis_rule_5_2_7: true
-rhel8cis_rule_5_2_8: true
-rhel8cis_rule_5_2_9: true
-rhel8cis_rule_5_2_10: true
-rhel8cis_rule_5_2_12: true
-rhel8cis_rule_5_2_11: true
-rhel8cis_rule_5_2_13: true
-rhel8cis_rule_5_2_14: true
-rhel8cis_rule_5_2_15: true
-rhel8cis_rule_5_2_16: true
-rhel8cis_rule_5_2_17: true
-rhel8cis_rule_5_2_18: true
-rhel8cis_rule_5_2_19: true
-rhel8cis_rule_5_2_20: true
+
+# Auditd
+rhel8cis_rule_5_2_1_1: true
+rhel8cis_rule_5_2_1_2: true
+rhel8cis_rule_5_2_1_3: true
+rhel8cis_rule_5_2_1_4: true
+rhel8cis_rule_5_2_2_1: true
+rhel8cis_rule_5_2_2_2: true
+rhel8cis_rule_5_2_2_3: true
+rhel8cis_rule_5_2_2_4: true
+
+# auditd rules
+rhel8cis_rule_5_2_3_1: true
+rhel8cis_rule_5_2_3_2: true
+rhel8cis_rule_5_2_3_3: true
+rhel8cis_rule_5_2_3_4: true
+rhel8cis_rule_5_2_3_5: true
+rhel8cis_rule_5_2_3_6: true
+rhel8cis_rule_5_2_3_7: true
+rhel8cis_rule_5_2_3_8: true
+rhel8cis_rule_5_2_3_9: true
+rhel8cis_rule_5_2_3_10: true
+rhel8cis_rule_5_2_3_11: true
+rhel8cis_rule_5_2_3_12: true
+rhel8cis_rule_5_2_3_13: true
+rhel8cis_rule_5_2_3_14: true
+rhel8cis_rule_5_2_3_15: true
+rhel8cis_rule_5_2_3_16: true
+rhel8cis_rule_5_2_3_17: true
+rhel8cis_rule_5_2_3_18: true
+rhel8cis_rule_5_2_3_19: true
+rhel8cis_rule_5_2_3_20: true
+rhel8cis_rule_5_2_3_21: true
+
+# auditd log perms
+rhel8cis_rule_5_2_4_1: true
+rhel8cis_rule_5_2_4_2: true
+rhel8cis_rule_5_2_4_3: true
+rhel8cis_rule_5_2_4_4: true
+rhel8cis_rule_5_2_4_5: true
+rhel8cis_rule_5_2_4_6: true
+rhel8cis_rule_5_2_4_7: true
+rhel8cis_rule_5_2_4_8: true
+rhel8cis_rule_5_2_4_9: true
+rhel8cis_rule_5_2_4_10: true
+
+# AIDE
+
 rhel8cis_rule_5_3_1: true
 rhel8cis_rule_5_3_2: true
 rhel8cis_rule_5_3_3: true
-rhel8cis_rule_5_3_4: true
-rhel8cis_rule_5_3_5: true
-rhel8cis_rule_5_3_6: true
-rhel8cis_rule_5_3_7: true
-rhel8cis_rule_5_4_1: true
-rhel8cis_rule_5_4_2: true
-rhel8cis_rule_5_5_1: true
-rhel8cis_rule_5_5_2: true
-rhel8cis_rule_5_5_3: true
-rhel8cis_rule_5_5_4: true
-rhel8cis_rule_5_5_5: true
-rhel8cis_rule_5_6_1_1: true
-rhel8cis_rule_5_6_1_2: true
-rhel8cis_rule_5_6_1_3: true
-rhel8cis_rule_5_6_1_4: true
-rhel8cis_rule_5_6_1_5: true
-rhel8cis_rule_5_6_2: true
-rhel8cis_rule_5_6_3: true
-rhel8cis_rule_5_6_4: true
-rhel8cis_rule_5_6_5: true
 
-# Section 6 rules
+##
+## Section 6 rules
+##
+
+# System file perms
 rhel8cis_rule_6_1_1: true
 rhel8cis_rule_6_1_2: true
 rhel8cis_rule_6_1_3: true
@@ -357,7 +472,8 @@ rhel8cis_rule_6_1_11: true
 rhel8cis_rule_6_1_12: true
 rhel8cis_rule_6_1_13: true
 rhel8cis_rule_6_1_14: true
-rhel8cis_rule_6_1_15: true
+
+# local and usergroup
 rhel8cis_rule_6_2_1: true
 rhel8cis_rule_6_2_2: true
 rhel8cis_rule_6_2_3: true
@@ -369,56 +485,10 @@ rhel8cis_rule_6_2_8: true
 rhel8cis_rule_6_2_9: true
 rhel8cis_rule_6_2_10: true
 rhel8cis_rule_6_2_11: true
-rhel8cis_rule_6_2_12: true
-rhel8cis_rule_6_2_13: true
-rhel8cis_rule_6_2_14: true
-rhel8cis_rule_6_2_15: true
-rhel8cis_rule_6_2_16: true
 
-# Service configuration booleans set true to keep service
-
-# Server Services
-rhel8cis_avahi_server: false
-rhel8cis_bind: false
-rhel8cis_cups_server: false
-rhel8cis_dhcp_server: false
-rhel8cis_dns_server: false
-rhel8cis_dovecot_cyrus_server: false
-rhel8cis_ftp_server: false
-rhel8cis_httpd_server: false
-rhel8cis_is_mail_server: false
-rhel8cis_net_snmp_server: false
-# Ability to choose between remove or mask(default)
-rhel8cis_nfs_server: false
-rhel8cis_nfs_mask: true
-rhel8cis_nginx_server: false
-rhel8cis_nis_server: false
-# Ability to choose between remove or mask(default)
-rhel8cis_rpc_server: false
-rhel8cis_rpc_mask: true
-# Ability to choose between remove or mask(default)
-rhel8cis_rsync_server: false
-rhel8cis_rsync_mask: true
-rhel8cis_samba_server: false
-rhel8cis_squid_server: false
-rhel8cis_telnet_server: false
-rhel8cis_tftp_server: false
-rhel8cis_vsftpd_server: false
-rhel8cis_xinetd_server: false
-
-# Client Services
-
-rhel8cis_ypbind_required: false
-rhel8cis_rsh_required: false
-rhel8cis_talk_required: false
-rhel8cis_telnet_required: false
-rhel8cis_openldap_clients_required: false
-rhel8cis_tftp_client: false
-
-rhel8cis_allow_autofs: false
-
+##
 ## Section 1 vars
-
+##
 # 1.1.2.2
 # 1.1.2.3
 # 1.1.2.4
@@ -428,35 +498,123 @@ rhel8cis_allow_autofs: false
 # If set true uses the tmp.mount service else using fstab configuration
 rhel8cis_tmp_svc: false
 
-# 1.2.1
-# This is the login information for your RedHat Subscription
-# DO NOT USE PLAIN TEXT PASSWORDS!!!!!
-# The intent here is to use a password utility like Ansible Vault here
-rhel8cis_rh_sub_user: user
-rhel8cis_rh_sub_password: password  # pragma: allowlist secret
+# 1.2 patch system
+rhel8cis_apply_installed_kernel_limit: false
+rhel8cis_installed_kernel_limit: 2
 
-# 1.2.2
-# Do you require rhnsd
-# RedHat Satellite Subscription items
-rhel8cis_rhnsd_required: false
-
-# xinetd required
-rhel8cis_xinetd_required: false
-
-# 1.4.1 Bootloader password
+# 1.3 Bootloader password
 rhel8cis_bootloader_password_hash: 'grub.pbkdf2.sha512.changethispassword'  # pragma: allowlist secret
 rhel8cis_bootloader_password: random  # pragma: allowlist secret
 rhel8cis_set_boot_pass: false
 
-# 1.9 patch system
-rhel8cis_apply_installed_kernel_limit: false
-rhel8cis_installed_kernel_limit: 2
+# 1.5 SELinux policy
+rhel8cis_selinux_state: enforcing
+# Configure SELinux to meet or exceed the default targeted policy, which constrains daemons and system software only.
+# Valid Inputs: targeted or mls
+rhel8cis_selinux_policy: targeted
 
-# 1.10/1.11 Set crypto policy (LEGACY, DEFAULT, FUTURE, FIPS)
-# Control 1.10 states do not use LEGACY and control 1.11 says to use FUTURE or FIPS.
+# 1.6 Set crypto policy (LEGACY, DEFAULT, FUTURE, FIPS)
 rhel8cis_crypto_policy: 'DEFAULT'
-# Added module to be allowed as default setting (Allowed options in vars/main.yml)
+
+# 1.6.1 Allowed crypto-policy modules
+rhel8cis_allowed_crypto_policies_modules:
+    - 'AD-SUPPORT'
+    - 'NO-SHA1'
+    - 'OSPP'
+
+# Added module to be loaded
 rhel8cis_crypto_policy_module: ''
+
+# 1.7
+# Warning Banner Content (issue, issue.net, motd)
+rhel8cis_warning_banner: |
+    Authorized uses only. All activity may be monitored and reported.
+# End Banner
+
+# 1.8 Gnome Desktop
+# Whether or not to run tasks related to auditing/patching the desktop environment
+rhel8cis_gui: false
+rhel8cis_dconf_db_name: local
+rhel8cis_screensaver_idle_delay: 900  # Set max value for idle-delay in seconds (between 1 and 900)
+rhel8cis_screensaver_lock_delay: 5  # Set max value for lock-delay in seconds (between 0 and 5)
+##
+## Section 2 vars
+##
+# 2.1.1 Time Synchronization - Either chrony or ntp
+rhel8cis_time_synchronization: chrony
+
+# Time Synchronization servers - used in template file chrony.conf.j2
+rhel8cis_time_synchronization_servers:
+    - 0.pool.ntp.org
+    - 1.pool.ntp.org
+    - 2.pool.ntp.org
+    - 3.pool.ntp.org
+
+rhel8cis_chrony_server_options: "minpoll 8"
+rhel8cis_ntp_server_options: "iburst"
+
+# Service configuration
+# Options are
+# true to leave installed if exists not changes take place
+# false - this removes the package
+# mask - if a dependancy for product so cannot be removed
+# Server Services
+rhel8cis_autofs_services: false
+rhel8cis_autofs_mask: true
+rhel8cis_avahi_server: false
+rhel8cis_avahi_mask: false
+rhel8cis_dhcp_server: false
+rhel8cis_dhcp_mask: false
+rhel8cis_dns_server: false
+rhel8cis_dns_mask: false
+rhel8cis_dnsmasq_server: false
+rhel8cis_dnsmasq_mask: false
+rhel8cis_samba_server: false
+rhel8cis_samba_mask: false
+rhel8cis_ftp_server: false
+rhel8cis_ftp_mask: false
+rhel8cis_message_server: false  # This is for messaging dovecot and cyrus-imap
+rhel8cis_message_mask: false
+rhel8cis_nfs_server: true
+rhel8cis_nfs_mask: true
+rhel8cis_nis_server: true  # set to mask if nis client required
+rhel8cis_nis_mask: false
+rhel8cis_print_server: false  # replaces cups
+rhel8cis_print_mask: false
+rhel8cis_rpc_server: true
+rhel8cis_rpc_mask: true
+rhel8cis_rsync_server: false
+rhel8cis_rsync_mask: false
+rhel8cis_net_snmp_server: false
+rhel8cis_net_snmp_mask: false
+rhel8cis_telnet_server: false
+rhel8cis_telnet_mask: false
+rhel8cis_tftp_server: false
+rhel8cis_tftp_mask: false
+rhel8cis_squid_server: false
+rhel8cis_squid_mask: false
+rhel8cis_httpd_server: false
+rhel8cis_httpd_mask: false
+rhel8cis_nginx_server: false
+rhel8cis_nginx_mask: false
+rhel8cis_xinetd_server: false
+rhel8cis_xinetd_mask: false
+rhel8cis_xwindow_server: false  # will remove mask not an option
+rhel8cis_is_mail_server: false
+
+# Client Services
+rhel8cis_ftp_client: false
+rhel8cis_openldap_clients_required: false
+rhel8cis_ypbind_required: false  # Same package as NIS server
+rhel8cis_telnet_required: false
+rhel8cis_tftp_client: false
+
+##
+## Section 3 vars
+##
+
+rhel8cis_bluetooth_service: false
+rhel8cis_bluetooth_mask: false
 
 # System network parameters (host only OR host and router)
 rhel8cis_is_router: false
@@ -466,7 +624,7 @@ rhel8cis_ipv6_required: true
 
 rhel8cis_ipv6_sysctl_force: true
 
-##  Optional - Understand the impact of making the following controls to true
+##  Optional - Understand the impact of making the following two control to true
 # By default, we do not disable IPv6 on localhost, as it's important for multiple
 # components.  If you want to disable it anyway, change the following
 # value to true refer https://access.redhat.com/solutions/8709
@@ -477,15 +635,197 @@ rhel8cis_ipv6_disable_localhost: false
 rhel8cis_ipv6_sshd_disable: false
 # disable chrony on ipv6
 rhel8cis_ipv6_chrony_disable: false
+
+# Set to 'true' if X Windows is needed in your environment
+rhel8cis_xwindows_required: false
+
+## Section3 vars
+
+# default location for the sysctl overrides.
+rhel8cis_sysctl_file: /etc/sysctl.d/99_cis.conf
+
+# Firewall Service - either firewalld or nftables
+rhel8cis_firewall: 'firewalld'
+
+rhel8cis_default_zone: public
+
+rhel8cis_nft_tables_autonewtable: true
+rhel8cis_nft_tables_tablename: filter
+
+# 3.4.2.6 Set nftables new chain create
+rhel8cis_nft_tables_autochaincreate: true
+
+#######
+## Section5 vars
+######
+## If using the allow/deny user groups options
+rhel8cis_sshd_limited: false
+rhel8cis_sshd:
+    clientalivecountmax: 3
+    clientaliveinterval: 15
+    logingracetime: 60
+    loglevel: INFO
+    macs: '-hmac-md5,hmac-md5-96,hmac-ripemd160,hmac-sha1-96,umac-64@openssh.com,hmac-md5-etm@openssh.com,hmac-md5-96-etm@openssh.com,hmac-ripemd160-etm@openssh.com,hmac-sha1-96-etm@openssh.com,umac-64-etm@openssh.com'
+    maxauthtries: 4
+    maxsessions: 10
+    maxstartups: "10:30:60"
+    ciphers: '-3des-cbc,aes128-cbc,aes192-cbc,aes256-cbc,rijndael-cbc@lysator.liu.se'
+    kex: '-diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1'
+    # WARNING: make sure you understand the precedence when working with these values!!
+    ## Only runs if value rhel8cis_sshd_limited is true
+    # allowusers:
+    # allowgroups: systems dba
+    # denyusers:
+    # denygroups:
+
+# 4.3. sudo
+rhel8cis_sudolog_location: "/var/log/sudo.log"
+rhel8cis_sudo_timestamp_timeout: 15
+
+## PAM
+# 4.4.2.x
+# Do not use authselect if:
+# Your host is part of Linux Identity Management.
+# Joining your host to an IdM domain with the ipa-client-install command automatically configures SSSD authentication on your host.
+# Your host is part of Active Directory via SSSD.
+# Calling the realm join command to join your host to an Active Directory domain automatically configures SSSD authentication on your host.
+rhel8cis_allow_authselect_updates: false
 ##
-# Pam Change remove null ok from system/password-auth files manual change for 5.4.1 if not using authselect
-rhel8cis_remove_nullok: true
-# Allow override of crypto polices tyo enable some alternate repos etc when policy is FIPS or FUTURE
-rhel8cis_optional_crypto_module: false
-rhel8cis_optional_key_exchange: 'ECDHE RSA DHE DHE-RSA PSK DHE-PSK ECDHE-PSK ECDHE-GSS DHE-GSS'
-rhel8cis_optional_rsa_size: 2048
+rhel8cis_authselect_pkg_update: false  # NOTE the risks if system is using SSSD or using ipa-client-install
+rhel8cis_authselect_custom_profile_create: false
+rhel8cis_authselect_custom_profile_select: false
+rhel8cis_authselect:
+    custom_profile_name: 'cis_example_profile'
+    default_file_to_copy: "sssd --symlink-meta"
+    options: with-sudo with-faillock without-nullok with-pwhistory
+
+rhel8cis_pam_faillock:
+    attempts: 5
+    deny: 5
+    interval: 900
+    unlock_time: 900
+    root_unlock_time: 60
+    # Choose options below for root options
+    root_option: even_deny_root
+    # root_option: "root_unlock_time = {{ root_unlock_time }}"
+
+rhel8cis_pam_pwquality:
+    difok: 2
+    maxrepeat: 3
+    maxseq: 3
+    minlen: 14
+    minclass: 4
+
+rhel8cis_pam_pwhistory:
+    remember: 24
+
+rhel8cis_pam_pwhash: sha512
+
+rhel8cis_pass:
+    inactive: 30
+    max_days: 365  # Max 365
+    min_days: 7
+    warn_age: 7
+
+## Set the following to true if you wish to adjust accounts greater than rhel8cis_pass['max_days']
+rhel8cis_set_max_expiry: false
+
+## Add users to be skipped if required
+rhel8cis_user_skip_list:
+    root
+
+rhel8cis_root_umask: '0027'  # 0027 or more restrictive
+
+rhel8cis_shell_session_timeout:
+    file: /etc/profile.d/tmout.sh
+    timeout: 900
+
+# sugroup
+rhel8cis_sugroup: sugroup
+
+# wheel users list
+rhel8cis_sugroup_users: "root"
+
+# Its not provider recommended to run changes to pam files manually that affects authentication
+# This control needs to be set to ACCEPT this so that the changes do take place
+# Any other value does nothing
+rhel8cis_pamd_manual_risks: NEVER
+
+rhel8cis_inactivelock:
+    lock_days: 30
+
+# Allow ansible to expire password for account with a last changed date in the future. False will just display users in violation, true will expire those users passwords
+rhel8cis_futurepwchgdate_autofix: true
+
+rhel8uid_uid_start: 1000
+rhel8uid_uid_stop: 60000
+
+## Section5 vars
+
+## Preferred method of logging
+## Whether rsyslog or journald preferred method for local logging
+rhel8cis_syslog: rsyslog
+rhel8cis_rsyslog_ansiblemanaged: true
+# Set if system is the log server
+rhel8cis_system_is_log_server: false
+
+#### remote and destination log server name
+rhel8cis_remote_log_server: false
+rhel8cis_remote_log_host: logagg.example.com
+rhel8cis_remote_log_port: 514
+rhel8cis_remote_log_protocol: tcp
+rhel8cis_remote_log_retrycount: 100
+rhel8cis_remote_log_queuesize: 1000
+
+update_audit_template: false
+
+rhel8cis_auditd:
+    disk_error_action: halt
+    disk_full_action: halt
+    action_mail_acct: root
+    space_left_action: email
+    admin_space_left_action: email
+    max_log_file_action: keep_logs
+
+# This can be used to configure other keys in auditd.conf
+rhel8cis_auditd_extra_conf: {}
+# Example:
+# rhel8cis_auditd_extra_conf:
+#     admin_space_left: '10%'
+
+rhel8cis_logrotate: "daily"
+
+# Journald
+# rhel8cis_journal_upload_url is the ip address to upload the journal entries to
+rhel8cis_journal_upload_url: 192.168.50.42
+# The paths below have the default paths/files, but allow user to create custom paths/filenames
+rhel8cis_journal_upload_serverkeyfile: "/etc/ssl/private/journal-upload.pem"
+rhel8cis_journal_servercertificatefile: "/etc/ssl/certs/journal-upload.pem"
+rhel8cis_journal_trustedcertificatefile: "/etc/ssl/ca/trusted.pem"
+
+# The variables below related to journald, please set these to your site specific values
+# rhel8cis_journald_systemmaxuse is the max amount of disk space the logs will use
+rhel8cis_journald_systemmaxuse: 10M
+# rhel8cis_journald_systemkeepfree is the amount of disk space to keep free
+rhel8cis_journald_systemkeepfree: 100G
+rhel8cis_journald_runtimemaxuse: 10M
+rhel8cis_journald_runtimekeepfree: 100G
+# rhel8cis_journald_MaxFileSec is how long in time to keep log files. Values are Xm, Xh, Xday, Xweek, Xmonth, Xyear, for example 2week is two weeks
+rhel8cis_journald_maxfilesec: 1month
+
+# logrotate configuration
+# change to true if you wish to change logrotate.d conf files
+allow_logrotate_conf_umask_updates: false
+
+# The audit_back_log_limit value should never be below 8192
+rhel8cis_audit_back_log_limit: 8192
+
+# The max_log_file parameter should be based on your sites policy
+rhel8cis_max_log_file_size: 10
 
 # AIDE
+# aide setup via - cron, timer
+rhel8cis_aide_scan: cron
 rhel8cis_config_aide: true
 # AIDE cron settings
 rhel8cis_aide_cron:
@@ -498,238 +838,6 @@ rhel8cis_aide_cron:
     aide_month: '*'
     aide_weekday: '*'
 
-# SELinux policy
-
-# SELinux can run in one of three modes: disabled, permissive, or enforcing:
-# CIS strongly discourages disabled
-# NOTE:
-# Section 1.6.1.5 forces Enforcing to be set. So If rhel8cis_rule_1_6_1_3: true
-# make sure enforcing is set below for idempotency for taks 1.6.1.3 - 5
-rhel8cis_selinux_state: enforcing
-# Configure SELinux to meet or exceed the default targeted policy, which constrains daemons and system software only.
-# Valid Inputs: targeted or mls
-rhel8cis_selinux_policy: targeted
-
-# Whether or not to run tasks related to auditing/patching the desktop environment
-rhel8cis_gui: false
-
-# Set to 'true' if X Windows is needed in your environment
-rhel8cis_xwindows_required: false
-
-# 2.1.1 Time Synchronization - Either chrony or ntp
-rhel8cis_time_synchronization: chrony
-
-# 2.2.1.2 Time Synchronization servers - used in template file chrony.conf.j2
-rhel8cis_time_synchronization_servers:
-    - 0.pool.ntp.org
-    - 1.pool.ntp.org
-    - 2.pool.ntp.org
-    - 3.pool.ntp.org
-
-# rhel8cis_ansible_chrony_managed uses the template built into this remediation to be copied to /etc/chrony.conf
-# If you are using your own self managed /etc/chrony.conf set this to false.
-rhel8cis_chrony_ansible_managed: true
-
-rhel8cis_chrony_server_options: "minpoll 8"
-rhel8cis_ntp_server_options: "iburst"
-
-## Section3 vars
-
-# default location for the sysctl overrides.
-rhel8cis_sysctl_file: /etc/sysctl.d/99_cis.conf
-
-# Firewall Service - either firewalld, iptables, or nftables
-rhel8cis_firewall: firewalld
-
-# 3.4.1.5 Default zone setting
-rhel8cis_default_zone: public
-
-# 3.4.2.5 Zone and Interface setting
-rhel8cis_int_zone: customezone
-rhel8cis_interface: eth0
-
-rhel8cis_firewall_services:
-    - cockpit
-    - dhcpv6-client
-    - ssh
-
-# 3.4.2.5 Set nftables new table create
-# 3.4.2.6
-# 3.4.2.7
-# 3.4.2.8
-# 3.4.2.9
-# 3.4.2.11
-rhel8cis_nft_tables_autonewtable: true
-rhel8cis_nft_tables_tablename: filter
-
-# 3.4.2.6 Set nftables new chain create
-rhel8cis_nft_tables_autochaincreate: true
-
-# Warning Banner Content (issue, issue.net, motd)
-rhel8cis_warning_banner: |
-    Authorized uses only. All activity may be monitored and reported.
-# End Banner
-
-## Section4 vars
-
-update_audit_template: false
-
-rhel8cis_auditd:
-    space_left_action: email
-    action_mail_acct: root
-    admin_space_left_action: halt
-    max_log_file_action: keep_logs
-
-# This can be used to configure other keys in auditd.conf
-rhel8cis_auditd_extra_conf: {}
-# Example:
-# rhel8cis_auditd_extra_conf:
-#     admin_space_left: '10%'
-
-rhel8cis_logrotate: "daily"
-
-# The audit_back_log_limit value should never be below 8192
-rhel8cis_audit_back_log_limit: 8192
-
-# The max_log_file parameter should be based on your sites policy
-rhel8cis_max_log_file_size: 10
-
-# OS logging system - either rsyslog or journald or other if 3rd party tool
-rhel8cis_syslog: rsyslog
-rhel8cis_rsyslog_ansiblemanaged: true
-
-# RHEL-08-4.2.1.4/4.2.1.5 remote and destination log server name
-rhel8cis_remote_log_server: logagg.example.com
-
-# 4.2.1.5, 4.2.2.1.3, 4.2.2.1.4
-rhel8cis_system_is_log_server: false
-
-# 4.2.2.1.2
-# rhel8cis_journal_upload_url is the ip address to upload the journal entries to
-rhel8cis_journal_upload_url: 192.168.50.42
-# The paths below have the default paths/files, but allow user to create custom paths/filenames
-rhel8cis_journal_upload_serverkeyfile: "/etc/ssl/private/journal-upload.pem"
-rhel8cis_journal_servercertificatefile: "/etc/ssl/certs/journal-upload.pem"
-rhel8cis_journal_trustedcertificatefile: "/etc/ssl/ca/trusted.pem"
-
-# 4.2.2.1
-# The variables below related to journald, please set these to your site specific values
-# rhel8cis_journald_systemmaxuse is the max amount of disk space the logs will use
-rhel8cis_journald_systemmaxuse: 10M
-# rhel8cis_journald_systemkeepfree is the amount of disk space to keep free
-rhel8cis_journald_systemkeepfree: 100G
-rhel8cis_journald_runtimemaxuse: 10M
-rhel8cis_journald_runtimekeepfree: 100G
-# rhel8cis_journald_MaxFileSec is how long in time to keep log files. Values are Xm, Xh, Xday, Xweek, Xmonth, Xyear, for example 2week is two weeks
-rhel8cis_journald_maxfilesec: 1month
-
-# 4.2.3 logrotate configuration
-# change to true if you wish to change logrotate.d conf files
-allow_logrotate_conf_umask_updates: false
-
-## Section5 vars
-
-rhel8cis_sshd:
-    clientalivecountmax: 0
-    clientaliveinterval: 900
-    logingracetime: 60
-    # WARNING: make sure you understand the precedence when working with these values!!
-    # allowusers:
-    # allowgroups: systems dba
-    # denyusers:
-    # denygroups:
-rhel8cis_pam_faillock:
-    attempts: 5
-    interval: 900
-    unlock_time: 900
-    fail_for_root: 'no'
-    remember: 5
-    pwhash: sha512
-
-# 5.2.5 SSH LogLevel setting. Options are INFO or VERBOSE
-rhel8cis_ssh_loglevel: INFO
-
-# 5.2.19 SSH MaxSessions setting. Must be 10 or less
-rhel8cis_ssh_maxsessions: 10
-
-# 5.3.1 Enable automation to create custom profile settings, using the settings above
-rhel8cis_authselect_custom_profile_create: false
-
-# 5.3.2 Enable automation to select custom profile options, using the settings above
-rhel8cis_authselect_custom_profile_select: false
-
-# 5.3.3 sudo log location variable
-rhel8cis_sudolog_location: "/var/log/sudo.log"
-
-# 5.3.6 rhel8cis_sudo_timestamp_timeout is the timeout set to authentication in minutes
-# To conform to CIS standards this needs to be 15 minutes or less
-rhel8cis_sudo_timestamp_timeout: 15
-
-# 5.3.7
-rhel8cis_sugroup: sugroup
-
-# wheel users list
-rhel8cis_sugroup_users: "root"
-
-# 5.4.1/5.4.2 Custom authselect profile settings. Settings in place now will fail, they are place holders from the control example
-# Due to the way many multiple options and ways to configure this control needs to be enabled and settings adjusted to minimise risk
-rhel8cis_use_authconfig: false
-rhel8cis_authselect:
-    custom_profile_name: custom-profile
-    default_file_to_copy: "sssd --symlink-meta"
-    options: with-sudo with-faillock without-nullok
-
-# Its not provider recommended to run changes to pam files manually that affects authentication
-# This control needs to be set to ACCEPT this so that the changes do take place
-# Any other value does nothing
-rhel8cis_pamd_manual_risks: NEVER
-
-# 5.6.1.x
-rhel8cis_pass:
-    max_days: 365
-    min_days: 7
-    warn_age: 7
-
-# 5.6.1.1
-## Set the following to true if you wish to adjust accounts greater than rhel8cis_pass['max_days']
-rhel8cis_5_6_1_1_set_max_expiry: false
-
-## Add users to be skipped if required
-rhel8cis_5_6_1_1_user_skip_list:
-    root
-
-# 5.6.1.2
-## Set the following to true if you wish to adjust accounts greater than rhel8cis_pass['min_days']
-rhel8cis_5_6_1_1_set_min_days_change: false
-
-# 5.6.1.3
-## Set the following to true if you wish to adjust accounts greater than rhel8cis_pass['warn_age']
-rhel8cis_5_6_1_3_set_warn_age_change: false
-
-# 5.6.1.4
-rhel8cis_inactivelock:
-    lock_days: 30
-
-# 5.6.1.5 Allow ansible to expire password for account with a last changed date in the future. False will just display users in violation, true will expire those users passwords
-rhel8cis_futurepwchgdate_autofix: true
-
-## PAM
-rhel8cis_pam_password:
-    minlen: 14
-    minclass: 4
-
-# This is a dynamic check but can be overridden here marking it as false and uncomment
-rhel8uid_info_dynamic: true
-# rhel8uid_interactive_uid_start: 1000
-# rhel8uid_interactive_uid_stop: 60000
-
-# 5.6.3
-# Session timeout setting file (TMOUT setting can be set in multiple files)
-# Timeout value is in seconds. (60 seconds * 10 = 600)
-rhel8cis_shell_session_timeout:
-    file: /etc/profile.d/tmout.sh
-    timeout: 900
-
 ## Section6 vars
 
 # RHEL-08_6.1.1
@@ -739,11 +847,12 @@ rhel8cis_rpm_audit_file: /var/tmp/rpm_file_check
 rhel8cis_no_world_write_adjust: true
 rhel8cis_passwd_label: "{{ (this_item | default(item)).id }}: {{ (this_item | default(item)).dir }}"
 
-# 6.2.9 - adjusting symlinks in home directories
-# Default in ansible is true this causes lots of issues for many users
-# set as variable so can be overridden but default is not to follow.
+## 6.1.12 adjust files if ungrouped
+rhel8cis_ungrouped_adjust: false
 
-rhel_08_6_2_9_follow_home_symlinks: false
+## 6.1.13 Remove suid/sgid from files
+rhel8cis_suid_adjust: false
+rhel8cis_sgid_adjust: false
 
 # 6.2.12
 rhel8cis_dotperm_ansiblemanaged: true

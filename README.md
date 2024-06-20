@@ -2,7 +2,7 @@
 
 ## Configure a RHEL/Rocky/AlmaLinux 8 machine to be [CIS](https://www.cisecurity.org/cis-benchmarks/) compliant
 
-### Based on [ CIS RedHat Enterprise Linux 8 Benchmark v2.0.0 - 02-23-2022 ](https://www.cisecurity.org/cis-benchmarks/)
+### Based on [ CIS RedHat Enterprise Linux 8 Benchmark v3.0.0 - 11-10-2023 ](https://www.cisecurity.org/cis-benchmarks/)
 
 ---
 
@@ -47,11 +47,19 @@ Join us on our [Discord Server](https://www.lockdownenterprise.com/discord) to a
 
 This role **will make changes to the system** which may have unintended consequences. This is not an auditing tool but rather a remediation tool to be used after an audit has been conducted.
 
-Check Mode is not supported! The role will complete in check mode without errors, but it is not supported and should be used with caution. The RHEL8-CIS-Audit role or a compliance scanner should be used for compliance checking over check mode.
+- Testing is the most important thing you can do.
 
-This role was developed against a clean install of the Operating System. If you are implementing to an existing system please review this role for any site specific changes that are needed.
+- Check Mode is not supported! The role will complete in check mode without errors, but it is not supported and should be used with caution. The RHEL8-CIS-Audit role or a compliance scanner should be used for compliance checking over check mode.
 
-To use release version please point to main branch and relevant release for the cis benchmark you wish to work with.
+- This role was developed against a clean install of the Operating System. If you are implementing to an existing system please review this role for any site specific changes that are needed.
+
+- To use release version please point to main branch and relevant release/tag for the cis benchmark you wish to work with.
+
+- If moving across major releases e.g. v2.0.0 - v3.0.0 there are significant changes to the benchmarks and controls it is suggested to start as a new standard not to upgrade.
+
+- Containers references vars/is_container.yml this is an example and to be updated for your requirements
+
+- Did we mention testing??
 
 ---
 
@@ -133,8 +141,8 @@ RHEL/AlmaLinux/Rocky/Oracle 8 - Other versions are not supported.
 - AlmaLinux/Rocky Has been tested on 8.8(enabling crypto (sections 1.10 & 1.11) breaks updating or installs : July 01 2021
 - Access to download or add the goss binary and content to the system if using auditing
 (other options are available on how to get the content to the system.)
-- Python3
-- Ansible 2.10+
+- Python3.8
+- Ansible 2.11+
 - python-def (should be included in RHEL 8)
 - libselinux-python
 
@@ -174,6 +182,8 @@ cloud0init - due to a bug this will stop working if noexec is added to /var.
 rhel8cis_rule_1_1_3_3
 
 [bug 1839899](https://bugs.launchpad.net/cloud-init/+bug/1839899)
+
+Almalinux BaseOS, EPEL and many cloud providers repositories, do not allow repo_gpgcheck on rule_1.2.3 this will cause issues during the playbook unless or a workaround is found.
 
 ## Pipeline Testing
 

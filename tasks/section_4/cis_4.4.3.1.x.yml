@@ -1,0 +1,131 @@
+---
+
+- name: "4.4.3.1.1 | PATCH | Ensure password failed attempts lockout is configured"
+  when:
+      - rhel8cis_rule_4_4_3_1_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - pam
+      - rule_4.4.3.1.1
+  block:
+      - name: "4.4.3.1.1 | PATCH | Ensure password failed attempts lockout is configured | faillock.conf"
+        ansible.builtin.lineinfile:
+            path: /etc/security/faillock.conf
+            state: present
+            regexp: '^(#|)\s*deny\s*=\s*\d'
+            line: "deny = {{ rhel8cis_pam_faillock['deny'] }}"
+
+      - name: "4.4.3.1.1 | PATCH | Ensure password failed attempts lockout is configured | pam_files"
+        when: not rhel8cis_allow_authselect_updates
+        ansible.builtin.replace:
+            path: "/etc/pam.d/{{ item }}-auth"
+            regexp: ^(\s*auth\s+(requisite|required|sufficient)\s+pam_faillock\.so)(.*)\s+deny\s*=\s*\S+(.*$)
+            replace: \1\2\3
+        loop:
+            - password
+            - system
+
+      - name: "4.4.2.2 | AUDIT | Ensure pam_faillock module is enabled | get current state"
+        when:
+            - rhel8cis_allow_authselect_updates
+        ansible.builtin.shell: authselect current
+        changed_when: false
+        failed_when: discovered_authselect_current.rc not in [ 0, 1 ]
+        register: discovered_authselect_current
+
+      - name: "4.4.3.1.1 | PATCH | Ensure password failed attempts lockout is configured | authselect_files"
+        when:
+            - rhel8cis_allow_authselect_updates
+            - discovered_authselect_current.rc != 0
+        ansible.builtin.replace:
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            regexp: ^(\s*auth\s+(requisite|required|sufficient)\s+pam_faillock\.so)(.*)\s+deny\s*=\s*\S+(.*$)
+            replace: \1\2\3
+        loop:
+            - password
+            - system
+
+- name: "4.4.3.1.2 | PATCH | Ensure password unlock time is configured"
+  when:
+      - rhel8cis_rule_4_4_3_1_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - pam
+      - rule_4.4.3.1.2
+  block:
+      - name: "4.4.3.1.2 | PATCH | Ensure password unlock time is configured | faillock.conf"
+        ansible.builtin.lineinfile:
+            path: /etc/security/faillock.conf
+            state: present
+            regexp: '^(#|)\s*unlock_time\s*=\s*\d'
+            line: "unlock_time = {{ rhel8cis_pam_faillock['unlock_time'] }}"
+
+      - name: "4.4.3.1.2 | PATCH | Ensure password unlock time is configured | pam_files"
+        when: not rhel8cis_allow_authselect_updates
+        ansible.builtin.replace:
+            path: "/etc/pam.d/{{ item }}-auth"
+            regexp: ^(\s*auth\s+(requisite|required|sufficient)\s+pam_faillock\.so)(.*)\s+unlock_time\s*=\s*\S+(.*$)
+            replace: \1\2\3
+        loop:
+            - password
+            - system
+
+      - name: "4.4.3.1.2 | PATCH | Ensure password unlock time is configured | authselect_files"
+        when:
+            - rhel8cis_allow_authselect_updates
+            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+        notify: Update_authselect
+        ansible.builtin.replace:
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            regexp: ^(\s*auth\s+(requisite|required|sufficient)\s+pam_faillock\.so)(.*)\s+unlock_time\s*=\s*\S+(.*$)
+            replace: \1\2\3
+        loop:
+            - password
+            - system
+
+- name: "4.4.3.1.3 | PATCH | Ensure password failed attempts lockout includes root account"
+  when:
+      - rhel8cis_rule_4_4_3_1_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - pam
+      - rule_4.4.3.1.3
+  block:
+      - name: "4.4.3.1.3 | PATCH | Ensure password failed attempts lockout includes root account | faillock.conf"
+        ansible.builtin.lineinfile:
+            path: /etc/security/faillock.conf
+            state: present
+            regexp: ^(#|)\s*"{{ rhel8cis_pam_faillock['root_option'] }}"(\s*=\s*\d|.*)
+            line: "{{ rhel8cis_pam_faillock['root_option'] }}"
+
+      - name: "4.4.3.1.3 | PATCH | Ensure password failed attempts lockout includes root account | pam_files"
+        when: not rhel8cis_allow_authselect_updates
+        ansible.builtin.replace:
+            path: "/etc/pam.d/{{ item }}-auth"
+            regexp: ^(\s*auth\s+(requisite|required|sufficient)\s+pam_faillock\.so)(.*)\s"{{ rhel8cis_pam_faillock['root_option'] }}"(\s*=\s*\d|.*)\S+(.*$)
+            replace: \1\2\3\4
+        loop:
+            - password
+            - system
+
+      - name: "4.4.3.1.3 | PATCH | Ensure password failed attempts lockout includes root account | authselect_files"
+        when:
+            - rhel8cis_allow_authselect_updates
+            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+        notify: Update_authselect
+        ansible.builtin.replace:
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            regexp: ^(\s*auth\s+(requisite|required|sufficient)\s+pam_faillock\.so)(.*)\s"{{ rhel8cis_pam_faillock['root_option'] }}"(\s*=\s*\d|.*)\S+(.*$)
+            replace: \1\2\3\4
+        loop:
+            - password
+            - system

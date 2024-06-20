@@ -1,36 +1,38 @@
 # Changes to rhel8CIS
 
-## 1.5.16 - Based on CIS v2.0.0
+## 2.0 based on CIS 3.0.0
 
-- updated min ansibleversion to 2.11.1
+### This is not an upgrade for CIS v2.0.0 due to the number of changes treat as a new baseline
 
-- changes to 5.6.1.[ 1, 2, 3]
-  - ability to change current users
-  - variables added to defaults/main.yml to enable
+### Changes and improvements (March24)
 
-- ability to choose remove for mask for nfs,rpc and rsync
+Changes to variable naming for those variables discovered
+some lint updates
 
-## 1.5.15 - based on CIS v2.0.0
+thanks to @bbaassssiiee
 
-### Audit
+- #353
+- #354
+- #359
+- #360
+- #361
+- #363
+- #364
+- #365
 
-- ability to run audit_only
-  - var audit_only: true
-  - tidy up of audit variables to var/audit.yml and some in defaults/main.ym
-- goss version increased to 0.3.23 - Doesn't run with latest version 0.4+
+Audit and audit_only changed to run prior to any significant changes
 
-- updated 5.4.1 and 5.4.2 for authselect
+#### Initial
 
-- Update to 2.1.2. sysconfig for chronyd
+Inline with new CIS baseline
+Rewrite and ordering of nearly all controls
+Many new controls added
+Authselect is now used to setup pam options
+Min ansible version now 2.11.1
 
-- Added optional control thanks to @bbaassssiiee
-  - #273 - ability to use crypto Future with options - optional control added
-  - #329 - pam remove nullok - optional control added
-
-- update to audit thanks you @aaosopra
-  - #336
-  - #337
-  - #338
+- variable audit_only - ability to run audit only without remediate
+- New ansible-lint layout
+- New variable rhel8cis_disruption_high - found in defaults/main.yml default false
 
 ## 1.5.14 based on CIS v2.0.0
 

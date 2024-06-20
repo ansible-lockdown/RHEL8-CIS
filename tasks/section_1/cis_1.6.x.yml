@@ -1,0 +1,87 @@
+---
+
+- name: "1.6.1 | PATCH | Ensure system-wide crypto policy is not legacy"
+  when:
+      - rhel8cis_rule_1_6_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_SC-8
+      - rule_1.6.1
+  notify: Change_requires_reboot
+  block:
+      - name: "1.6.1 | PATCH | Ensure system-wide crypto policy is not legacy | set_fact"
+        ansible.builtin.set_fact:
+            rhel8cis_full_crypto_policy: "{{ rhel8cis_crypto_policy }}{% if rhel8cis_crypto_policy_module | length > 0 %}:{{ rhel8cis_crypto_policy_module }}{% endif %}"
+
+      - name: "1.6.1 | PATCH | Ensure system-wide crypto policy is not legacy"
+        when:
+            - discovered_system_wide_crypto_policy.stdout not in rhel8cis_crypto_policy
+        ansible.builtin.shell: |
+            update-crypto-policies --set "{{ rhel8cis_full_crypto_policy }}"
+            update-crypto-policies
+
+- name: "1.6.2 | PATCH | Ensure system wide crypto policy disables sha1 hash and signature support"
+  when:
+      - rhel8cis_rule_1_6_2
+      - "'NO-SHA1' not in discovered_system_wide_crypto_policy.stdout"
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_SC-8
+      - rule_1.6.2
+  notify: Change_requires_reboot
+  block:
+      - name: "1.6.2 | PATCH | Ensure system wide crypto policy disables sha1 hash and signature support | crypto_file"
+        ansible.builtin.template:
+            dest: /etc/crypto-policies/policies/modules/NO-SHA1.pmod
+            src: etc/crypto-policies/policies/modules/NO-SHA1.pmod.j2
+
+      - name: "1.6.2 | PATCH | Ensure system wide crypto policy disables sha1 hash and signature support | set crypto policy"
+        ansible.builtin.shell: "update-crypto-policies --set {{ rhel8cis_full_crypto_policy }}:NO-SHA1"
+
+- name: "1.6.3 | PATCH | Ensure system wide crypto policy disables cbc for ssh"
+  when:
+      - rhel8cis_rule_1_6_3
+      - "'NO-SSHCBC' not in discovered_system_wide_crypto_policy.stdout"
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_SC-8
+      - rule_1.6.3
+  notify: Change_requires_reboot
+  block:
+      - name: "1.6.3 | PATCH | Ensure system wide crypto policy disables cbc for ssh | crypto_file"
+        ansible.builtin.template:
+            dest: /etc/crypto-policies/policies/modules/NO-SSHCBC.pmod
+            src: etc/crypto-policies/policies/modules/NO-SSHCBC.pmod.j2
+
+      - name: "1.6.3 | PATCH | Ensure system wide crypto policy disables cbc for ssh | set crypto policy"
+        ansible.builtin.shell: "update-crypto-policies --set {{ rhel8cis_full_crypto_policy }}:{% if rhel8cis_rule_1_6_2 %}NO-SHA1:{% endif %}NO-SSHCBC"
+
+- name: "1.6.4 | PATCH | Ensure system wide crypto policy disables macs less than 128 bits"
+  when:
+      - rhel8cis_rule_1_6_4
+      - "'NO-WEAKMAC' not in discovered_system_wide_crypto_policy.stdout"
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_SC-8
+      - rule_1.6.4
+  notify: Change_requires_reboot
+  block:
+      - name: "1.6.4 | PATCH | Ensure system wide crypto policy disables cbc for ssh | crypto_file"
+        ansible.builtin.template:
+            dest: /etc/crypto-policies/policies/modules/NO-WEAKMAC.pmod
+            src: etc/crypto-policies/policies/modules/NO-WEAKMAC.pmod.j2
+
+      - name: "1.6.4 | PATCH | Ensure system wide crypto policy disables cbc for ssh | set crypto policy"
+        ansible.builtin.shell: "update-crypto-policies --set {{ rhel8cis_full_crypto_policy }}:{% if rhel8cis_rule_1_6_2 %}NO-SHA1:{% endif %}{% if rhel8cis_rule_1_6_3 %}NO-SSHCBC:{% endif %}NO-WEAKMAC"

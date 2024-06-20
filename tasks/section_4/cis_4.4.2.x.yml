@@ -1,0 +1,168 @@
+---
+
+- name: "4.4.2.1 | PATCH | Ensure custom authselect profile is used"
+  when:
+      - rhel8cis_rule_4_4_2_1
+      - authselect_version == "OK"
+      - pam_version == "OK"
+      - rhel8cis_disruption_high
+  tags:
+      - level1-server
+      - level1-workstation
+      - manual
+      - patch
+      - authselect
+      - rule_4.4.2.1
+  block:
+      - name: "4.4.2.1 | PATCH | Ensure custom authselect profile is used | Create custom profiles"
+        when:
+            - rhel8cis_authselect_custom_profile_create
+            - discovered_authselect_running_config.stdout is not defined
+            - not discovered_authselect_profile.stat.exists
+        ansible.builtin.shell: "/usr/bin/authselect create-profile {{ rhel8cis_authselect['custom_profile_name'] }} -b {{ rhel8cis_authselect['default_file_to_copy'] }}"
+        args:
+            creates: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}"
+
+      - name: "4.4.2.1 | PATCH | Ensure custom authselect profile is used | Select profiles"
+        when:
+            - rhel8cis_authselect_custom_profile_select
+            - (discovered_authselect_running_config.stdout is defined and "rhel8cis_authselect['custom_profile_name'] not in discovered_authselect_running_config.stdout")
+        ansible.builtin.shell: "/usr/bin/authselect select custom/{{ rhel8cis_authselect['custom_profile_name'] }}{% if rhel8cis_rule_4_4_2_2 %} with-faillock{% endif %}{% if rhel8cis_rule_4_4_2_4 %} with-pwhistory{% endif %}{% if rhel8cis_rule_4_4_3_4_1 %} without-nullok{% endif %} --force"
+
+- name: "4.4.2.2 | PATCH | Ensure pam_faillock module is enabled"
+  when:
+      - rhel8cis_rule_4_4_2_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_CM-1
+      - NIST800-53R5_CM-2
+      - NIST800-53R5_CM-6
+      - NIST800-53R5_CM-7
+      - NIST800-53R5_IA-5
+      - authselect
+      - rule_4.4.2.2
+  notify: Update_authselect
+  block:
+      - name: "4.4.2.2 | AUDIT | Ensure pam_faillock module is enabled | Get current config"
+        ansible.builtin.shell: authselect current | grep faillock
+        changed_when: false
+        failed_when: discovered_authselect_current.rc not in [ 0, 1 ]
+        register: discovered_authselect_current
+
+      - name: "4.4.2.2 | AUDIT | Ensure pam_faillock module is enabled | Add feature if missing"
+        when: discovered_authselect_current.rc != 0
+        ansible.builtin.shell: "authselect enable-feature with-faillock"
+
+- name: "4.4.2.3 | PATCH | Ensure pam_pwquality module is enabled"
+  when:
+      - rhel8cis_rule_4_4_2_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_IA-5
+      - authselect
+      - rule_4.4.2.3
+  notify: Update_authselect
+  block:
+      - name: "4.4.2.3 | AUDIT | Ensure pam_pwquality module is enabled | Capture current state"
+        ansible.builtin.shell: |
+            grep -P -- '\bpam_pwquality\.so\b' /etc/pam.d/{password,system}-auth
+        changed_when: false
+        failed_when: rhel8cis_pwquality_enabled.rc not in [ 0, 1 ]
+        register: discovered_pwquality_enabled
+
+      - name: "4.4.2.3 | PATCH | Ensure pam_pwquality module is enabled | system-auth"
+        when: "'system-auth:password' not in discovered_pwquality_enabled.stdout"
+        ansible.builtin.lineinfile:
+            backrefs: true
+            insertbefore: "{{ item.before | default (omit) }}"
+            line: "{{ item.line }}"
+            path: /etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/system-auth
+            regexp: "{{ item.regexp }}"
+            loop:
+                - { regexp: '^(password\s+)(required|requisite|sufficient)(\s+pam_pwquality.so.*)(.*)', line: '\1requisite\3\4', before: '^password\s+[default=1 ignore=ignore success=ok]' }
+
+      - name: "4.4.2.3 | PATCH | Ensure pam_pwquality module is enabled | password-auth"
+        when: "'password-auth:password' not in discovered_pwquality_enabled.stdout"
+        ansible.builtin.lineinfile:
+            backrefs: true
+            insertafter: "{{ item.after | default (omit) }}"
+            insertbefore: "{{ item.before | default (omit) }}"
+            line: "{{ item.line }}"
+            path: /etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/password-auth
+            regexp: "{{ item.regexp }}"
+            loop:
+                - { regexp: '^(password\s+)(required|requisite|sufficient)(\s+pam_pwquality.so.*)(.*)', line: '\1requisite\3\4', before: '^password\s+[default=1 ignore=ignore success=ok]' }
+
+- name: "4.4.2.4 | PATCH | Ensure pam_pwhistory module is enabled"
+  when:
+      - rhel8cis_rule_4_4_2_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_IA-5
+      - authselect
+      - rule_4.4.2.4
+  notify: Update_authselect
+  block:
+      - name: "4.4.2.4 | AUDIT | Ensure pam_pwhistory module is enabled | Get current config"
+        ansible.builtin.shell: authselect current | grep pwhistory
+        changed_when: false
+        failed_when: discovered_authselect_current.rc not in [ 0, 1 ]
+        register: discovered_authselect_current
+
+      - name: "4.4.2.4 | PATCH | Ensure pam_pwhistory module is enabled | enable feature"
+        when: discovered_authselect_current.rc != 0
+        ansible.builtin.shell: "authselect enable-feature with-pwhistory"
+
+- name: "4.4.2.5 | PATCH | Ensure pam_unix module is enabled"
+  when:
+      - rhel8cis_rule_4_4_2_5
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_IA-5
+      - authselect
+      - rule_4.4.2.5
+  block:
+      - name: "4.4.2.5 | AUDIT | Ensure pam_unix module is enabled"
+        ansible.builtin.shell: |
+            grep -P -- '\b(pam_unix\.so)\b' /etc/authselect/"$(head -1 /etc/authselect/authselect.conf)"/{system,password}-auth
+        changed_when: false
+        failed_when: rhel8cis_authselect_pam_unix.rc not in [ 0, 1 ]
+        register: discovered_authselect_pam_unix
+
+      - name: "4.4.2.5 | PATCH | Ensure pam_unix module is enabled | system-auth"
+        when: "'system-auth:password' not in discovered_authselect_pam_unix.stdout"
+        ansible.builtin.lineinfile:
+            backrefs: true
+            insertafter: "{{ item.after | default (omit) }}"
+            insertbefore: "{{ item.before | default (omit) }}"
+            line: "{{ item.line }}"
+            path: /etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/system-auth
+            regexp: "{{ item.regexp }}"
+            loop:
+                - { regexp: '^(auth\s+)sufficient(\s+pam_unix.so.*)(.*)', line: '\1sufficient\2\3', after: '^auth.*pam_faillock.*preauth' }
+                - { regexp: '^(password\s+)sufficient(\s+pam_unix.so.*)(.*)', line: '\1sufficient\2\3', before: '^password.*pam_deny.so' }
+
+      - name: "4.4.2.5 | PATCH | Ensure pam_unix module is enabled | password-auth"
+        when: "'password-auth:password' not in discovered_authselect_pam_unix.stdout"
+        ansible.builtin.lineinfile:
+            backrefs: true
+            insertafter: "{{ item.after | default (omit) }}"
+            insertbefore: "{{ item.before | default (omit) }}"
+            line: "{{ item.line }}"
+            path: /etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/password-auth
+            regexp: "{{ item.regexp }}"
+            loop:
+                - { regexp: '^(auth\s+)sufficient(\s+pam_unix.so.*)(.*)', line: '\1sufficient\2\2', after: '^auth.*pam_faillock.*preauth' }
+                - { regexp: '^(password\s+)sufficient(\s+pam_unix.so.*)(.*)', line: '\1sufficient\2\3', before: '^password.*pam_deny.so' }

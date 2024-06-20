@@ -1,17 +1,11 @@
 ## metadata for Audit benchmark
-benchmark_version: '2.0.0'
-
-# Set if pre version 8.2
-is_pre82_release: {% if ansible_distribution_version >= "8.2" %}false{% else %}true{% endif %}
+benchmark_version: '3.0.0'
 
 # Set if genuine RHEL (subscription manager check) not for derivatives e.g. CentOS
 host_os_distribution: {{ ansible_distribution }}
 
 # timeout for each command to run where set - default = 10seconds/10000ms
 timeout_ms: {{ audit_cmd_timeout }}
-
-# Allow the audit to run heavy tests which may utilise resources and impact performance
-run_heavy_tests: {{ audit_run_heavy_tests }}
 
 # Taken from LE rhel8-cis
 rhel8cis_section1: {{ rhel8cis_section1 }}
@@ -27,7 +21,8 @@ rhel8cis_level_2: {{ rhel8cis_level_2 }}
 rhel8cis_selinux_disable: {{ rhel8cis_selinux_disable }}
 
 # to enable rules that may have IO impact on a system e.g. full filesystem scans or CPU heavy
-run_heavy_tests: true
+run_heavy_tests: {{ audit_run_heavy_tests }}
+
 {% if rhel8cis_legacy_boot is defined %}
 rhel8cis_legacy_boot: {{ rhel8cis_legacy_boot }}
 {% endif %}
@@ -40,62 +35,85 @@ rhel8cis_legacy_boot: {{ rhel8cis_legacy_boot }}
 rhel8cis_rule_1_1_1_1: {{ rhel8cis_rule_1_1_1_1 }}
 rhel8cis_rule_1_1_1_2: {{ rhel8cis_rule_1_1_1_2 }}
 rhel8cis_rule_1_1_1_3: {{ rhel8cis_rule_1_1_1_3 }}
-rhel8cis_rule_1_1_2_1: {{ rhel8cis_rule_1_1_2_1 }}
-rhel8cis_rule_1_1_2_2: {{ rhel8cis_rule_1_1_2_2 }}
-rhel8cis_rule_1_1_2_3: {{ rhel8cis_rule_1_1_2_3 }}
-rhel8cis_rule_1_1_2_4: {{ rhel8cis_rule_1_1_2_4 }}
-rhel8cis_rule_1_1_3_1: {{ rhel8cis_rule_1_1_3_1 }}
-rhel8cis_rule_1_1_3_2: {{ rhel8cis_rule_1_1_3_2 }}
-rhel8cis_rule_1_1_3_3: {{ rhel8cis_rule_1_1_3_3 }}
-rhel8cis_rule_1_1_3_4: {{ rhel8cis_rule_1_1_3_4 }}
-rhel8cis_rule_1_1_4_1: {{ rhel8cis_rule_1_1_4_1 }}
-rhel8cis_rule_1_1_4_2: {{ rhel8cis_rule_1_1_4_2 }}
-rhel8cis_rule_1_1_4_3: {{ rhel8cis_rule_1_1_4_3 }}
-rhel8cis_rule_1_1_4_4: {{ rhel8cis_rule_1_1_4_4 }}
-rhel8cis_rule_1_1_5_1: {{ rhel8cis_rule_1_1_5_1 }}
-rhel8cis_rule_1_1_5_2: {{ rhel8cis_rule_1_1_5_2 }}
-rhel8cis_rule_1_1_5_3: {{ rhel8cis_rule_1_1_5_3 }}
-rhel8cis_rule_1_1_5_4: {{ rhel8cis_rule_1_1_5_4 }}
-rhel8cis_rule_1_1_6_1: {{ rhel8cis_rule_1_1_6_1 }}
-rhel8cis_rule_1_1_6_2: {{ rhel8cis_rule_1_1_6_2 }}
-rhel8cis_rule_1_1_6_3: {{ rhel8cis_rule_1_1_6_3 }}
-rhel8cis_rule_1_1_6_4: {{ rhel8cis_rule_1_1_6_4 }}
-rhel8cis_rule_1_1_7_1: {{ rhel8cis_rule_1_1_7_1 }}
-rhel8cis_rule_1_1_7_2: {{ rhel8cis_rule_1_1_7_2 }}
-rhel8cis_rule_1_1_7_3: {{ rhel8cis_rule_1_1_7_3 }}
-rhel8cis_rule_1_1_7_4: {{ rhel8cis_rule_1_1_7_4 }}
-rhel8cis_rule_1_1_7_5: {{ rhel8cis_rule_1_1_7_5 }}
-rhel8cis_rule_1_1_8_1: {{ rhel8cis_rule_1_1_8_1 }}
-rhel8cis_rule_1_1_8_2: {{ rhel8cis_rule_1_1_8_2 }}
-rhel8cis_rule_1_1_8_3: {{ rhel8cis_rule_1_1_8_3 }}
-rhel8cis_rule_1_1_9: {{ rhel8cis_rule_1_1_9 }}
-rhel8cis_rule_1_1_10: {{ rhel8cis_rule_1_1_10 }}
+rhel8cis_rule_1_1_1_4: {{ rhel8cis_rule_1_1_1_4 }}
+rhel8cis_rule_1_1_1_5: {{ rhel8cis_rule_1_1_1_5 }}
+rhel8cis_rule_1_1_1_6: {{ rhel8cis_rule_1_1_1_6 }}
+rhel8cis_rule_1_1_1_7: {{ rhel8cis_rule_1_1_1_7 }}
+rhel8cis_rule_1_1_1_8: {{ rhel8cis_rule_1_1_1_8 }}
+# /tmp
+rhel8cis_rule_1_1_2_1_1: {{ rhel8cis_rule_1_1_2_1_1 }}
+rhel8cis_rule_1_1_2_1_2: {{ rhel8cis_rule_1_1_2_1_2 }}
+rhel8cis_rule_1_1_2_1_3: {{ rhel8cis_rule_1_1_2_1_3 }}
+rhel8cis_rule_1_1_2_1_4: {{ rhel8cis_rule_1_1_2_1_4 }}
 
-rhel8cis_rule_1_2_1: {% if ansible_distribution == "RedHat" and rhel8cis_rule_1_2_1 %}True{% else %}False{% endif %}  # Only run if Redhat and Subscribed
+# /dev/shm
+rhel8cis_rule_1_1_2_2_1: {{ rhel8cis_rule_1_1_2_2_1 }}
+rhel8cis_rule_1_1_2_2_2: {{ rhel8cis_rule_1_1_2_2_2 }}
+rhel8cis_rule_1_1_2_2_3: {{ rhel8cis_rule_1_1_2_2_3 }}
+rhel8cis_rule_1_1_2_2_4: {{ rhel8cis_rule_1_1_2_2_4 }}
+
+# /home
+rhel8cis_rule_1_1_2_3_1: {{ rhel8cis_rule_1_1_2_3_1 }}
+rhel8cis_rule_1_1_2_3_2: {{ rhel8cis_rule_1_1_2_3_2 }}
+rhel8cis_rule_1_1_2_3_3: {{ rhel8cis_rule_1_1_2_3_3 }}
+
+# /var
+rhel8cis_rule_1_1_2_4_1: {{ rhel8cis_rule_1_1_2_4_1 }}
+rhel8cis_rule_1_1_2_4_2: {{ rhel8cis_rule_1_1_2_4_2 }}
+rhel8cis_rule_1_1_2_4_3: {{ rhel8cis_rule_1_1_2_4_3 }}
+
+# /var/tmp
+rhel8cis_rule_1_1_2_5_1: {{ rhel8cis_rule_1_1_2_5_1 }}
+rhel8cis_rule_1_1_2_5_2: {{ rhel8cis_rule_1_1_2_5_2 }}
+rhel8cis_rule_1_1_2_5_3: {{ rhel8cis_rule_1_1_2_5_3 }}
+rhel8cis_rule_1_1_2_5_4: {{ rhel8cis_rule_1_1_2_5_4 }}
+
+# /var/log
+rhel8cis_rule_1_1_2_6_1: {{ rhel8cis_rule_1_1_2_6_1 }}
+rhel8cis_rule_1_1_2_6_2: {{ rhel8cis_rule_1_1_2_6_2 }}
+rhel8cis_rule_1_1_2_6_3: {{ rhel8cis_rule_1_1_2_6_3 }}
+rhel8cis_rule_1_1_2_6_4: {{ rhel8cis_rule_1_1_2_6_4 }}
+
+# /var/log/audit
+rhel8cis_rule_1_1_2_7_1: {{ rhel8cis_rule_1_1_2_7_1 }}
+rhel8cis_rule_1_1_2_7_2: {{ rhel8cis_rule_1_1_2_7_2 }}
+rhel8cis_rule_1_1_2_7_3: {{ rhel8cis_rule_1_1_2_7_3 }}
+rhel8cis_rule_1_1_2_7_4: {{ rhel8cis_rule_1_1_2_7_4 }}
+
+# DNF - Patching
+rhel8cis_rule_1_2_1: {{ rhel8cis_rule_1_2_1 }}
 rhel8cis_rule_1_2_2: {{ rhel8cis_rule_1_2_2 }}
 rhel8cis_rule_1_2_3: {{ rhel8cis_rule_1_2_3 }}
 rhel8cis_rule_1_2_4: {{ rhel8cis_rule_1_2_4 }}
+rhel8cis_rule_1_2_5: {{ rhel8cis_rule_1_2_5 }}
 
+# bootloader grub
 rhel8cis_rule_1_3_1: {{ rhel8cis_rule_1_3_1 }}
 rhel8cis_rule_1_3_2: {{ rhel8cis_rule_1_3_2 }}
 
+# kernel sysctl and coredumps
 rhel8cis_rule_1_4_1: {{ rhel8cis_rule_1_4_1 }}
 rhel8cis_rule_1_4_2: {{ rhel8cis_rule_1_4_2 }}
 rhel8cis_rule_1_4_3: {{ rhel8cis_rule_1_4_3 }}
+rhel8cis_rule_1_4_4: {{ rhel8cis_rule_1_4_4 }}
 
-rhel8cis_rule_1_5_1: {{ rhel8cis_rule_1_5_1 }}
-rhel8cis_rule_1_5_2: {{ rhel8cis_rule_1_5_2 }}
-rhel8cis_rule_1_5_3: {{ rhel8cis_rule_1_5_3 }}
+# SElinux
+rhel8cis_rule_1_5_1_1: {{ rhel8cis_rule_1_5_1_1 }}
+rhel8cis_rule_1_5_1_2: {{ rhel8cis_rule_1_5_1_2 }}
+rhel8cis_rule_1_5_1_3: {{ rhel8cis_rule_1_5_1_3 }}
+rhel8cis_rule_1_5_1_4: {{ rhel8cis_rule_1_5_1_4 }}
+rhel8cis_rule_1_5_1_5: {{ rhel8cis_rule_1_5_1_5 }}
+rhel8cis_rule_1_5_1_6: {{ rhel8cis_rule_1_5_1_6 }}
+rhel8cis_rule_1_5_1_7: {{ rhel8cis_rule_1_5_1_7 }}
+rhel8cis_rule_1_5_1_8: {{ rhel8cis_rule_1_5_1_8 }}
 
-rhel8cis_rule_1_6_1_1: {{ rhel8cis_rule_1_6_1_1 }}
-rhel8cis_rule_1_6_1_2: {{ rhel8cis_rule_1_6_1_2 }}
-rhel8cis_rule_1_6_1_3: {{ rhel8cis_rule_1_6_1_3 }}
-rhel8cis_rule_1_6_1_4: {{ rhel8cis_rule_1_6_1_4 }}
-rhel8cis_rule_1_6_1_5: {{ rhel8cis_rule_1_6_1_5 }}
-rhel8cis_rule_1_6_1_6: {{ rhel8cis_rule_1_6_1_6 }}
-rhel8cis_rule_1_6_1_7: {{ rhel8cis_rule_1_6_1_7 }}
-rhel8cis_rule_1_6_1_8: {{ rhel8cis_rule_1_6_1_8 }}
+# Crypto Policies
+rhel8cis_rule_1_6_1: {{ rhel8cis_rule_1_6_1 }}
+rhel8cis_rule_1_6_2: {{ rhel8cis_rule_1_6_2 }}
+rhel8cis_rule_1_6_3: {{ rhel8cis_rule_1_6_3 }}
+rhel8cis_rule_1_6_4: {{ rhel8cis_rule_1_6_4 }}
 
+# MOTD and messages
 rhel8cis_rule_1_7_1: {{ rhel8cis_rule_1_7_1 }}
 rhel8cis_rule_1_7_2: {{ rhel8cis_rule_1_7_2 }}
 rhel8cis_rule_1_7_3: {{ rhel8cis_rule_1_7_3 }}
@@ -103,19 +121,25 @@ rhel8cis_rule_1_7_4: {{ rhel8cis_rule_1_7_4 }}
 rhel8cis_rule_1_7_5: {{ rhel8cis_rule_1_7_5 }}
 rhel8cis_rule_1_7_6: {{ rhel8cis_rule_1_7_6 }}
 
+# Gnome desktop
 rhel8cis_rule_1_8_1: {{ rhel8cis_rule_1_8_1 }}
 rhel8cis_rule_1_8_2: {{ rhel8cis_rule_1_8_2 }}
 rhel8cis_rule_1_8_3: {{ rhel8cis_rule_1_8_3 }}
 rhel8cis_rule_1_8_4: {{ rhel8cis_rule_1_8_4 }}
 rhel8cis_rule_1_8_5: {{ rhel8cis_rule_1_8_5 }}
+rhel8cis_rule_1_8_6: {{ rhel8cis_rule_1_8_6 }}
+rhel8cis_rule_1_8_7: {{ rhel8cis_rule_1_8_7 }}
+rhel8cis_rule_1_8_8: {{ rhel8cis_rule_1_8_8 }}
+rhel8cis_rule_1_8_9: {{ rhel8cis_rule_1_8_9 }}
+rhel8cis_rule_1_8_10: {{ rhel8cis_rule_1_8_10 }}
 
-rhel8cis_rule_1_9: {{ rhel8cis_rule_1_9 }}
-rhel8cis_rule_1_10: {{ rhel8cis_rule_1_10 }}
-
-# section 2 rules
+# Section 2 rules
+# time sync
 rhel8cis_rule_2_1_1: {{ rhel8cis_rule_2_1_1 }}
 rhel8cis_rule_2_1_2: {{ rhel8cis_rule_2_1_2 }}
+rhel8cis_rule_2_1_3: {{ rhel8cis_rule_2_1_3 }}
 
+# Server services
 rhel8cis_rule_2_2_1: {{ rhel8cis_rule_2_2_1 }}
 rhel8cis_rule_2_2_2: {{ rhel8cis_rule_2_2_2 }}
 rhel8cis_rule_2_2_3: {{ rhel8cis_rule_2_2_3 }}
@@ -136,25 +160,29 @@ rhel8cis_rule_2_2_17: {{ rhel8cis_rule_2_2_17 }}
 rhel8cis_rule_2_2_18: {{ rhel8cis_rule_2_2_18 }}
 rhel8cis_rule_2_2_19: {{ rhel8cis_rule_2_2_19 }}
 rhel8cis_rule_2_2_20: {{ rhel8cis_rule_2_2_20 }}
+rhel8cis_rule_2_2_21: {{ rhel8cis_rule_2_2_21 }}
+rhel8cis_rule_2_2_22: {{ rhel8cis_rule_2_2_22 }}
 
+# Client services
 rhel8cis_rule_2_3_1: {{ rhel8cis_rule_2_3_1 }}
 rhel8cis_rule_2_3_2: {{ rhel8cis_rule_2_3_2 }}
 rhel8cis_rule_2_3_3: {{ rhel8cis_rule_2_3_3 }}
 rhel8cis_rule_2_3_4: {{ rhel8cis_rule_2_3_4 }}
 rhel8cis_rule_2_3_5: {{ rhel8cis_rule_2_3_5 }}
-rhel8cis_rule_2_3_6: {{ rhel8cis_rule_2_3_6 }}
-
-rhel8cis_rule_2_4: {{ rhel8cis_rule_2_4 }}
 
 # Section 3 rules
+# network connectivity wifi/bluetooth/ipv6
 rhel8cis_rule_3_1_1: {{ rhel8cis_rule_3_1_1 }}
 rhel8cis_rule_3_1_2: {{ rhel8cis_rule_3_1_2 }}
 rhel8cis_rule_3_1_3: {{ rhel8cis_rule_3_1_3 }}
-rhel8cis_rule_3_1_4: {{ rhel8cis_rule_3_1_4 }}
 
+# Network Kernel module
 rhel8cis_rule_3_2_1: {{ rhel8cis_rule_3_2_1 }}
 rhel8cis_rule_3_2_2: {{ rhel8cis_rule_3_2_2 }}
+rhel8cis_rule_3_2_3: {{ rhel8cis_rule_3_2_3 }}
+rhel8cis_rule_3_2_4: {{ rhel8cis_rule_3_2_4 }}
 
+# Network Kernel Params
 rhel8cis_rule_3_3_1: {{ rhel8cis_rule_3_3_1 }}
 rhel8cis_rule_3_3_2: {{ rhel8cis_rule_3_3_2 }}
 rhel8cis_rule_3_3_3: {{ rhel8cis_rule_3_3_3 }}
@@ -164,161 +192,206 @@ rhel8cis_rule_3_3_6: {{ rhel8cis_rule_3_3_6 }}
 rhel8cis_rule_3_3_7: {{ rhel8cis_rule_3_3_7 }}
 rhel8cis_rule_3_3_8: {{ rhel8cis_rule_3_3_8 }}
 rhel8cis_rule_3_3_9: {{ rhel8cis_rule_3_3_9 }}
+rhel8cis_rule_3_3_10: {{ rhel8cis_rule_3_3_10 }}
+rhel8cis_rule_3_3_11: {{ rhel8cis_rule_3_3_11 }}
 
+# Firewall
 rhel8cis_rule_3_4_1_1: {{ rhel8cis_rule_3_4_1_1 }}
 rhel8cis_rule_3_4_1_2: {{ rhel8cis_rule_3_4_1_2 }}
-rhel8cis_rule_3_4_1_3: {{ rhel8cis_rule_3_4_1_3 }}
-rhel8cis_rule_3_4_1_4: {{ rhel8cis_rule_3_4_1_4 }}
-rhel8cis_rule_3_4_1_5: {{ rhel8cis_rule_3_4_1_5 }}
-rhel8cis_rule_3_4_1_6: {{ rhel8cis_rule_3_4_1_6 }}
-rhel8cis_rule_3_4_1_7: {{ rhel8cis_rule_3_4_1_7 }}
 
+# Firewall rules
 rhel8cis_rule_3_4_2_1: {{ rhel8cis_rule_3_4_2_1 }}
 rhel8cis_rule_3_4_2_2: {{ rhel8cis_rule_3_4_2_2 }}
 rhel8cis_rule_3_4_2_3: {{ rhel8cis_rule_3_4_2_3 }}
 rhel8cis_rule_3_4_2_4: {{ rhel8cis_rule_3_4_2_4 }}
 rhel8cis_rule_3_4_2_5: {{ rhel8cis_rule_3_4_2_5 }}
-rhel8cis_rule_3_4_2_6: {{ rhel8cis_rule_3_4_2_6 }}
-rhel8cis_rule_3_4_2_7: {{ rhel8cis_rule_3_4_2_7 }}
-rhel8cis_rule_3_4_2_8: {{ rhel8cis_rule_3_4_2_8 }}
-rhel8cis_rule_3_4_2_9: {{ rhel8cis_rule_3_4_2_9 }}
-rhel8cis_rule_3_4_2_10: {{ rhel8cis_rule_3_4_2_10 }}
-rhel8cis_rule_3_4_2_11: {{ rhel8cis_rule_3_4_2_11 }}
 
-rhel8cis_rule_3_4_3_1_1: {{ rhel8cis_rule_3_4_3_1_1 }}
-rhel8cis_rule_3_4_3_1_2: {{ rhel8cis_rule_3_4_3_1_2 }}
-rhel8cis_rule_3_4_3_1_3: {{ rhel8cis_rule_3_4_3_1_3 }}
-
-rhel8cis_rule_3_4_3_2_1: {{ rhel8cis_rule_3_4_3_2_1 }}
-rhel8cis_rule_3_4_3_2_2: {{ rhel8cis_rule_3_4_3_2_2 }}
-rhel8cis_rule_3_4_3_2_3: {{ rhel8cis_rule_3_4_3_2_3 }}
-rhel8cis_rule_3_4_3_2_4: {{ rhel8cis_rule_3_4_3_2_4 }}
-rhel8cis_rule_3_4_3_2_5: {{ rhel8cis_rule_3_4_3_2_5 }}
-rhel8cis_rule_3_4_3_2_6: {{ rhel8cis_rule_3_4_3_2_6 }}
-
-rhel8cis_rule_3_4_3_3_1: {{ rhel8cis_rule_3_4_3_3_1 }}
-rhel8cis_rule_3_4_3_3_2: {{ rhel8cis_rule_3_4_3_3_2 }}
-rhel8cis_rule_3_4_3_3_3: {{ rhel8cis_rule_3_4_3_3_3 }}
-rhel8cis_rule_3_4_3_3_4: {{ rhel8cis_rule_3_4_3_3_4 }}
-rhel8cis_rule_3_4_3_3_5: {{ rhel8cis_rule_3_4_3_3_5 }}
-rhel8cis_rule_3_4_3_3_6: {{ rhel8cis_rule_3_4_3_3_6 }}
-
-# Section 4 rules
+##
+## Section 4 rules
+##
+# cron
 rhel8cis_rule_4_1_1_1: {{ rhel8cis_rule_4_1_1_1 }}
 rhel8cis_rule_4_1_1_2: {{ rhel8cis_rule_4_1_1_2 }}
 rhel8cis_rule_4_1_1_3: {{ rhel8cis_rule_4_1_1_3 }}
 rhel8cis_rule_4_1_1_4: {{ rhel8cis_rule_4_1_1_4 }}
+rhel8cis_rule_4_1_1_5: {{ rhel8cis_rule_4_1_1_5 }}
+rhel8cis_rule_4_1_1_6: {{ rhel8cis_rule_4_1_1_6 }}
+rhel8cis_rule_4_1_1_7: {{ rhel8cis_rule_4_1_1_7 }}
+rhel8cis_rule_4_1_1_8: {{ rhel8cis_rule_4_1_1_8 }}
 
+# at
 rhel8cis_rule_4_1_2_1: {{ rhel8cis_rule_4_1_2_1 }}
-rhel8cis_rule_4_1_2_2: {{ rhel8cis_rule_4_1_2_2 }}
-rhel8cis_rule_4_1_2_3: {{ rhel8cis_rule_4_1_2_3 }}
 
-rhel8cis_rule_4_1_3_1: {{ rhel8cis_rule_4_1_3_1 }}
-rhel8cis_rule_4_1_3_2: {{ rhel8cis_rule_4_1_3_2 }}
-rhel8cis_rule_4_1_3_3: {{ rhel8cis_rule_4_1_3_3 }}
-rhel8cis_rule_4_1_3_4: {{ rhel8cis_rule_4_1_3_4 }}
-rhel8cis_rule_4_1_3_5: {{ rhel8cis_rule_4_1_3_5 }}
-rhel8cis_rule_4_1_3_6: {{ rhel8cis_rule_4_1_3_6 }}
-rhel8cis_rule_4_1_3_7: {{ rhel8cis_rule_4_1_3_7 }}
-rhel8cis_rule_4_1_3_8: {{ rhel8cis_rule_4_1_3_8 }}
-rhel8cis_rule_4_1_3_9: {{ rhel8cis_rule_4_1_3_9 }}
-rhel8cis_rule_4_1_3_10: {{ rhel8cis_rule_4_1_3_10 }}
-rhel8cis_rule_4_1_3_11: {{ rhel8cis_rule_4_1_3_11 }}
-rhel8cis_rule_4_1_3_12: {{ rhel8cis_rule_4_1_3_12 }}
-rhel8cis_rule_4_1_3_13: {{ rhel8cis_rule_4_1_3_13 }}
-rhel8cis_rule_4_1_3_14: {{ rhel8cis_rule_4_1_3_14 }}
-rhel8cis_rule_4_1_3_15: {{ rhel8cis_rule_4_1_3_15 }}
-rhel8cis_rule_4_1_3_16: {{ rhel8cis_rule_4_1_3_16 }}
-rhel8cis_rule_4_1_3_17: {{ rhel8cis_rule_4_1_3_17 }}
-rhel8cis_rule_4_1_3_18: {{ rhel8cis_rule_4_1_3_18 }}
-rhel8cis_rule_4_1_3_19: {{ rhel8cis_rule_4_1_3_19 }}
-rhel8cis_rule_4_1_3_20: {{ rhel8cis_rule_4_1_3_20 }}
-rhel8cis_rule_4_1_3_21: {{ rhel8cis_rule_4_1_3_21 }}
-
-rhel8cis_rule_4_2_1_1: {{ rhel8cis_rule_4_2_1_1 }}
-rhel8cis_rule_4_2_1_2: {{ rhel8cis_rule_4_2_1_2 }}
-rhel8cis_rule_4_2_1_3: {{ rhel8cis_rule_4_2_1_3 }}
-rhel8cis_rule_4_2_1_4: {{ rhel8cis_rule_4_2_1_4 }}
-rhel8cis_rule_4_2_1_5: {{ rhel8cis_rule_4_2_1_5 }}
-rhel8cis_rule_4_2_1_6: {{ rhel8cis_rule_4_2_1_6 }}
-rhel8cis_rule_4_2_1_7: {{ rhel8cis_rule_4_2_1_7 }}
-
-rhel8cis_rule_4_2_2_1_1: {{ rhel8cis_rule_4_2_2_1_1 }}
-rhel8cis_rule_4_2_2_1_2: {{ rhel8cis_rule_4_2_2_1_2 }}
-rhel8cis_rule_4_2_2_1_3: {{ rhel8cis_rule_4_2_2_1_3 }}
-rhel8cis_rule_4_2_2_1_4: {{ rhel8cis_rule_4_2_2_1_4 }}
-
-rhel8cis_rule_4_2_2_2: {{ rhel8cis_rule_4_2_2_2 }}
-rhel8cis_rule_4_2_2_3: {{ rhel8cis_rule_4_2_2_3 }}
-rhel8cis_rule_4_2_2_4: {{ rhel8cis_rule_4_2_2_4 }}
-rhel8cis_rule_4_2_2_5: {{ rhel8cis_rule_4_2_2_5 }}
-rhel8cis_rule_4_2_2_6: {{ rhel8cis_rule_4_2_2_6 }}
-rhel8cis_rule_4_2_2_7: {{ rhel8cis_rule_4_2_2_7 }}
-
+# sshd
+rhel8cis_rule_4_2_1: {{ rhel8cis_rule_4_2_1 }}
+rhel8cis_rule_4_2_2: {{ rhel8cis_rule_4_2_2 }}
 rhel8cis_rule_4_2_3: {{ rhel8cis_rule_4_2_3 }}
+rhel8cis_rule_4_2_4: {{ rhel8cis_rule_4_2_4 }}
+rhel8cis_rule_4_2_5: {{ rhel8cis_rule_4_2_5 }}
+rhel8cis_rule_4_2_6: {{ rhel8cis_rule_4_2_6 }}
+rhel8cis_rule_4_2_7: {{ rhel8cis_rule_4_2_7 }}
+rhel8cis_rule_4_2_8: {{ rhel8cis_rule_4_2_8 }}
+rhel8cis_rule_4_2_9: {{ rhel8cis_rule_4_2_9 }}
+rhel8cis_rule_4_2_10: {{ rhel8cis_rule_4_2_10 }}
+rhel8cis_rule_4_2_12: {{ rhel8cis_rule_4_2_12 }}
+rhel8cis_rule_4_2_11: {{ rhel8cis_rule_4_2_11 }}
+rhel8cis_rule_4_2_13: {{ rhel8cis_rule_4_2_13 }}
+rhel8cis_rule_4_2_14: {{ rhel8cis_rule_4_2_14 }}
+rhel8cis_rule_4_2_15: {{ rhel8cis_rule_4_2_15 }}
+rhel8cis_rule_4_2_16: {{ rhel8cis_rule_4_2_16 }}
+rhel8cis_rule_4_2_17: {{ rhel8cis_rule_4_2_17 }}
+rhel8cis_rule_4_2_18: {{ rhel8cis_rule_4_2_18 }}
+rhel8cis_rule_4_2_19: {{ rhel8cis_rule_4_2_19 }}
+rhel8cis_rule_4_2_20: {{ rhel8cis_rule_4_2_20 }}
+rhel8cis_rule_4_2_21: {{ rhel8cis_rule_4_2_21 }}
+rhel8cis_rule_4_2_22: {{ rhel8cis_rule_4_2_22 }}
 
-rhel8cis_rule_4_3: {{ rhel8cis_rule_4_3 }}
+# sudo
+rhel8cis_rule_4_3_1: {{ rhel8cis_rule_4_3_1 }}
+rhel8cis_rule_4_3_2: {{ rhel8cis_rule_4_3_2 }}
+rhel8cis_rule_4_3_3: {{ rhel8cis_rule_4_3_3 }}
+rhel8cis_rule_4_3_4: {{ rhel8cis_rule_4_3_4 }}
+rhel8cis_rule_4_3_5: {{ rhel8cis_rule_4_3_5 }}
+rhel8cis_rule_4_3_6: {{ rhel8cis_rule_4_3_6 }}
+rhel8cis_rule_4_3_7: {{ rhel8cis_rule_4_3_7 }}
 
-# Section 5
-rhel8cis_rule_5_1_1: {{ rhel8cis_rule_5_1_1 }}
-rhel8cis_rule_5_1_2: {{ rhel8cis_rule_5_1_2 }}
+# Pam software pkgs
+rhel8cis_rule_4_4_1_1: {{ rhel8cis_rule_4_4_1_1 }}
+rhel8cis_rule_4_4_1_2: {{ rhel8cis_rule_4_4_1_2 }}
+
+# authselect
+rhel8cis_rule_4_4_2_1: {{ rhel8cis_rule_4_4_2_1 }}
+rhel8cis_rule_4_4_2_2: {{ rhel8cis_rule_4_4_2_2 }}
+rhel8cis_rule_4_4_2_3: {{ rhel8cis_rule_4_4_2_3 }}
+rhel8cis_rule_4_4_2_4: {{ rhel8cis_rule_4_4_2_4 }}
+rhel8cis_rule_4_4_2_5: {{ rhel8cis_rule_4_4_2_5 }}
+
+# pam faillock
+rhel8cis_rule_4_4_3_1_1: {{ rhel8cis_rule_4_4_3_1_1 }}
+rhel8cis_rule_4_4_3_1_2: {{ rhel8cis_rule_4_4_3_1_2 }}
+rhel8cis_rule_4_4_3_1_3: {{ rhel8cis_rule_4_4_3_1_3 }}
+
+# pam pwquality
+rhel8cis_rule_4_4_3_2_1: {{ rhel8cis_rule_4_4_3_2_1 }}
+rhel8cis_rule_4_4_3_2_2: {{ rhel8cis_rule_4_4_3_2_2 }}
+rhel8cis_rule_4_4_3_2_3: {{ rhel8cis_rule_4_4_3_2_3 }}
+rhel8cis_rule_4_4_3_2_4: {{ rhel8cis_rule_4_4_3_2_4 }}
+rhel8cis_rule_4_4_3_2_5: {{ rhel8cis_rule_4_4_3_2_5 }}
+rhel8cis_rule_4_4_3_2_6: {{ rhel8cis_rule_4_4_3_2_6 }}
+rhel8cis_rule_4_4_3_2_7: {{ rhel8cis_rule_4_4_3_2_7 }}
+
+# pam pwhistory
+rhel8cis_rule_4_4_3_3_1: {{ rhel8cis_rule_4_4_3_3_1 }}
+rhel8cis_rule_4_4_3_3_2: {{ rhel8cis_rule_4_4_3_3_2 }}
+rhel8cis_rule_4_4_3_3_3: {{ rhel8cis_rule_4_4_3_3_3 }}
+
+# pam pam_unix
+rhel8cis_rule_4_4_3_4_1: {{ rhel8cis_rule_4_4_3_4_1 }}
+rhel8cis_rule_4_4_3_4_2: {{ rhel8cis_rule_4_4_3_4_2 }}
+rhel8cis_rule_4_4_3_4_3: {{ rhel8cis_rule_4_4_3_4_3 }}
+rhel8cis_rule_4_4_3_4_4: {{ rhel8cis_rule_4_4_3_4_4 }}
+
+# Shadow user settings
+rhel8cis_rule_4_5_1_1: {{ rhel8cis_rule_4_5_1_1 }}
+rhel8cis_rule_4_5_1_2: {{ rhel8cis_rule_4_5_1_2 }}
+rhel8cis_rule_4_5_1_3: {{ rhel8cis_rule_4_5_1_3 }}
+rhel8cis_rule_4_5_1_4: {{ rhel8cis_rule_4_5_1_4 }}
+rhel8cis_rule_4_5_1_5: {{ rhel8cis_rule_4_5_1_5 }}
+
+# root and sys accts and env
+rhel8cis_rule_4_5_2_1: {{ rhel8cis_rule_4_5_2_1 }}
+rhel8cis_rule_4_5_2_2: {{ rhel8cis_rule_4_5_2_2 }}
+rhel8cis_rule_4_5_2_3: {{ rhel8cis_rule_4_5_2_3 }}
+rhel8cis_rule_4_5_2_4: {{ rhel8cis_rule_4_5_2_4 }}
+rhel8cis_rule_4_5_2_5: {{ rhel8cis_rule_4_5_2_5 }}
+
+# User enviroment
+rhel8cis_rule_4_5_3_1: {{ rhel8cis_rule_4_5_3_1 }}
+rhel8cis_rule_4_5_3_2: {{ rhel8cis_rule_4_5_3_2 }}
+rhel8cis_rule_4_5_3_3: {{ rhel8cis_rule_4_5_3_3 }}
+
+##
+## Section 5 rules
+##
+
+# Rsyslog
+rhel8cis_rule_5_1_1_1: {{ rhel8cis_rule_5_1_1_1 }}
+rhel8cis_rule_5_1_1_2: {{ rhel8cis_rule_5_1_1_2 }}
+rhel8cis_rule_5_1_1_3: {{ rhel8cis_rule_5_1_1_3 }}
+rhel8cis_rule_5_1_1_4: {{ rhel8cis_rule_5_1_1_4 }}
+rhel8cis_rule_5_1_1_5: {{ rhel8cis_rule_5_1_1_5 }}
+rhel8cis_rule_5_1_1_6: {{ rhel8cis_rule_5_1_1_6 }}
+rhel8cis_rule_5_1_1_7: {{ rhel8cis_rule_5_1_1_7 }}
+
+# Journald
+rhel8cis_rule_5_1_2_1_1: {{ rhel8cis_rule_5_1_2_1_1 }}
+rhel8cis_rule_5_1_2_1_2: {{ rhel8cis_rule_5_1_2_1_2 }}
+rhel8cis_rule_5_1_2_1_3: {{ rhel8cis_rule_5_1_2_1_3 }}
+rhel8cis_rule_5_1_2_1_4: {{ rhel8cis_rule_5_1_2_1_4 }}
+rhel8cis_rule_5_1_2_2: {{ rhel8cis_rule_5_1_2_2 }}
+rhel8cis_rule_5_1_2_3: {{ rhel8cis_rule_5_1_2_3 }}
+rhel8cis_rule_5_1_2_4: {{ rhel8cis_rule_5_1_2_4 }}
+rhel8cis_rule_5_1_2_5: {{ rhel8cis_rule_5_1_2_5 }}
+rhel8cis_rule_5_1_2_6: {{ rhel8cis_rule_5_1_2_6 }}
 rhel8cis_rule_5_1_3: {{ rhel8cis_rule_5_1_3 }}
 rhel8cis_rule_5_1_4: {{ rhel8cis_rule_5_1_4 }}
-rhel8cis_rule_5_1_5: {{ rhel8cis_rule_5_1_5 }}
-rhel8cis_rule_5_1_6: {{ rhel8cis_rule_5_1_6 }}
-rhel8cis_rule_5_1_7: {{ rhel8cis_rule_5_1_7 }}
-rhel8cis_rule_5_1_8: {{ rhel8cis_rule_5_1_8 }}
-rhel8cis_rule_5_1_9: {{ rhel8cis_rule_5_1_9 }}
 
-rhel8cis_rule_5_2_1: {{ rhel8cis_rule_5_2_1 }}
-rhel8cis_rule_5_2_2: {{ rhel8cis_rule_5_2_2 }}
-rhel8cis_rule_5_2_3: {{ rhel8cis_rule_5_2_3 }}
-rhel8cis_rule_5_2_4: {{ rhel8cis_rule_5_2_4 }}
-rhel8cis_rule_5_2_5: {{ rhel8cis_rule_5_2_5 }}
-rhel8cis_rule_5_2_6: {{ rhel8cis_rule_5_2_6 }}
-rhel8cis_rule_5_2_7: {{ rhel8cis_rule_5_2_7 }}
-rhel8cis_rule_5_2_8: {{ rhel8cis_rule_5_2_8 }}
-rhel8cis_rule_5_2_9: {{ rhel8cis_rule_5_2_9 }}
-rhel8cis_rule_5_2_10: {{ rhel8cis_rule_5_2_10 }}
-rhel8cis_rule_5_2_11: {{ rhel8cis_rule_5_2_11 }}
-rhel8cis_rule_5_2_12: {{ rhel8cis_rule_5_2_12 }}
-rhel8cis_rule_5_2_13: {{ rhel8cis_rule_5_2_13 }}
-rhel8cis_rule_5_2_14: {{ rhel8cis_rule_5_2_14 }}
-rhel8cis_rule_5_2_15: {{ rhel8cis_rule_5_2_15 }}
-rhel8cis_rule_5_2_16: {{ rhel8cis_rule_5_2_16 }}
-rhel8cis_rule_5_2_17: {{ rhel8cis_rule_5_2_17 }}
-rhel8cis_rule_5_2_18: {{ rhel8cis_rule_5_2_18 }}
-rhel8cis_rule_5_2_19: {{ rhel8cis_rule_5_2_19 }}
-rhel8cis_rule_5_2_20: {{ rhel8cis_rule_5_2_20 }}
+# Auditd
+rhel8cis_rule_5_2_1_1: {{ rhel8cis_rule_5_2_1_1 }}
+rhel8cis_rule_5_2_1_2: {{ rhel8cis_rule_5_2_1_2 }}
+rhel8cis_rule_5_2_1_3: {{ rhel8cis_rule_5_2_1_3 }}
+rhel8cis_rule_5_2_1_4: {{ rhel8cis_rule_5_2_1_4 }}
+rhel8cis_rule_5_2_2_1: {{ rhel8cis_rule_5_2_2_1 }}
+rhel8cis_rule_5_2_2_2: {{ rhel8cis_rule_5_2_2_2 }}
+rhel8cis_rule_5_2_2_3: {{ rhel8cis_rule_5_2_2_3 }}
+rhel8cis_rule_5_2_2_4: {{ rhel8cis_rule_5_2_2_4 }}
+
+# auditd rules
+rhel8cis_rule_5_2_3_1: {{ rhel8cis_rule_5_2_3_1 }}
+rhel8cis_rule_5_2_3_2: {{ rhel8cis_rule_5_2_3_2 }}
+rhel8cis_rule_5_2_3_3: {{ rhel8cis_rule_5_2_3_3 }}
+rhel8cis_rule_5_2_3_4: {{ rhel8cis_rule_5_2_3_4 }}
+rhel8cis_rule_5_2_3_5: {{ rhel8cis_rule_5_2_3_5 }}
+rhel8cis_rule_5_2_3_6: {{ rhel8cis_rule_5_2_3_6 }}
+rhel8cis_rule_5_2_3_7: {{ rhel8cis_rule_5_2_3_7 }}
+rhel8cis_rule_5_2_3_8: {{ rhel8cis_rule_5_2_3_8 }}
+rhel8cis_rule_5_2_3_9: {{ rhel8cis_rule_5_2_3_9 }}
+rhel8cis_rule_5_2_3_10: {{ rhel8cis_rule_5_2_3_10 }}
+rhel8cis_rule_5_2_3_11: {{ rhel8cis_rule_5_2_3_11 }}
+rhel8cis_rule_5_2_3_12: {{ rhel8cis_rule_5_2_3_12 }}
+rhel8cis_rule_5_2_3_13: {{ rhel8cis_rule_5_2_3_13 }}
+rhel8cis_rule_5_2_3_14: {{ rhel8cis_rule_5_2_3_14 }}
+rhel8cis_rule_5_2_3_15: {{ rhel8cis_rule_5_2_3_15 }}
+rhel8cis_rule_5_2_3_16: {{ rhel8cis_rule_5_2_3_16 }}
+rhel8cis_rule_5_2_3_17: {{ rhel8cis_rule_5_2_3_17 }}
+rhel8cis_rule_5_2_3_18: {{ rhel8cis_rule_5_2_3_18 }}
+rhel8cis_rule_5_2_3_19: {{ rhel8cis_rule_5_2_3_19 }}
+rhel8cis_rule_5_2_3_20: {{ rhel8cis_rule_5_2_3_20 }}
+rhel8cis_rule_5_2_3_21: {{ rhel8cis_rule_5_2_3_21 }}
+
+# auditd log perms
+rhel8cis_rule_5_2_4_1: {{ rhel8cis_rule_5_2_4_1 }}
+rhel8cis_rule_5_2_4_2: {{ rhel8cis_rule_5_2_4_2 }}
+rhel8cis_rule_5_2_4_3: {{ rhel8cis_rule_5_2_4_3 }}
+rhel8cis_rule_5_2_4_4: {{ rhel8cis_rule_5_2_4_4 }}
+rhel8cis_rule_5_2_4_5: {{ rhel8cis_rule_5_2_4_5 }}
+rhel8cis_rule_5_2_4_6: {{ rhel8cis_rule_5_2_4_6 }}
+rhel8cis_rule_5_2_4_7: {{ rhel8cis_rule_5_2_4_7 }}
+rhel8cis_rule_5_2_4_8: {{ rhel8cis_rule_5_2_4_8 }}
+rhel8cis_rule_5_2_4_9: {{ rhel8cis_rule_5_2_4_9 }}
+rhel8cis_rule_5_2_4_10: {{ rhel8cis_rule_5_2_4_10 }}
+
+# AIDE
 
 rhel8cis_rule_5_3_1: {{ rhel8cis_rule_5_3_1 }}
 rhel8cis_rule_5_3_2: {{ rhel8cis_rule_5_3_2 }}
 rhel8cis_rule_5_3_3: {{ rhel8cis_rule_5_3_3 }}
-rhel8cis_rule_5_3_4: {{ rhel8cis_rule_5_3_4 }}
-rhel8cis_rule_5_3_5: {{ rhel8cis_rule_5_3_5 }}
-rhel8cis_rule_5_3_6: {{ rhel8cis_rule_5_3_6 }}
-rhel8cis_rule_5_3_7: {{ rhel8cis_rule_5_3_7 }}
 
-rhel8cis_rule_5_4_1: {{ rhel8cis_rule_5_4_1 }}
-rhel8cis_rule_5_4_2: {{ rhel8cis_rule_5_4_2 }}
+##
+## Section 6 rules
+##
 
-rhel8cis_rule_5_5_1: {{ rhel8cis_rule_5_5_1 }}
-rhel8cis_rule_5_5_2: {{ rhel8cis_rule_5_5_2 }}
-rhel8cis_rule_5_5_3: {{ rhel8cis_rule_5_5_3 }}
-rhel8cis_rule_5_5_4: {{ rhel8cis_rule_5_5_4 }}
-
-rhel8cis_rule_5_6_1_1: {{ rhel8cis_rule_5_6_1_1 }}
-rhel8cis_rule_5_6_1_2: {{ rhel8cis_rule_5_6_1_2 }}
-rhel8cis_rule_5_6_1_3: {{ rhel8cis_rule_5_6_1_3 }}
-rhel8cis_rule_5_6_1_4: {{ rhel8cis_rule_5_6_1_4 }}
-rhel8cis_rule_5_6_1_5: {{ rhel8cis_rule_5_6_1_5 }}
-
-rhel8cis_rule_5_6_2: {{ rhel8cis_rule_5_6_2 }}
-rhel8cis_rule_5_6_3: {{ rhel8cis_rule_5_6_3 }}
-rhel8cis_rule_5_6_4: {{ rhel8cis_rule_5_6_4 }}
-rhel8cis_rule_5_6_5: {{ rhel8cis_rule_5_6_5 }}
-
-# Section 6
+# System file perms
 rhel8cis_rule_6_1_1: {{ rhel8cis_rule_6_1_1 }}
 rhel8cis_rule_6_1_2: {{ rhel8cis_rule_6_1_2 }}
 rhel8cis_rule_6_1_3: {{ rhel8cis_rule_6_1_3 }}
@@ -333,8 +406,8 @@ rhel8cis_rule_6_1_11: {{ rhel8cis_rule_6_1_11 }}
 rhel8cis_rule_6_1_12: {{ rhel8cis_rule_6_1_12 }}
 rhel8cis_rule_6_1_13: {{ rhel8cis_rule_6_1_13 }}
 rhel8cis_rule_6_1_14: {{ rhel8cis_rule_6_1_14 }}
-rhel8cis_rule_6_1_15: {{ rhel8cis_rule_6_1_15 }}
 
+# local and usergroup
 rhel8cis_rule_6_2_1: {{ rhel8cis_rule_6_2_1 }}
 rhel8cis_rule_6_2_2: {{ rhel8cis_rule_6_2_2 }}
 rhel8cis_rule_6_2_3: {{ rhel8cis_rule_6_2_3 }}
@@ -346,159 +419,329 @@ rhel8cis_rule_6_2_8: {{ rhel8cis_rule_6_2_8 }}
 rhel8cis_rule_6_2_9: {{ rhel8cis_rule_6_2_9 }}
 rhel8cis_rule_6_2_10: {{ rhel8cis_rule_6_2_10 }}
 rhel8cis_rule_6_2_11: {{ rhel8cis_rule_6_2_11 }}
-rhel8cis_rule_6_2_12: {{ rhel8cis_rule_6_2_12 }}
-rhel8cis_rule_6_2_13: {{ rhel8cis_rule_6_2_13 }}
-rhel8cis_rule_6_2_14: {{ rhel8cis_rule_6_2_14 }}
-rhel8cis_rule_6_2_15: {{ rhel8cis_rule_6_2_15 }}
-rhel8cis_rule_6_2_16: {{ rhel8cis_rule_6_2_16 }}
 
-# Service configuration booleans set true to keep service
-rhel8cis_avahi_server: {{ rhel8cis_avahi_server }}
-rhel8cis_cups_server: {{ rhel8cis_cups_server }}
-rhel8cis_dhcp_server: {{ rhel8cis_dhcp_server }}
-rhel8cis_dns_server: {{ rhel8cis_dns_server }}
-rhel8cis_dovecot_cyrus_server: {{ rhel8cis_dovecot_cyrus_server }}
-rhel8cis_ftp_server: {{ rhel8cis_ftp_server }}
-rhel8cis_httpd_server: {{ rhel8cis_httpd_server }}
-rhel8cis_is_mail_server: {{ rhel8cis_is_mail_server }}
-rhel8cis_net_snmp_server: {{ rhel8cis_net_snmp_server }}
-rhel8cis_nfs_server: {{ rhel8cis_nfs_server }}
-rhel8cis_nginx_server: {{ rhel8cis_nginx_server }}
-rhel8cis_nis_server: {{ rhel8cis_nis_server }}
-rhel8cis_rpc_server: {{ rhel8cis_rpc_server }}
-rhel8cis_rsync_server: {{ rhel8cis_rsync_server }}
-rhel8cis_samba_server: {{ rhel8cis_samba_server }}
-rhel8cis_squid_server: {{ rhel8cis_squid_server }}
-rhel8cis_telnet_server: {{ rhel8cis_telnet_server }}
-rhel8cis_tftp_server: {{ rhel8cis_tftp_server }}
-rhel8cis_vsftpd_server: {{ rhel8cis_vsftpd_server }}
+##
+## Section 1 vars
+##
+# 1.1.2.2
+# 1.1.2.3
+# 1.1.2.4
+# These settings go into the /etc/fstab file for the /tmp mount settings
+# The value must contain nosuid,nodev,noexec to conform to CIS standards
+# rhel8cis_tmp_tmpfs_settings: "defaults,rw,nosuid,nodev,noexec,relatime 0 0"
+# If set true uses the tmp.mount service else using fstab configuration
+rhel8cis_tmp_svc: {{ rhel8cis_tmp_svc }}
 
-rhel8cis_allow_autofs: {{ rhel8cis_allow_autofs }}
+# 1.2 patch system
+rhel8cis_apply_installed_kernel_limit: {{ rhel8cis_apply_installed_kernel_limit }}
+rhel8cis_installed_kernel_limit: {{ rhel8cis_installed_kernel_limit }}
 
-# client services
-rhel8cis_openldap_clients_required: {{ rhel8cis_openldap_clients_required }}
-rhel8cis_telnet_required: {{ rhel8cis_telnet_required }}
-rhel8cis_talk_required: {{ rhel8cis_talk_required }}
-rhel8cis_rsh_required: {{ rhel8cis_rsh_required }}
-rhel8cis_ypbind_required: {{ rhel8cis_ypbind_required }}
-rhel8cis_tftp_required: {{ rhel8cis_tftp_client }}
-
-# AIDE
-rhel8cis_config_aide: {{ rhel8cis_config_aide }}
-
-# aide setup via - cron, timer
-rhel8_aide_scan: cron
-
-# AIDE cron settings
-rhel8cis_aide_cron:
-  cron_user: {{ rhel8cis_aide_cron.cron_user }}
-  cron_file: '{{ rhel8cis_aide_cron.cron_file }}'
-  aide_job: ' {{ rhel8cis_aide_cron.aide_job }}'
-  aide_minute: '{{ rhel8cis_aide_cron.aide_minute }}'
-  aide_hour: '{{ rhel8cis_aide_cron.aide_hour }}'
-  aide_day: '{{ rhel8cis_aide_cron.aide_day }}'
-  aide_month: '{{ rhel8cis_aide_cron.aide_month }}'
-  aide_weekday: '{{ rhel8cis_aide_cron.aide_weekday }}'
-
-# 1.5.1 Bootloader password
-rhel8cis_bootloader_password: {{ rhel8cis_bootloader_password_hash }}
+# 1.3 Bootloader password
+rhel8cis_bootloader_password_hash: {{ rhel8cis_bootloader_password_hash }}
+rhel8cis_bootloader_password: {{ rhel8cis_bootloader_password }}
 rhel8cis_set_boot_pass: {{ rhel8cis_set_boot_pass }}
+rhel8cis_boot_path: {{ rhel8cis_boot_path }}
 
-# 1.10 crypto
+# 1.5 SELinux policy
+rhel8cis_selinux_pol: {{ rhel8cis_selinux_policy }}
+
+# 1.6 Set crypto policy (LEGACY, DEFAULT, FUTURE, FIPS)
 rhel8cis_crypto_policy: {{ rhel8cis_crypto_policy }}
+# Added module to be allowed as default setting (Allowed options in vars/main.yml)
+rhel8cis_crypto_policy_module: {{ rhel8cis_crypto_policy_module }}
 
+# 1.7
 # Warning Banner Content (issue, issue.net, motd)
 rhel8cis_warning_banner: {{ rhel8cis_warning_banner }}
 # End Banner
 
-# Set to 'true' if X Windows is needed in your environment
-rhel8cis_xwindows_required: {{ rhel8cis_xwindows_required }}
-
+# 1.8 Gnome Desktop
 # Whether or not to run tasks related to auditing/patching the desktop environment
 rhel8cis_gui: {{ rhel8cis_gui }}
+rhel8cis_dconf_db_name: {{ rhel8cis_dconf_db_name }}
+rhel8cis_screensaver_idle_delay: {{ rhel8cis_screensaver_idle_delay }}  # Set max value for idle-delay in seconds (between 1 and 900)
+rhel8cis_screensaver_lock_delay: {{ rhel8cis_screensaver_lock_delay }}  # Set max value for lock-delay in seconds (between 0 and 5)
+##
+## Section 2 vars
+##
+# 2.1.1 Time Synchronization - Either chrony or ntp
+rhel8cis_time_synchronization: {{ rhel8cis_time_synchronization }}
 
-# xinetd required
-rhel8cis_xinetd_required: {{ rhel8cis_xinetd_required }}
+# Time Synchronization servers - used in template file chrony.conf.j2
+rhel8cis_time_synchronization_servers:
+{% for server in rhel8cis_time_synchronization_servers %}
+    - {{ server }}
+{% endfor %}
 
-# IPv6 required
-rhel8cis_ipv6_required: {{ rhel8cis_ipv6_required }}
+rhel8cis_chrony_server_options: "{{ rhel8cis_chrony_server_options }}"
+rhel8cis_ntp_server_options: "{{ rhel8cis_ntp_server_options }}"
+
+# Service configuration
+# Options are
+# true to leave installed if exists not changes take place
+# false - this removes the package
+# mask - if a dependancy for product so cannot be removed
+# Server Services
+rhel8cis_autofs_services: {{ rhel8cis_autofs_services }}
+rhel8cis_autofs_mask: {{ rhel8cis_autofs_mask }}
+rhel8cis_avahi_server: {{ rhel8cis_avahi_server }}
+rhel8cis_avahi_mask: {{ rhel8cis_avahi_mask }}
+rhel8cis_dhcp_server: {{ rhel8cis_dhcp_server }}
+rhel8cis_dhcp_mask: {{ rhel8cis_dhcp_mask }}
+rhel8cis_dns_server: {{ rhel8cis_dns_server }}
+rhel8cis_dns_mask: {{ rhel8cis_dns_mask }}
+rhel8cis_dnsmasq_server: {{ rhel8cis_dnsmasq_server }}
+rhel8cis_dnsmasq_mask: {{ rhel8cis_dnsmasq_mask }}
+rhel8cis_samba_server: {{ rhel8cis_samba_server }}
+rhel8cis_samba_mask: {{ rhel8cis_samba_mask }}
+rhel8cis_ftp_server: {{ rhel8cis_ftp_server }}
+rhel8cis_ftp_mask: {{ rhel8cis_ftp_mask }}
+rhel8cis_message_server: {{ rhel8cis_message_server }}  # This is for messaging dovecot and cyrus-imap
+rhel8cis_message_mask: {{ rhel8cis_message_mask }}
+rhel8cis_nfs_server: {{ rhel8cis_nfs_server }}
+rhel8cis_nfs_mask: {{ rhel8cis_nfs_mask }}
+rhel8cis_nis_server: {{ rhel8cis_nis_server }}  # set to mask if nis client required
+rhel8cis_nis_mask: {{ rhel8cis_nis_mask }}
+rhel8cis_print_server: {{ rhel8cis_print_server }}  # replaces cups
+rhel8cis_print_mask: {{ rhel8cis_print_mask }}
+rhel8cis_rpc_server: {{ rhel8cis_rpc_server }}
+rhel8cis_rpc_mask: {{ rhel8cis_rpc_mask }}
+rhel8cis_rsync_server: {{ rhel8cis_rsync_server }}
+rhel8cis_rsync_mask: {{ rhel8cis_rsync_mask }}
+rhel8cis_net_snmp_server: {{ rhel8cis_net_snmp_server }}
+rhel8cis_net_snmp_mask: {{ rhel8cis_net_snmp_mask }}
+rhel8cis_telnet_server: {{ rhel8cis_telnet_server }}
+rhel8cis_telnet_mask: {{ rhel8cis_telnet_mask }}
+rhel8cis_tftp_server: {{ rhel8cis_tftp_server }}
+rhel8cis_tftp_mask: {{ rhel8cis_tftp_mask }}
+rhel8cis_squid_server: {{ rhel8cis_squid_server }}
+rhel8cis_squid_mask: {{ rhel8cis_squid_mask }}
+rhel8cis_httpd_server: {{ rhel8cis_httpd_server }}
+rhel8cis_httpd_mask: {{ rhel8cis_httpd_mask }}
+rhel8cis_nginx_server: {{ rhel8cis_nginx_server }}
+rhel8cis_nginx_mask: {{ rhel8cis_nginx_mask }}
+rhel8cis_xinetd_server: {{ rhel8cis_xinetd_server }}
+rhel8cis_xinetd_mask: {{ rhel8cis_xinetd_mask }}
+rhel8cis_xwindow_server: {{ rhel8cis_xwindow_server }}  # will remove mask not an option
+rhel8cis_is_mail_server: {{ rhel8cis_is_mail_server }}
+
+# Client Services
+rhel8cis_ftp_client: {{ rhel8cis_ftp_client }}
+rhel8cis_openldap_clients_required: {{ rhel8cis_openldap_clients_required }}
+rhel8cis_ypbind_required: {{ rhel8cis_ypbind_required }}  # Same package as NIS server
+rhel8cis_telnet_required: {{ rhel8cis_telnet_required }}
+rhel8cis_tftp_client: {{ rhel8cis_tftp_client }}
+
+##
+## Section 3 vars
+##
+
+rhel8cis_bluetooth_service: {{ rhel8cis_bluetooth_service }}
+rhel8cis_bluetooth_mask: {{ rhel8cis_bluetooth_mask }}
 
 # System network parameters (host only OR host and router)
 rhel8cis_is_router: {{ rhel8cis_is_router }}
 
-# Time Synchronization
-rhel8cis_time_synchronization: {{ rhel8cis_time_synchronization }}
+# IPv6 required
+rhel8cis_ipv6_required: {{ rhel8cis_ipv6_required }}
 
-rhel8cis_sudolog_location: {{ rhel8cis_sudolog_location }}
+rhel8cis_ipv6_sysctl_force: {{ rhel8cis_ipv6_sysctl_force }}
 
+##  Optional - Understand the impact of making the following two control to true
+# By default, we do not disable IPv6 on localhost, as it's important for multiple
+# components.  If you want to disable it anyway, change the following
+# value to true refer https://access.redhat.com/solutions/8709
+# this changes sysctl and /etc/hosts
+# requires reboot
+rhel8cis_ipv6_disable_localhost: {{ rhel8cis_ipv6_disable_localhost }}
+# disable ipv6 for sshd
+rhel8cis_ipv6_sshd_disable: {{ rhel8cis_ipv6_sshd_disable }}
+# disable chrony on ipv6
+rhel8cis_ipv6_chrony_disable: {{ rhel8cis_ipv6_chrony_disable }}
+
+# Set to 'true' if X Windows is needed in your environment
+rhel8cis_xwindows_required: {{ rhel8cis_xwindows_required }}
+
+## Section3 vars
+
+# default location for the sysctl overrides.
+rhel8cis_sysctl_file: {{ rhel8cis_sysctl_file }}
+
+# Firewall Service - either firewalld or nftables
 rhel8cis_firewall: {{ rhel8cis_firewall }}
-#rhel8cis_firewall: iptables
-rhel8cis_default_firewall_zone: {{ rhel8cis_default_zone }}
-rhel8cis_firewall_interface:
-- enp0s3
-- enp0s8
 
-rhel8cis_firewall_services: {% for svc in rhel8cis_firewall_services %}{{ svc }} {% endfor %}
+rhel8cis_default_zone: {{ rhel8cis_default_zone }}
 
-### Section 4
-## auditd settings
-rhel8cis_auditd:
-  space_left_action: {{ rhel8cis_auditd.space_left_action}}
-  action_mail_acct: {{ rhel8cis_auditd.action_mail_acct }}
-  admin_space_left_action: {{ rhel8cis_auditd.admin_space_left_action }}
-  max_log_file_action: {{ rhel8cis_auditd.max_log_file_action }}
-  auditd_backlog_limit: {{ rhel8cis_audit_back_log_limit }}
+rhel8cis_nft_tables_autonewtable: {{ rhel8cis_nft_tables_autonewtable }}
+rhel8cis_nft_tables_tablename: {{ rhel8cis_nft_tables_tablename }}
 
-## syslog
-rhel8cis_syslog: {{ rhel8cis_syslog }}
+# 3.4.2.6 Set nftables new chain create
+rhel8cis_nft_tables_autochaincreate: {{ rhel8cis_nft_tables_autochaincreate }}
 
-### Section 5
-rhel8cis_sshd_limited: false
-#Note the following to understand precedence and layout
-rhel8cis_sshd_access:
-  AllowUser:
-  AllowGroup:
-  DenyUser:
-  DenyGroup:
+#######
+## Section4 vars
+######
+## If using the allow/deny user groups options
+rhel8cis_sshd_limited: {{ rhel8cis_sshd_limited }}
+rhel8cis_sshd:
+    clientalivecountmax: {{ rhel8cis_sshd.clientalivecountmax }}
+    clientaliveinterval: {{ rhel8cis_sshd.clientaliveinterval }}
+    logingracetime: {{ rhel8cis_sshd.logingracetime }}
+    loglevel: {{ rhel8cis_sshd.loglevel }}
+    macs: '{{ rhel8cis_sshd.macs }}'
+    maxauthtries: {{ rhel8cis_sshd.maxauthtries }}
+    maxsessions: {{ rhel8cis_sshd.maxsessions }}
+    maxstartups: '{{ rhel8cis_sshd.maxstartups }}'
+    ciphers: '{{ rhel8cis_sshd.ciphers }}'
+    kex: '{{ rhel8cis_sshd.kex }}'
+{% if rhel8cis_sshd_limited %}
+    # WARNING: make sure you understand the precedence when working with these values!!
+    {% if rhel8cis_sshd.allowusers is defined %}
+    # allowusers: '{{ rhel8cis_sshd.allowusers }}'
+    {% endif %}
+    {% if rhel8cis_sshd.allowgroups is defined %}
+    # allowgroups: '{{ rhel8cis_sshd.allowgroups }}'
+    {% endif %}
+    {% if rhel8cis_sshd.denyusers is defined %}
+    # denyusers: '{{ rhel8cis_sshd.denyusers }}'
+    {% endif %}
+    {% if rhel8cis_sshd.denygroups is defined %}
+    # denygroups: '{{ rhel8cis_sshd.denygroups }}'
+    {% endif %}
+{% endif %}
 
-rhel8cis_ssh_aliveinterval: "300"
-rhel8cis_ssh_countmax: "3"
+# 4.3. sudo
+rhel8cis_sudolog_location: "{{ rhel8cis_sudolog_location }}"
+rhel8cis_sudo_timestamp_timeout: {{ rhel8cis_sudo_timestamp_timeout }}
 
 ## PAM
-rhel8cis_pam_password:
-  minlen: {{ rhel8cis_pam_password.minlen }}
-  minclass: {{ rhel8cis_pam_password.minclass }}
-rhel8cis_pam_passwd_retry: "3"
-# faillock or tally2
-rhel8cis_accountlock: faillock
-
-## note this is to skip tests
-skip_rhel8cis_pam_passwd_auth: true
-skip_rhel8cis_pam_system_auth: true
-
-# choose one of below
-rhel8cis_pwhistory_so: "14"
-rhel8cis_unix_so: false
-rhel8cis_passwd_remember: "5"
-
-# logins.def password settings
-rhel8cis_pass:
-  max_days: {{ rhel8cis_pass.max_days }}
-  min_days: {{ rhel8cis_pass.min_days }}
-  warn_age: {{ rhel8cis_pass.warn_age }}
-
-# 5.3.1/5.3.2 Custon authselect profile settings. Settings in place now will fail, they are place holders from the control example
-rhel8cis_authselect:
-  custom_profile_name: {{ rhel8cis_authselect['custom_profile_name'] }}
-  default_file_to_copy: {{ rhel8cis_authselect.default_file_to_copy }}
-  options: {{ rhel8cis_authselect.options }}
-
-# 5.3.1 Enable automation to creat custom profile settings, using the setings above
+# 4.4.2.x
+rhel8cis_authselect_pkg_update: {{ rhel8cis_authselect_pkg_update }}  # NOTE the risks if system is using SSSD or using ipa-client-install
+rhel8cis_allow_authselect_updates: {{ rhel8cis_allow_authselect_updates }}
 rhel8cis_authselect_custom_profile_create: {{ rhel8cis_authselect_custom_profile_create }}
-
-# 5.3.2 Enable automation to select custom profile options, using the settings above
 rhel8cis_authselect_custom_profile_select: {{ rhel8cis_authselect_custom_profile_select }}
+rhel8cis_authselect:
+    custom_profile_name: '{{ rhel8cis_authselect.custom_profile_name }}'
+    default_file_to_copy: "{{ rhel8cis_authselect.default_file_to_copy }}"
+    options: {{ rhel8cis_authselect }}
 
-# 5.7
-rhel8cis_sugroup: {{ rhel8cis_sugroup| default('wheel') }}
-rhel8cis_sugroup_users: {{ rhel8cis_sugroup_users }}
+rhel8cis_pam_faillock:
+    attempts: {{ rhel8cis_pam_faillock.attempts }}
+    deny: {{ rhel8cis_pam_faillock.deny }}
+    interval: {{ rhel8cis_pam_faillock.interval }}
+    unlock_time: {{ rhel8cis_pam_faillock.unlock_time }}
+    root_unlock_time: {{ rhel8cis_pam_faillock.root_unlock_time }}
+    # Choose options below for root options
+    root_option: {{ rhel8cis_pam_faillock.root_option }}
+
+rhel8cis_pam_pwquality:
+    difok: {{ rhel8cis_pam_pwquality.difok }}
+    maxrepeat: {{ rhel8cis_pam_pwquality.maxrepeat }}
+    maxseq: {{ rhel8cis_pam_pwquality.maxseq }}
+    minlen: {{ rhel8cis_pam_pwquality.minlen }}
+    minclass: {{ rhel8cis_pam_pwquality.minclass }}
+
+rhel8cis_pam_pwhistory:
+    remember: {{ rhel8cis_pam_pwhistory }}
+
+rhel8cis_pam_pwhash: {{ rhel8cis_pam_pwhash }}
+
+rhel8cis_pass:
+    inactive: {{ rhel8cis_pass.inactive }}
+    max_days: {{ rhel8cis_pass.max_days }}
+    min_days: {{ rhel8cis_pass.min_days }}
+    warn_age: {{ rhel8cis_pass.warn_age }}
+
+rhel8cis_root_umask: {{ rhel8cis_root_umask }}  # 0027 or more restrictive
+
+rhel8cis_shell_session_timeout:
+    file: {{ rhel8cis_shell_session_timeout.file }}
+    timeout: {{ rhel8cis_shell_session_timeout.timeout }}
+
+# 5.3.7
+rhel8cis_sugroup: {{ rhel8cis_sugroup }}
+
+# wheel users list
+rhel8cis_sugroup_users: "{{ rhel8cis_sugroup_users }}"
+
+rhel8cis_inactivelock:
+    lock_days: {{ rhel8cis_inactivelock.lock_days }}
+
+# 5.6.1.5 Allow ansible to expire password for account with a last changed date in the future. False will just display users in violation, true will expire those users passwords
+rhel8cis_futurepwchgdate_autofix: {{ rhel8cis_futurepwchgdate_autofix }}
+
+rhel8uid_uid_start: {{ rhel8uid_uid_start }}
+rhel8uid_uid_stop: {{ rhel8uid_uid_stop }}
+
+## Section5 vars
+
+## Preferred method of logging
+## Whether rsyslog or journald preferred method for local logging
+rhel8cis_syslog: {{ rhel8cis_syslog }}
+rhel8cis_rsyslog_ansiblemanaged: {{ rhel8cis_rsyslog_ansiblemanaged }}
+# Set if system is the log server
+rhel8cis_system_is_log_server: {{ rhel8cis_system_is_log_server }}
+
+#### remote and destination log server name
+rhel8cis_remote_log_server: {{ rhel8cis_remote_log_server }}
+rhel8cis_remote_log_host: {{ rhel8cis_remote_log_host }}
+rhel8cis_remote_log_port: {{ rhel8cis_remote_log_port }}
+rhel8cis_remote_log_protocol: {{ rhel8cis_remote_log_protocol }}
+rhel8cis_remote_log_retrycount: {{ rhel8cis_remote_log_retrycount }}
+rhel8cis_remote_log_queuesize: {{ rhel8cis_remote_log_queuesize }}
+
+update_audit_template: {{ update_audit_template }}
+
+rhel8cis_auditd:
+    disk_error_action: {{ rhel8cis_auditd.disk_error_action }}
+    disk_full_action: {{ rhel8cis_auditd.disk_full_action }}
+    action_mail_acct: {{ rhel8cis_auditd.action_mail_acct }}
+    space_left_action: {{ rhel8cis_auditd.space_left_action }}
+    admin_space_left_action: {{ rhel8cis_auditd.admin_space_left_action }}
+    max_log_file_action: {{ rhel8cis_auditd.max_log_file_action }}
+
+rhel8cis_logrotate: {{ rhel8cis_logrotate }}
+
+## Journald
+# rhel8cis_journal_upload_url is the ip address to upload the journal entries to
+rhel8cis_journal_upload_url: {{ rhel8cis_journal_upload_url }}
+# The paths below have the default paths/files, but allow user to create custom paths/filenames
+rhel8cis_journal_upload_serverkeyfile: {{ rhel8cis_journal_upload_serverkeyfile }}
+rhel8cis_journal_servercertificatefile: {{ rhel8cis_journal_servercertificatefile }}
+rhel8cis_journal_trustedcertificatefile: {{ rhel8cis_journal_trustedcertificatefile }}
+
+# The variables below related to journald, please set these to your site specific values
+# rhel8cis_journald_systemmaxuse is the max amount of disk space the logs will use
+rhel8cis_journald_systemmaxuse: {{ rhel8cis_journald_systemmaxuse }}
+# rhel8cis_journald_systemkeepfree is the amount of disk space to keep free
+rhel8cis_journald_systemkeepfree: {{ rhel8cis_journald_systemkeepfree }}
+rhel8cis_journald_runtimemaxuse: {{ rhel8cis_journald_runtimemaxuse }}
+rhel8cis_journald_runtimekeepfree: {{ rhel8cis_journald_runtimekeepfree }}
+# rhel8cis_journald_MaxFileSec is how long in time to keep log files. Values are Xm, Xh, Xday, Xweek, Xmonth, Xyear, for example 2week is two weeks
+rhel8cis_journald_maxfilesec: {{ rhel8cis_journald_maxfilesec }}
+
+# logrotate configuration
+# change to true if you wish to change logrotate.d conf files
+allow_logrotate_conf_umask_updates: {{ allow_logrotate_conf_umask_updates }}
+
+# The audit_back_log_limit value should never be below 8192
+rhel8cis_audit_back_log_limit: {{ rhel8cis_audit_back_log_limit }}
+
+# The max_log_file parameter should be based on your sites policy
+rhel8cis_max_log_file_size: {{ rhel8cis_max_log_file_size }}
+
+## AIDE
+rhel8cis_aide_scan: {{ rhel8cis_aide_scan }}
+rhel8cis_config_aide: {{ rhel8cis_config_aide }}
+# AIDE cron settings
+rhel8cis_aide_cron:
+    cron_user: '{{ rhel8cis_aide_cron.cron_user }}'
+    cron_file: '{{ rhel8cis_aide_cron.cron_file }}'
+    aide_job: '{{ rhel8cis_aide_cron.aide_job }}'
+    aide_minute: '{{ rhel8cis_aide_cron.aide_minute }}'
+    aide_hour: '{{ rhel8cis_aide_cron.aide_hour }}'
+    aide_day: '{{ rhel8cis_aide_cron.aide_day }}'
+    aide_month: '{{ rhel8cis_aide_cron.aide_month }}'
+    aide_weekday: '{{ rhel8cis_aide_cron.aide_weekday }}'
+
+## Section6 vars

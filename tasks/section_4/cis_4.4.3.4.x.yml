@@ -1,0 +1,174 @@
+---
+
+- name: "4.4.3.4.1 | PATCH | Ensure pam_unix does not include nullok"
+  when:
+      - rhel8cis_rule_4_4_3_4_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - pam
+      - rule_4.4.3.4.1
+  block:
+      - name: "4.4.3.4.1 | PATCH | Ensure pam_unix does not include nullok | capture state"
+        ansible.builtin.shell: grep -P -- '^\h*(auth|account|password|session)\h+(requisite|required|sufficient)\h+pam_unix\.so\b' /etc/pam.d/{password,system}-auth | grep -P -- '\bnullok\b'
+        changed_when: false
+        failed_when: discovered_pam_nullok.rc not in [ 0, 1 ]
+        register: discovered_pam_nullok
+
+      - name: "4.4.3.4.1 | PATCH | Ensure pam_unix does not include nullok | pam_files"
+        when:
+            - discovered_pam_nullok.stdout | length > 0
+            - not rhel8cis_allow_authselect_updates
+        ansible.builtin.replace:
+            path: "/etc/pam.d/{{ item }}-auth"
+            regexp: nullok
+            replace: ''
+        loop:
+            - password
+            - system
+
+      - name: "4.4.3.4.1 | PATCH | Ensure pam_unix does not include nullok | update authselect"
+        when:
+            - discovered_pam_nullok is defined
+            - discovered_pam_nullok.stdout | length > 0
+            - rhel8cis_allow_authselect_updates
+        notify: Update_authselect
+        ansible.builtin.shell: authselect enable-feature without-nullok
+
+- name: "4.4.3.4.2 | PATCH | Ensure pam_unix does not include remember"
+  when:
+      - rhel8cis_rule_4_4_3_4_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_IA-5
+      - pam
+      - rule_4.4.3.4.2
+  block:
+      - name: "4.4.3.4.2 | AUDIT | Ensure pam_unix does not include remember | capture state"
+        ansible.builtin.shell: grep -Pi '^\h*password\h+([^#\n\r]+\h+)?pam_unix\.so\b' /etc/pam.d/{password,system}-auth | grep -P '\bremember=\d\b'
+        changed_when: false
+        failed_when: discovered_pam_remember.rc not in [ 0, 1 ]
+        register: discovered_pam_remember
+
+      - name: "4.4.3.4.2 | PATCH | Ensure pam_unix does not include remember | pam_files"
+        when:
+            - discovered_pam_remember is defined
+            - discovered_pam_remember | length > 0
+            - not rhel8cis_allow_authselect_updates
+        ansible.builtin.replace:
+            path: "/etc/pam.d/{{ item }}-auth"
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)remember\s*=\s*\d+(.*$)
+            replace: \1\2\3
+        loop:
+            - password
+            - system
+
+      - name: "4.4.3.4.2 | PATCH | Ensure pam_unix does not include remember | authconfig_files"
+        when:
+            - discovered_pam_remember is defined
+            - discovered_pam_remember | length > 0
+            - rhel8cis_allow_authselect_updates
+            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+        notify: Update_authselect
+        ansible.builtin.replace:
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)remember\s*=\s*\d+(.*$)
+            replace: \1\2\3
+        loop:
+            - password
+            - system
+
+- name: "4.4.3.4.3 | PATCH | Ensure pam_unix includes a strong password hashing algorithm"
+  when:
+      - rhel8cis_rule_4_4_3_4_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_IA-5
+      - pam
+      - rule_4.4.3.4.3
+  block:
+      - name: "4.4.3.4.3 | AUDIT | Ensure pam_unix includes a strong password hashing algorithm | capture state"
+        ansible.builtin.shell: grep -P -- '^\h*password\h+([^#\n\r]+)\h+pam_unix\.so\h+([^#\n\r]+\h+)?(sha512|yescrypt)\b' /etc/pam.d/{password,system}-auth | grep -v {{ rhel8cis_pam_pwhash }}
+        changed_when: false
+        failed_when: discovered_hash_state.rc not in [ 0, 1 ]
+        register: discovered_hash_state
+
+      - name: "4.4.3.4.3 | PATCH | Ensure pam_unix includes a strong password hashing algorithm | pam_files"
+        when:
+            - discovered_hash_state is defined
+            - discovered_hash_state | length > 0
+        ansible.builtin.replace:
+            path: "/etc/pam.d/{{ item }}-auth"
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)(sha512|yescrypt)(.*$)
+            replace: \1\2\4 {{ rhel8cis_pam_pwhash }}
+        loop:
+            - password
+            - system
+
+      - name: "4.4.3.4.3 | PATCH | Ensure pam_unix includes a strong password hashing algorithm | authselect_files"
+        when:
+            - discovered_hash_state is defined
+            - discovered_hash_state | length > 0
+            - rhel8cis_allow_authselect_updates
+            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+        notify: Update_authselect
+        ansible.builtin.replace:
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)(sha512|yescrypt)\s*=\s*\d+(.*$)
+            replace: \1\2\4 {{ rhel8cis_pam_pwhash }}
+        loop:
+            - password
+            - system
+
+- name: "4.4.3.4.4 | PATCH | Ensure pam_unix includes use_authtok"
+  when:
+      - rhel8cis_rule_4_4_3_4_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_IA-5
+      - pam
+      - rule_4.4.3.4.4
+  block:
+      - name: "4.4.3.4.4 | PATCH | Ensure pam_unix includes use_authtok | capture state"
+        ansible.builtin.shell: grep -P -- '^\h*password\h+([^#\n\r]+)\h+pam_unix\.so\h+([^#\n\r]+\h+)?use_authtok\b' /etc/pam.d/{password,system}-auth | grep -v use_authtok
+        changed_when: false
+        failed_when: discovered_pam_authtok.rc not in [ 0, 1 ]
+        register: discovered_pam_authtok
+
+      - name: "4.4.3.4.4 | PATCH | Ensure pam_unix includes use_authtok | pam_files"
+        when:
+            - discovered_pam_authtok is defined
+            - discovered_pam_authtok | length > 0
+        ansible.builtin.replace:
+            path: "/etc/pam.d/{{ item }}-auth"
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)\s+use_authtok(.*$)
+            replace: \1\3\4 use_authtok
+        loop:
+            - password
+            - system
+
+      - name: "4.4.3.4.4 | PATCH | Ensure password same consecutive characters is configured | authselect_files"
+        when:
+            - discovered_pam_authtok is defined
+            - discovered_pam_authtok | length > 0
+            - rhel8cis_allow_authselect_updates
+            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+        notify: Update_authselect
+        ansible.builtin.replace:
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)\s+use_authtok(.*$)
+            replace: \1\3\4 use_authtok
+        loop:
+            - password
+            - system

@@ -1,12 +1,6 @@
 ---
 
 - name: "1.7.1 | PATCH | Ensure message of the day is configured properly"
-  ansible.builtin.template:
-      src: etc/motd.j2
-      dest: /etc/motd
-      owner: root
-      group: root
-      mode: 0644
   when:
       - rhel8cis_rule_1_7_1
   tags:
@@ -15,15 +9,18 @@
       - automated
       - banner
       - patch
+      - NIST800-53R5_CM-1
+      - NIST800-53R5_CM-3
+      - NIST800-53R5_CM-6
       - rule_1.7.1
-
-- name: "1.7.2 | PATCH | Ensure local login warning banner is configured properly"
   ansible.builtin.template:
-      src: etc/issue.j2
-      dest: /etc/issue
+      src: etc/motd.j2
+      dest: /etc/motd
       owner: root
       group: root
-      mode: 0644
+      mode: go-rx
+
+- name: "1.7.2 | PATCH | Ensure local login warning banner is configured properly"
   when:
       - rhel8cis_rule_1_7_2
   tags:
@@ -31,15 +28,18 @@
       - level1-workstation
       - automated
       - patch
+      - NIST800-53R5_CM-1
+      - NIST800-53R5_CM-3
+      - NIST800-53R5_CM-6
       - rule_1.7.2
-
-- name: "1.7.3 | PATCH | Ensure remote login warning banner is configured properly"
   ansible.builtin.template:
-      src: etc/issue.net.j2
-      dest: /etc/issue.net
+      src: etc/issue.j2
+      dest: /etc/issue
       owner: root
       group: root
-      mode: 0644
+      mode: go-rx
+
+- name: "1.7.3 | PATCH | Ensure remote login warning banner is configured properly"
   when:
       - rhel8cis_rule_1_7_3
   tags:
@@ -48,15 +48,18 @@
       - automated
       - banner
       - patch
+      - NIST800-53R5_CM-1
+      - NIST800-53R5_CM-3
+      - NIST800-53R5_CM-6
       - rule_1.7.3
-
-- name: "1.7.4 | PATCH | Ensure permissions on /etc/motd are configured"
-  ansible.builtin.file:
-      path: /etc/motd
-      state: file
+  ansible.builtin.template:
+      src: etc/issue.net.j2
+      dest: /etc/issue.net
       owner: root
       group: root
-      mode: 0644
+      mode: go-wx
+
+- name: "1.7.4 | PATCH | Ensure access to /etc/motd is configured"
   when:
       - rhel8cis_rule_1_7_4
   tags:
@@ -65,15 +68,17 @@
       - automated
       - perms
       - patch
+      - NIST800-53R5_AC-3
+      - NIST800-53R5_MP-2
       - rule_1.7.4
-
-- name: "1.7.5 | PATCH | Ensure permissions on /etc/issue are configured"
   ansible.builtin.file:
-      path: /etc/issue
+      path: /etc/motd
       state: file
       owner: root
       group: root
-      mode: 0644
+      mode: go-wx
+
+- name: "1.7.5 | PATCH | Ensure access to /etc/issue is configured"
   when:
       - rhel8cis_rule_1_7_5
   tags:
@@ -82,15 +87,17 @@
       - automated
       - perms
       - patch
+      - NIST800-53R5_AC-3
+      - NIST800-53R5_MP-2
       - rule_1.7.5
-
-- name: "1.7.6 | PATCH | Ensure permissions on /etc/issue.net are configured"
   ansible.builtin.file:
-      path: /etc/issue.net
+      path: /etc/issue
       state: file
       owner: root
       group: root
-      mode: 0644
+      mode: go-wx
+
+- name: "1.7.6 | PATCH | Ensure access to /etc/issue.net is configured"
   when:
       - rhel8cis_rule_1_7_6
   tags:
@@ -99,4 +106,12 @@
       - automated
       - perms
       - patch
+      - NIST800-53R5_AC-3
+      - NIST800-53R5_MP-2
       - rule_1.7.6
+  ansible.builtin.file:
+      path: /etc/issue.net
+      state: file
+      owner: root
+      group: root
+      mode: go-wx

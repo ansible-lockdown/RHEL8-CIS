@@ -1,0 +1,196 @@
+---
+
+- name: "4.5.1.1 | PATCH | Ensure strong password hashing algorithm is configured"
+  when:
+      - rhel8cis_rule_4_5_1_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_IA-5
+      - shadow_suite
+      - rule_4.5.1.1
+  ansible.builtin.lineinfile:
+      path: /etc/libuser.conf
+      regexp: ^(#|)\s*crypt_style\s*=\s*
+      line: "crypt_style = {{ rhel8cis_pam_pwhash }}"
+
+- name: "4.5.1.2 | PATCH | Ensure password expiration is 365 days or less"
+  when:
+      - rhel8cis_rule_4_5_1_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_CM-1
+      - NIST800-53R5_CM-2
+      - NIST800-53R5_CM-6
+      - NIST800-53R5_CM-7
+      - NIST800-53R5_IA-5
+      - shadow_suite
+      - rule_4.5.1.2
+  block:
+      - name: "4.5.1.2 | AUDIT | Ensure password expiration is 365 days or less | Capture accounts more than 365"
+        ansible.builtin.shell: "grep -E '^[^:]+:[^!*]' /etc/shadow | awk -F':' '$5>{{ rhel8cis_pass['max_days'] }} { print $1 }'"
+        changed_when: false
+        failed_when: discovered_pass_max_expire.rc not in [ 0, 1 ]
+        register: discovered_pass_max_expire
+
+      - name: "4.5.1.2 | PATCH | Ensure password expiration is 365 days or less | update login.defs"
+        ansible.builtin.lineinfile:
+            path: /etc/login.defs
+            regexp: '^PASS_MAX_DAYS'
+            line: "PASS_MAX_DAYS {{ rhel8cis_pass['max_days'] }}"
+
+      - name: "4.5.1.2 | PATCH | Ensure password expiration is 365 days or less | Ensure all accounts set to 365"
+        ansible.builtin.user:
+            name: "{{ item }}"
+            password_expire_max: "{{ rhel8cis_pass['max_days'] }}"
+        loop: "{{ discovered_pass_max_expire.stdout_lines | default([]) }}"
+        when:
+            - rhel8cis_set_max_expiry
+            - item not in rhel8cis_user_skip_list
+
+      - name: "4.5.1.2 | PATCH | Ensure password expiration is 365 days or less | Warning"
+        block:
+            - name: "4.5.1.2 | PATCH | Ensure password expiration is 365 days or less | Output list if not set to change"
+              ansible.builtin.debug:
+                  msg: |
+                    "Warning!! The following account are set beyond the expected expiration date:
+                     {{ rhel8cis_pass_max_expire.stdout_lines | default([]) }}"
+
+            - name: "4.5.1.2 | PATCH | Ensure password expiration is 365 days or less | set warning fact"
+              ansible.builtin.import_tasks: warning_facts.yml
+              vars:
+                  warn_control_id: '4.5.1.2'
+        when:
+            - discovered_pass_max_expire is defined
+            - discovered_pass_max_expire.stdout | length > 0
+            - not rhel8cis_set_max_expiry
+
+- name: "4.5.1.3 | PATCH | Ensure password expiration warning days is 7 or more"
+  when:
+      - rhel8cis_rule_4_5_1_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_CM-1
+      - NIST800-53R5_CM-2
+      - NIST800-53R5_CM-6
+      - NIST800-53R5_CM-7
+      - NIST800-53R5_IA-5
+      - shadow_suite
+      - rule_4.5.1.3
+  block:
+      - name: "4.5.1.3 | PATCH | Ensure password expiration warning days is 7 or more | set login.defs"
+        ansible.builtin.lineinfile:
+            path: /etc/login.defs
+            regexp: ^(#|)\s*PASS_WARN_AGE\s+\d+
+            line: "PASS_WARN_AGE {{ rhel8cis_pass['warn_age'] }}"
+
+      - name: "4.5.1.3 | AUDIT | Ensure password expiration warning days is 7 or more | capture users not matching"
+        ansible.builtin.shell: |
+            awk -F: '/^[^:\n\r]+:[^!*xX\n\r]/ {print $1}' /etc/shadow
+        changed_when: false
+        failed_when: discovered_users_warn_days.rc not in [ 0, 1 ]
+        register: discovered_users_warn_days
+
+      - name: "4.5.1.3 | PATCH | Ensure password expiration warning days is 7 or more | change users not matching req"
+        when:
+            - discovered_users_warn_days is defined
+            - discovered_users_warn_days.stdout | length > 0
+        ansible.builtin.shell: chage --warndays {{ rhel8cis_pass['warn_age'] }} {{ item }}
+        loop: "{{ discovered_users_warn_days.stdout_lines }}"
+
+- name: "4.5.1.4 | PATCH | Ensure inactive password lock is 30 days or less"
+  when:
+      - rhel8cis_rule_4_5_1_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - shadow_suite
+      - rule_4.5.1.4
+  block:
+      - name: "4.5.1.4 | AUDIT | Ensure inactive password lock is 30 days or less | capture default state"
+        ansible.builtin.shell: useradd -D | grep INACTIVE
+        changed_when: false
+        failed_when: discovered_users_inactive_def.rc not in [ 0, 1 ]
+        register: discovered_users_inactive_def
+
+      - name: "4.5.1.4 | PATCH | Ensure inactive password lock is 30 days or less | change default"
+        when:
+            - discovered_users_inactive_def is defined
+            - "'30' not in discovered_users_inactive_def.stdout"
+        ansible.builtin.shell: useradd -D -f {{ rhel8cis_pass['inactive'] }}
+
+      - name: "4.5.1.4 | AUDIT | Ensure inactive password lock is 30 days or less | capture users not matching"
+        ansible.builtin.shell: |
+            awk -F: '/^[^#:]+:[^!*:]*:[^:]*:[^:]*:[^:]*:[^:]*:(\s*|-1|3[1-9]|[4-9][0-9]|[1-9][0-9][0-9]+):[^:]*:[^:]*\s*$/ {print $1}' /etc/shadow
+        changed_when: false
+        failed_when: discovered_users_inactive.rc not in [ 0, 1 ]
+        register: discovered_users_inactive
+
+      - name: "4.5.1.4 | PATCH | Ensure inactive password lock is 30 days or less | change users not matching req"
+        when:
+            - discovered_users_inactive is defined
+            - discovered_users_inactive.stdout | length > 0
+        ansible.builtin.shell: chage --inactive {{ rhel8cis_pass['inactive'] }} {{ item }}
+        loop: "{{ discovered_users_inactive.stdout_lines }}"
+
+- name: "4.5.1.5 | PATCH | Ensure all users last password change date is in the past"
+  when:
+      - rhel8cis_rule_4_5_1_5
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - shadow_suite
+      - rule_4.5.1.5
+  vars:
+      warn_control_id: '4.5.1.5'
+  block:
+      - name: "4.5.1.5 | AUDIT | Ensure all users last password change date is in the past | capture default state"
+        ansible.builtin.shell: useradd -D | grep INACTIVE
+        changed_when: false
+        failed_when: discovered_users_inactive_default.rc not in [ 0, 1 ]
+        register: discovered_users_inactive_default
+
+      - name: "4.5.1.5 | PATCH | Ensure all users last password change date is in the past | change default"
+        when:
+            - discovered_users_inactive_default is defined
+            - "'30' not in discovered_users_inactive_default.stdout"
+        ansible.builtin.shell: useradd -D -f {{ rhel8cis_pass['inactive'] }}
+
+      - name: "4.5.1.5 | FACT | Ensure inactive password lock is 30 days or less | set fact days since_epoch"
+        ansible.builtin.set_fact:
+            days_since_epoch: "{{ (ansible_facts['date_time']['epoch']|int)/86400 }}"
+
+      - name: "4.5.1.5 | AUDIT | Ensure inactive password lock is 30 days or less | capture users date in future"
+        ansible.builtin.shell: |
+            awk -F: '{ if ($3 > "{{ days_since_epoch }}") { print $1 }  }' /etc/shadow
+        changed_when: false
+        failed_when: discovered_users_user_future.rc not in [ 0, 1 ]
+        register: discovered_users_user_future
+
+      - name: "4.5.1.5 | WARNING | Ensure inactive password lock is 30 days or less | Warn Users in future"
+        when:
+            - discovered_users_user_future is defined
+            - discovered_users_user_future.stdout | length > 0
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! - The following users have passwords set in the future please investigate"
+                - "{{ discovered_users_user_future.stdout_lines }}"
+
+      - name: "4.5.1.5 | WARNING | Ensure inactive password lock is 30 days or less | Warn Users in future"
+        when:
+            - rhel8cis_users_user_future is defined
+            - rhel8cis_users_user_future.stdout | length > 0
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
