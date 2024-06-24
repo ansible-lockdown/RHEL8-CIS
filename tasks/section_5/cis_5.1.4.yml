@@ -31,7 +31,7 @@
             mode: '0640'
         loop: "{{ discovered_logfiles_flattened }}"
         when:
-            - rhel8cis_5_1_4_logfiles_flattened is defined
+            - discovered_logfiles_flattened is defined
             - item != "/var/log/btmp"
             - item != "/var/log/utmp"
             - item != "/var/log/wtmp"
