@@ -37,6 +37,9 @@ benchmark_version: v3.0.0
 # Whether to skip the reboot
 skip_reboot: true
 
+# Modify behavior of changed_when if reboot is pending and skipped to allow idempotency to succeed
+reboot_warning_changed_when: true
+
 ###
 ### Settings for associated Audit role using Goss
 ###
