@@ -138,7 +138,7 @@
         ansible.builtin.shell: |
             grep -P -- '\b(pam_unix\.so)\b' /etc/authselect/"$(head -1 /etc/authselect/authselect.conf)"/{system,password}-auth
         changed_when: false
-        failed_when: rhel8cis_authselect_pam_unix.rc not in [ 0, 1 ]
+        failed_when: discovered_authselect_pam_unix.rc not in [ 0, 1 ]
         register: discovered_authselect_pam_unix
 
       - name: "4.4.2.5 | PATCH | Ensure pam_unix module is enabled | system-auth"
