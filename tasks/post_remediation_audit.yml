@@ -35,7 +35,7 @@
       - audit_format == "documentation"
   block:
       - name: Post Audit | Capture audit data if documentation format
-        ansible.builtin.shell: "tail -2 /opt/audit_ubuntu2204-CIS-UBUNTU22_1720624848.documentation"
+        ansible.builtin.shell: "tail -2 {{ post_audit_outfile }}"
         register: post_audit_summary
         changed_when: false
 
