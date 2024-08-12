@@ -139,15 +139,11 @@
 - name: Run Section 1 tasks
   when:
       - rhel8cis_section1
-  tags:
-      - rhel8cis_section1
   ansible.builtin.import_tasks:
       file: section_1/main.yml
 
 - name: Run Section 2 tasks
   when:
-      - rhel8cis_section2
-  tags:
       - rhel8cis_section2
   ansible.builtin.import_tasks:
       file: section_2/main.yml
@@ -155,15 +151,11 @@
 - name: Run Section 3 tasks
   when:
       - rhel8cis_section3
-  tags:
-      - rhel8cis_section3
   ansible.builtin.import_tasks:
       file: section_3/main.yml
 
 - name: Run Section 4 tasks
   when:
-      - rhel8cis_section4
-  tags:
       - rhel8cis_section4
   ansible.builtin.import_tasks:
       file: section_4/main.yml
@@ -171,15 +163,11 @@
 - name: run Section 5 tasks
   when:
       - rhel8cis_section5
-  tags:
-      - rhel8cis_section5
   ansible.builtin.import_tasks:
       file: section_5/main.yml
 
 - name: Run Section 6 tasks
   when:
-      - rhel8cis_section6
-  tags:
       - rhel8cis_section6
   ansible.builtin.import_tasks:
       file: section_6/main.yml
