@@ -73,7 +73,7 @@
         ansible.builtin.shell: |
             grep -P -- '\bpam_pwquality\.so\b' /etc/pam.d/{password,system}-auth
         changed_when: false
-        failed_when: rhel8cis_pwquality_enabled.rc not in [ 0, 1 ]
+        failed_when: discovered_pwquality_enabled.rc not in [ 0, 1 ]
         register: discovered_pwquality_enabled
 
       - name: "4.4.2.3 | PATCH | Ensure pam_pwquality module is enabled | system-auth"
@@ -138,7 +138,7 @@
         ansible.builtin.shell: |
             grep -P -- '\b(pam_unix\.so)\b' /etc/authselect/"$(head -1 /etc/authselect/authselect.conf)"/{system,password}-auth
         changed_when: false
-        failed_when: rhel8cis_authselect_pam_unix.rc not in [ 0, 1 ]
+        failed_when: discovered_authselect_pam_unix.rc not in [ 0, 1 ]
         register: discovered_authselect_pam_unix
 
       - name: "4.4.2.5 | PATCH | Ensure pam_unix module is enabled | system-auth"
