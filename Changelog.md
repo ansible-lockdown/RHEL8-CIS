@@ -1,5 +1,16 @@
 # Changes to rhel8CIS
 
+## Benchmark v3.0.0
+
+### 2.1 updates August 2024
+
+new workflow
+audit updates
+authselect rewrite
+thanks to @msachikanta, @fgierlinger, @bantify, @txdavec, @csabapatyi@dirkvdplas, @karlg100 and @devallan for issues and fixes
+now able to run audit on ARM64 although not officially supported by CIS feedback needed
+audit binary update to 0.4.8
+
 ## 2.0 based on CIS 3.0.0
 
 ### This is not an upgrade for CIS v2.0.0 due to the number of changes treat as a new baseline
