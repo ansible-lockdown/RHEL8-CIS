@@ -8,7 +8,7 @@
             audit_pkg_arch_name: AMD64
 
       - name: Pre Audit Setup | Set audit package name | ARM64
-        when: ansible_facts.machine == "arm64"
+        when: ansible_facts.machine == "aarch64"
         ansible.builtin.set_fact:
             audit_pkg_arch_name: ARM64
 
