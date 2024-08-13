@@ -184,14 +184,14 @@
         ansible.builtin.lineinfile:
             path: /etc/security/pwquality.conf
             state: present
-            regexp: '^(#|)\s*maxseq\s*=\s*\d'
-            line: "maxseq = {{ rhel8cis_pam_pwquality['maxseq'] }}"
+            regexp: '^(#|)\s*maxsequence\s*=\s*\d'
+            line: "maxsequence = {{ rhel8cis_pam_pwquality['maxseq'] }}"
 
       - name: "4.4.3.2.5 | PATCH | Ensure password maximum sequential characters is configured | pam_files"
         when: not rhel8cis_allow_authselect_updates
         ansible.builtin.replace:
             path: "/etc/pam.d/{{ item }}-auth"
-            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+maxseq\s*=\s*\S+(.*$)
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+maxsequence\s*=\s*\S+(.*$)
             replace: \1\2\3
         loop:
             - password
@@ -204,7 +204,7 @@
         notify: Update_authselect
         ansible.builtin.replace:
             path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
-            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+maxseq\s*=\s*\S+(.*$)
+            regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+maxsequence\s*=\s*\S+(.*$)
             replace: \1\2\3
         loop:
             - password
