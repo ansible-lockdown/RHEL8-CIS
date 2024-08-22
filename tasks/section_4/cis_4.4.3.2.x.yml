@@ -203,7 +203,7 @@
             - "'example' not in rhel8cis_authselect_custom_profile_name"
         notify: Update_authselect
         ansible.builtin.replace:
-            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/{{ item }}-auth"
             regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+maxsequence\s*=\s*\S+(.*$)
             replace: \1\2\3
         loop:
