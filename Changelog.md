@@ -7,7 +7,7 @@
 new workflow
 audit updates
 authselect rewrite
-thanks to @msachikanta, @fgierlinger, @bantify, @txdavec, @csabapatyi@dirkvdplas, @karlg100 and @devallan for issues and fixes
+thanks to @msachikanta, @fgierlinger, @bantify, @txdavec, @csabapatyi @dirkvdplas, @karlg100 and @devallan for issues and fixes
 now able to run audit on ARM64 although not officially supported by CIS feedback needed
 audit binary update to 0.4.8
 
