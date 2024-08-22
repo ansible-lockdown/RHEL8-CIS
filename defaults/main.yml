@@ -563,7 +563,7 @@ rhel8cis_ntp_server_options: "iburst"
 # mask - if a dependancy for product so cannot be removed
 # Server Services
 rhel8cis_autofs_services: false
-rhel8cis_autofs_mask: true
+rhel8cis_autofs_mask: false
 rhel8cis_avahi_server: false
 rhel8cis_avahi_mask: false
 rhel8cis_dhcp_server: false
@@ -800,7 +800,7 @@ rhel8cis_auditd:
     disk_full_action: halt
     action_mail_acct: root
     space_left_action: email
-    admin_space_left_action: email
+    admin_space_left_action: single
     max_log_file_action: keep_logs
 
 # This can be used to configure other keys in auditd.conf
