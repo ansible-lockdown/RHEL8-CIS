@@ -22,10 +22,10 @@
       - name: "4.4.3.3.1 | PATCH | Ensure password number of changed characters is configured | authselect_files"
         when:
             - rhel8cis_allow_authselect_updates
-            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+            - "'example' not in rhel8cis_authselect_custom_profile_name"
         notify: Update_authselect
         ansible.builtin.replace:
-            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/{{ item }}-auth"
             regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwhistory\.so)(.*)\s+remember\s*=\s*\S+(.*$)
             replace: \1\2\3
         loop:
@@ -64,10 +64,10 @@
       - name: "4.4.3.3.2 | PATCH | Ensure password history is enforced for the root user | authselect_files"
         when:
             - rhel8cis_allow_authselect_updates
-            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+            - "'example' not in rhel8cis_authselect_custom_profile_name"
         notify: Update_authselect
         ansible.builtin.replace:
-            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/{{ item }}-auth"
             regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwhistory\.so)(.*)\s+enforce_for_root(.*$)
             replace: \1\2\3
         loop:
@@ -104,15 +104,12 @@
         when:
             - rhel8cis_allow_authselect_updates
             - discovered_pwhistory_authtok.rc != 0
-        notify: Update_authselect
-        community.general.pamd:
-            name: "{{ item }}-auth"
-            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}"
-            type: password
-            control: requisite
-            module_path: pam_pwhistory.so
-            module_arguments: 'use_authtok'
-            state: updated
+        ansible.builtin.lineinfile:
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/{{ item }}-auth"
+            regexp: ^(\s*password\s+)(requisite|required|sufficient)(\s+pam_unix.so\s)(.*)use_authtok(.*$)
+            line: \1\2\3\4use_authtok\5
+            backrefs: true
         loop:
             - password
             - system
+        notify: Update_authselect

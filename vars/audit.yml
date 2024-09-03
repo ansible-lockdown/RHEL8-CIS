@@ -26,15 +26,16 @@ post_audit_outfile: "{{ audit_log_dir }}/{{ ansible_facts.hostname }}-{{ benchma
 
 ### Audit binary settings ###
 audit_bin_version:
-    release: v0.4.4
-    AMD64_checksum: 'sha256:1c4f54b22fde9d4d5687939abc2606b0660a5d14a98afcd09b04b793d69acdc5'
+    release: v0.4.8
+    AMD64_checksum: 'sha256:85d00b7bba5f175bec95de7dfe1f71f8f25204914aad4c6f03c8457868eb6e2f'
+    ARM64_checksum: 'sha256:bca8c898bfd35b94c51455ece6193c95e2cd7b2b183ac2047b2d76291e73e47d'
 audit_bin_path: /usr/local/bin/
 audit_bin: "{{ audit_bin_path }}goss"
 audit_format: json
 
 audit_vars_path: "{{ audit_conf_dir }}/vars/{{ ansible_facts.hostname }}.yml"
 audit_results: |
-      The{% if not audit_only %} pre remediation{% endif %} audit results are: {{ pre_audit_results}}
+      The{% if not audit_only %} pre remediation{% endif %} audit results are: {{ pre_audit_results }}
       {% if not audit_only %}The post remediation audit results are: {{ post_audit_results }}{% endif %}
 
       Full breakdown can be found in {{ audit_log_dir }}

@@ -32,10 +32,10 @@
       - name: "4.4.3.2.1 | PATCH | Ensure password number of changed characters is configured | authselect_files"
         when:
             - rhel8cis_allow_authselect_updates
-            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+            - "'example' not in rhel8cis_authselect_custom_profile_name"
         notify: Update_authselect
         ansible.builtin.replace:
-            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/{{ item }}-auth"
             regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+difok\s*=\s*\S+(.*$)
             replace: \1\2\3
         loop:
@@ -74,10 +74,10 @@
       - name: "4.4.3.2.2 | PATCH | Ensure password length is configured | authselect_files"
         when:
             - rhel8cis_allow_authselect_updates
-            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+            - "'example' not in rhel8cis_authselect_custom_profile_name"
         notify: Update_authselect
         ansible.builtin.replace:
-            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/{{ item }}-auth"
             regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+minlen\s*=\s*\S+(.*$)
             replace: \1\2\3
         loop:
@@ -116,10 +116,10 @@
       - name: "4.4.3.2.3 | PATCH | Ensure password complexity is configured | authselect_files"
         when:
             - rhel8cis_allow_authselect_updates
-            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+            - "'example' not in rhel8cis_authselect_custom_profile_name"
         notify: Update_authselect
         ansible.builtin.replace:
-            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/{{ item }}-auth"
             regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+minclass\s*=\s*\S+(.*$)
             replace: \1\2\3
         loop:
@@ -158,10 +158,10 @@
       - name: "4.4.3.2.4 | PATCH | Ensure password same consecutive characters is configured | authselect_files"
         when:
             - rhel8cis_allow_authselect_updates
-            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+            - "'example' not in rhel8cis_authselect_custom_profile_name"
         notify: Update_authselect
         ansible.builtin.replace:
-            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/{{ item }}-auth"
             regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+maxrepeat\s*=\s*\S+(.*$)
             replace: \1\2\3
         loop:
@@ -200,10 +200,10 @@
       - name: "4.4.3.2.5 | PATCH | Ensure password same consecutive characters is configured | authselect_files"
         when:
             - rhel8cis_allow_authselect_updates
-            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+            - "'example' not in rhel8cis_authselect_custom_profile_name"
         notify: Update_authselect
         ansible.builtin.replace:
-            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/{{ item }}-auth"
             regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+maxsequence\s*=\s*\S+(.*$)
             replace: \1\2\3
         loop:
@@ -242,10 +242,10 @@
       - name: "4.4.3.2.6 | PATCH | Ensure password dictionary check is enabled | authselect_files"
         when:
             - rhel8cis_allow_authselect_updates
-            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+            - "'example' not in rhel8cis_authselect_custom_profile_name"
         notify: Update_authselect
         ansible.builtin.replace:
-            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/{{ item }}-auth"
             regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+dictcheck\s*=\s*\S+(.*$)
             replace: \1\2\3
         loop:
@@ -284,10 +284,10 @@
       - name: "4.4.3.2.7 | PATCH | Ensure password dictionary check is enabled | authselect_files"
         when:
             - rhel8cis_allow_authselect_updates
-            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+            - "'example' not in rhel8cis_authselect_custom_profile_name"
         notify: Update_authselect
         ansible.builtin.replace:
-            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/{{ item }}-auth"
             regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwquality\.so)(.*)\s+enforce_for_root(.*$)
             replace: \1\2\3
         loop:

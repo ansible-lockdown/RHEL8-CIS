@@ -108,6 +108,29 @@
         vars:
             sudo_password_rule: rhel8cis_rule_4_3_4  # pragma: allowlist secret
 
+- name: "PRELIM | AUDIT | Check authselect profile is selected"
+  when:
+      - rhel8cis_allow_authselect_updates
+  tags:
+      - always
+  block:
+      - name: "PRELIM | AUDIT | Check authselect profile name has been updated"
+        ansible.builtin.assert:
+            that: rhel8cis_authselect_custom_profile_name != 'cis_example_profile'
+            fail_msg: "You still have the default name for your authselect profile"
+
+      - name: "PRELIM | AUDIT | Check authselect profile is selected"
+        ansible.builtin.shell: authselect current | head -1 | awk '{print $NF}'
+        changed_when: false
+        failed_when: prelim_authselect_current_profile.rc not in [ 0, 1 ]
+        register: prelim_authselect_current_profile
+
+      - name: "PRELIM | AUDIT | Check authselect profile is selected"
+        ansible.builtin.assert:
+            that: prelim_authselect_current_profile is defined
+            success_msg: "Authselect is running and profile is selected"
+            fail_msg: Authselect updates have been selected there are issues with profile selection"
+
 - name: Include prelim tasks
   tags:
       - prelim_tasks
@@ -139,15 +162,11 @@
 - name: Run Section 1 tasks
   when:
       - rhel8cis_section1
-  tags:
-      - rhel8cis_section1
   ansible.builtin.import_tasks:
       file: section_1/main.yml
 
 - name: Run Section 2 tasks
   when:
-      - rhel8cis_section2
-  tags:
       - rhel8cis_section2
   ansible.builtin.import_tasks:
       file: section_2/main.yml
@@ -155,15 +174,11 @@
 - name: Run Section 3 tasks
   when:
       - rhel8cis_section3
-  tags:
-      - rhel8cis_section3
   ansible.builtin.import_tasks:
       file: section_3/main.yml
 
 - name: Run Section 4 tasks
   when:
-      - rhel8cis_section4
-  tags:
       - rhel8cis_section4
   ansible.builtin.import_tasks:
       file: section_4/main.yml
@@ -171,15 +186,11 @@
 - name: run Section 5 tasks
   when:
       - rhel8cis_section5
-  tags:
-      - rhel8cis_section5
   ansible.builtin.import_tasks:
       file: section_5/main.yml
 
 - name: Run Section 6 tasks
   when:
-      - rhel8cis_section6
-  tags:
       - rhel8cis_section6
   ansible.builtin.import_tasks:
       file: section_6/main.yml
