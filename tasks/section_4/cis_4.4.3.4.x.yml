@@ -63,7 +63,7 @@
         ansible.builtin.replace:
             path: "/etc/pam.d/{{ item }}-auth"
             regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)remember\s*=\s*\d+(.*$)
-            replace: \1\2\3
+            replace: \1\3\4
         loop:
             - password
             - system
