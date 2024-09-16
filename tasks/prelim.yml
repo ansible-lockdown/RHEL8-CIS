@@ -288,10 +288,11 @@
 
 - name: "PRELIM | AUDIT | Gather UID 0 accounts other than root"
   when:
-      - rhel8cis_rule_6_2_8
+      - rhel8cis_rule_6_2_9
   tags:
       - always
   ansible.builtin.shell: "cat /etc/passwd | awk -F: '($3 == 0 && $1 != \"root\") {i++;print $1 } END {exit 1}'"
+  failed_when: discovered_uid_zero_accounts_except_root.rc not in [ 0, 1 ]
   changed_when: false
   check_mode: false
   register: discovered_uid_zero_accounts_except_root
