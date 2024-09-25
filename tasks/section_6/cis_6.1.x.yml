@@ -252,7 +252,7 @@
         ansible.builtin.shell: find {{ item.mount }} -xdev -nogroup -not -fstype nfs
         changed_when: false
         failed_when: false
-        check_mode: 'false'
+        check_mode: false
         register: discovered_ungrouped_items
         with_items:
             - "{{ ansible_facts.mounts }}"
@@ -308,7 +308,7 @@
         ansible.builtin.shell: find {{ item.mount }} -xdev -type f -perm -4000 -not -fstype nfs
         changed_when: false
         failed_when: false
-        check_mode: 'false'
+        check_mode: false
         register: discovered_suid_executables
         loop: "{{ ansible_facts.mounts }}"
         loop_control:
@@ -318,7 +318,7 @@
         ansible.builtin.shell: find {{ item.mount }} -xdev -type f -perm -2000 -not -fstype nfs
         changed_when: false
         failed_when: false
-        check_mode: 'false'
+        check_mode: false
         register: discovered_sgid_executables
         loop: "{{ ansible_facts.mounts }}"
         loop_control:
