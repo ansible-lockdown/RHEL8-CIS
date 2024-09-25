@@ -18,7 +18,7 @@
       dest: /etc/motd
       owner: root
       group: root
-      mode: go-rx
+      mode: 'go-rx'
 
 - name: "1.7.2 | PATCH | Ensure local login warning banner is configured properly"
   when:
@@ -37,7 +37,7 @@
       dest: /etc/issue
       owner: root
       group: root
-      mode: go-rx
+      mode: 'go-rx'
 
 - name: "1.7.3 | PATCH | Ensure remote login warning banner is configured properly"
   when:
@@ -57,7 +57,7 @@
       dest: /etc/issue.net
       owner: root
       group: root
-      mode: go-wx
+      mode: 'go-wx'
 
 - name: "1.7.4 | PATCH | Ensure access to /etc/motd is configured"
   when:
@@ -76,7 +76,7 @@
       state: file
       owner: root
       group: root
-      mode: go-wx
+      mode: 'go-wx'
 
 - name: "1.7.5 | PATCH | Ensure access to /etc/issue is configured"
   when:
@@ -95,7 +95,7 @@
       state: file
       owner: root
       group: root
-      mode: go-wx
+      mode: 'go-wx'
 
 - name: "1.7.6 | PATCH | Ensure access to /etc/issue.net is configured"
   when:
@@ -114,4 +114,4 @@
       state: file
       owner: root
       group: root
-      mode: go-wx
+      mode: 'go-wx'

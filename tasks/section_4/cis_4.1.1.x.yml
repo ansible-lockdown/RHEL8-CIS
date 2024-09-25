@@ -161,4 +161,4 @@
             state: '{{ "file" if discovered_cron_allow_state.stat.exists else "touch" }}'
             owner: root
             group: root
-            mode: g-wx,o-rwx
+            mode: 'g-wx,o-rwx'

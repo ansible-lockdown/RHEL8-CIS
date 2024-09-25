@@ -12,7 +12,7 @@
   ansible.builtin.file:
       path: "{{ discovered_audit_logfile.stdout | dirname }}"
       state: directory
-      mode: g-w,o-rwx
+      mode: 'g-w,o-rwx'
 
 - name: |
       "5.2.4.2 | PATCH | Ensure audit log files are mode 0640 or less permissive"
@@ -43,7 +43,7 @@
             "5.2.4.4 | PATCH | Ensure only authorized groups are assigned ownership of audit log files"
         ansible.builtin.file:
             path: "{{ discovered_audit_logfile.stdout }}"
-            mode: "{% if discovered_auditlog_info.stat.mode != '0600' %}0640{% endif %}"
+            mode: 'o-x,g-wx,o-rwx'
             owner: root
             group: root
 
@@ -58,7 +58,7 @@
       - rule_5.2.4.5
   ansible.builtin.file:
       path: "{{ item.path }}"
-      mode: g-wx,o-rwx
+      mode: 'g-wx,o-rwx'
   loop: "{{ discovered_auditd_conf_files.files }}"
   loop_control:
       label: "{{ item.path }}"
@@ -120,7 +120,7 @@
       - name: "5.2.4.8 | PATCH | Ensure audit tools are 755 or more restrictive | set if required"
         ansible.builtin.file:
             path: "{{ item.item }}"
-            mode: g-w,o-w
+            mode: 'g-w,o-w'
         loop: "{{ discovered_audit_bins_mode.results }}"
         loop_control:
             label: "{{ item.item }}"

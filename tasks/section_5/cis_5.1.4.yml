@@ -13,7 +13,7 @@
       - rule_5.1.4
   block:
       - name: "5.1.4 | AUDIT | Ensure permissions on all logfiles are configured | find files"
-        ansible.builtin.shell: find /var/log/ -type f -exec ls {} \;
+        ansible.builtin.shell: find -L /var/log/ -type f -perm /g+wx,o+rwx -exec ls {} \;
         changed_when: false
         failed_when: false
         register: discovered_logfiles
@@ -26,13 +26,17 @@
             - item != "/var/log/lastlog"
         ansible.builtin.file:
             path: "{{ item }}"
-            mode: u-x,g-wx,o-rwx
+            mode: 'u-x,g-wx,o-rwx'
+        failed_when: discovered_logfile_list.state not in '[ file, absent ]'
+        register: discovered_logfile_list
         loop: "{{ discovered_logfiles.stdout_lines }}"
 
       - name: "5.1.4 | PATCH | Ensure permissions on all logfiles are configured | change permissions"
         ansible.builtin.file:
             path: "{{ item.name }}"
-            mode: ('ug-x,o-wx')
+            mode: 'ug-x,o-wx'
+        failed_when: discovered_logfile_list.state not in '[ file, absent ]'
+        register: discovered_logfile_list
         with_fileglob:
             - /var/log/*tmp.*"
             - /var/log/lastlog"
