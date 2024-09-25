@@ -27,7 +27,7 @@
   jobs:
     # This will create messages for first time contributers and direct them to the Discord server
       welcome:
-        runs-on: self-hosted
+        runs-on: ubuntu-latest
 
         steps:
             - uses: actions/first-interaction@main
