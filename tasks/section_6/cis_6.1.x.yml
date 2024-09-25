@@ -16,7 +16,7 @@
       path: /etc/passwd
       owner: root
       group: root
-      mode: u-x,go-wx
+      mode: 'u-x,go-wx'
 
 - name: "6.1.2 | PATCH | Ensure permissions on /etc/passwd- are configured"
   when:
@@ -34,7 +34,7 @@
       path: /etc/passwd-
       owner: root
       group: root
-      mode: u-x,go-wx
+      mode: 'u-x,go-wx'
 
 - name: "6.1.3 | PATCH | Ensure permissions on /etc/security/opasswd are configured"
   when:
@@ -70,7 +70,7 @@
       path: /etc/group
       owner: root
       group: root
-      mode: u-x,go-wx
+      mode: 'u-x,go-wx'
 
 - name: "6.1.5 | PATCH | Ensure permissions on /etc/group- are configured"
   when:
@@ -88,7 +88,7 @@
       path: /etc/group-
       owner: root
       group: root
-      mode: u-x,go-wx
+      mode: 'u-x,go-wx'
 
 - name: "6.1.6 | PATCH | Ensure permissions on /etc/shadow are configured"
   when:
@@ -178,7 +178,7 @@
       path: /etc/shells
       owner: root
       group: root
-      mode: u-x,go-wx
+      mode: 'u-x,go-wx'
 
 - name: "6.1.11 | PATCH | Ensure world writable files and directories are secured"
   when:
@@ -209,7 +209,7 @@
             - rhel8cis_no_world_write_adjust
         ansible.builtin.file:
             path: '{{ item }}'
-            mode: o-w
+            mode: 'o-w'
             state: touch
         with_items: "{{ discovered_perms_results.stdout_lines }}"
 
@@ -252,7 +252,7 @@
         ansible.builtin.shell: find {{ item.mount }} -xdev -nogroup -not -fstype nfs
         changed_when: false
         failed_when: false
-        check_mode: false
+        check_mode: 'false'
         register: discovered_ungrouped_items
         with_items:
             - "{{ ansible_facts.mounts }}"
@@ -308,7 +308,7 @@
         ansible.builtin.shell: find {{ item.mount }} -xdev -type f -perm -4000 -not -fstype nfs
         changed_when: false
         failed_when: false
-        check_mode: false
+        check_mode: 'false'
         register: discovered_suid_executables
         loop: "{{ ansible_facts.mounts }}"
         loop_control:
@@ -318,7 +318,7 @@
         ansible.builtin.shell: find {{ item.mount }} -xdev -type f -perm -2000 -not -fstype nfs
         changed_when: false
         failed_when: false
-        check_mode: false
+        check_mode: 'false'
         register: discovered_sgid_executables
         loop: "{{ ansible_facts.mounts }}"
         loop_control:

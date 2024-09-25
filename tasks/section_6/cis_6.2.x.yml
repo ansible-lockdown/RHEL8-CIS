@@ -417,5 +417,5 @@
 
         ansible.builtin.file:
             path: '{{ item }}'
-            mode: go-w
+            mode: 'go-w'
         with_items: "{{ discovered_dot_files.stdout_lines }}"
