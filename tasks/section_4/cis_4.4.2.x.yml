@@ -61,11 +61,11 @@
       - name: "4.4.2.2 | AUDIT | Ensure pam_faillock module is enabled | Get current config"
         ansible.builtin.shell: authselect current | grep faillock
         changed_when: false
-        failed_when: rhel8cis_authselect_current_faillock.rc not in [ 0, 1 ]
-        register: rhel8cis_authselect_current_faillock
+        failed_when: discovered_uthselect_current_faillock.rc not in [ 0, 1 ]
+        register: discovered_authselect_current_faillock
 
       - name: "4.4.2.2 | AUDIT | Ensure pam_faillock module is enabled | Add feature if missing"
-        when: rhel8cis_authselect_current_faillock.rc != 0
+        when: discovered_authselect_current_faillock.rc != 0
         ansible.builtin.shell: "/usr/bin/authselect select custom/{{ rhel8cis_authselect_custom_profile_name }}{% if rhel8cis_rule_4_4_2_2 %} with-faillock{% endif %}{% if rhel8cis_rule_4_4_2_3 %} with-pwquality{% endif %}{% if rhel8cis_rule_4_4_2_4 %} with-pwhistory{% endif %}{% if rhel8cis_rule_4_4_3_4_1 %} without-nullok{% endif %}"
 
 - name: "4.4.2.3 | PATCH | Ensure pam_pwquality module is enabled"
@@ -85,11 +85,11 @@
       - name: "4.4.2.3 | AUDIT | Ensure pam_pwquality module is enabled | Get current config"
         ansible.builtin.shell: authselect current | grep quality
         changed_when: false
-        failed_when: rhel8cis_authselect_current_quality.rc not in [ 0, 1 ]
-        register: rhel8cis_authselect_current_quality
+        failed_when: discovered_authselect_current_quality.rc not in [ 0, 1 ]
+        register: discovered_authselect_current_quality
 
       - name: "4.4.2.3 | AUDIT | Ensure pam_pwquality module is enabled | Add feature if missing"
-        when: rhel8cis_authselect_current_quality.rc != 0
+        when: discovered_authselect_current_quality.rc != 0
         ansible.builtin.shell: "/usr/bin/authselect select custom/{{ rhel8cis_authselect_custom_profile_name }}{% if rhel8cis_rule_4_4_2_2 %} with-faillock{% endif %}{% if rhel8cis_rule_4_4_2_3 %} with-pwquality{% endif %}{% if rhel8cis_rule_4_4_2_4 %} with-pwhistory{% endif %}{% if rhel8cis_rule_4_4_3_4_1 %} without-nullok{% endif %}"
         notify: Authselect update
 
@@ -110,11 +110,11 @@
       - name: "4.4.2.4 | AUDIT | Ensure pam_pwhistory module is enabled | Get current config"
         ansible.builtin.shell: authselect current | grep pwhistory
         changed_when: false
-        failed_when: rhel8cis_authselect_current_history.rc not in [ 0, 1 ]
-        register: rhel8cis_authselect_current_history
+        failed_when: discovered_authselect_current_history.rc not in [ 0, 1 ]
+        register: discovered_authselect_current_history
 
       - name: "4.4.2.4 | PATCH | Ensure pam_pwhistory module is enabled | enable feature"
-        when: rhel8cis_authselect_current_history.rc != 0
+        when: discovered_authselect_current_history.rc != 0
         ansible.builtin.shell: "/usr/bin/authselect select custom/{{ rhel8cis_authselect_custom_profile_name }}{% if rhel8cis_rule_4_4_2_2 %} with-faillock{% endif %}{% if rhel8cis_rule_4_4_2_3 %} with-pwquality{% endif %}{% if rhel8cis_rule_4_4_2_4 %} with-pwhistory{% endif %}{% if rhel8cis_rule_4_4_3_4_1 %} without-nullok{% endif %}"
         notify: Authselect update
 
@@ -136,13 +136,13 @@
         ansible.builtin.shell: |
             grep -P -- '\b(pam_unix\.so)\b' /etc/authselect/"$(head -1 /etc/authselect/authselect.conf)"/{system,password}-auth
         changed_when: false
-        failed_when: rhel8cis_authselect_pam_unix.rc not in [ 0, 1 ]
-        register: rhel8cis_authselect_pam_unix
+        failed_when: discovered_authselect_pam_unix.rc not in [ 0, 1 ]
+        register: discovered_authselect_pam_unix
 
       - name: "4.4.2.5 | PATCH | Ensure pam_unix module is enabled | system-auth"
-        when: "'system-auth:password' not in rhel8cis_authselect_pam_unix.stdout"
+        when: "'system-auth:password' not in discovered_uthselect_pam_unix.stdout"
         ansible.builtin.lineinfile:
-            path: /etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/system-auth
+            path: /etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/system-auth
             regexp: "{{ item.regexp }}"
             line: "{{ item.line }}"
             backrefs: true
