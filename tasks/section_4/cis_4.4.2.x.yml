@@ -61,7 +61,7 @@
       - name: "4.4.2.2 | AUDIT | Ensure pam_faillock module is enabled | Get current config"
         ansible.builtin.shell: authselect current | grep faillock
         changed_when: false
-        failed_when: discovered_uthselect_current_faillock.rc not in [ 0, 1 ]
+        failed_when: discovered_authselect_current_faillock.rc not in [ 0, 1 ]
         register: discovered_authselect_current_faillock
 
       - name: "4.4.2.2 | AUDIT | Ensure pam_faillock module is enabled | Add feature if missing"
@@ -140,7 +140,7 @@
         register: discovered_authselect_pam_unix
 
       - name: "4.4.2.5 | PATCH | Ensure pam_unix module is enabled | system-auth"
-        when: "'system-auth:password' not in discovered_uthselect_pam_unix.stdout"
+        when: "'system-auth:password' not in discovered_authselect_pam_unix.stdout"
         ansible.builtin.lineinfile:
             path: /etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/system-auth
             regexp: "{{ item.regexp }}"
@@ -154,9 +154,9 @@
         notify: Authselect update
 
       - name: "4.4.2.5 | PATCH | Ensure pam_unix module is enabled | password-auth"
-        when: "'password-auth:password' not in rhel8cis_authselect_pam_unix.stdout"
+        when: "'password-auth:password' not in discovered_authselect_pam_unix.stdout"
         ansible.builtin.lineinfile:
-            path: /etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/password-auth
+            path: /etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/password-auth
             line: "{{ item.line }}"
             regexp: "{{ item.regexp }}"
             backrefs: true
