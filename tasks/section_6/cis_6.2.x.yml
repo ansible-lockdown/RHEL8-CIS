@@ -341,7 +341,6 @@
             path: "{{ item.dir }}"
             state: directory
             owner: "{{ item.id }}"
-            group: "{{ item.gid }}"
         loop: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8uid_uid_start | int ) | selectattr('uid', '<=', rhel8uid_uid_stop | int ) | list }}"
         loop_control:
             label: "{{ item.id }}"
