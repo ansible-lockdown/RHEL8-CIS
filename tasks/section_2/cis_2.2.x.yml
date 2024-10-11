@@ -549,7 +549,7 @@
 - name: "2.2.17 | PATCH | Ensure web proxy server services are not in use"
   when:
       - "'squid' in ansible_facts.packages"
-      - rhel8cis_rule_2_217
+      - rhel8cis_rule_2_2_17
   tags:
       - level1-server
       - level1-workstation
