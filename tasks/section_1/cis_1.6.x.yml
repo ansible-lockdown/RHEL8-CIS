@@ -18,7 +18,7 @@
 
       - name: "1.6.1 | PATCH | Ensure system-wide crypto policy is not legacy"
         when:
-            - discovered_system_wide_crypto_policy.stdout not in rhel8cis_crypto_policy
+            - rhel8cis_full_crypto_policy not in discovered_system_wide_crypto_policy.stdout
         ansible.builtin.shell: |
             update-crypto-policies --set "{{ rhel8cis_full_crypto_policy }}"
             update-crypto-policies

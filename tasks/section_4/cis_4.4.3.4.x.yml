@@ -63,7 +63,7 @@
         ansible.builtin.replace:
             path: "/etc/pam.d/{{ item }}-auth"
             regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)remember\s*=\s*\d+(.*$)
-            replace: \1\2\3
+            replace: \1\3\4
         loop:
             - password
             - system
@@ -73,12 +73,12 @@
             - discovered_pam_remember is defined
             - discovered_pam_remember | length > 0
             - rhel8cis_allow_authselect_updates
-            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+            - "'example' not in rhel8cis_authselect_custom_profile_name"
         notify: Update_authselect
         ansible.builtin.replace:
-            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/{{ item }}-auth"
             regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)remember\s*=\s*\d+(.*$)
-            replace: \1\2\3
+            replace: \1\3\4
         loop:
             - password
             - system
@@ -108,7 +108,7 @@
         ansible.builtin.replace:
             path: "/etc/pam.d/{{ item }}-auth"
             regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)(sha512|yescrypt)(.*$)
-            replace: \1\2\4 {{ rhel8cis_pam_pwhash }}
+            replace: \1\3\5 {{ rhel8cis_pam_pwhash }}
         loop:
             - password
             - system
@@ -118,12 +118,12 @@
             - discovered_hash_state is defined
             - discovered_hash_state | length > 0
             - rhel8cis_allow_authselect_updates
-            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+            - "'example' not in rhel8cis_authselect_custom_profile_name"
         notify: Update_authselect
         ansible.builtin.replace:
-            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/{{ item }}-auth"
             regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)(sha512|yescrypt)\s*=\s*\d+(.*$)
-            replace: \1\2\4 {{ rhel8cis_pam_pwhash }}
+            replace: \1\3\5 {{ rhel8cis_pam_pwhash }}
         loop:
             - password
             - system
@@ -163,10 +163,10 @@
             - discovered_pam_authtok is defined
             - discovered_pam_authtok | length > 0
             - rhel8cis_allow_authselect_updates
-            - "'example' not in rhel8cis_authselect['custom_profile_name']"
+            - "'example' not in rhel8cis_authselect_custom_profile_name"
         notify: Update_authselect
         ansible.builtin.replace:
-            path: "/etc/authselect/custom/{{ rhel8cis_authselect['custom_profile_name'] }}/{{ item }}-auth"
+            path: "/etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/{{ item }}-auth"
             regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)\s+use_authtok(.*$)
             replace: \1\3\4 use_authtok
         loop:

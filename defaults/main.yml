@@ -37,6 +37,9 @@ benchmark_version: v3.0.0
 # Whether to skip the reboot
 skip_reboot: true
 
+# Modify behavior of changed_when if reboot is pending and skipped to allow idempotency to succeed
+reboot_warning_changed_when: true
+
 ###
 ### Settings for associated Audit role using Goss
 ###
@@ -560,7 +563,7 @@ rhel8cis_ntp_server_options: "iburst"
 # mask - if a dependancy for product so cannot be removed
 # Server Services
 rhel8cis_autofs_services: false
-rhel8cis_autofs_mask: true
+rhel8cis_autofs_mask: false
 rhel8cis_avahi_server: false
 rhel8cis_avahi_mask: false
 rhel8cis_dhcp_server: false
@@ -683,21 +686,34 @@ rhel8cis_sudolog_location: "/var/log/sudo.log"
 rhel8cis_sudo_timestamp_timeout: 15
 
 ## PAM
-# 4.4.2.x
+## 4.4.2.x PAM and Authselect
 # Do not use authselect if:
 # Your host is part of Linux Identity Management.
 # Joining your host to an IdM domain with the ipa-client-install command automatically configures SSSD authentication on your host.
 # Your host is part of Active Directory via SSSD.
 # Calling the realm join command to join your host to an Active Directory domain automatically configures SSSD authentication on your host.
-rhel8cis_allow_authselect_updates: false
+rhel8cis_allow_authselect_updates: true
 ##
 rhel8cis_authselect_pkg_update: false  # NOTE the risks if system is using SSSD or using ipa-client-install
-rhel8cis_authselect_custom_profile_create: false
-rhel8cis_authselect_custom_profile_select: false
-rhel8cis_authselect:
-    custom_profile_name: 'cis_example_profile'
-    default_file_to_copy: "sssd --symlink-meta"
-    options: with-sudo with-faillock without-nullok with-pwhistory
+
+## PAM AND Authselect
+
+# To create a new profile (best for greenfield fresh sites not configured)
+# This allows creation of a custom profile using an existing one to build from
+# will only create if profiel does not already exist
+## options true or false
+rhel8cis_authselect_custom_profile_create: true
+## Controls:
+#  - 4.4.2.1 - Ensure custom authselect profile is used
+# Settings in place now will fail, they are placeholders from the control example. Due to the way many multiple
+# options and ways to configure this control needs to be enabled and settings adjusted to minimise risk.
+
+# This variable configures the name of the custom profile to be created and selected.
+# To be changed from default - cis_example_profile
+rhel8cis_authselect_custom_profile_name: cis_example_profile
+# Name of the existing authselect profile to copy - options can be found with
+# ```authselect list``` on the host to be configured
+rhel8cis_authselect_default_profile_to_copy: "sssd --symlink-meta"
 
 rhel8cis_pam_faillock:
     attempts: 5
@@ -784,7 +800,7 @@ rhel8cis_auditd:
     disk_full_action: halt
     action_mail_acct: root
     space_left_action: email
-    admin_space_left_action: email
+    admin_space_left_action: single
     max_log_file_action: keep_logs
 
 # This can be used to configure other keys in auditd.conf

@@ -616,14 +616,8 @@ rhel8cis_sudo_timestamp_timeout: {{ rhel8cis_sudo_timestamp_timeout }}
 
 ## PAM
 # 4.4.2.x
-rhel8cis_authselect_pkg_update: {{ rhel8cis_authselect_pkg_update }}  # NOTE the risks if system is using SSSD or using ipa-client-install
 rhel8cis_allow_authselect_updates: {{ rhel8cis_allow_authselect_updates }}
-rhel8cis_authselect_custom_profile_create: {{ rhel8cis_authselect_custom_profile_create }}
-rhel8cis_authselect_custom_profile_select: {{ rhel8cis_authselect_custom_profile_select }}
-rhel8cis_authselect:
-    custom_profile_name: '{{ rhel8cis_authselect.custom_profile_name }}'
-    default_file_to_copy: "{{ rhel8cis_authselect.default_file_to_copy }}"
-    options: {{ rhel8cis_authselect }}
+rhel8cis_authselect_custom_profile_name: '{{ rhel8cis_authselect_custom_profile_name }}'
 
 rhel8cis_pam_faillock:
     attempts: {{ rhel8cis_pam_faillock.attempts }}
@@ -642,7 +636,7 @@ rhel8cis_pam_pwquality:
     minclass: {{ rhel8cis_pam_pwquality.minclass }}
 
 rhel8cis_pam_pwhistory:
-    remember: {{ rhel8cis_pam_pwhistory }}
+    remember: {{ rhel8cis_pam_pwhistory.remember }}
 
 rhel8cis_pam_pwhash: {{ rhel8cis_pam_pwhash }}
 

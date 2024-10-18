@@ -13,25 +13,32 @@
       - rule_5.1.4
   block:
       - name: "5.1.4 | AUDIT | Ensure permissions on all logfiles are configured | find files"
-        ansible.builtin.shell: find /var/log/ -type f -perm /g+wx,o+rwx -exec ls {} \;
+        ansible.builtin.shell: find -L /var/log/ -type f -perm /g+wx,o+rwx -exec ls {} \;
         changed_when: false
         failed_when: false
         register: discovered_logfiles
 
-      - name: "5.1.4 | AUDIT | Ensure permissions on all logfiles are configured | set_fact"
-        ansible.builtin.set_fact:
-            discovered_logfiles_flattened: "{{ discovered_logfiles | json_query('stdout_lines[*]') | flatten }}"  # noqa: jinja[invalid]
-        when:
-            - discovered_logfiles.stdout_lines | length > 0
-            - discovered_logfiles is defined
-
       - name: "5.1.4 | PATCH | Ensure permissions on all logfiles are configured | change permissions"
-        ansible.builtin.file:
-            path: "{{ item }}"
-            mode: '0640'
-        loop: "{{ discovered_logfiles_flattened }}"
         when:
-            - rhel8cis_5_1_4_logfiles_flattened is defined
             - item != "/var/log/btmp"
             - item != "/var/log/utmp"
             - item != "/var/log/wtmp"
+            - item != "/var/log/lastlog"
+        ansible.builtin.file:
+            path: "{{ item }}"
+            mode: 'u-x,g-wx,o-rwx'
+        failed_when: discovered_logfile_list.state not in '[ file, absent ]'
+        register: discovered_logfile_list
+        loop: "{{ discovered_logfiles.stdout_lines }}"
+
+      - name: "5.1.4 | PATCH | Ensure permissions on all logfiles are configured | change permissions"
+        ansible.builtin.file:
+            path: "{{ item.name }}"
+            mode: 'ug-x,o-wx'
+        failed_when: discovered_logfile_list.state not in '[ file, absent ]'
+        register: discovered_logfile_list
+        with_fileglob:
+            - /var/log/*tmp.*"
+            - /var/log/lastlog"
+            - /var/log/ssd*"
+            - /var/log/SSD*"

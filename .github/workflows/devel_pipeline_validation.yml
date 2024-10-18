@@ -27,7 +27,7 @@
   jobs:
     # This will create messages for first time contributers and direct them to the Discord server
       welcome:
-        runs-on: self-hosted
+        runs-on: ubuntu-latest
 
         steps:
             - uses: actions/first-interaction@main
@@ -55,7 +55,7 @@
 
         steps:
 
-          - name: Git clone the lockdown repository to test
+          - name: Git Clone the Lockdown Repository to test
             uses: actions/checkout@v4
             with:
               ref: ${{ github.event.pull_request.head.sha }}
@@ -81,7 +81,7 @@
 
           # Uses dedicated restricted role and policy to enable this only for this task
           # No credentials are part of github for AWS auth
-          - name: configure aws credentials
+          - name: Configure AWS Credentials
             uses: aws-actions/configure-aws-credentials@main
             with:
               role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
@@ -104,7 +104,7 @@
               PRIVSUBNET_ID: ${{ secrets.AWS_PRIVSUBNET_ID }}
               VPC_ID: ${{ secrets.AWS_VPC_SECGRP_ID }}
 
-          - name: Tofu init
+          - name: Tofu Init
             id: init
             run: tofu init
             env:
@@ -112,7 +112,7 @@
               OSVAR: ${{ vars.OSVAR }}
               TF_VAR_benchmark_type: ${{ vars.BENCHMARK_TYPE }}
 
-          - name: Tofu validate
+          - name: Tofu Validate
             id: validate
             run: tofu validate
             env:
@@ -120,7 +120,7 @@
               OSVAR: ${{ vars.OSVAR }}
               TF_VAR_benchmark_type: ${{ vars.BENCHMARK_TYPE }}
 
-          - name: Tofu apply
+          - name: Tofu Apply
             id: apply
             env:
               OSVAR: ${{ vars.OSVAR }}
@@ -136,11 +136,11 @@
 
     # Aws deployments taking a while to come up insert sleep or playbook fails
 
-          - name: Sleep to allow system to come up
+          - name: Sleep - Allow system to come up
             run: sleep ${{ vars.BUILD_SLEEPTIME }}
 
         # Run the Ansible playbook
-          - name: Run_Ansible_Playbook
+          - name: Run Ansible Playbook
             env:
               ANSIBLE_HOST_KEY_CHECKING: "false"
               ANSIBLE_DEPRECATION_WARNINGS: "false"
