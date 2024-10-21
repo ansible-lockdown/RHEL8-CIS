@@ -1,6 +1,6 @@
 ---
 - name: Run RHEL8 CIS hardening
-  hosts: all
+  hosts: "{{ hosts }}"
   become: true
 
   roles:

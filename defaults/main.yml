@@ -5,6 +5,8 @@ system_is_container: false
 # Place to find the container yml file for your environment - /vars/... This can be adjusted for your requirements.
 container_vars_file: is_container.yml
 
+hosts: all
+
 os_check: true
 # rhel8cis is left off the front of this var for consistency in testing pipeline
 # system_is_ec2 toggle will disable tasks that fail on Amazon EC2 instances. Set true to skip and false to run tasks
