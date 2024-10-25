@@ -419,25 +419,32 @@
             - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured | Changes files if configured .bash_history"
               when:
                   - discovered_hidden_files.matched > 0
-                  - "'.bash_history' in item.path"
+                  - item.path is search (".netrc") or item.path is search (".bash_history")
               ansible.builtin.file:
-                  path: '{{ item.path }}'
-                  mode: 'go-rwx'
+                  path: "{{ item.path }}"
+                  mode: 'u-x,go-rwx'
               with_items: "{{ discovered_hidden_files.files }}"
 
             - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured | Changes files if configured file mode"
               when:
-                  - "'.netrc' not in item.path"
-                  - "'.rhost' not in item.path"
-                  - "'.forward' not in item.path"
+                  - (item.path != '.netrc' or
+                    item.path !=  '.rhost' or
+                    item.path != '.forward')
               ansible.builtin.file:
                   path: '{{ item.path }}'
-                  mode: 'go-wx'
+                  mode: 'u-x,go-wx'
               with_items: "{{ discovered_hidden_files.files }}"
 
-            - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured | Changes files if configured file mode"
+            - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured | Changes files ownerships"
               ansible.builtin.file:
                   path: '{{ item.path }}'
                   owner: "{{ item.path | dirname | basename }}"
                   group: "{{  item.path | dirname | basename }}"
+              with_items: "{{ discovered_hidden_files.files }}"
+
+            - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured | rename .forward or .netrc files"
+              when:
+                  - item.path is search (".forward") or item.path is search (".rhost")
+                  - item.path is not search ("CIS")
+              ansible.builtin.shell: "mv {{ item.path }} {{ item.path }}_CIS_TOBEREVIEWED"
               with_items: "{{ discovered_hidden_files.files }}"
