@@ -393,7 +393,6 @@
         # register: discovered_hidden_files
         ansible.builtin.find:
             path: /home
-            recurse: true
             file_type: file
             hidden: true
         register: discovered_hidden_files
@@ -428,7 +427,7 @@
             - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured | Changes files if configured file mode"
               when:
                   - (item.path != '.netrc' or
-                    item.path !=  '.rhost' or
+                    item.path != '.rhost' or
                     item.path != '.forward')
               ansible.builtin.file:
                   path: '{{ item.path }}'
