@@ -345,24 +345,10 @@
         loop_control:
             label: "{{ item.id }}"
 
-      # set default ACLs so the homedir has an effective umask of 0027
-      - name: "6.2.10 | PATCH | Ensure local interactive user home directories exist | Set group ACL"
-        ansible.posix.acl:
+      - name: "6.2.10 | PATCH | Ensure local interactive user home directories exist | Permissions"
+        ansible.builtin.file:
             path: "{{ item }}"
-            default: true
-            etype: group
-            permissions: rx
-            state: present
-        loop: "{{ discovered_interactive_users_home.stdout_lines }}"
-        when: not system_is_container
-
-      - name: "6.2.10 | PATCH | Ensure local interactive user home directories exist | Set other ACL"
-        ansible.posix.acl:
-            path: "{{ item }}"
-            default: true
-            etype: other
-            permissions: 0
-            state: present
+            mode: 'g-w,o-rwx'
         loop: "{{ discovered_interactive_users_home.stdout_lines }}"
         when: not system_is_container
 
