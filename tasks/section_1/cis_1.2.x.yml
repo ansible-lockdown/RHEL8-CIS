@@ -39,7 +39,7 @@
       - name: "1.2.2 | PATCH | Ensure gpgcheck is globally activated | Update yum.repos"
         ansible.builtin.replace:
             name: "{{ item.path }}"
-            regexp: "^gpgcheck=0"
+            regexp: ^gpgcheck\s*=\s*0
             replace: "gpgcheck=1"
         loop: "{{ discovered_yum_repos.files }}"
         loop_control:
@@ -48,7 +48,7 @@
       - name: "1.2.2 | PATCH | Ensure gpgcheck is globally activated | Update dnf.conf"
         ansible.builtin.lineinfile:
             path: /etc/dnf/dnf.conf
-            regexp: ^(#|)gpgcheck=
+            regexp: ^(#|)gpgcheck\s*=
             line: gpgcheck=1
 
 - name: "1.2.3 | PATCH | Ensure repo_gpgcheck is globally activated"
@@ -72,7 +72,7 @@
       - name: "1.2.3 | PATCH | Ensure repo_gpgcheck is globally activated | Update yum.repos"
         ansible.builtin.replace:
             name: "{{ item.path }}"
-            regexp: "^repo_gpgcheck=0"
+            regexp: ^repo_gpgcheck\s*=\s*0"
             replace: "repo_gpgcheck=1"
         loop: "{{ discovered_yum_repos.files }}"
         loop_control:
@@ -81,7 +81,7 @@
       - name: "1.2.3 | PATCH | Ensure repo_gpgcheck is globally activated | Update dnf.conf"
         ansible.builtin.lineinfile:
             path: /etc/dnf/dnf.conf
-            regexp: ^(#|)repo_gpgcheck=
+            regexp: ^(#|)repo_gpgcheck\s*=
             line: repo_gpgcheck=1
 
 - name: "1.2.4 | AUDIT | Ensure package manager repositories are configured"
