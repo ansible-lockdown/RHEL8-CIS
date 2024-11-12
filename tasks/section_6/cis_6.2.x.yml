@@ -372,35 +372,64 @@
       warn_control_id: '6.2.11'
   block:
       - name: "6.2.11 | AUDIT | Ensure local interactive user dot files access is configured | Check for files"
-        ansible.builtin.shell: find /home/ -name "\.*" -perm /g+w,o+w
-        changed_when: false
-        failed_when: discovered_dot_files.rc not in [ 0, 1 ]
-        check_mode: false
-        register: discovered_dot_files
+        # ansible.builtin.shell: find /home/ -name "\.*" exec ls -l {}
+        # changed_when: false
+        # failed_when: discovered_hidden_files.rc not in [ 0, 1 ]
+        # check_mode: false
+        # register: discovered_hidden_files
+        ansible.builtin.find:
+            path: /home
+            file_type: file
+            hidden: true
+        register: discovered_hidden_files
 
       - name: "6.2.11 | AUDIT | Ensure local interactive user dot files access is configured | Warning on files found"
         when:
-            - discovered_dot_files.stdout | length > 0
-            - rhel8cis_dotperm_ansiblemanaged
-
+            - not rhel8cis_dotperm_ansiblemanaged
         ansible.builtin.debug:
             msg:
-                - "Warning!! We have discovered group or world-writable dot files on your system and this host is configured for manual intervention. Please investigate these files further."
+                - "Warning!! Please investigate that hidden files found in users home directories match control requirements."
 
       - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured | Set warning count"
         when:
-            - discovered_dot_files.stdout | length > 0
-            - rhel8cis_dotperm_ansiblemanaged
-
+            - not rhel8cis_dotperm_ansiblemanaged
         ansible.builtin.import_tasks:
             file: warning_facts.yml
 
-      - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured | Changes files if configured"
+      - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured"
         when:
-            - discovered_dot_files.stdout | length > 0
+            - discovered_hidden_files.matched > 0
             - rhel8cis_dotperm_ansiblemanaged
+        block:
+            - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured | Changes files if configured .bash_history"
+              when:
+                  - discovered_hidden_files.matched > 0
+                  - item.path is search (".netrc") or item.path is search (".bash_history")
+              ansible.builtin.file:
+                  path: "{{ item.path }}"
+                  mode: 'u-x,go-rwx'
+              with_items: "{{ discovered_hidden_files.files }}"
 
-        ansible.builtin.file:
-            path: '{{ item }}'
-            mode: 'go-w'
-        with_items: "{{ discovered_dot_files.stdout_lines }}"
+            - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured | Changes files if configured file mode"
+              when:
+                  - (item.path != '.netrc' or
+                    item.path != '.rhost' or
+                    item.path != '.forward')
+              ansible.builtin.file:
+                  path: '{{ item.path }}'
+                  mode: 'u-x,go-wx'
+              with_items: "{{ discovered_hidden_files.files }}"
+
+            - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured | Changes files ownerships"
+              ansible.builtin.file:
+                  path: '{{ item.path }}'
+                  owner: "{{ item.path | dirname | basename }}"
+                  group: "{{  item.path | dirname | basename }}"
+              with_items: "{{ discovered_hidden_files.files }}"
+
+            - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured | rename .forward or .netrc files"
+              when:
+                  - item.path is search (".forward") or item.path is search (".rhost")
+                  - item.path is not search ("CIS")
+              ansible.builtin.shell: "mv {{ item.path }} {{ item.path }}_CIS_TOBEREVIEWED"
+              with_items: "{{ discovered_hidden_files.files }}"

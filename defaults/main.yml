@@ -870,5 +870,6 @@ rhel8cis_ungrouped_adjust: false
 rhel8cis_suid_adjust: false
 rhel8cis_sgid_adjust: false
 
-# 6.2.12
-rhel8cis_dotperm_ansiblemanaged: true
+# 6.2.11
+# Allow changes to take place on system
+rhel8cis_dotperm_ansiblemanaged: false
