@@ -34,6 +34,29 @@
   changed_when: false
   register: discovered_interactive_uids
 
+- name: "PRELIM | Discover Interactive UID MIN and MIN from logins.def"
+  block:
+      - name: "PRELIM | Capture UID_MIN information from logins.def"
+        ansible.builtin.shell: grep -w "^UID_MIN" /etc/login.defs | awk '{print $NF}'
+        changed_when: false
+        register: uid_min_id
+
+      - name: "PRELIM | Capture UID_MAX information from logins.def"
+        ansible.builtin.shell: grep -w "^UID_MAX" /etc/login.defs | awk '{print $NF}'
+        changed_when: false
+        register: uid_max_id
+
+      - name: "PRELIM | Capture GID_MIN information from logins.def"
+        ansible.builtin.shell: grep -w "^GID_MIN" /etc/login.defs | awk '{print $NF}'
+        changed_when: false
+        register: gid_min_id
+
+      - name: "PRELIM | set_facts for interactive uid/gid"
+        ansible.builtin.set_fact:
+            min_int_uid: "{{ uid_min_id.stdout }}"
+            max_int_uid: "{{ uid_max_id.stdout }}"
+            min_int_gid: "{{ gid_min_id.stdout }}"
+
 - name: "PRELIM | AUDIT | Set facts based on boot type"
   tags:
       - always
