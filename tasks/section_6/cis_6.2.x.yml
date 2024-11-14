@@ -338,12 +338,10 @@
   block:
       - name: "6.2.10 | PATCH | Ensure local interactive user home directories exist | Create dir if absent"
         ansible.builtin.file:
-            path: "{{ item.dir }}"
+            path: "{{ item }}"
             state: directory
-            owner: "{{ item.id }}"
-        loop: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8uid_uid_start | int ) | selectattr('uid', '<=', rhel8uid_uid_stop | int ) | list }}"
-        loop_control:
-            label: "{{ item.id }}"
+            owner: "{{ item | basename }}"
+        loop: "{{ discovered_interactive_users_home.stdout_lines }}"
 
       - name: "6.2.10 | PATCH | Ensure local interactive user home directories exist | Permissions"
         ansible.builtin.file:
