@@ -773,9 +773,6 @@ rhel8cis_inactivelock:
 # Allow ansible to expire password for account with a last changed date in the future. False will just display users in violation, true will expire those users passwords
 rhel8cis_futurepwchgdate_autofix: true
 
-rhel8uid_uid_start: 1000
-rhel8uid_uid_stop: 60000
-
 ## Section5 vars
 
 ## Preferred method of logging
@@ -802,6 +799,19 @@ rhel8cis_auditd:
     space_left_action: email
     admin_space_left_action: single
     max_log_file_action: keep_logs
+
+# UID settings for interactive users
+# These are discovered via logins.def if set true
+discover_int_uid: true
+### Controls:
+# This variable sets the minimum number from which to search for UID
+# Note that the value will be dynamically overwritten if variable `discover_int_uid` has
+# been set to `true`.
+min_int_uid: 1000
+### Controls:
+# Note that the value will be dynamically overwritten if variable `discover_int_uid` has
+# been set to `true`.
+max_int_uid: 65533
 
 # This can be used to configure other keys in auditd.conf
 rhel8cis_auditd_extra_conf: {}
