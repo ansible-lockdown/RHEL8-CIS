@@ -74,7 +74,7 @@
       state: restarted
 
 - name: Rebuild_grub
-  ansible.builtin.shell: "grub2-mkconfig -o {{ discovered_grub_cfg.stat.lnk_source }}"
+  ansible.builtin.shell: "grub2-mkconfig -o {{ prelim_grub_cfg.stat.lnk_source }}"
   ignore_errors: true  # noqa ignore-errors
   notify: Change_requires_reboot
   tags:

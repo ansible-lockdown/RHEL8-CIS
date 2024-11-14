@@ -66,7 +66,7 @@
 - name: "1.4.4 | PATCH | Ensure core dump storage is disabled"
   when:
       - rhel8cis_rule_1_4_4
-      - discovered_systemd_coredump.stat.exists
+      - prelim_systemd_coredump.stat.exists
   tags:
       - level1-server
       - level1-workstation
