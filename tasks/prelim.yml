@@ -193,30 +193,10 @@
   check_mode: false
   register: prelim_sudoers_files
 
-- name: "PRELIM | AUDIT | Check authselect package versions"
-  tags:
-      - always
-      - authselect
-  vars:
-      warn_control_id: 'authselect_pkg_version_too_low'
-      authselect_pkg_version: 1.2.6
-  block:
-      - name: "PRELIM | AUDIT | Check authselect package versions | set fact"
-        when: ansible_facts.packages.authselect[0].version is version(authselect_pkg_version, '>=')
-        ansible.builtin.set_fact:
-            authselect_version: OK
-
-      - name: "PRELIM | WARNING | Check authselect package versions | Warning"
-        when: ansible_facts.packages.authselect[0].version is version(authselect_pkg_version, '<')
-        ansible.builtin.debug:
-            msg: "Warning!! Authselect controls won't run as authselect pkg version too low"
-
-      - name: "PRELIM | WARNING | Check authselect package versions | Warning"
-        when: ansible_facts.packages.authselect[0].version is version(authselect_pkg_version, '<')
-        ansible.builtin.import_tasks:
-            file: warning_facts.yml
-
 - name: "PRELIM | AUDIT | Check pam package versions"
+  when:
+      - "'pam' in ansible_facts.packages"
+      - rhel8cis_rule_4_4_1_1
   tags:
       - always
   vars:
@@ -242,6 +222,32 @@
         when:
             - ansible_facts.packages.pam[0].version is version(pam_pkg_version, '<')
             - ansible_facts.packages.pam[0].release is version (pam_pkg_release, '<')
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
+
+- name: "PRELIM | AUDIT | Check authselect package versions"
+  when:
+      - "'authselect' in ansible_facts.packages"
+      - rhel8cis_rule_4_4_1_2
+  tags:
+      - always
+      - authselect
+  vars:
+      warn_control_id: 'authselect_pkg_version_too_low'
+      authselect_pkg_version: 1.2.6
+  block:
+      - name: "PRELIM | AUDIT | Check authselect package versions | set fact"
+        when: ansible_facts.packages.authselect[0].version is version(authselect_pkg_version, '>=')
+        ansible.builtin.set_fact:
+            authselect_version: OK
+
+      - name: "PRELIM | WARNING | Check authselect package versions | Warning"
+        when: ansible_facts.packages.authselect[0].version is version(authselect_pkg_version, '<')
+        ansible.builtin.debug:
+            msg: "Warning!! Authselect controls won't run as authselect pkg version too low"
+
+      - name: "PRELIM | WARNING | Check authselect package versions | Warning"
+        when: ansible_facts.packages.authselect[0].version is version(authselect_pkg_version, '<')
         ansible.builtin.import_tasks:
             file: warning_facts.yml
 
