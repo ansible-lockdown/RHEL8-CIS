@@ -4,7 +4,6 @@
 - name: POST | Perform DNF package cleanup
   ansible.builtin.dnf:
       autoremove: true
-  changed_when: false
 
 - name: POST | flush handlers
   ansible.builtin.meta: flush_handlers
