@@ -33,7 +33,7 @@
       - rule_4.5.1.2
   block:
       - name: "4.5.1.2 | AUDIT | Ensure password expiration is 365 days or less | Capture accounts more than 365"
-        ansible.builtin.shell: "grep -E '^[^:]+:[^!*]' /etc/shadow | awk -F':' '$5>{{ rhel8cis_pass['max_days'] }} { print $1 }'"
+        ansible.builtin.shell: "grep -E '^[^:]+:[^!*]' /etc/shadow | awk -F':' '$5>{{ rhel8cis_pam_pass_max_days }} { print $1 }'"
         changed_when: false
         failed_when: discovered_pass_max_expire.rc not in [ 0, 1 ]
         register: discovered_pass_max_expire
@@ -42,12 +42,12 @@
         ansible.builtin.lineinfile:
             path: /etc/login.defs
             regexp: '^PASS_MAX_DAYS'
-            line: "PASS_MAX_DAYS {{ rhel8cis_pass['max_days'] }}"
+            line: "PASS_MAX_DAYS {{ rhel8cis_pam_pass_max_days }}"
 
       - name: "4.5.1.2 | PATCH | Ensure password expiration is 365 days or less | Ensure all accounts set to 365"
         ansible.builtin.user:
             name: "{{ item }}"
-            password_expire_max: "{{ rhel8cis_pass['max_days'] }}"
+            password_expire_max: "{{ rhel8cis_pam_pass_max_days }}"
         loop: "{{ discovered_pass_max_expire.stdout_lines | default([]) }}"
         when:
             - rhel8cis_set_max_expiry
@@ -90,7 +90,7 @@
         ansible.builtin.lineinfile:
             path: /etc/login.defs
             regexp: ^(#|)\s*PASS_WARN_AGE\s+\d+
-            line: "PASS_WARN_AGE {{ rhel8cis_pass['warn_age'] }}"
+            line: "PASS_WARN_AGE {{ rhel8cis_pam_pass_warn_age }}"
 
       - name: "4.5.1.3 | AUDIT | Ensure password expiration warning days is 7 or more | capture users not matching"
         ansible.builtin.shell: |
@@ -103,7 +103,7 @@
         when:
             - discovered_users_warn_days is defined
             - discovered_users_warn_days.stdout | length > 0
-        ansible.builtin.shell: chage --warndays {{ rhel8cis_pass['warn_age'] }} {{ item }}
+        ansible.builtin.shell: chage --warndays {{ rhel8cis_pam_pass_warn_age }} {{ item }}
         loop: "{{ discovered_users_warn_days.stdout_lines }}"
 
 - name: "4.5.1.4 | PATCH | Ensure inactive password lock is 30 days or less"
@@ -127,7 +127,7 @@
         when:
             - discovered_users_inactive_def is defined
             - "'30' not in discovered_users_inactive_def.stdout"
-        ansible.builtin.shell: useradd -D -f {{ rhel8cis_pass['inactive'] }}
+        ansible.builtin.shell: useradd -D -f {{ rhel8cis_pam_pass_inactive }}
 
       - name: "4.5.1.4 | AUDIT | Ensure inactive password lock is 30 days or less | capture users not matching"
         ansible.builtin.shell: |
@@ -140,7 +140,7 @@
         when:
             - discovered_users_inactive is defined
             - discovered_users_inactive.stdout | length > 0
-        ansible.builtin.shell: chage --inactive {{ rhel8cis_pass['inactive'] }} {{ item }}
+        ansible.builtin.shell: chage --inactive {{ rhel8cis_pam_pass_inactive }} {{ item }}
         loop: "{{ discovered_users_inactive.stdout_lines }}"
 
 - name: "4.5.1.5 | PATCH | Ensure all users last password change date is in the past"
@@ -166,7 +166,7 @@
         when:
             - discovered_users_inactive_default is defined
             - "'30' not in discovered_users_inactive_default.stdout"
-        ansible.builtin.shell: useradd -D -f {{ rhel8cis_pass['inactive'] }}
+        ansible.builtin.shell: useradd -D -f {{ rhel8cis_pam_pass_inactive }}
 
       - name: "4.5.1.5 | FACT | Ensure inactive password lock is 30 days or less | set fact days since_epoch"
         ansible.builtin.set_fact:

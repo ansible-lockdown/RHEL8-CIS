@@ -52,14 +52,14 @@
         when: rhel8cis_aide_scan == "cron"
         ansible.builtin.cron:
             name: Run AIDE integrity check
-            cron_file: "{{ rhel8cis_aide_cron['cron_file'] }}"
-            user: "{{ rhel8cis_aide_cron['cron_user'] }}"
-            minute: "{{ rhel8cis_aide_cron['aide_minute'] | default('0') }}"
-            hour: "{{ rhel8cis_aide_cron['aide_hour'] | default('5') }}"
-            day: "{{ rhel8cis_aide_cron['aide_day'] | default('*') }}"
-            month: "{{ rhel8cis_aide_cron['aide_month'] | default('*') }}"
-            weekday: "{{ rhel8cis_aide_cron['aide_weekday'] | default('*') }}"
-            job: "{{ rhel8cis_aide_cron['aide_job'] }}"
+            cron_file: "{{ rhel8cis_aide_cron_file }}"
+            user: "{{ rhel8cis_aide_cron_user }}"
+            minute: "{{ rhel8cis_aide_cron_minute | default('0') }}"
+            hour: "{{ rhel8cis_aide_cron_hour | default('5') }}"
+            day: "{{ rhel8cis_aide_cron_day | default('*') }}"
+            month: "{{ rhel8cis_aide_cron_month| default('*') }}"
+            weekday: "{{ rhel8cis_aide_cron_weekday | default('*') }}"
+            job: "{{ rhel8cis_aide_cron_job }}"
 
       - name: "5.3.2 | PATCH | Ensure filesystem integrity is regularly checked | timer"
         when: rhel8cis_aide_scan == "timer"
