@@ -15,7 +15,7 @@
   ansible.builtin.lineinfile:
       path: /etc/audit/auditd.conf
       regexp: ^max_log_file(\s|=)
-      line: "max_log_file = {{ rhel8cis_max_log_file_size }}"
+      line: "max_log_file = {{ rhel8cis_auditd_max_log_file_size }}"
 
 - name: "5.2.2.2 | PATCH | Ensure audit logs are not automatically deleted"
   when:
@@ -32,7 +32,7 @@
   ansible.builtin.lineinfile:
       path: /etc/audit/auditd.conf
       regexp: "^max_log_file_action"
-      line: "max_log_file_action = {{ rhel8cis_auditd['max_log_file_action'] }}"
+      line: "max_log_file_action = {{ rhel8cis_auditd_max_log_file_action }}"
 
 - name: "5.2.2.3 | PATCH | Ensure system is disabled when audit logs are full"
   when:
@@ -54,8 +54,8 @@
       line: "{{ item.line }}"
   notify: Restart_auditd
   loop:
-      - { regexp: '^disk_full_action', line: 'disk_full_action = {{ rhel8cis_auditd.disk_full_action }}' }
-      - { regexp: '^disk_error_action', line: 'disk_error_action = {{ rhel8cis_auditd.disk_error_action }}' }
+      - { regexp: '^disk_full_action', line: 'disk_full_action = {{ rhel8cis_auditd_disk_full_action }}' }
+      - { regexp: '^disk_error_action', line: 'disk_error_action = {{ rhel8cis_auditd_disk_error_action }}' }
 
 - name: "5.2.2.4 | PATCH | Ensure system warns when audit logs are low on space"
   when:
@@ -77,5 +77,5 @@
       line: "{{ item.line }}"
   notify: Restart_auditd
   loop:
-      - { regexp: '^admin_space_left_action', line: 'admin_space_left_action = {{ rhel8cis_auditd.admin_space_left_action }}' }
-      - { regexp: '^space_left_action', line: 'space_left_action = {{ rhel8cis_auditd.space_left_action }}' }
+      - { regexp: '^admin_space_left_action', line: 'admin_space_left_action = {{ rhel8cis_auditd_admin_space_left_action }}' }
+      - { regexp: '^space_left_action', line: 'space_left_action = {{ rhel8cis_auditd_space_left_action }}' }

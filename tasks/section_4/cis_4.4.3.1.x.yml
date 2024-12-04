@@ -16,7 +16,7 @@
             path: /etc/security/faillock.conf
             state: present
             regexp: '^(#|)\s*deny\s*=\s*\d'
-            line: "deny = {{ rhel8cis_pam_faillock['deny'] }}"
+            line: "deny = {{ rhel8cis_pam_faillock_deny }}"
 
       - name: "4.4.3.1.1 | PATCH | Ensure password failed attempts lockout is configured | pam_files"
         when: not rhel8cis_allow_authselect_updates
@@ -64,7 +64,7 @@
             path: /etc/security/faillock.conf
             state: present
             regexp: '^(#|)\s*unlock_time\s*=\s*\d'
-            line: "unlock_time = {{ rhel8cis_pam_faillock['unlock_time'] }}"
+            line: "unlock_time = {{ rhel8cis_pam_faillock_unlock_time }}"
 
       - name: "4.4.3.1.2 | PATCH | Ensure password unlock time is configured | pam_files"
         when: not rhel8cis_allow_authselect_updates
@@ -104,14 +104,14 @@
         ansible.builtin.lineinfile:
             path: /etc/security/faillock.conf
             state: present
-            regexp: ^(#|)\s*"{{ rhel8cis_pam_faillock['root_option'] }}"(\s*=\s*\d|.*)
-            line: "{{ rhel8cis_pam_faillock['root_option'] }}"
+            regexp: ^(#|)\s*"{{ rhel8cis_pam_faillock_root_option }}"(\s*=\s*\d|.*)
+            line: "{{ rhel8cis_pam_faillock_root_option }}"
 
       - name: "4.4.3.1.3 | PATCH | Ensure password failed attempts lockout includes root account | pam_files"
         when: not rhel8cis_allow_authselect_updates
         ansible.builtin.replace:
             path: "/etc/pam.d/{{ item }}-auth"
-            regexp: ^(\s*auth\s+(requisite|required|sufficient)\s+pam_faillock\.so)(.*)\s"{{ rhel8cis_pam_faillock['root_option'] }}"(\s*=\s*\d|.*)\S+(.*$)
+            regexp: ^(\s*auth\s+(requisite|required|sufficient)\s+pam_faillock\.so)(.*)\s"{{ rhel8cis_pam_faillock_root_option }}"(\s*=\s*\d|.*)\S+(.*$)
             replace: \1\2\3\4
         loop:
             - password
@@ -124,7 +124,7 @@
         notify: Update_authselect
         ansible.builtin.replace:
             path: "/etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/{{ item }}-auth"
-            regexp: ^(\s*auth\s+(requisite|required|sufficient)\s+pam_faillock\.so)(.*)\s"{{ rhel8cis_pam_faillock['root_option'] }}"(\s*=\s*\d|.*)\S+(.*$)
+            regexp: ^(\s*auth\s+(requisite|required|sufficient)\s+pam_faillock\.so)(.*)\s"{{ rhel8cis_pam_faillock_root_option }}"(\s*=\s*\d|.*)\S+(.*$)
             replace: \1\2\3\4
         loop:
             - password

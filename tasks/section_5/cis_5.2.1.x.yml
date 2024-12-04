@@ -88,14 +88,14 @@
         ansible.builtin.replace:
             path: /etc/default/grub
             regexp: 'audit_backlog_limit=\d+'
-            replace: 'audit_backlog_limit={{ rhel8cis_audit_back_log_limit }}'
+            replace: 'audit_backlog_limit={{ rhel8cis_auditd_back_log_limit }}'
         when: "'audit_backlog_limit=' in discovered_backlog_grub_cmdline_linux.stdout"
 
       - name: "5.2.1.3 | PATCH | Ensure audit_backlog_limit is sufficient | Add audit_backlog_limit setting if missing"
         ansible.builtin.lineinfile:
             path: /etc/default/grub
             regexp: '^GRUB_CMDLINE_LINUX='
-            line: '{{ discovered_backlog_grub_cmdline_linux.stdout }} audit_backlog_limit={{ rhel8cis_audit_back_log_limit }}"'
+            line: '{{ discovered_backlog_grub_cmdline_linux.stdout }} audit_backlog_limit={{ rhel8cis_auditd_back_log_limit }}"'
         when: "'audit_backlog_limit=' not in discovered_backlog_grub_cmdline_linux.stdout"
 
 - name: "5.2.1.4 | PATCH | Ensure auditd service is enabled"

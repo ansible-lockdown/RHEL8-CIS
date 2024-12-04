@@ -17,7 +17,7 @@
             path: /etc/security/pwhistory.conf
             state: present
             regexp: '^(#|)\s*remember\s*=\s*\d'
-            line: "remember = {{ rhel8cis_pam_pwhistory['remember'] }}"
+            line: "remember = {{ rhel8cis_pam_pwhistory_remember }}"
 
       - name: "4.4.3.3.1 | PATCH | Ensure password number of changed characters is configured | authselect_files"
         when:

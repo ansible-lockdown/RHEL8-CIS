@@ -17,7 +17,7 @@
             path: /etc/security/pwquality.conf
             state: present
             regexp: '^(#|)\s*difok\s*=\s*\d'
-            line: "difok = {{ rhel8cis_pam_pwquality['difok'] }}"
+            line: "difok = {{ rhel8cis_pam_pwquality_difok }}"
 
       - name: "4.4.3.2.1 | PATCH | Ensure password number of changed characters is configured | pam_files"
         when: not rhel8cis_allow_authselect_updates
@@ -59,7 +59,7 @@
             path: /etc/security/pwquality.conf
             state: present
             regexp: '^(#|)\s*minlen\s*=\s*\d'
-            line: "minlen = {{ rhel8cis_pam_pwquality['minlen'] }}"
+            line: "minlen = {{ rhel8cis_pam_pwquality_minlen }}"
 
       - name: "4.4.3.2.2 | PATCH | Ensure password length is configured | pam_files"
         when: not rhel8cis_allow_authselect_updates
@@ -101,7 +101,7 @@
             path: /etc/security/pwquality.conf
             state: present
             regexp: '^(#|)\s*minclass\s*=\s*\d'
-            line: "minclass = {{ rhel8cis_pam_pwquality['minclass'] }}"
+            line: "minclass = {{ rhel8cis_pam_pwquality_minclass }}"
 
       - name: "4.4.3.2.3 | PATCH | Ensure password complexity is configured | pam_files"
         when: not rhel8cis_allow_authselect_updates
@@ -143,7 +143,7 @@
             path: /etc/security/pwquality.conf
             state: present
             regexp: '^(#|)\s*maxrepeat\s*=\s*\d'
-            line: "maxrepeat = {{ rhel8cis_pam_pwquality['maxrepeat'] }}"
+            line: "maxrepeat = {{ rhel8cis_pam_pwquality_maxrepeat }}"
 
       - name: "4.4.3.2.4 | PATCH | Ensure password same consecutive characters is configured | pam_files"
         when: not rhel8cis_allow_authselect_updates
@@ -185,7 +185,7 @@
             path: /etc/security/pwquality.conf
             state: present
             regexp: '^(#|)\s*maxsequence\s*=\s*\d'
-            line: "maxsequence = {{ rhel8cis_pam_pwquality['maxseq'] }}"
+            line: "maxsequence = {{ rhel8cis_pam_pwquality_maxseq }}"
 
       - name: "4.4.3.2.5 | PATCH | Ensure password maximum sequential characters is configured | pam_files"
         when: not rhel8cis_allow_authselect_updates
