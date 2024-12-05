@@ -63,7 +63,7 @@
     dest: /etc/audit/rules.d/99_auditd.rules
     owner: root
     group: root
-    mode: '0600'
+    mode: 'go-rwx'
   notify: Restart_auditd
 
 - name: Restart_journald

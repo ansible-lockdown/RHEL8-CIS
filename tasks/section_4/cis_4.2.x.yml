@@ -74,7 +74,7 @@
         path: "{{ item.path }}"
         owner: root
         group: root
-        mode: '0644'
+        mode: 'go-wx'
       loop: "{{ discovered_ssh_public_host_key.files }}"
       loop_control:
         label: "{{ item.path }}"

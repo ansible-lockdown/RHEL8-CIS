@@ -286,7 +286,7 @@
             state: directory
             owner: root
             group: root
-            mode: '0755'
+            mode: 'u+x,go-w'
             follow: false
           loop: "{{ discovered_root_path_perms.results }}"
           loop_control:

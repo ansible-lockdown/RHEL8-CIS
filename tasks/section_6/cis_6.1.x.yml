@@ -404,7 +404,7 @@
             content: "{{ discovered_packages_rpm.stdout }}"
             owner: root
             group: root
-            mode: '0644'
+            mode: 'go-wx'
 
         - name: "6.1.14 | AUDIT | Audit system file permissions | Message out alert for package descrepancies"
           when: discovered_packages_rpm.stdout | length > 0
