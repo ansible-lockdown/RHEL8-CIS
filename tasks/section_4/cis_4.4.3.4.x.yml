@@ -103,6 +103,7 @@
 
       - name: "4.4.3.4.3 | PATCH | Ensure pam_unix includes a strong password hashing algorithm | pam_files"
         when:
+            - not rhel8cis_allow_authselect_updates
             - discovered_hash_state is defined
             - discovered_hash_state | length > 0
         ansible.builtin.replace:
@@ -148,6 +149,7 @@
 
       - name: "4.4.3.4.4 | PATCH | Ensure pam_unix includes use_authtok | pam_files"
         when:
+            - not rhel8cis_allow_authselect_updates
             - discovered_pam_authtok is defined
             - discovered_pam_authtok | length > 0
         ansible.builtin.replace:
