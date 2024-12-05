@@ -521,9 +521,9 @@ rhel8cis_crypto_policy: 'DEFAULT'
 
 # 1.6.1 Allowed crypto-policy modules
 rhel8cis_allowed_crypto_policies_modules:
-    - 'AD-SUPPORT'
-    - 'NO-SHA1'
-    - 'OSPP'
+  - 'AD-SUPPORT'
+  - 'NO-SHA1'
+  - 'OSPP'
 
 # Added module to be loaded
 rhel8cis_crypto_policy_module: ''
@@ -548,10 +548,10 @@ rhel8cis_time_synchronization: chrony
 
 # Time Synchronization servers - used in template file chrony.conf.j2
 rhel8cis_time_synchronization_servers:
-    - 0.pool.ntp.org
-    - 1.pool.ntp.org
-    - 2.pool.ntp.org
-    - 3.pool.ntp.org
+  - 0.pool.ntp.org
+  - 1.pool.ntp.org
+  - 2.pool.ntp.org
+  - 3.pool.ntp.org
 
 rhel8cis_chrony_server_options: "minpoll 8"
 rhel8cis_ntp_server_options: "iburst"
@@ -743,7 +743,7 @@ rhel8cis_set_max_expiry: false
 
 ## Add users to be skipped if required
 rhel8cis_user_skip_list:
-    root
+  root
 
 rhel8cis_root_umask: '0027'  # 0027 or more restrictive
 
@@ -760,9 +760,6 @@ rhel8cis_sugroup_users: "root"
 # This control needs to be set to ACCEPT this so that the changes do take place
 # Any other value does nothing
 rhel8cis_pamd_manual_risks: NEVER
-
-rhel8cis_inactivelock:
-    lock_days: 30
 
 # Allow ansible to expire password for account with a last changed date in the future. False will just display users in violation, true will expire those users passwords
 rhel8cis_futurepwchgdate_autofix: true
