@@ -100,33 +100,33 @@
         ansible.builtin.lineinfile:
             path: /etc/ssh/sshd_config
             regexp: "^AllowUsers"
-            line: AllowUsers {{ rhel8cis_sshd['allowusers'] }}
+            line: AllowUsers {{ rhel8cis_sshd_allowusers }}
         notify: Restart_sshd
-        when: "rhel8cis_sshd['allowusers']|default('') | length > 0"
+        when: "rhel8cis_sshd_allowusers|default('') | length > 0"
 
       - name: "4.2.4 | PATCH | Ensure SSH access is configured | Add line to sshd_config for allowgroups"
         ansible.builtin.lineinfile:
             path: /etc/ssh/sshd_config
             regexp: "^AllowGroups"
-            line: AllowGroups {{ rhel8cis_sshd['allowgroups'] }}
+            line: AllowGroups {{ rhel8cis_sshd_allowgroups }}
         notify: Restart_sshd
-        when: "rhel8cis_sshd['allowgroups']|default('') | length > 0"
+        when: "rhel8cis_sshd_allowgroups|default('') | length > 0"
 
       - name: "4.2.4 | PATCH | Ensure SSH access is configured | Add line to sshd_config for denyusers"
         ansible.builtin.lineinfile:
             path: /etc/ssh/sshd_config
             regexp: "^DenyUsers"
-            line: DenyUsers {{ rhel8cis_sshd['denyusers'] }}
+            line: DenyUsers {{ rhel8cis_sshd_denyusers }}
         notify: Restart_sshd
-        when: "rhel8cis_sshd['denyusers']|default('') | length > 0"
+        when: "rhel8cis_sshd_denyusers|default('') | length > 0"
 
       - name: "4.2.4 | PATCH | Ensure SSH access is configured | Add line to sshd_config for denygroups"
         ansible.builtin.lineinfile:
             path: /etc/ssh/sshd_config
             regexp: "^DenyGroups"
-            line: DenyGroups {{ rhel8cis_sshd['denygroups'] }}
+            line: DenyGroups {{ rhel8cis_sshd_denygroups }}
         notify: Restart_sshd
-        when: "rhel8cis_sshd['denygroups']|default('') | length > 0"
+        when: "rhel8cis_sshd_denygroups|default('') | length > 0"
 
 - name: "4.2.5 | PATCH | Ensure SSH warning banner is configured"
   when:
@@ -163,7 +163,7 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: "^#Ciphers|^Ciphers"
-      line: "Ciphers {{ rhel8cis_sshd['ciphers'] }}"
+      line: "Ciphers {{ rhel8cis_sshd_ciphers }}"
 
 - name: "4.2.7 | PATCH | Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured"
   when:
@@ -185,13 +185,13 @@
         ansible.builtin.lineinfile:
             path: /etc/ssh/sshd_config
             regexp: '^ClientAliveInterval'
-            line: "ClientAliveInterval {{ rhel8cis_sshd['clientaliveinterval'] }}"
+            line: "ClientAliveInterval {{ rhel8cis_sshd_clientaliveinterval }}"
 
       - name: "4.2.7 | PATCH | Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured | Ensure SSH ClientAliveCountMax set to <= 3"
         ansible.builtin.lineinfile:
             path: /etc/ssh/sshd_config
             regexp: '^ClientAliveCountMax'
-            line: "ClientAliveCountMax {{ rhel8cis_sshd['clientalivecountmax'] }}"
+            line: "ClientAliveCountMax {{ rhel8cis_sshd_clientalivecountmax }}"
 
 - name: "4.2.8 | PATCH | Ensure sshd DisableForwarding is enabled"
   when:
@@ -272,7 +272,7 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: "^#KexAlgorithms|^KexAlgorithms"
-      line: "KexAlgorithms {{ rhel8cis_sshd['kex'] }}"
+      line: "KexAlgorithms {{ rhel8cis_sshd_kex }}"
 
 - name: "4.2.12 | PATCH | Ensure sshd LoginGraceTime is configured"
   when:
@@ -288,7 +288,7 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: "^#LoginGraceTime|^LoginGraceTime"
-      line: "LoginGraceTime {{ rhel8cis_sshd['logingracetime'] }}"
+      line: "LoginGraceTime {{ rhel8cis_sshd_logingracetime }}"
 
 - name: "4.2.13 | PATCH | Ensure sshd LogLevel is configured"
   when:
@@ -306,7 +306,7 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: "^#LogLevel|^LogLevel"
-      line: "LogLevel {{ rhel8cis_sshd['loglevel'] }}"
+      line: "LogLevel {{ rhel8cis_sshd_loglevel }}"
 
 - name: "4.2.14 | PATCH | Ensure sshd MACs are configured"
   when:
@@ -327,7 +327,7 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: "^#MACs|^MACs"
-      line: "MACs {{ rhel8cis_sshd['macs'] }}"
+      line: "MACs {{ rhel8cis_sshd_macs }}"
 
 - name: "4.2.15 | PATCH | Ensure sshd MaxAuthTries is configured"
   when:
@@ -343,7 +343,7 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^(#)?MaxAuthTries \d'
-      line: "MaxAuthTries {{ rhel8cis_sshd['maxauthtries'] }}"
+      line: "MaxAuthTries {{ rhel8cis_sshd_maxauthtries }}"
 
 - name: "4.2.16 | PATCH | Ensure sshd MaxSessions is configured"
   when:
@@ -363,7 +363,7 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: "^#MaxSessions|^MaxSessions"
-      line: "MaxSessions {{ rhel8cis_sshd['maxsessions'] }}"
+      line: "MaxSessions {{ rhel8cis_sshd_maxsessions }}"
 
 - name: "4.2.17 | PATCH | Ensure sshd MaxStartups is configured"
   when:
@@ -383,7 +383,7 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: (?i)MaxStartups
-      line: "MaxStartups {{ rhel8cis_sshd['maxstartups'] }}"
+      line: "MaxStartups {{ rhel8cis_sshd_maxstartups }}"
 
 - name: "4.2.18 | PATCH | Ensure SSH PermitEmptyPasswords is disabled"
   when:

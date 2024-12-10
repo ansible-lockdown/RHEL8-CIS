@@ -10,7 +10,7 @@
       - auditd
       - rule_5.2.4.1
   ansible.builtin.file:
-      path: "{{ discovered_audit_logfile.stdout | dirname }}"
+      path: "{{ prelim_audit_logfile.stdout | dirname }}"
       state: directory
       mode: 'g-w,o-rwx'
 
@@ -33,7 +33,7 @@
   block:
       - name: "5.2.4.2 | AUDIT | Ensure audit log files are mode 0640 or less permissive | stat file"
         ansible.builtin.stat:
-            path: "{{ discovered_audit_logfile.stdout }}"
+            path: "{{ prelim_audit_logfile.stdout }}"
         changed_when: false
         register: discovered_auditlog_info
 
@@ -42,7 +42,7 @@
             "5.2.4.3 | PATCH | Ensure only authorized users own audit log files"
             "5.2.4.4 | PATCH | Ensure only authorized groups are assigned ownership of audit log files"
         ansible.builtin.file:
-            path: "{{ discovered_audit_logfile.stdout }}"
+            path: "{{ prelim_audit_logfile.stdout }}"
             mode: 'o-x,g-wx,o-rwx'
             owner: root
             group: root
@@ -59,7 +59,7 @@
   ansible.builtin.file:
       path: "{{ item.path }}"
       mode: 'g-wx,o-rwx'
-  loop: "{{ discovered_auditd_conf_files.files }}"
+  loop: "{{ prelim_auditd_conf_files.files }}"
   loop_control:
       label: "{{ item.path }}"
 
@@ -75,7 +75,7 @@
   ansible.builtin.file:
       path: "{{ item.path }}"
       owner: root
-  loop: "{{ discovered_auditd_conf_files.files }}"
+  loop: "{{ prelim_auditd_conf_files.files }}"
   loop_control:
       label: "{{ item.path }}"
 
@@ -91,7 +91,7 @@
   ansible.builtin.file:
       path: "{{ item.path }}"
       group: root
-  loop: "{{ discovered_auditd_conf_files.files }}"
+  loop: "{{ prelim_auditd_conf_files.files }}"
   loop_control:
       label: "{{ item.path }}"
 

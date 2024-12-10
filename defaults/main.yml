@@ -663,23 +663,22 @@ rhel8cis_nft_tables_autochaincreate: true
 ######
 ## If using the allow/deny user groups options
 rhel8cis_sshd_limited: false
-rhel8cis_sshd:
-    clientalivecountmax: 3
-    clientaliveinterval: 15
-    logingracetime: 60
-    loglevel: INFO
-    macs: '-hmac-md5,hmac-md5-96,hmac-ripemd160,hmac-sha1-96,umac-64@openssh.com,hmac-md5-etm@openssh.com,hmac-md5-96-etm@openssh.com,hmac-ripemd160-etm@openssh.com,hmac-sha1-96-etm@openssh.com,umac-64-etm@openssh.com'
-    maxauthtries: 4
-    maxsessions: 10
-    maxstartups: "10:30:60"
-    ciphers: '-3des-cbc,aes128-cbc,aes192-cbc,aes256-cbc,rijndael-cbc@lysator.liu.se'
-    kex: '-diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1'
-    # WARNING: make sure you understand the precedence when working with these values!!
-    ## Only runs if value rhel8cis_sshd_limited is true
-    # allowusers:
-    # allowgroups: systems dba
-    # denyusers:
-    # denygroups:
+rhel8cis_sshd_clientalivecountmax: 3
+rhel8cis_sshd_clientaliveinterval: 15
+rhel8cis_sshd_logingracetime: 60
+rhel8cis_sshd_loglevel: INFO
+rhel8cis_sshd_macs: '-hmac-md5,hmac-md5-96,hmac-ripemd160,hmac-sha1-96,umac-64@openssh.com,hmac-md5-etm@openssh.com,hmac-md5-96-etm@openssh.com,hmac-ripemd160-etm@openssh.com,hmac-sha1-96-etm@openssh.com,umac-64-etm@openssh.com'
+rhel8cis_sshd_maxauthtries: 4
+rhel8cis_sshd_maxsessions: 10
+rhel8cis_sshd_maxstartups: "10:30:60"
+rhel8cis_sshd_ciphers: '-3des-cbc,aes128-cbc,aes192-cbc,aes256-cbc,rijndael-cbc@lysator.liu.se'
+rhel8cis_sshd_kex: '-diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1'
+# WARNING: make sure you understand the precedence when working with these values!!
+## Only runs if value rhel8cis_sshd_limited is true
+# rhel8cis_sshd_allowusers:
+# rhel8cis_sshd_allowgroups: systems dba
+# rhel8cis_sshd_denyusers:
+# rhel8cis_sshd_denygroups:
 
 # 4.3. sudo
 rhel8cis_sudolog_location: "/var/log/sudo.log"
@@ -715,33 +714,29 @@ rhel8cis_authselect_custom_profile_name: cis_example_profile
 # ```authselect list``` on the host to be configured
 rhel8cis_authselect_default_profile_to_copy: "sssd --symlink-meta"
 
-rhel8cis_pam_faillock:
-    attempts: 5
-    deny: 5
-    interval: 900
-    unlock_time: 900
-    root_unlock_time: 60
-    # Choose options below for root options
-    root_option: even_deny_root
-    # root_option: "root_unlock_time = {{ root_unlock_time }}"
+rhel8cis_pam_faillock_attempts: 5
+rhel8cis_pam_faillock_deny: 5
+rhel8cis_pam_faillock_interval: 900
+rhel8cis_pam_faillock_unlock_time: 900
+rhel8cis_pam_faillock_root_unlock_time: 60
+# Choose options below for root options
+rhel8cis_pam_faillock_root_option: even_deny_root
+# root_option: "root_unlock_time = {{ root_unlock_time }}"
 
-rhel8cis_pam_pwquality:
-    difok: 2
-    maxrepeat: 3
-    maxseq: 3
-    minlen: 14
-    minclass: 4
+rhel8cis_pam_pwquality_difok: 2
+rhel8cis_pam_pwquality_maxrepeat: 3
+rhel8cis_pam_pwquality_maxseq: 3
+rhel8cis_pam_pwquality_minlen: 14
+rhel8cis_pam_pwquality_minclass: 4
 
-rhel8cis_pam_pwhistory:
-    remember: 24
+rhel8cis_pam_pwhistory_remember: 24
 
 rhel8cis_pam_pwhash: sha512
 
-rhel8cis_pass:
-    inactive: 30
-    max_days: 365  # Max 365
-    min_days: 7
-    warn_age: 7
+rhel8cis_pam_pass_inactive: 30
+rhel8cis_pam_pass_max_days: 365  # Max 365
+rhel8cis_pam_pass_min_days: 7
+rhel8cis_pam_pass_warn_age: 7
 
 ## Set the following to true if you wish to adjust accounts greater than rhel8cis_pass['max_days']
 rhel8cis_set_max_expiry: false
@@ -752,9 +747,8 @@ rhel8cis_user_skip_list:
 
 rhel8cis_root_umask: '0027'  # 0027 or more restrictive
 
-rhel8cis_shell_session_timeout:
-    file: /etc/profile.d/tmout.sh
-    timeout: 900
+rhel8cis_shell_session_file: /etc/profile.d/tmout.sh
+rhel8cis_shell_session_timeout: 900
 
 # sugroup
 rhel8cis_sugroup: sugroup
@@ -772,9 +766,6 @@ rhel8cis_inactivelock:
 
 # Allow ansible to expire password for account with a last changed date in the future. False will just display users in violation, true will expire those users passwords
 rhel8cis_futurepwchgdate_autofix: true
-
-rhel8uid_uid_start: 1000
-rhel8uid_uid_stop: 60000
 
 ## Section5 vars
 
@@ -795,13 +786,31 @@ rhel8cis_remote_log_queuesize: 1000
 
 update_audit_template: false
 
-rhel8cis_auditd:
-    disk_error_action: halt
-    disk_full_action: halt
-    action_mail_acct: root
-    space_left_action: email
-    admin_space_left_action: single
-    max_log_file_action: keep_logs
+# The audit_back_log_limit value should never be below 8192
+rhel8cis_auditd_back_log_limit: 8192
+
+# The max_log_file parameter should be based on your sites policy
+rhel8cis_auditd_max_log_file_size: 10
+
+rhel8cis_auditd_disk_error_action: halt
+rhel8cis_auditd_disk_full_action: halt
+rhel8cis_auditd_action_mail_acct: root
+rhel8cis_auditd_space_left_action: email
+rhel8cis_auditd_admin_space_left_action: single
+rhel8cis_auditd_max_log_file_action: keep_logs
+
+# UID settings for interactive users
+# These are discovered via logins.def if set true
+discover_int_uid: true
+### Controls:
+# This variable sets the minimum number from which to search for UID
+# Note that the value will be dynamically overwritten if variable `discover_int_uid` has
+# been set to `true`.
+min_int_uid: 1000
+### Controls:
+# Note that the value will be dynamically overwritten if variable `discover_int_uid` has
+# been set to `true`.
+max_int_uid: 65533
 
 # This can be used to configure other keys in auditd.conf
 rhel8cis_auditd_extra_conf: {}
@@ -833,26 +842,19 @@ rhel8cis_journald_maxfilesec: 1month
 # change to true if you wish to change logrotate.d conf files
 allow_logrotate_conf_umask_updates: false
 
-# The audit_back_log_limit value should never be below 8192
-rhel8cis_audit_back_log_limit: 8192
-
-# The max_log_file parameter should be based on your sites policy
-rhel8cis_max_log_file_size: 10
-
 # AIDE
 # aide setup via - cron, timer
 rhel8cis_aide_scan: cron
 rhel8cis_config_aide: true
 # AIDE cron settings
-rhel8cis_aide_cron:
-    cron_user: root
-    cron_file: /etc/cron.d/cis_aide
-    aide_job: '/usr/sbin/aide --check'
-    aide_minute: 0
-    aide_hour: 5
-    aide_day: '*'
-    aide_month: '*'
-    aide_weekday: '*'
+rhel8cis_aide_cron_user: root
+rhel8cis_aide_cron_file: /etc/cron.d/cis_aide
+rhel8cis_aide_cron_job: '/usr/sbin/aide --check'
+rhel8cis_aide_cron_minute: 0
+rhel8cis_aide_cron_hour: 5
+rhel8cis_aide_cron_day: '*'
+rhel8cis_aide_cron_month: '*'
+rhel8cis_aide_cron_weekday: '*'
 
 ## Section6 vars
 
@@ -870,5 +872,6 @@ rhel8cis_ungrouped_adjust: false
 rhel8cis_suid_adjust: false
 rhel8cis_sgid_adjust: false
 
-# 6.2.12
-rhel8cis_dotperm_ansiblemanaged: true
+# 6.2.11
+# Allow changes to take place on system
+rhel8cis_dotperm_ansiblemanaged: false

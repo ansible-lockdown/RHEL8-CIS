@@ -18,12 +18,12 @@
   block:
 
       - name: "1.1.2.2.1 | PATCH | Ensure /dev/shm is a separate partition | Absent"
-        when: discovered_dev_shm_present is undefined
+        when: prelim_dev_shm_present is undefined
         ansible.builtin.debug:
             msg: "Warning!! {{ required_mount }} is not mounted on a separate partition"
 
       - name: "1.1.2.2.1 | PATCH | Ensure /dev/shm is a separate partition | Present"
-        when: discovered_dev_shm_present is undefined
+        when: prelim_dev_shm_present is undefined
         ansible.builtin.import_tasks:
             file: warning_facts.yml
 
@@ -32,7 +32,7 @@
           1.1.2.2.3 | PATCH | Ensure nosuid option set on /dev/shm partition
           1.1.2.2.4 | PATCH | Ensure noexec option set on /dev/shm partition"
   when:
-      - discovered_dev_shm_present is defined
+      - prelim_dev_shm_present is defined
       - rhel8cis_rule_1_1_2_2_2 or
         rhel8cis_rule_1_1_2_2_3 or
         rhel8cis_rule_1_1_2_2_4

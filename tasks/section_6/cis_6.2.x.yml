@@ -192,7 +192,7 @@
       - name: "6.2.6 | WARNING | Ensure no duplicate user names exist | Print warning about users with duplicate User Names"
         when: discovered_username_check.stdout | length > 0
         ansible.builtin.debug:
-            msg: "Warning!! The following user names are duplicates: {{ discovered_user_username_check.stdout_lines }}"
+            msg: "Warning!! The following user names are duplicates: {{ discovered_username_check.stdout_lines }}"
 
       - name: "6.2.6 | WARNING | Ensure no duplicate user names exist | Set warning count"
         when: discovered_username_check.stdout | length > 0
@@ -227,7 +227,7 @@
       - name: "6.2.7 | AUDIT | Ensure no duplicate group names exist | Print warning about users with duplicate group names"
         when: discovered_group_check.stdout | length > 0
         ansible.builtin.debug:
-            msg: "Warning!! The following group names are duplicates: {{ discovered_group_group_check.stdout_lines }}"
+            msg: "Warning!! The following group names are duplicates: {{ discovered_group_check.stdout_lines }}"
 
       - name: "6.2.7 | AUDIT | Ensure no duplicate group names exist | Set warning count"
         when: discovered_group_check.stdout | length > 0
@@ -302,7 +302,7 @@
 
 - name: "6.2.9 | PATCH | Ensure root is the only UID 0 account"
   when:
-      - discovered_uid_zero_accounts_except_root.rc
+      - prelim_uid_zero_accounts_except_root.rc
       - rhel8cis_rule_6_2_9
   tags:
       - level1-server
@@ -319,7 +319,7 @@
   ansible.builtin.shell: passwd -l {{ item }}
   changed_when: false
   failed_when: false
-  loop: "{{ discovered_uid_zero_accounts_except_root.stdout_lines }}"
+  loop: "{{ prelim_uid_zero_accounts_except_root.stdout_lines }}"
 
 - name: "6.2.10 | PATCH | Ensure local interactive user home directories exist"
   when:
@@ -338,32 +338,16 @@
   block:
       - name: "6.2.10 | PATCH | Ensure local interactive user home directories exist | Create dir if absent"
         ansible.builtin.file:
-            path: "{{ item.dir }}"
+            path: "{{ item }}"
             state: directory
-            owner: "{{ item.id }}"
-        loop: "{{ rhel8cis_passwd | selectattr('uid', '>=', rhel8uid_uid_start | int ) | selectattr('uid', '<=', rhel8uid_uid_stop | int ) | list }}"
-        loop_control:
-            label: "{{ item.id }}"
+            owner: "{{ item | basename }}"
+        loop: "{{ prelim_interactive_users_home.stdout_lines }}"
 
-      # set default ACLs so the homedir has an effective umask of 0027
-      - name: "6.2.10 | PATCH | Ensure local interactive user home directories exist | Set group ACL"
-        ansible.posix.acl:
+      - name: "6.2.10 | PATCH | Ensure local interactive user home directories exist | Permissions"
+        ansible.builtin.file:
             path: "{{ item }}"
-            default: true
-            etype: group
-            permissions: rx
-            state: present
-        loop: "{{ discovered_interactive_users_home.stdout_lines }}"
-        when: not system_is_container
-
-      - name: "6.2.10 | PATCH | Ensure local interactive user home directories exist | Set other ACL"
-        ansible.posix.acl:
-            path: "{{ item }}"
-            default: true
-            etype: other
-            permissions: 0
-            state: present
-        loop: "{{ discovered_interactive_users_home.stdout_lines }}"
+            mode: 'g-w,o-rwx'
+        loop: "{{ prelim_interactive_users_home.stdout_lines }}"
         when: not system_is_container
 
 - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured"
@@ -386,35 +370,64 @@
       warn_control_id: '6.2.11'
   block:
       - name: "6.2.11 | AUDIT | Ensure local interactive user dot files access is configured | Check for files"
-        ansible.builtin.shell: find /home/ -name "\.*" -perm /g+w,o+w
-        changed_when: false
-        failed_when: discovered_dot_files.rc not in [ 0, 1 ]
-        check_mode: false
-        register: discovered_dot_files
+        # ansible.builtin.shell: find /home/ -name "\.*" exec ls -l {}
+        # changed_when: false
+        # failed_when: discovered_hidden_files.rc not in [ 0, 1 ]
+        # check_mode: false
+        # register: discovered_hidden_files
+        ansible.builtin.find:
+            path: "{{ prelim_interactive_users_home.stdout_lines | list }}"
+            file_type: file
+            hidden: true
+        register: discovered_hidden_files
 
       - name: "6.2.11 | AUDIT | Ensure local interactive user dot files access is configured | Warning on files found"
         when:
-            - discovered_dot_files.stdout | length > 0
-            - rhel8cis_dotperm_ansiblemanaged
-
+            - not rhel8cis_dotperm_ansiblemanaged
         ansible.builtin.debug:
             msg:
-                - "Warning!! We have discovered group or world-writable dot files on your system and this host is configured for manual intervention. Please investigate these files further."
+                - "Warning!! Please investigate that hidden files found in users home directories match control requirements."
 
       - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured | Set warning count"
         when:
-            - discovered_dot_files.stdout | length > 0
-            - rhel8cis_dotperm_ansiblemanaged
-
+            - not rhel8cis_dotperm_ansiblemanaged
         ansible.builtin.import_tasks:
             file: warning_facts.yml
 
-      - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured | Changes files if configured"
+      - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured"
         when:
-            - discovered_dot_files.stdout | length > 0
+            - discovered_hidden_files.matched > 0
             - rhel8cis_dotperm_ansiblemanaged
+        block:
+            - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured | Changes files if configured .bash_history"
+              when:
+                  - discovered_hidden_files.matched > 0
+                  - item.path is search (".netrc") or item.path is search (".bash_history")
+              ansible.builtin.file:
+                  path: "{{ item.path }}"
+                  mode: 'u-x,go-rwx'
+              with_items: "{{ discovered_hidden_files.files }}"
 
-        ansible.builtin.file:
-            path: '{{ item }}'
-            mode: 'go-w'
-        with_items: "{{ discovered_dot_files.stdout_lines }}"
+            - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured | Changes files if configured file mode"
+              when:
+                  - (item.path != '.netrc' or
+                    item.path != '.rhost' or
+                    item.path != '.forward')
+              ansible.builtin.file:
+                  path: '{{ item.path }}'
+                  mode: 'u-x,go-wx'
+              with_items: "{{ discovered_hidden_files.files }}"
+
+            - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured | Changes files ownerships"
+              ansible.builtin.file:
+                  path: "{{ item.path }}"
+                  owner: "{{ rhel8cis_passwd | selectattr('dir', 'in', item.path) | map(attribute='uid') | last }}"
+                  group: "{{ rhel8cis_passwd | selectattr('dir', 'in', item.path) | map(attribute='gid') | last }}"
+              with_items: "{{ discovered_hidden_files.files }}"
+
+            - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured | rename .forward or .netrc files"
+              when:
+                  - item.path is search (".forward") or item.path is search (".rhost")
+                  - item.path is not search ("CIS")
+              ansible.builtin.shell: "mv {{ item.path }} {{ item.path }}_CIS_TOBEREVIEWED"
+              with_items: "{{ discovered_hidden_files.files }}"

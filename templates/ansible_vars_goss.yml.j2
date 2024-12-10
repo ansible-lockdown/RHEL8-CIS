@@ -584,29 +584,29 @@ rhel8cis_nft_tables_autochaincreate: {{ rhel8cis_nft_tables_autochaincreate }}
 ## If using the allow/deny user groups options
 rhel8cis_sshd_limited: {{ rhel8cis_sshd_limited }}
 rhel8cis_sshd:
-    clientalivecountmax: {{ rhel8cis_sshd.clientalivecountmax }}
-    clientaliveinterval: {{ rhel8cis_sshd.clientaliveinterval }}
-    logingracetime: {{ rhel8cis_sshd.logingracetime }}
-    loglevel: {{ rhel8cis_sshd.loglevel }}
-    macs: '{{ rhel8cis_sshd.macs }}'
-    maxauthtries: {{ rhel8cis_sshd.maxauthtries }}
-    maxsessions: {{ rhel8cis_sshd.maxsessions }}
-    maxstartups: '{{ rhel8cis_sshd.maxstartups }}'
-    ciphers: '{{ rhel8cis_sshd.ciphers }}'
-    kex: '{{ rhel8cis_sshd.kex }}'
+    clientalivecountmax: {{ rhel8cis_sshd_clientalivecountmax }}
+    clientaliveinterval: {{ rhel8cis_sshd_clientaliveinterval }}
+    logingracetime: {{ rhel8cis_sshd_logingracetime }}
+    loglevel: {{ rhel8cis_sshd_loglevel }}
+    macs: '{{ rhel8cis_sshd_macs }}'
+    maxauthtries: {{ rhel8cis_sshd_maxauthtries }}
+    maxsessions: {{ rhel8cis_sshd_maxsessions }}
+    maxstartups: '{{ rhel8cis_sshd_maxstartups }}'
+    ciphers: '{{ rhel8cis_sshd_ciphers }}'
+    kex: '{{ rhel8cis_sshd_kex }}'
 {% if rhel8cis_sshd_limited %}
     # WARNING: make sure you understand the precedence when working with these values!!
-    {% if rhel8cis_sshd.allowusers is defined %}
-    # allowusers: '{{ rhel8cis_sshd.allowusers }}'
+    {% if rhel8cis_sshd_allowusers is defined %}
+    # allowusers: '{{ rhel8cis_sshd_allowusers }}'
     {% endif %}
-    {% if rhel8cis_sshd.allowgroups is defined %}
-    # allowgroups: '{{ rhel8cis_sshd.allowgroups }}'
+    {% if rhel8cis_sshd_allowgroups is defined %}
+    # allowgroups: '{{ rhel8cis_sshd_allowgroups }}'
     {% endif %}
-    {% if rhel8cis_sshd.denyusers is defined %}
+    {% if rhel8cis_sshd_denyusers is defined %}
     # denyusers: '{{ rhel8cis_sshd.denyusers }}'
     {% endif %}
-    {% if rhel8cis_sshd.denygroups is defined %}
-    # denygroups: '{{ rhel8cis_sshd.denygroups }}'
+    {% if rhel8cis_sshd_denygroups is defined %}
+    # denygroups: '{{ rhel8cis_sshd_denygroups }}'
     {% endif %}
 {% endif %}
 
@@ -620,37 +620,37 @@ rhel8cis_allow_authselect_updates: {{ rhel8cis_allow_authselect_updates }}
 rhel8cis_authselect_custom_profile_name: '{{ rhel8cis_authselect_custom_profile_name }}'
 
 rhel8cis_pam_faillock:
-    attempts: {{ rhel8cis_pam_faillock.attempts }}
-    deny: {{ rhel8cis_pam_faillock.deny }}
-    interval: {{ rhel8cis_pam_faillock.interval }}
-    unlock_time: {{ rhel8cis_pam_faillock.unlock_time }}
-    root_unlock_time: {{ rhel8cis_pam_faillock.root_unlock_time }}
+    attempts: {{ rhel8cis_pam_faillock_attempts }}
+    deny: {{ rhel8cis_pam_faillock_deny }}
+    interval: {{ rhel8cis_pam_faillock_interval }}
+    unlock_time: {{ rhel8cis_pam_faillock_unlock_time }}
+    root_unlock_time: {{ rhel8cis_pam_faillock_root_unlock_time }}
     # Choose options below for root options
-    root_option: {{ rhel8cis_pam_faillock.root_option }}
+    root_option: {{ rhel8cis_pam_faillock_root_option }}
 
 rhel8cis_pam_pwquality:
-    difok: {{ rhel8cis_pam_pwquality.difok }}
-    maxrepeat: {{ rhel8cis_pam_pwquality.maxrepeat }}
-    maxseq: {{ rhel8cis_pam_pwquality.maxseq }}
-    minlen: {{ rhel8cis_pam_pwquality.minlen }}
-    minclass: {{ rhel8cis_pam_pwquality.minclass }}
+    difok: {{ rhel8cis_pam_pwquality_difok }}
+    maxrepeat: {{ rhel8cis_pam_pwquality_maxrepeat }}
+    maxseq: {{ rhel8cis_pam_pwquality_maxseq }}
+    minlen: {{ rhel8cis_pam_pwquality_minlen }}
+    minclass: {{ rhel8cis_pam_pwquality_minclass }}
 
 rhel8cis_pam_pwhistory:
-    remember: {{ rhel8cis_pam_pwhistory.remember }}
+    remember: {{ rhel8cis_pam_pwhistory_remember }}
 
 rhel8cis_pam_pwhash: {{ rhel8cis_pam_pwhash }}
 
 rhel8cis_pass:
-    inactive: {{ rhel8cis_pass.inactive }}
-    max_days: {{ rhel8cis_pass.max_days }}
-    min_days: {{ rhel8cis_pass.min_days }}
-    warn_age: {{ rhel8cis_pass.warn_age }}
+    inactive: {{ rhel8cis_pam_pass_inactive }}
+    max_days: {{ rhel8cis_pam_pass_max_days }}
+    min_days: {{ rhel8cis_pam_pass_min_days }}
+    warn_age: {{ rhel8cis_pam_pass_warn_age }}
 
 rhel8cis_root_umask: {{ rhel8cis_root_umask }}  # 0027 or more restrictive
 
 rhel8cis_shell_session_timeout:
-    file: {{ rhel8cis_shell_session_timeout.file }}
-    timeout: {{ rhel8cis_shell_session_timeout.timeout }}
+    file: {{ rhel8cis_shell_session_file }}
+    timeout: {{ rhel8cis_shell_session_timeout }}
 
 # 5.3.7
 rhel8cis_sugroup: {{ rhel8cis_sugroup }}
@@ -663,9 +663,6 @@ rhel8cis_inactivelock:
 
 # 5.6.1.5 Allow ansible to expire password for account with a last changed date in the future. False will just display users in violation, true will expire those users passwords
 rhel8cis_futurepwchgdate_autofix: {{ rhel8cis_futurepwchgdate_autofix }}
-
-rhel8uid_uid_start: {{ rhel8uid_uid_start }}
-rhel8uid_uid_stop: {{ rhel8uid_uid_stop }}
 
 ## Section5 vars
 
@@ -687,12 +684,12 @@ rhel8cis_remote_log_queuesize: {{ rhel8cis_remote_log_queuesize }}
 update_audit_template: {{ update_audit_template }}
 
 rhel8cis_auditd:
-    disk_error_action: {{ rhel8cis_auditd.disk_error_action }}
-    disk_full_action: {{ rhel8cis_auditd.disk_full_action }}
-    action_mail_acct: {{ rhel8cis_auditd.action_mail_acct }}
-    space_left_action: {{ rhel8cis_auditd.space_left_action }}
-    admin_space_left_action: {{ rhel8cis_auditd.admin_space_left_action }}
-    max_log_file_action: {{ rhel8cis_auditd.max_log_file_action }}
+    disk_error_action: {{ rhel8cis_auditd_disk_error_action }}
+    disk_full_action: {{ rhel8cis_auditd_disk_full_action }}
+    action_mail_acct: {{ rhel8cis_auditd_action_mail_acct }}
+    space_left_action: {{ rhel8cis_auditd_space_left_action }}
+    admin_space_left_action: {{ rhel8cis_auditd_admin_space_left_action }}
+    max_log_file_action: {{ rhel8cis_auditd_max_log_file_action }}
 
 rhel8cis_logrotate: {{ rhel8cis_logrotate }}
 
@@ -718,24 +715,18 @@ rhel8cis_journald_maxfilesec: {{ rhel8cis_journald_maxfilesec }}
 # change to true if you wish to change logrotate.d conf files
 allow_logrotate_conf_umask_updates: {{ allow_logrotate_conf_umask_updates }}
 
-# The audit_back_log_limit value should never be below 8192
-rhel8cis_audit_back_log_limit: {{ rhel8cis_audit_back_log_limit }}
-
-# The max_log_file parameter should be based on your sites policy
-rhel8cis_max_log_file_size: {{ rhel8cis_max_log_file_size }}
-
 ## AIDE
 rhel8cis_aide_scan: {{ rhel8cis_aide_scan }}
 rhel8cis_config_aide: {{ rhel8cis_config_aide }}
 # AIDE cron settings
 rhel8cis_aide_cron:
-    cron_user: '{{ rhel8cis_aide_cron.cron_user }}'
-    cron_file: '{{ rhel8cis_aide_cron.cron_file }}'
-    aide_job: '{{ rhel8cis_aide_cron.aide_job }}'
-    aide_minute: '{{ rhel8cis_aide_cron.aide_minute }}'
-    aide_hour: '{{ rhel8cis_aide_cron.aide_hour }}'
-    aide_day: '{{ rhel8cis_aide_cron.aide_day }}'
-    aide_month: '{{ rhel8cis_aide_cron.aide_month }}'
-    aide_weekday: '{{ rhel8cis_aide_cron.aide_weekday }}'
+    cron_user: '{{ rhel8cis_aide_cron_user }}'
+    cron_file: '{{ rhel8cis_aide_cron_file }}'
+    aide_job: '{{ rhel8cis_aide_cron_job }}'
+    aide_minute: '{{ rhel8cis_aide_cron_minute }}'
+    aide_hour: '{{ rhel8cis_aide_cron_hour }}'
+    aide_day: '{{ rhel8cis_aide_cron_day }}'
+    aide_month: '{{ rhel8cis_aide_cron_month }}'
+    aide_weekday: '{{ rhel8cis_aide_cron_weekday }}'
 
 ## Section6 vars
