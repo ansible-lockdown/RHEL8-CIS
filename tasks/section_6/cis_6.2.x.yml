@@ -267,7 +267,7 @@
       failed_when: discovered_root_path_trailing_colon.rc not in [ 0, 1 ]
       register: discovered_root_path_trailing_colon
 
-    - name: "6.2.8 | AUDIT | Ensure root PATH Integrity | Check for owner and permissions"
+    - name: "6.2.8 | PATCH | Ensure root PATH Integrity | Check for owner and permissions"
       block:
         - name: "6.2.8 | AUDIT | Ensure root PATH Integrity | Check for owner and permissions"
           ansible.builtin.stat:
@@ -275,7 +275,7 @@
           register: discovered_root_path_perms
           loop: "{{ discovered_root_paths_split.stdout_lines }}"
 
-        - name: "6.2.8 | AUDIT | Ensure root PATH Integrity | Set permissions"
+        - name: "6.2.8 | PATCH | Ensure root PATH Integrity | Set permissions"
           when:
             - item.stat.exists
             - item.stat.isdir
@@ -379,7 +379,7 @@
         msg:
           - "Warning!! Please investigate that hidden files found in users home directories match control requirements."
 
-    - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured | Set warning count"
+    - name: "6.2.11 | AUDIT | Ensure local interactive user dot files access is configured | Set warning count"
       when: not rhel8cis_dotperm_ansiblemanaged
       ansible.builtin.import_tasks:
         file: warning_facts.yml

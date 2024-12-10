@@ -189,8 +189,8 @@
   block:
     - name: "6.1.11 | AUDIT | Ensure world writable files and directories are secured | Get list of world-writable files"
       ansible.builtin.shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -0002
-      failed_when: false
       changed_when: false
+      failed_when: false
       register: discovered_perms_results
 
     - name: "6.1.11 | PATCH | Adjust world-writable files if they exist (Configurable)"
