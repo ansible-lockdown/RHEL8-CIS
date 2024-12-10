@@ -175,7 +175,7 @@
     file: section_6/main.yml
 
 - name: Run auditd logic
-  when: update_audit_template
+  when: rhel8cis_update_audit_template
   tags: always
   ansible.builtin.import_tasks:
     file: auditd.yml

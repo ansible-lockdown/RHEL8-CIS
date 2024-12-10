@@ -781,7 +781,7 @@ rhel8cis_remote_log_protocol: tcp
 rhel8cis_remote_log_retrycount: 100
 rhel8cis_remote_log_queuesize: 1000
 
-update_audit_template: false
+rhel8cis_update_audit_template: false
 
 # The audit_back_log_limit value should never be below 8192
 rhel8cis_auditd_back_log_limit: 8192
@@ -798,7 +798,7 @@ rhel8cis_auditd_max_log_file_action: keep_logs
 
 # UID settings for interactive users
 # These are discovered via logins.def if set true
-discover_int_uid: true
+rhel8cis_discover_int_uid: true
 ### Controls:
 # This variable sets the minimum number from which to search for UID
 # Note that the value will be dynamically overwritten if variable `discover_int_uid` has
