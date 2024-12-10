@@ -2,12 +2,12 @@
 
 - name: "SECTION | 2.1 | Time Synchronization"
   ansible.builtin.import_tasks:
-      file: cis_2.1.x.yml
+    file: cis_2.1.x.yml
 
 - name: "SECTION | 2.2 | Special Purpose Services"
   ansible.builtin.import_tasks:
-      file: cis_2.2.x.yml
+    file: cis_2.2.x.yml
 
 - name: "SECTION | 2.3 | Service Clients"
   ansible.builtin.import_tasks:
-      file: cis_2.3.x.yml
+    file: cis_2.3.x.yml
