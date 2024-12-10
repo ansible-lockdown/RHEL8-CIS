@@ -31,6 +31,7 @@
   register: prelim_interactive_uids
 
 - name: "PRELIM | Discover Interactive UID MIN and MIN from logins.def"
+  when: rhel8cis_discover_int_uid
   block:
     - name: "PRELIM | Capture UID_MIN information from logins.def"
       ansible.builtin.shell: grep -w "^UID_MIN" /etc/login.defs | awk '{print $NF}'
