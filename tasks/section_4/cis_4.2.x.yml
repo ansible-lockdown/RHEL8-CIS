@@ -456,8 +456,8 @@
   block:
     - name: "4.2.22 | AUDIT | Ensure system-wide crypto policy is not over-ridden"
       ansible.builtin.shell: grep -i '^\s*CRYPTO_POLICY=' /etc/sysconfig/sshd
-      failed_when: discovered_crypto_policy_override.rc not in [ 0, 1 ]
       changed_when: false
+      failed_when: discovered_crypto_policy_override.rc not in [ 0, 1 ]
       register: discovered_crypto_policy_override
 
     - name: "4.2.22 | PATCH | Ensure system-wide crypto policy is not over-ridden"

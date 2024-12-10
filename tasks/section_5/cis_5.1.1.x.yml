@@ -107,7 +107,6 @@
       when: rhel8cis_rsyslog_ansiblemanaged
       ansible.builtin.blockinfile:
         path: /etc/rsyslog.conf
-        state: present
         marker: "# {mark} MISC. LOG SETTINGS - CIS benchmark - Ansible-lockdown"
         block: |
           # misc. logging additions to meet CIS standards
@@ -119,7 +118,6 @@
     - name: "5.1.1.5 | PATCH | Ensure logging is configured | Local log settings"
       ansible.builtin.blockinfile:
         path: /etc/rsyslog.conf
-        state: present
         marker: "#{mark} LOCAL LOG SETTINGS - CIS benchmark - Ansible-lockdown"
         block: |
           # local log settings to meet CIS standards
@@ -133,7 +131,6 @@
     - name: "5.1.1.5 | PATCH | Ensure logging is configured | Auth Settings"
       ansible.builtin.blockinfile:
         path: /etc/rsyslog.conf
-        state: present
         marker: "#{mark} Auth SETTINGS - CIS benchmark - Ansible-lockdown"
         block: |
           # Private settings to meet CIS standards
@@ -143,7 +140,6 @@
     - name: "5.1.1.5 | PATCH | Ensure logging is configured | Cron Settings"
       ansible.builtin.blockinfile:
         path: /etc/rsyslog.conf
-        state: present
         marker: "#{mark} Cron SETTINGS - CIS benchmark - Ansible-lockdown"
         block: |
           # Cron settings to meet CIS standards
@@ -162,7 +158,6 @@
     - rule_5.1.1.6
   ansible.builtin.blockinfile:
     path: /etc/rsyslog.conf
-    state: present
     block: |
       # target can be IP or FQDN
       *.* action(type="omfwd" target="{{ rhel8cis_remote_log_host }}" port="{{ rhel8cis_remote_log_port }}" protocol="{{ rhel8cis_remote_log_protocol }}" action.resumeRetryCount="{{ rhel8cis_remote_log_retrycount }}" queue.type="LinkedList" queue.size="{{ rhel8cis_remote_log_queuesize }}")

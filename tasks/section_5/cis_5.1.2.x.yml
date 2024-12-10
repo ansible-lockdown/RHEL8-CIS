@@ -149,7 +149,6 @@
     path: /etc/systemd/journald.conf
     regexp: 'Storage='
     line: Storage=persistent
-    state: present
     insertafter: ^#Storage
     validate: /usr/bin/bash -n %s
 

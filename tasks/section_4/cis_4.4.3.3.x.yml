@@ -14,7 +14,6 @@
     - name: "4.4.3.3.1 | PATCH | Ensure password history remember is configured | pwhistory.conf"
       ansible.builtin.lineinfile:
         path: /etc/security/pwhistory.conf
-        state: present
         regexp: '^(#|)\s*remember\s*=\s*\d'
         line: "remember = {{ rhel8cis_pam_pwhistory_remember }}"
 
@@ -45,7 +44,6 @@
     - name: "4.4.3.3.2 | PATCH | Ensure password history is enforced for the root user | pwhistory.conf"
       ansible.builtin.lineinfile:
         path: /etc/security/pwhistory.conf
-        state: present
         regexp: '^(#|)\s*enforce_for_root'
         line: "enforce_for_root"
 
@@ -86,7 +84,6 @@
     - name: "4.4.3.3.3 | PATCH | Ensure pam_pwhistory includes use_authtok | pwhistory.conf"
       ansible.builtin.lineinfile:
         path: /etc/security/pwhistory.conf
-        state: present
         regexp: '^(#|)\s*use_authtok'
         line: "use_authtok"
 
