@@ -176,7 +176,7 @@
       - set_remote_syslog is failed
       - set_remote_syslog.rc != 257
 
-- name: "5.1.1.7 | PATCH | Ensure rsyslog is not configured to recieve logs from a remote client"
+- name: "5.1.1.7 | PATCH | Ensure rsyslog is not configured to receive logs from a remote client"
   when:
       - rhel8cis_rule_5_1_1_7
   tags:
@@ -187,7 +187,7 @@
       - rule_5.1.1.7
   notify: Restart_rsyslog
   block:
-      - name: "5.1.1.7 | PATCH | Ensure rsyslog is not configured to recieve logs from a remote client. | When not log host"
+      - name: "5.1.1.7 | PATCH | Ensure rsyslog is not configured to receive logs from a remote client. | When not log host"
         when: not rhel8cis_system_is_log_server
         ansible.builtin.replace:
             path: /etc/rsyslog.conf
@@ -199,7 +199,7 @@
             - '^(module\(load="imtcp"\))'
             - '^(input\(type="imtcp")'
 
-      - name: "5.1.1.7 | PATCH | Ensure rsyslog is not configured to recieve logs from a remote clients. | When log host"
+      - name: "5.1.1.7 | PATCH | Ensure rsyslog is not configured to receive logs from a remote clients. | When log host"
         when: rhel8cis_system_is_log_server
         ansible.builtin.replace:
             path: /etc/rsyslog.conf
