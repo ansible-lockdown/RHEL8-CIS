@@ -25,10 +25,6 @@ rhel8cis_selinux_disable: false
 # Some tests can have a heavy impact on systen e.g. find on all filesystems etc
 rhel8cis_disruption_high: false
 
-## Python Binary
-## This is used for python3 Installations where python2 OS modules are used in ansible
-python2_bin: /bin/python2.7
-
 ## Benchmark name used by audting control role
 # The audit variable found at the base
 benchmark: RHEL8-CIS
@@ -781,7 +777,7 @@ rhel8cis_remote_log_protocol: tcp
 rhel8cis_remote_log_retrycount: 100
 rhel8cis_remote_log_queuesize: 1000
 
-update_audit_template: false
+rhel8cis_update_audit_template: false
 
 # The audit_back_log_limit value should never be below 8192
 rhel8cis_auditd_back_log_limit: 8192
@@ -798,15 +794,15 @@ rhel8cis_auditd_max_log_file_action: keep_logs
 
 # UID settings for interactive users
 # These are discovered via logins.def if set true
-discover_int_uid: true
+rhel8cis_discover_int_uid: true
 ### Controls:
 # This variable sets the minimum number from which to search for UID
-# Note that the value will be dynamically overwritten if variable `discover_int_uid` has
-# been set to `true`.
+# Note that the value will be dynamically overwritten if variable `rhel8cis_discover_int_uid` has
+# been set to `true`. These are not prefixed with rhel8cis as can be set via prelim
 min_int_uid: 1000
 ### Controls:
-# Note that the value will be dynamically overwritten if variable `discover_int_uid` has
-# been set to `true`.
+# Note that the value will be dynamically overwritten if variable `rhel8cis_discover_int_uid` has
+# been set to `true`. These are not prefixed with rhel8cis as can be set via prelim
 max_int_uid: 65533
 
 # This can be used to configure other keys in auditd.conf
@@ -834,10 +830,6 @@ rhel8cis_journald_runtimemaxuse: 10M
 rhel8cis_journald_runtimekeepfree: 100G
 # rhel8cis_journald_MaxFileSec is how long in time to keep log files. Values are Xm, Xh, Xday, Xweek, Xmonth, Xyear, for example 2week is two weeks
 rhel8cis_journald_maxfilesec: 1month
-
-# logrotate configuration
-# change to true if you wish to change logrotate.d conf files
-allow_logrotate_conf_umask_updates: false
 
 # AIDE
 # aide setup via - cron, timer
