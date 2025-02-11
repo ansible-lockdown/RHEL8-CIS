@@ -302,7 +302,7 @@
 
 - name: "6.2.9 | PATCH | Ensure root is the only UID 0 account"
   when:
-      - prelim_uid_zero_accounts_except_root.rc
+      - prelim_uid_zero_accounts_except_root.stdout | length > 0
       - rhel8cis_rule_6_2_9
   tags:
       - level1-server
