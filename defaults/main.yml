@@ -738,6 +738,11 @@ rhel8cis_pam_pass_max_days: 365  # Max 365
 rhel8cis_pam_pass_min_days: 7
 rhel8cis_pam_pass_warn_age: 7
 
+## Control 4.5.2.3 - Ensure system accounts are secured | Set nologin
+# The system users on this list are allowed to have a shell (e.g. applications
+# that require a shell to function)
+rhel8cis_system_users_shell: []
+
 ## Set the following to true if you wish to adjust accounts greater than rhel8cis_pass['max_days']
 rhel8cis_set_max_expiry: false
 
