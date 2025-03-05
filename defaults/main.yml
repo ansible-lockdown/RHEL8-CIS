@@ -872,6 +872,14 @@ rhel8cis_ungrouped_adjust: false
 rhel8cis_suid_adjust: false
 rhel8cis_sgid_adjust: false
 
+# 6.2.8
+## Root user used
+# Root by default is not used unless setup by user
+# The role will only run certain commands if set to true
+# This allows the ability to skip tasks that may cause an issue
+# With the understanding root has full access
+rhel8cis_uses_root: false
+
 # 6.2.11
 # Allow changes to take place on system
 rhel8cis_dotperm_ansiblemanaged: false
