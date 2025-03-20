@@ -384,6 +384,7 @@
       - name: "6.2.11 | AUDIT | Ensure local interactive user dot files access is configured | Warning on files found"
         when:
             - not rhel8cis_dotperm_ansiblemanaged
+            - discovered_hidden_files.matched > 0
         ansible.builtin.debug:
             msg:
                 - "Warning!! Please investigate that hidden files found in users home directories match control requirements."
@@ -391,6 +392,7 @@
       - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured | Set warning count"
         when:
             - not rhel8cis_dotperm_ansiblemanaged
+            - discovered_hidden_files.matched > 0
         ansible.builtin.import_tasks:
             file: warning_facts.yml
 
@@ -423,6 +425,8 @@
                   path: "{{ item.path }}"
                   owner: "{{ rhel8cis_passwd | selectattr('dir', 'in', prelim_interactive_users_home.stdout_lines) | selectattr('dir', 'in', item.path) | map(attribute='uid') | last }}"
                   group: "{{ rhel8cis_passwd | selectattr('dir', 'in', prelim_interactive_users_home.stdout_lines) | selectattr('dir', 'in', item.path) | map(attribute='gid') | last }}"
+              failed_when: discovered_files_to_change.state not in '[ file, absent ]'
+              register: discovered_files_to_change
               with_items: "{{ discovered_hidden_files.files }}"
 
             - name: "6.2.11 | PATCH | Ensure local interactive user dot files access is configured | rename .forward or .netrc files"

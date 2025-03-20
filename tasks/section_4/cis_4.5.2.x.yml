@@ -54,6 +54,7 @@
       - name: "4.5.2.3 | PATCH | | Ensure system accounts are secured | Set nologin"
         when:
             - item.id not in prelim_interactive_usernames.stdout
+            - item.id not in rhel8cis_system_users_shell
             - "'root' not in item.id"
         ansible.builtin.user:
             name: "{{ item.id }}"

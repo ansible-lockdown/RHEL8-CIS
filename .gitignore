@@ -44,3 +44,6 @@ benchparse/
 
 # GitHub Action/Workflow files
 .github/
+
+# ansible lint cache
+.ansible/
