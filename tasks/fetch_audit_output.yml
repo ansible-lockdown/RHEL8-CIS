@@ -9,7 +9,7 @@
       dest: "{{ audit_output_destination }}"
       flat: true
   failed_when: false
-  register: discovered_audit_fetch_state
+  register: discovered_audit_fetch_fetch_state
   loop:
       - "{{ pre_audit_outfile }}"
       - "{{ post_audit_outfile }}"
@@ -25,7 +25,7 @@
       mode: 'u-x,go-wx'
       flat: true
   failed_when: false
-  register: discovered_audit_fetch_state
+  register: discovered_audit_fetch_copy_state
   loop:
       - pre_audit_outfile
       - post_audit_outfile
@@ -33,15 +33,15 @@
 - name: "FETCH_AUDIT_FILES | Fetch files and copy to controller | Warning if issues with fetch_audit_files"
   when:
       - discovered_audit_fetch_state is defined
-      - not discovered_audit_fetch_state.changed
+      - not discovered_audit_fetch_state.changed or not discovered_audit_copy_state.changed
   ansible.builtin.debug:
       msg: "Warning!! Unable to write to localhost {{ audit_output_destination }} for audit file copy"
 
 - name: "FETCH_AUDIT_FILES | Fetch files and copy to controller | Warning if issues with fetch_audit_files"
   when:
       - discovered_audit_fetch_state is defined
-      - not discovered_audit_fetch_state.changed
+      - not discovered_audit_fetch_state.changed or not discovered_audit_copy_state.changed
   vars:
-      warn_control_id: "AUDIT_FILES_NOT_FETCHED"
+      warn_control_id: "FETCH_AUDIT_FILES"
   ansible.builtin.import_tasks:
       file: warning_facts.yml

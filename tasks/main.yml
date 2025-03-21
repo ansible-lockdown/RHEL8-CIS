@@ -222,6 +222,7 @@
   when:
       - fetch_audit_output
       - run_audit
+  tags: always
   ansible.builtin.import_tasks:
       file: fetch_audit_output.yml
 
