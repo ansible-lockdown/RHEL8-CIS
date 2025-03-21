@@ -92,6 +92,20 @@ audit_conf_dest: "/opt"
 # Where the audit logs are stored
 audit_log_dir: '/opt'
 
+## Ability to collect and take audit files moving to a centralised location
+# This enables the collection of the files from the host
+fetch_audit_output: false
+
+# Method of getting,uploading the summary files
+## Ensure access and permissions are avaiable for these to occur.
+## options are
+# fetch - fetches from server and moves to location on the ansible controller (could be a mount point available to controller)
+# copy - copies file to a location available to the managed node
+audit_output_collection_method: fetch
+
+# Location to put the audit files
+audit_output_destination: /opt/audit_summaries/
+
 ### Goss Settings ##
 ####### END ########
 
