@@ -8,10 +8,10 @@
     AUDIT_CONTENT_LOCATION: "{{ audit_conf_dest | default('/opt') }}"
     AUDIT_FILE: goss.yml
 
-- name: Post Audit | ensure audit files readable by users
+- name: Post Audit | Ensure audit files readable by users
   ansible.builtin.file:
     path: "{{ item }}"
-    mode: 'u+x,go=r'
+    mode: 'u-x,go=r'
     state: file
   loop:
     - "{{ post_audit_outfile }}"
