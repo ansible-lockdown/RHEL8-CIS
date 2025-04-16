@@ -22,7 +22,7 @@ rhel8cis_level_1: true
 rhel8cis_level_2: true
 rhel8cis_selinux_disable: false
 
-# Some tests can have a heavy impact on systen e.g. find on all filesystems etc
+# Some tests can have a heavy impact on system e.g. find on all filesystems etc
 rhel8cis_disruption_high: false
 
 ## Python Binary
@@ -67,7 +67,7 @@ audit_only: false
 
 # How to retrieve audit binary
 # Options are copy or download - detailed settings at the bottom of this file
-# you will need to access to either github or the file already dowmloaded
+# you will need to access to either github or the file already downloaded
 get_audit_binary_method: download
 
 ## if get_audit_binary_method - copy the following needs to be updated for your environment
@@ -97,7 +97,7 @@ audit_log_dir: '/opt'
 fetch_audit_output: false
 
 # Method of getting,uploading the summary files
-## Ensure access and permissions are avaiable for these to occur.
+## Ensure access and permissions are available for these to occur.
 ## options are
 # fetch - fetches from server and moves to location on the ansible controller (could be a mount point available to controller)
 # copy - copies file to a location available to the managed node
@@ -540,7 +540,7 @@ rhel8cis_allowed_crypto_policies_modules:
   - 'NO-SHA1'
   - 'OSPP'
 
-# Added module to be loaded take from the list about required to be colon ':' seperated
+# Added module to be loaded take from the list about required to be colon ':' separated
 rhel8cis_crypto_policy_module: ''
 
 # 1.7
@@ -575,7 +575,7 @@ rhel8cis_ntp_server_options: "iburst"
 # Options are
 # true to leave installed if exists not changes take place
 # false - this removes the package
-# mask - if a dependancy for product so cannot be removed
+# mask - if a dependency for product so cannot be removed
 # Server Services
 rhel8cis_autofs_services: false
 rhel8cis_autofs_mask: false
@@ -714,7 +714,7 @@ rhel8cis_authselect_pkg_update: false  # NOTE the risks if system is using SSSD 
 
 # To create a new profile (best for greenfield fresh sites not configured)
 # This allows creation of a custom profile using an existing one to build from
-# will only create if profiel does not already exist
+# will only create if profile does not already exist
 ## options true or false
 rhel8cis_authselect_custom_profile_create: true
 ## Controls:
