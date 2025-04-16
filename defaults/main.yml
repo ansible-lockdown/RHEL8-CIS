@@ -1,4 +1,5 @@
 ---
+
 # defaults file for rhel8-cis
 
 system_is_container: false
@@ -19,13 +20,20 @@ rhel8cis_section6: true
 
 rhel8cis_level_1: true
 rhel8cis_level_2: true
-
 rhel8cis_selinux_disable: false
 
 # Some tests can have a heavy impact on systen e.g. find on all filesystems etc
 rhel8cis_disruption_high: false
 
-## Benchmark name used by audting control role
+## Python Binary
+## This is used for python3 Installations where python2 OS modules are used in ansible
+python2_bin: /bin/python2.7
+
+# Create managed not custom local_facts files
+create_benchmark_facts: true
+ansible_facts_path: /etc/ansible/facts.d
+
+## Benchmark name used by auditing control role
 # The audit variable found at the base
 benchmark: RHEL8-CIS
 benchmark_version: v3.0.0
@@ -54,11 +62,7 @@ audit_run_heavy_tests: true
 
 ## Only run Audit do not remediate
 audit_only: false
-### As part of audit_only ###
-# This will enable files to be copied back to control node in audit_only mode
-fetch_audit_files: false
-# Path to copy the files to will create dir structure in audit_only mode
-audit_capture_files_dir: /some/location to copy to on control node
+
 #############################
 
 # How to retrieve audit binary
@@ -87,6 +91,20 @@ audit_conf_dest: "/opt"
 
 # Where the audit logs are stored
 audit_log_dir: '/opt'
+
+## Ability to collect and take audit files moving to a centralised location
+# This enables the collection of the files from the host
+fetch_audit_output: false
+
+# Method of getting,uploading the summary files
+## Ensure access and permissions are avaiable for these to occur.
+## options are
+# fetch - fetches from server and moves to location on the ansible controller (could be a mount point available to controller)
+# copy - copies file to a location available to the managed node
+audit_output_collection_method: fetch
+
+# Location to put the audit files
+audit_output_destination: /opt/audit_summaries/
 
 ### Goss Settings ##
 ####### END ########
@@ -516,12 +534,13 @@ rhel8cis_selinux_policy: targeted
 rhel8cis_crypto_policy: 'DEFAULT'
 
 # 1.6.1 Allowed crypto-policy modules
+## list of alowed crypto policies as per baseline
 rhel8cis_allowed_crypto_policies_modules:
   - 'AD-SUPPORT'
   - 'NO-SHA1'
   - 'OSPP'
 
-# Added module to be loaded
+# Added module to be loaded take from the list about required to be colon ':' seperated
 rhel8cis_crypto_policy_module: ''
 
 # 1.7
@@ -734,6 +753,11 @@ rhel8cis_pam_pass_max_days: 365  # Max 365
 rhel8cis_pam_pass_min_days: 7
 rhel8cis_pam_pass_warn_age: 7
 
+## Control 4.5.2.3 - Ensure system accounts are secured | Set nologin
+# The system users on this list are allowed to have a shell (e.g. applications
+# that require a shell to function)
+rhel8cis_system_users_shell: []
+
 ## Set the following to true if you wish to adjust accounts greater than rhel8cis_pass['max_days']
 rhel8cis_set_max_expiry: false
 
@@ -860,6 +884,14 @@ rhel8cis_ungrouped_adjust: false
 ## 6.1.13 Remove suid/sgid from files
 rhel8cis_suid_adjust: false
 rhel8cis_sgid_adjust: false
+
+# 6.2.8
+## Root user used
+# Root by default is not used unless setup by user
+# The role will only run certain commands if set to true
+# This allows the ability to skip tasks that may cause an issue
+# With the understanding root has full access
+rhel8cis_uses_root: false
 
 # 6.2.11
 # Allow changes to take place on system

@@ -191,6 +191,39 @@
   ansible.builtin.import_tasks:
     file: post_remediation_audit.yml
 
+- name: Add ansible file showing Benchmark and levels applied
+  when:
+    - create_benchmark_facts
+    - (post_audit_summary is defined) or
+      (ansible_local['compliance_facts']['lockdown_audit_details']['audit_summary'] is undefined and post_audit_summary is undefined)
+  tags:
+    - always
+    - benchmark
+  block:
+    - name: Create ansible facts directory
+      ansible.builtin.file:
+        path: "{{ ansible_facts_path }}"
+        state: directory
+        owner: root
+        group: root
+        mode: 'u=rwx,go=rx'
+
+    - name: Create ansible facts file
+      ansible.builtin.template:
+        src: etc/ansible/compliance_facts.j2
+        dest: "{{ ansible_facts_path }}/compliance_facts.fact"
+        owner: root
+        group: root
+        mode: 'u-x,go-wx'
+
+- name: Fetch audit files
+  when:
+    - fetch_audit_output
+    - run_audit
+  tags: always
+  ansible.builtin.import_tasks:
+    file: fetch_audit_output.yml
+
 - name: Show Audit Summary
   when: run_audit
   tags: run_audit
