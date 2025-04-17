@@ -120,9 +120,7 @@
         fail_msg: Authselect updates have been selected there are issues with profile selection"
 
 - name: Include prelim tasks
-  tags:
-    - prelim_tasks
-    - run_audit
+  tags: always
   ansible.builtin.import_tasks:
     file: prelim.yml
 
@@ -187,7 +185,7 @@
 
 - name: Run post_remediation audit
   when: run_audit
-  tags: run_audit
+  tags: always
   ansible.builtin.import_tasks:
     file: post_remediation_audit.yml
 
@@ -226,7 +224,7 @@
 
 - name: Show Audit Summary
   when: run_audit
-  tags: run_audit
+  tags: always
   ansible.builtin.debug:
     msg: "{{ audit_results.split('\n') }}"
 
