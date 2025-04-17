@@ -1,4 +1,5 @@
 ---
+
 # defaults file for rhel8-cis
 
 system_is_container: false
@@ -21,7 +22,7 @@ rhel8cis_level_1: true
 rhel8cis_level_2: true
 rhel8cis_selinux_disable: false
 
-# Some tests can have a heavy impact on systen e.g. find on all filesystems etc
+# Some tests can have a heavy impact on system e.g. find on all filesystems etc
 rhel8cis_disruption_high: false
 
 ## Python Binary
@@ -32,7 +33,7 @@ python2_bin: /bin/python2.7
 create_benchmark_facts: true
 ansible_facts_path: /etc/ansible/facts.d
 
-## Benchmark name used by audting control role
+## Benchmark name used by auditing control role
 # The audit variable found at the base
 benchmark: RHEL8-CIS
 benchmark_version: v3.0.0
@@ -66,7 +67,7 @@ audit_only: false
 
 # How to retrieve audit binary
 # Options are copy or download - detailed settings at the bottom of this file
-# you will need to access to either github or the file already dowmloaded
+# you will need to access to either github or the file already downloaded
 get_audit_binary_method: download
 
 ## if get_audit_binary_method - copy the following needs to be updated for your environment
@@ -96,7 +97,7 @@ audit_log_dir: '/opt'
 fetch_audit_output: false
 
 # Method of getting,uploading the summary files
-## Ensure access and permissions are avaiable for these to occur.
+## Ensure access and permissions are available for these to occur.
 ## options are
 # fetch - fetches from server and moves to location on the ansible controller (could be a mount point available to controller)
 # copy - copies file to a location available to the managed node
@@ -535,11 +536,11 @@ rhel8cis_crypto_policy: 'DEFAULT'
 # 1.6.1 Allowed crypto-policy modules
 ## list of alowed crypto policies as per baseline
 rhel8cis_allowed_crypto_policies_modules:
-    - 'AD-SUPPORT'
-    - 'NO-SHA1'
-    - 'OSPP'
+  - 'AD-SUPPORT'
+  - 'NO-SHA1'
+  - 'OSPP'
 
-# Added module to be loaded take from the list about required to be colon ':' seperated
+# Added module to be loaded take from the list about required to be colon ':' separated
 rhel8cis_crypto_policy_module: ''
 
 # 1.7
@@ -562,10 +563,10 @@ rhel8cis_time_synchronization: chrony
 
 # Time Synchronization servers - used in template file chrony.conf.j2
 rhel8cis_time_synchronization_servers:
-    - 0.pool.ntp.org
-    - 1.pool.ntp.org
-    - 2.pool.ntp.org
-    - 3.pool.ntp.org
+  - 0.pool.ntp.org
+  - 1.pool.ntp.org
+  - 2.pool.ntp.org
+  - 3.pool.ntp.org
 
 rhel8cis_chrony_server_options: "minpoll 8"
 rhel8cis_ntp_server_options: "iburst"
@@ -574,7 +575,7 @@ rhel8cis_ntp_server_options: "iburst"
 # Options are
 # true to leave installed if exists not changes take place
 # false - this removes the package
-# mask - if a dependancy for product so cannot be removed
+# mask - if a dependency for product so cannot be removed
 # Server Services
 rhel8cis_autofs_services: false
 rhel8cis_autofs_mask: false
@@ -713,7 +714,7 @@ rhel8cis_authselect_pkg_update: false  # NOTE the risks if system is using SSSD 
 
 # To create a new profile (best for greenfield fresh sites not configured)
 # This allows creation of a custom profile using an existing one to build from
-# will only create if profiel does not already exist
+# will only create if profile does not already exist
 ## options true or false
 rhel8cis_authselect_custom_profile_create: true
 ## Controls:
@@ -762,7 +763,7 @@ rhel8cis_set_max_expiry: false
 
 ## Add users to be skipped if required
 rhel8cis_user_skip_list:
-    root
+  root
 
 rhel8cis_root_umask: '0027'  # 0027 or more restrictive
 
@@ -779,9 +780,6 @@ rhel8cis_sugroup_users: "root"
 # This control needs to be set to ACCEPT this so that the changes do take place
 # Any other value does nothing
 rhel8cis_pamd_manual_risks: NEVER
-
-rhel8cis_inactivelock:
-    lock_days: 30
 
 # Allow ansible to expire password for account with a last changed date in the future. False will just display users in violation, true will expire those users passwords
 rhel8cis_futurepwchgdate_autofix: true
@@ -803,7 +801,7 @@ rhel8cis_remote_log_protocol: tcp
 rhel8cis_remote_log_retrycount: 100
 rhel8cis_remote_log_queuesize: 1000
 
-update_audit_template: false
+rhel8cis_update_audit_template: false
 
 # The audit_back_log_limit value should never be below 8192
 rhel8cis_auditd_back_log_limit: 8192
@@ -820,15 +818,15 @@ rhel8cis_auditd_max_log_file_action: keep_logs
 
 # UID settings for interactive users
 # These are discovered via logins.def if set true
-discover_int_uid: true
+rhel8cis_discover_int_uid: true
 ### Controls:
 # This variable sets the minimum number from which to search for UID
-# Note that the value will be dynamically overwritten if variable `discover_int_uid` has
-# been set to `true`.
+# Note that the value will be dynamically overwritten if variable `rhel8cis_discover_int_uid` has
+# been set to `true`. These are not prefixed with rhel8cis as can be set via prelim
 min_int_uid: 1000
 ### Controls:
-# Note that the value will be dynamically overwritten if variable `discover_int_uid` has
-# been set to `true`.
+# Note that the value will be dynamically overwritten if variable `rhel8cis_discover_int_uid` has
+# been set to `true`. These are not prefixed with rhel8cis as can be set via prelim
 max_int_uid: 65533
 
 # This can be used to configure other keys in auditd.conf
@@ -856,10 +854,6 @@ rhel8cis_journald_runtimemaxuse: 10M
 rhel8cis_journald_runtimekeepfree: 100G
 # rhel8cis_journald_MaxFileSec is how long in time to keep log files. Values are Xm, Xh, Xday, Xweek, Xmonth, Xyear, for example 2week is two weeks
 rhel8cis_journald_maxfilesec: 1month
-
-# logrotate configuration
-# change to true if you wish to change logrotate.d conf files
-allow_logrotate_conf_umask_updates: false
 
 # AIDE
 # aide setup via - cron, timer

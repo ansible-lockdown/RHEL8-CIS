@@ -1,33 +1,38 @@
 ---
 extends: default
-
 ignore: |
     tests/
     molecule/
     .github/
     .gitlab-ci.yml
     *molecule.yml
-
 rules:
-    indentation:
-        # Requiring 4 space indentation
-        spaces: 4
-        # Requiring consistent indentation within a file, either indented or not
-        indent-sequences: consistent
-    braces:
-        max-spaces-inside: 1
-        level: error
-    brackets:
-        max-spaces-inside: 1
-        level: error
-    empty-lines:
-        max: 1
-    line-length: disable
-    key-duplicates: enable
-    new-line-at-end-of-file: enable
-    new-lines:
-        type: unix
-    trailing-spaces: enable
-    truthy:
-        allowed-values: ['true', 'false']
-        check-keys: true
+  braces:
+    max-spaces-inside: 1
+    level: error
+  brackets:
+    max-spaces-inside: 1
+    level: error
+  comments:
+    ignore-shebangs: true
+    min-spaces-from-content: 1 # prettier compatibility
+  comments-indentation: enable
+  empty-lines:
+    max: 1
+  indentation:
+    # Requiring 2 space indentation
+    spaces: 2
+    # Requiring consistent indentation within a file, either indented or not
+    indent-sequences: consistent
+  key-duplicates: enable
+  line-length: disable
+  new-line-at-end-of-file: enable
+  new-lines:
+    type: unix
+  octal-values:
+    forbid-implicit-octal: true # yamllint defaults to false
+    forbid-explicit-octal: true
+  trailing-spaces: enable
+  truthy:
+    allowed-values: ['true', 'false']
+    check-keys: true

@@ -2,6 +2,24 @@
 
 ## Benchmark v3.0.0
 
+### 2.2 Updates
+
+Linting updates new lint config and applied
+spacing updated
+pre-commit updates
+many bugs and typos fixed
+authselect improvements
+variable renaming
+
+https://github.com/ansible-lockdown/RHEL8-CIS/pull/423
+https://github.com/ansible-lockdown/RHEL8-CIS/issues/425
+https://github.com/ansible-lockdown/RHEL8-CIS/pull/426
+https://github.com/ansible-lockdown/RHEL8-CIS/pull/427
+https://github.com/ansible-lockdown/RHEL8-CIS/pull/428
+https://github.com/ansible-lockdown/RHEL8-CIS/pull/429
+https://github.com/ansible-lockdown/RHEL8-CIS/issues/433
+https://github.com/ansible-lockdown/RHEL8-CIS/issues/434
+
 ### 2.1 updates August 2024
 
 new workflow

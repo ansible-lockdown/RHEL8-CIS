@@ -1,8 +1,7 @@
 ---
+
 - name: Run RHEL8 CIS hardening
   hosts: all
   become: true
-
   roles:
-
-      - role: "{{ playbook_dir }}"
+    - role: "{{ playbook_dir }}"
