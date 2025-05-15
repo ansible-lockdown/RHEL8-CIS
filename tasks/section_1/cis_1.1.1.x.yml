@@ -35,8 +35,7 @@
         state: absent
 
 - name: "1.1.1.2 | PATCH | Ensure freevxfs kernel module is not available"
-  when:
-    - rhel8cis_rule_1_1_1_2
+  when: rhel8cis_rule_1_1_1_2
   tags:
     - level1-server
     - level1-workstation

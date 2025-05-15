@@ -56,9 +56,7 @@
         success_msg: "You have a root password set"
 
 - name: Setup rules if container
-  when:
-    - ansible_connection == 'docker' or
-      ansible_facts.virtualization_type in ["docker", "lxc", "openvz", "podman", "container"]
+  when: ansible_connection == 'docker' or ansible_facts.virtualization_type in ["docker", "lxc", "openvz", "podman", "container"]
   tags:
     - container_discovery
     - always
@@ -135,9 +133,7 @@
     file: "{{ ansible_distribution }}.yml"
 
 - name: Capture /etc/password variables
-  when:
-    - rhel8cis_section5 or
-      rhel8cis_section6
+  when: rhel8cis_section5 or rhel8cis_section6
   tags: always
   ansible.builtin.import_tasks:
     file: parse_etc_password.yml

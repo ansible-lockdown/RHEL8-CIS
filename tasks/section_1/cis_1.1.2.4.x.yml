@@ -33,8 +33,7 @@
   when:
     - "'/var' in mount_names"
     - item.mount == "/var"
-    - rhel8cis_rule_1_1_2_4_2 or
-      rhel8cis_rule_1_1_2_4_3
+    - rhel8cis_rule_1_1_2_4_2 or rhel8cis_rule_1_1_2_4_3
   tags:
     - level1-server
     - level1-workstation
