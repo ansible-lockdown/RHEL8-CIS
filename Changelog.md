@@ -4,6 +4,8 @@
 
 ### 2.2 Updates
 
+May 2025 QA Fixes
+
 Linting updates new lint config and applied
 spacing updated
 pre-commit updates
@@ -161,7 +163,7 @@ thanks to @bbaassssiiee
 
 ## 1.5.6
 
-- updates to yamllint to increase galaxy score - doesnt honour local files or exclusions
+- updates to yamllint to increase galaxy score - doesn't honour local files or exclusions
 - removed blank lines from all
 
 ## 1.5.5
@@ -225,7 +227,7 @@ Issues.
 - workflow improvements
 - auditd alignment
   - tftp client
-  - default locatoin moved from /var/tmp to /opt
+  - default location moved from /var/tmp to /opt
 - linting
   - new .ansiblelint
   - boolean standards
@@ -347,7 +349,7 @@ Improvements
 
 ## 1.3
 
-- extentions to LE audit capability
+- extensions to LE audit capability
 - more lint and layout changes
 - sugroup assertion added 5.7
 - added extra logic variable to authselect/config section 5.3 related

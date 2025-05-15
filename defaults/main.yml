@@ -388,7 +388,7 @@ rhel8cis_rule_4_5_2_3: true
 rhel8cis_rule_4_5_2_4: true
 rhel8cis_rule_4_5_2_5: true
 
-# User enviroment
+# User environment
 rhel8cis_rule_4_5_3_1: true
 rhel8cis_rule_4_5_3_2: true
 rhel8cis_rule_4_5_3_3: true
@@ -534,7 +534,7 @@ rhel8cis_selinux_policy: targeted
 rhel8cis_crypto_policy: 'DEFAULT'
 
 # 1.6.1 Allowed crypto-policy modules
-## list of alowed crypto policies as per baseline
+## list of allowed crypto policies as per baseline
 rhel8cis_allowed_crypto_policies_modules:
   - 'AD-SUPPORT'
   - 'NO-SHA1'
