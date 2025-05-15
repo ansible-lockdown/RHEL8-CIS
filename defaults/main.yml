@@ -82,7 +82,7 @@ audit_content: git
 # If using either archive, copy, get_url:
 ## Note will work with .tar files - zip will require extra configuration
 ### If using get_url this is expecting github url in tar.gz format e.g.
-### https://github.com/ansible-lockdown/UBUNTU22-CIS-Audit/archive/refs/heads/benchmark-v1.0.0.tar.gz
+### https://github.com/ansible-lockdown/RHEL8-CIS-Audit/archive/refs/heads/benchmark-v1.0.0.tar.gz
 audit_conf_source: "some path or url to copy from"
 
 # Destination for the audit content to be placed on managed node
@@ -546,7 +546,7 @@ rhel8cis_crypto_policy_module: ''
 # 1.7
 # Warning Banner Content (issue, issue.net, motd)
 rhel8cis_warning_banner: |
-    Authorized uses only. All activity may be monitored and reported.
+    Authorized users only. All activity may be monitored and reported.
 # End Banner
 
 # 1.8 Gnome Desktop
