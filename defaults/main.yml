@@ -44,6 +44,9 @@ skip_reboot: true
 # Modify behavior of changed_when if reboot is pending and skipped to allow idempotency to succeed
 reboot_warning_changed_when: true
 
+# list of dicts of interactive users, filled in during prelim.yml
+prelim_interactive_users: []
+
 ###
 ### Settings for associated Audit role using Goss
 ###
