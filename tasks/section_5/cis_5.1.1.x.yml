@@ -20,6 +20,7 @@
 - name: "5.1.1.2 | PATCH | Ensure rsyslog service is enabled"
   when:
       - rhel8cis_rule_5_1_1_2
+      - rhel8cis_rsyslog_ansiblemanaged
   tags:
       - level1-server
       - level1-workstation
@@ -57,6 +58,7 @@
 - name: "5.1.1.4 | PATCH | Ensure rsyslog default file permissions configured"
   when:
       - rhel8cis_rule_5_1_1_4
+      - rhel8cis_rsyslog_ansiblemanaged
   tags:
       - level1-server
       - level1-workstation
@@ -72,6 +74,7 @@
 - name: "5.1.1.5 | PATCH | Ensure logging is configured"
   when:
       - rhel8cis_rule_5_1_1_5
+      - rhel8cis_rsyslog_ansiblemanaged
   tags:
       - level1-server
       - level1-workstation
@@ -157,6 +160,7 @@
   when:
       - rhel8cis_rule_5_1_1_6
       - rhel8cis_remote_log_server
+      - rhel8cis_rsyslog_ansiblemanaged
   tags:
       - level1-server
       - level1-workstation
@@ -179,6 +183,7 @@
 - name: "5.1.1.7 | PATCH | Ensure rsyslog is not configured to receive logs from a remote client"
   when:
       - rhel8cis_rule_5_1_1_7
+      - rhel8cis_rsyslog_ansiblemanaged
   tags:
       - level1-server
       - level1-workstation

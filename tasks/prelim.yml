@@ -31,11 +31,13 @@
       - name: "PRELIM | Capture UID_MIN information from logins.def"
         ansible.builtin.shell: grep -w "^UID_MIN" /etc/login.defs | awk '{print $NF}'
         changed_when: false
+        check_mode: false
         register: prelim_uid_min_id
 
       - name: "PRELIM | Capture UID_MAX information from logins.def"
         ansible.builtin.shell: grep -w "^UID_MAX" /etc/login.defs | awk '{print $NF}'
         changed_when: false
+        check_mode: false
         register: prelim_uid_max_id
 
       - name: "PRELIM | Set facts for interactive uid/gid"
@@ -115,6 +117,7 @@
       - always
   ansible.builtin.shell: findmnt -kn /dev/shm
   changed_when: false
+  check_mode: false
   failed_when: prelim_dev_shm_present.rc not in [ 0, 1 ]
   register: prelim_dev_shm_present
 
@@ -198,6 +201,7 @@
 - name: "PRELIM | AUDIT | 5.2.4.x | Ensure audit log files are mode 0640 or less permissive | discover file"
   ansible.builtin.shell: "grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'"
   changed_when: false
+  check_mode: false
   failed_when: prelim_audit_logfile.rc not in [0, 1]
   register: prelim_audit_logfile
   when:
@@ -271,6 +275,7 @@
       - name: "PRELIM | Optional | If IPv6 disable to stop chronyd listening | Check existence"
         ansible.builtin.shell: grep -E "OPTIONS=.*-4" /etc/sysconfig/chronyd
         changed_when: false
+        check_mode: false
         failed_when: prelim_chrony_ipv6_exists.rc not in [ 0, 1]
         register: prelim_chrony_ipv6_exists
 
