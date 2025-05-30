@@ -19,7 +19,7 @@
             state: present
 
       - name: "5.3.1 | PATCH | Ensure AIDE is installed | Configure AIDE"
-        ansible.builtin.shell: /usr/sbin/aide --init
+        ansible.builtin.command: /usr/sbin/aide --init
         changed_when: false
         failed_when: false
         async: 45
@@ -62,7 +62,7 @@
             minute: "{{ rhel8cis_aide_cron_minute | default('0') }}"
             hour: "{{ rhel8cis_aide_cron_hour | default('5') }}"
             day: "{{ rhel8cis_aide_cron_day | default('*') }}"
-            month: "{{ rhel8cis_aide_cron_month| default('*') }}"
+            month: "{{ rhel8cis_aide_cron_month | default('*') }}"
             weekday: "{{ rhel8cis_aide_cron_weekday | default('*') }}"
             job: "{{ rhel8cis_aide_cron_job }}"
 
@@ -71,14 +71,13 @@
         ansible.builtin.systemd:
             name: "{{ item.name }}"
             enabled: true
-            state: "{{ item.state | default(omit)}}"
+            state: "{{ item.state | default(omit) }}"
         loop:
             - { name: 'aidecheck.service' }
             - { name: 'aidecheck.timer', state: started }
 
 - name: "5.3.3 | Ensure cryptographic mechanisms are used to protect the integrity of audit tools"
-  when:
-      - rhel8cis_rule_5_3_3
+  when: rhel8cis_rule_5_3_3
   tags:
       - level1-server
       - level1-workstation
