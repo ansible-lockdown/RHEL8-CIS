@@ -5,6 +5,8 @@
 ### 2.2 Updates
 
 May 2025 QA Fixes
+Thank you @poliski-g
+- Fixes and improvements are based on PRs #473, #475, #476 from RHEL8-CIS
 
 Linting updates new lint config and applied
 spacing updated
