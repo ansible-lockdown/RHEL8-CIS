@@ -14,6 +14,7 @@
       ansible.builtin.shell: grep -P -- '^\h*(auth|account|password|session)\h+(requisite|required|sufficient)\h+pam_unix\.so\b' /etc/pam.d/{password,system}-auth | grep -P -- '\bnullok\b'
       changed_when: false
       failed_when: discovered_pam_nullok.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_pam_nullok
 
     - name: "4.4.3.4.1 | PATCH | Ensure pam_unix does not include nullok | pam_files"
@@ -35,6 +36,7 @@
         - rhel8cis_allow_authselect_updates
       ansible.builtin.command: authselect enable-feature without-nullok
       changed_when: true
+      check_mode: false
       notify: Update_authselect
 
 - name: "4.4.3.4.2 | PATCH | Ensure pam_unix does not include remember"
@@ -52,6 +54,7 @@
       ansible.builtin.shell: grep -Pi '^\h*password\h+([^#\n\r]+\h+)?pam_unix\.so\b' /etc/pam.d/{password,system}-auth | grep -P '\bremember=\d\b'
       changed_when: false
       failed_when: discovered_pam_remember.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_pam_remember
 
     - name: "4.4.3.4.2 | PATCH | Ensure pam_unix does not include remember | pam_files"
@@ -98,6 +101,7 @@
         grep -P -- '^\h*password\h+([^#\n\r]+)\h+pam_unix\.so\h+([^#\n\r]+\h+)?(sha512|yescrypt)\b' /etc/pam.d/{password,system}-auth | grep -v {{ rhel8cis_pam_pwhash }}
       changed_when: false
       failed_when: discovered_hash_state.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_hash_state
 
     - name: "4.4.3.4.3 | PATCH | Ensure pam_unix includes a strong password hashing algorithm | pam_files"
@@ -143,6 +147,7 @@
       ansible.builtin.shell: grep -P -- '^\h*password\h+([^#\n\r]+)\h+pam_unix\.so\h+([^#\n\r]+\h+)?use_authtok\b' /etc/pam.d/{password,system}-auth | grep -v use_authtok
       changed_when: false
       failed_when: discovered_pam_authtok.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_pam_authtok
 
     - name: "4.4.3.4.4 | PATCH | Ensure pam_unix includes use_authtok | pam_files"
