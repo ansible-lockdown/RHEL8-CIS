@@ -71,7 +71,7 @@
     - name: "3.2.3 | PATCH | Ensure rds kernel module is not available | CIS"
       ansible.builtin.lineinfile:
         path: /etc/modprobe.d/CIS.conf
-        regexp: "^(#)?install rpc(\\s|$)"
+        regexp: "^(#)?install rdc(\\s|$)"
         line: "install rds /bin/true"
         create: true
         mode: 'go-rwx'
@@ -79,7 +79,7 @@
     - name: "3.2.3 | PATCH | Ensure rds kernel module is not available | blacklist"
       ansible.builtin.lineinfile:
         path: /etc/modprobe.d/blacklist.conf
-        regexp: "^(#)?blacklist rpc(\\s|$)"
+        regexp: "^(#)?blacklist rdc(\\s|$)"
         line: "blacklist rds"
         create: true
         mode: 'go-rwx'

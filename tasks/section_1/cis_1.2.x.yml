@@ -119,7 +119,7 @@
     - level1-workstation
     - automated
     - patch
-    - rule_1.2_5
+    - rule_1.2.5
   notify: Change_requires_reboot
   block:
     - name: "1.2.5 | PATCH | Ensure updates, patches, and additional security software are installed | Patch"
