@@ -5,6 +5,14 @@
 ### 2.2 Updates
 
 May 2025 QA Fixes
+Thank you @tgoetheyn
+- 1.2.5 => fix typo in tag
+- 3.2.3 => is about rds kernel module
+  fixed typo `rpc` to `rds`
+- 3.3.4 => remove tag `rule_3.3.3`
+- 5.1.4 => remove tailing quotes
+- 5.2.3.7 => fix typo in tag
+
 Thank you @poliski-g
 - Fixes and improvements are based on PRs #473, #475, #476 from RHEL8-CIS
 
