@@ -25,6 +25,7 @@
     - name: "4.4.2.1 | AUDIT | Ensure custom authselect profile is used | get profile features"
       ansible.builtin.command: "/usr/bin/authselect list-features custom/{{ rhel8cis_authselect_custom_profile_name }}"
       changed_when: false
+      check_mode: false
       register: discovered_authselect_profile_features
 
     - name: "4.4.2.1 | PATCH | Ensure custom authselect profile is used | Add missing pam modules to config | pwquality"
@@ -64,6 +65,7 @@
       ansible.builtin.shell: authselect current | grep faillock
       changed_when: false
       failed_when: discovered_authselect_current_faillock.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_authselect_current_faillock
 
     - name: "4.4.2.2 | AUDIT | Ensure pam_faillock module is enabled | Add feature if missing"
@@ -89,12 +91,14 @@
       ansible.builtin.command: authselect current | grep quality
       changed_when: false
       failed_when: discovered_authselect_current_quality.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_authselect_current_quality
 
     - name: "4.4.2.3 | AUDIT | Ensure pam_pwquality module is enabled | Add feature if missing"
       when: discovered_authselect_current_quality.rc != 0
       ansible.builtin.command: "/usr/bin/authselect select custom/{{ rhel8cis_authselect_custom_profile_name }}{% if rhel8cis_rule_4_4_2_2 %} with-faillock{% endif %}{% if rhel8cis_rule_4_4_2_3 %} with-pwquality{% endif %}{% if rhel8cis_rule_4_4_2_4 %} with-pwhistory{% endif %}{% if rhel8cis_rule_4_4_3_4_1 %} without-nullok{% endif %}"
       changed_when: true
+      check_mode: false
       notify: Update_authselect
 
 - name: "4.4.2.4 | PATCH | Ensure pam_pwhistory module is enabled"
@@ -115,12 +119,14 @@
       ansible.builtin.shell: authselect current | grep pwhistory
       changed_when: false
       failed_when: discovered_authselect_current_history.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_authselect_current_history
 
     - name: "4.4.2.4 | PATCH | Ensure pam_pwhistory module is enabled | enable feature"
       when: discovered_authselect_current_history.rc != 0
       ansible.builtin.command: "/usr/bin/authselect select custom/{{ rhel8cis_authselect_custom_profile_name }}{% if rhel8cis_rule_4_4_2_2 %} with-faillock{% endif %}{% if rhel8cis_rule_4_4_2_3 %} with-pwquality{% endif %}{% if rhel8cis_rule_4_4_2_4 %} with-pwhistory{% endif %}{% if rhel8cis_rule_4_4_3_4_1 %} without-nullok{% endif %}"
       changed_when: true
+      check_mode: false
       notify: Update_authselect
 
 - name: "4.4.2.5 | PATCH | Ensure pam_unix module is enabled"
@@ -142,6 +148,7 @@
         grep -P -- '\b(pam_unix\.so)\b' /etc/authselect/"$(head -1 /etc/authselect/authselect.conf)"/{system,password}-auth
       changed_when: false
       failed_when: discovered_authselect_pam_unix.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_authselect_pam_unix
 
     - name: "4.4.2.5 | PATCH | Ensure pam_unix module is enabled | system-auth"

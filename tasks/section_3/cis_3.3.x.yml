@@ -26,9 +26,7 @@
       notify: Sysctl_flush_ipv4_routes
 
     - name: "3.3.1 | PATCH | Ensure IP forwarding is disabled | Disable IPv6 forwarding"
-      when:
-        - rhel8cis_ipv6_required or
-          rhel8cis_ipv6_sysctl_force
+      when: rhel8cis_ipv6_required or rhel8cis_ipv6_sysctl_force
       ansible.posix.sysctl:
         name: net.ipv6.conf.all.forwarding
         value: '0'
@@ -98,7 +96,6 @@
     - NIST800-53R5_CM-6
     - NIST800-53R5_CM-7
     - NIST800-53R5_IA-5
-    - rule_3.3.3
     - rule_3.3.4
   ansible.posix.sysctl:
     name: net.ipv4.icmp_echo_ignore_broadcasts

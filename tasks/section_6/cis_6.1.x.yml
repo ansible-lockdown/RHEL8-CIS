@@ -191,6 +191,7 @@
       ansible.builtin.shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -0002
       changed_when: false
       failed_when: false
+      check_mode: false
       register: discovered_perms_results
 
     - name: "6.1.11 | PATCH | Adjust world-writable files if they exist (Configurable)"
@@ -406,7 +407,7 @@
             group: root
             mode: 'go-wx'
 
-        - name: "6.1.14 | AUDIT | Audit system file permissions | Message out alert for package descrepancies"
+        - name: "6.1.14 | AUDIT | Audit system file permissions | Message out alert for package discrepancies"
           when: discovered_packages_rpm.stdout | length > 0
           ansible.builtin.debug:
             msg: |

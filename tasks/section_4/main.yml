@@ -58,6 +58,6 @@
   ansible.builtin.import_tasks:
     file: cis_4.5.2.x.yml
 
-- name: "SECTION | 4.5.3.x | User enviroment"
+- name: "SECTION | 4.5.3.x | User environment"
   ansible.builtin.import_tasks:
     file: cis_4.5.3.x.yml

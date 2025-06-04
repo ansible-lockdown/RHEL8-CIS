@@ -34,6 +34,7 @@
       ansible.builtin.stat:
         path: "{{ prelim_audit_logfile.stdout }}"
       changed_when: false
+      check_mode: false
       register: discovered_auditlog_info
 
     - name: |

@@ -91,7 +91,7 @@
     - automated
     - patch
     - auditd
-    - rule_5.2.3_7
+    - rule_5.2.3.7
   ansible.builtin.set_fact:
     rhel8cis_update_audit_template: true
 

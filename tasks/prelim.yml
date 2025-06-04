@@ -14,6 +14,7 @@
   ansible.builtin.shell: >
       grep -E -v '^(root|halt|sync|shutdown)' /etc/passwd | awk -F: '(!index($7, "sbin/nologin") && $7 != "/bin/nologin" && $7 != "/bin/false" && $7 != "/dev/null") { print $1 }'
   changed_when: false
+  check_mode: false
   register: prelim_interactive_usernames
 
 - name: "PRELIM | AUDIT | Interactive User accounts home directories"
@@ -21,6 +22,7 @@
   ansible.builtin.shell: >
       grep -E -v '^(root|halt|sync|shutdown)' /etc/passwd | awk -F: '(!index($7, "sbin/nologin") && $7 != "/bin/nologin" && $7 != "/bin/false" && $7 != "/dev/null") { print $6 }'
   changed_when: false
+  check_mode: false
   register: prelim_interactive_users_home
 
 - name: "PRELIM | AUDIT | Interactive UIDs"
@@ -28,6 +30,7 @@
   ansible.builtin.shell: >
       grep -E -v '^(root|halt|sync|shutdown)' /etc/passwd | awk -F: '(!index($7, "sbin/nologin") && $7 != "/bin/nologin" && $7 != "/bin/false") { print $3 }'
   changed_when: false
+  check_mode: false
   register: prelim_interactive_uids
 
 - name: "PRELIM | Discover Interactive UID MIN and MIN from logins.def"
@@ -36,11 +39,13 @@
     - name: "PRELIM | Capture UID_MIN information from logins.def"
       ansible.builtin.shell: grep -w "^UID_MIN" /etc/login.defs | awk '{print $NF}'
       changed_when: false
+      check_mode: false
       register: prelim_uid_min_id
 
     - name: "PRELIM | Capture UID_MAX information from logins.def"
       ansible.builtin.shell: grep -w "^UID_MAX" /etc/login.defs | awk '{print $NF}'
       changed_when: false
+      check_mode: false
       register: prelim_uid_max_id
 
     - name: "PRELIM | set_facts for interactive uid/gid"
@@ -74,6 +79,7 @@
   ansible.builtin.stat:
     path: "{{ grub2_path }}"
   changed_when: false
+  check_mode: false
   register: prelim_grub_cfg
 
 - name: "PRELIM | AUDIT | Gather the package facts before prelim"
@@ -115,6 +121,7 @@
   ansible.builtin.command: findmnt -kn /dev/shm
   changed_when: false
   failed_when: prelim_dev_shm_present.rc not in [ 0, 1 ]
+  check_mode: false
   register: prelim_dev_shm_present
 
 - name: "PRELIM | AUDIT | systemd coredump file check"
@@ -182,6 +189,7 @@
   ansible.builtin.shell: >
       grep -E -v '^(root|halt|sync|shutdown)' /etc/passwd | awk -F: '(!index($7, "sbin/nologin") && $7 != "/bin/nologin" && $7 != "/bin/false") { print $6 }'
   changed_when: false
+  check_mode: false
   register: prelim_interactive_users_home
 
 - name: "PRELIM | PATCH | Section 5.1 | Configure System Accounting (auditd)"
@@ -258,6 +266,7 @@
       ansible.builtin.shell: grep -E "OPTIONS=.*-4" /etc/sysconfig/chronyd
       changed_when: false
       failed_when: prelim_chrony_ipv6_exists.rc not in [ 0, 1]
+      check_mode: false
       register: prelim_chrony_ipv6_exists
 
     - name: "PRELIM | Optional | If IPv6 disable to stop chronyd listening"

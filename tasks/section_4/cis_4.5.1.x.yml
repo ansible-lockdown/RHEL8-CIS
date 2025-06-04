@@ -34,6 +34,7 @@
       ansible.builtin.shell: "grep -E '^[^:]+:[^!*]' /etc/shadow | awk -F':' '$5>{{ rhel8cis_pam_pass_max_days }} { print $1 }'"
       changed_when: false
       failed_when: discovered_pass_max_expire.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_pass_max_expire
 
     - name: "4.5.1.2 | PATCH | Ensure password expiration is 365 days or less | update login.defs"
@@ -94,6 +95,7 @@
         awk -F: '/^[^:\n\r]+:[^!*xX\n\r]/ {print $1}' /etc/shadow
       changed_when: false
       failed_when: discovered_users_warn_days.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_users_warn_days
 
     - name: "4.5.1.3 | PATCH | Ensure password expiration warning days is 7 or more | change users not matching req"
@@ -119,6 +121,7 @@
         useradd -D | grep INACTIVE
       changed_when: false
       failed_when: discovered_users_inactive_def.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_users_inactive_def
 
     - name: "4.5.1.4 | PATCH | Ensure inactive password lock is 30 days or less | change default"
@@ -133,6 +136,7 @@
         awk -F: '/^[^#:]+:[^!*:]*:[^:]*:[^:]*:[^:]*:[^:]*:(\s*|-1|3[1-9]|[4-9][0-9]|[1-9][0-9][0-9]+):[^:]*:[^:]*\s*$/ {print $1}' /etc/shadow
       changed_when: false
       failed_when: discovered_users_inactive.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_users_inactive
 
     - name: "4.5.1.4 | PATCH | Ensure inactive password lock is 30 days or less | change users not matching req"
@@ -159,6 +163,7 @@
       ansible.builtin.shell: useradd -D | grep INACTIVE
       changed_when: false
       failed_when: discovered_users_inactive_default.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_users_inactive_default
 
     - name: "4.5.1.5 | PATCH | Ensure all users last password change date is in the past | change default"
@@ -177,6 +182,7 @@
         awk -F: '{ if ($3 > "{{ days_since_epoch }}") { print $1 }  }' /etc/shadow
       changed_when: false
       failed_when: discovered_users_user_future.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_users_user_future
 
     - name: "4.5.1.5 | WARNING | Ensure inactive password lock is 30 days or less | Warn Users in future"
