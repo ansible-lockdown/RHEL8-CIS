@@ -658,6 +658,9 @@ rhel8cis_sugroup: {{ rhel8cis_sugroup }}
 # wheel users list
 rhel8cis_sugroup_users: "{{ rhel8cis_sugroup_users }}"
 
+rhel8cis_inactivelock:
+    lock_days: {{ rhel8cis_inactivelock.lock_days }}
+
 # 5.6.1.5 Allow ansible to expire password for account with a last changed date in the future. False will just display users in violation, true will expire those users passwords
 rhel8cis_futurepwchgdate_autofix: {{ rhel8cis_futurepwchgdate_autofix }}
 
@@ -708,6 +711,9 @@ rhel8cis_journald_runtimekeepfree: {{ rhel8cis_journald_runtimekeepfree }}
 # rhel8cis_journald_MaxFileSec is how long in time to keep log files. Values are Xm, Xh, Xday, Xweek, Xmonth, Xyear, for example 2week is two weeks
 rhel8cis_journald_maxfilesec: {{ rhel8cis_journald_maxfilesec }}
 
+# logrotate configuration
+# change to true if you wish to change logrotate.d conf files
+rhel8cis_allow_logrotate_conf_umask_updates: {{ rhel8cis_allow_logrotate_conf_umask_updates }}
 
 ## AIDE
 rhel8cis_aide_scan: {{ rhel8cis_aide_scan }}

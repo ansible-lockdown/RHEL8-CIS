@@ -781,6 +781,9 @@ rhel8cis_sugroup_users: "root"
 # Any other value does nothing
 rhel8cis_pamd_manual_risks: NEVER
 
+rhel8cis_inactivelock:
+  lock_days: 30
+
 # Allow ansible to expire password for account with a last changed date in the future. False will just display users in violation, true will expire those users passwords
 rhel8cis_futurepwchgdate_autofix: true
 
@@ -854,6 +857,10 @@ rhel8cis_journald_runtimemaxuse: 10M
 rhel8cis_journald_runtimekeepfree: 100G
 # rhel8cis_journald_MaxFileSec is how long in time to keep log files. Values are Xm, Xh, Xday, Xweek, Xmonth, Xyear, for example 2week is two weeks
 rhel8cis_journald_maxfilesec: 1month
+
+# logrotate configuration
+# change to true if you wish to change logrotate.d conf files
+rhel8cis_allow_logrotate_conf_umask_updates: false
 
 # AIDE
 # aide setup via - cron, timer
