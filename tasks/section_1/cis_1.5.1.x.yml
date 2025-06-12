@@ -95,7 +95,7 @@
     warn_control_id: '1.5.1.6'
   block:
     - name: "1.5.1.6 | AUDIT | Ensure no unconfined services exist | Find the unconfined services"
-      ansible.builtin.shell: ps -eZ | awk -F':' '/unconfined_service_t/ && $NF !~ /tr|ps|egrep|bash|awk/ {print $NF}'
+      ansible.builtin.shell: ps -eZ | grep unconfined_service_t | grep -Evw "tr|ps|egrep|bash|awk" | tr ':' ' ' | awk '{ print $NF }'
       register: discovered_unconf_services
       failed_when: false
       changed_when: false
