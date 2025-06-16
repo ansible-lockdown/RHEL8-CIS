@@ -203,10 +203,10 @@
 
 - name: "PRELIM | AUDIT | 5.2.4.x | Ensure audit log files are mode 0640 or less permissive | discover file"
   when:
-    - rhel8cis_rule_5_2_4_1
-    - rhel8cis_rule_5_2_4_2
-    - rhel8cis_rule_5_2_4_3
-    - rhel8cis_rule_5_2_4_4
+    - rhel8cis_rule_5_2_4_1 or
+      rhel8cis_rule_5_2_4_2 or
+      rhel8cis_rule_5_2_4_3 or
+      rhel8cis_rule_5_2_4_4
   tags: always
   ansible.builtin.shell: "grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'"
   changed_when: false

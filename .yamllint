@@ -1,4 +1,5 @@
 ---
+
 extends: default
 ignore: |
     tests/
