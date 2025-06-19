@@ -2,7 +2,10 @@
 
 ## Benchmark v3.0.0
 
+
 ### 2.2 Updates
+
+Update to audit_only to allow fetching results
 
 May 2025 QA Fixes
 Thank you @tgoetheyn
