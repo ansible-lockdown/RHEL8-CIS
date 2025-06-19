@@ -6,6 +6,7 @@
 ### 2.2 Updates
 
 Update to audit_only to allow fetching results
+resolved false warning for fetch audit
 
 May 2025 QA Fixes
 Thank you @tgoetheyn
