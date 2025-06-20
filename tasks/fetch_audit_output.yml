@@ -8,6 +8,7 @@
     src: "{{ item }}"
     dest: "{{ audit_output_destination }}"
     flat: true
+  changed_when: true
   failed_when: false
   register: discovered_audit_fetch_state
   loop:

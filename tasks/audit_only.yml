@@ -1,5 +1,12 @@
 ---
 
+- name: Audit_only | Fetch audit files
+  when:
+    - fetch_audit_output
+    - audit_only
+  ansible.builtin.import_tasks:
+    file: fetch_audit_output.yml
+
 - name: Audit_only | Show Audit Summary
   when: audit_only
   ansible.builtin.debug:
@@ -7,4 +14,4 @@
 
 - name: Audit_only | Stop Playbook Audit Only selected
   when: audit_only
-  ansible.builtin.meta: end_play
+  ansible.builtin.meta: end_host
