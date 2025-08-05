@@ -1,0 +1,47 @@
+---
+
+# Stage to copy audit output to a centralised location
+
+- name: "POST | FETCH | Fetch files and copy to controller"
+  when: audit_output_collection_method == "fetch"
+  ansible.builtin.fetch:
+    src: "{{ item }}"
+    dest: "{{ audit_output_destination }}"
+    flat: true
+  changed_when: true
+  failed_when: false
+  register: discovered_audit_fetch_state
+  loop:
+    - "{{ pre_audit_outfile }}"
+    - "{{ post_audit_outfile }}"
+  become: false
+
+# Added this option for continuity but could be changed by adjusting the variable audit_conf_dest
+# Allowing backup to one location
+- name: "POST | FETCH | Copy files to location available to managed node"
+  when: audit_output_collection_method == "copy"
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ audit_output_destination }}"
+    mode: 'u-x,go-wx'
+    flat: true
+  failed_when: false
+  register: discovered_audit_copy_state
+  loop:
+    - "{{ pre_audit_outfile }}"
+    - "{{ post_audit_outfile }}"
+
+- name: "POST | FETCH | Fetch files and copy to controller | Warning if issues with fetch_audit_files"
+  when:
+    - (audit_output_collection_method == "fetch" and not discovered_audit_fetch_state.changed) or
+      (audit_output_collection_method == "copy" and not discovered_audit_copy_state.changed)
+  block:
+    - name: "POST | FETCH | Fetch files and copy to controller | Warning if issues with fetch_audit_files"
+      ansible.builtin.debug:
+        msg: "Warning!! Unable to write to localhost {{ audit_output_destination }} for audit file copy"
+
+    - name: "POST | FETCH | Fetch files and copy to controller | Warning if issues with fetch_audit_files"
+      vars:
+        warn_control_id: "FETCH_AUDIT_FILES"
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml

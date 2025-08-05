@@ -681,7 +681,7 @@ rhel8cis_remote_log_protocol: {{ rhel8cis_remote_log_protocol }}
 rhel8cis_remote_log_retrycount: {{ rhel8cis_remote_log_retrycount }}
 rhel8cis_remote_log_queuesize: {{ rhel8cis_remote_log_queuesize }}
 
-update_audit_template: {{ update_audit_template }}
+update_audit_template: {{ rhel8cis_update_audit_template }}
 
 rhel8cis_auditd:
     disk_error_action: {{ rhel8cis_auditd_disk_error_action }}
@@ -713,7 +713,7 @@ rhel8cis_journald_maxfilesec: {{ rhel8cis_journald_maxfilesec }}
 
 # logrotate configuration
 # change to true if you wish to change logrotate.d conf files
-allow_logrotate_conf_umask_updates: {{ allow_logrotate_conf_umask_updates }}
+rhel8cis_allow_logrotate_conf_umask_updates: {{ rhel8cis_allow_logrotate_conf_umask_updates }}
 
 ## AIDE
 rhel8cis_aide_scan: {{ rhel8cis_aide_scan }}

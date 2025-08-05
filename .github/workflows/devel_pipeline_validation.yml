@@ -7,6 +7,7 @@
         types: [opened, reopened, synchronize]
         branches:
             - devel
+            - benchmark*
         paths:
             - '**.yml'
             - '**.sh'
@@ -55,7 +56,7 @@
 
         steps:
 
-          - name: Git Clone the Lockdown Repository to test
+          - name: Git clone the lockdown repository to test
             uses: actions/checkout@v4
             with:
               ref: ${{ github.event.pull_request.head.sha }}
@@ -70,7 +71,6 @@
                  echo IAC_BRANCH=main >> $GITHUB_ENV
               fi
 
-
           # Pull in terraform code for linux servers
           - name: Clone GitHub IaC plan
             uses: actions/checkout@v4
@@ -81,7 +81,7 @@
 
           # Uses dedicated restricted role and policy to enable this only for this task
           # No credentials are part of github for AWS auth
-          - name: Configure AWS Credentials
+          - name: configure aws credentials
             uses: aws-actions/configure-aws-credentials@main
             with:
               role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
@@ -104,7 +104,7 @@
               PRIVSUBNET_ID: ${{ secrets.AWS_PRIVSUBNET_ID }}
               VPC_ID: ${{ secrets.AWS_VPC_SECGRP_ID }}
 
-          - name: Tofu Init
+          - name: Tofu init
             id: init
             run: tofu init
             env:
@@ -112,7 +112,7 @@
               OSVAR: ${{ vars.OSVAR }}
               TF_VAR_benchmark_type: ${{ vars.BENCHMARK_TYPE }}
 
-          - name: Tofu Validate
+          - name: Tofu validate
             id: validate
             run: tofu validate
             env:
@@ -120,7 +120,7 @@
               OSVAR: ${{ vars.OSVAR }}
               TF_VAR_benchmark_type: ${{ vars.BENCHMARK_TYPE }}
 
-          - name: Tofu Apply
+          - name: Tofu apply
             id: apply
             env:
               OSVAR: ${{ vars.OSVAR }}
@@ -136,11 +136,11 @@
 
     # Aws deployments taking a while to come up insert sleep or playbook fails
 
-          - name: Sleep - Allow system to come up
+          - name: Sleep to allow system to come up
             run: sleep ${{ vars.BUILD_SLEEPTIME }}
 
         # Run the Ansible playbook
-          - name: Run Ansible Playbook
+          - name: Run_Ansible_Playbook
             env:
               ANSIBLE_HOST_KEY_CHECKING: "false"
               ANSIBLE_DEPRECATION_WARNINGS: "false"

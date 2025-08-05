@@ -1,44 +1,55 @@
 ---
 
-- name: "5.1.4 | PATCH | Ensure permissions on all logfiles are configured"
-  when:
-      - rhel8cis_rule_5_1_4
+- name: "5.1.4 | PATCH | Ensure access to all logfiles has been configured"
+  when: rhel8cis_rule_5_1_4
   tags:
-      - level1-server
-      - level1-workstation
-      - patch
-      - NIST800-53R5_AU-2
-      - NIST800-53R5_AU-12
-      - logfiles
-      - rule_5.1.4
+    - level1-server
+    - level1-workstation
+    - patch
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-12
+    - logfiles
+    - rule_5.1.4
   block:
-      - name: "5.1.4 | AUDIT | Ensure permissions on all logfiles are configured | find files"
-        ansible.builtin.shell: find -L /var/log/ -type f -perm /g+wx,o+rwx -exec ls {} \;
-        changed_when: false
-        failed_when: false
-        register: discovered_logfiles
+    - name: "5.1.4 | AUDIT | Ensure access to all logfiles has been configured | find log files"
+      ansible.builtin.shell: find /var/log/ -type f -exec ls {} \;
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_logfiles
 
-      - name: "5.1.4 | PATCH | Ensure permissions on all logfiles are configured | change permissions"
-        when:
-            - item != "/var/log/btmp"
-            - item != "/var/log/utmp"
-            - item != "/var/log/wtmp"
-            - item != "/var/log/lastlog"
-        ansible.builtin.file:
-            path: "{{ item }}"
-            mode: 'u-x,g-wx,o-rwx'
-        failed_when: discovered_logfile_list.state not in '[ file, absent ]'
-        register: discovered_logfile_list
-        loop: "{{ discovered_logfiles.stdout_lines }}"
+    - name: "5.1.4 | PATCH | Ensure access to all logfiles has been configured | change permissions SSSD min 660"
+      when:
+        - discovered_logfiles.stdout_lines | length > 0
+        - item is match("/var/log/(gdm|sssd)")
+      ansible.builtin.file:
+        path: "{{ item }}"
+        mode: 'ug-x,o-rwx'
+      failed_when: discovered_logfile_list.state not in '[ file, absent ]'
+      check_mode: false
+      register: discovered_logfile_list
+      loop: "{{ discovered_logfiles.stdout_lines }}"
 
-      - name: "5.1.4 | PATCH | Ensure permissions on all logfiles are configured | change permissions"
-        ansible.builtin.file:
-            path: "{{ item.name }}"
-            mode: 'ug-x,o-wx'
-        failed_when: discovered_logfile_list.state not in '[ file, absent ]'
-        register: discovered_logfile_list
-        with_fileglob:
-            - /var/log/*tmp.*"
-            - /var/log/lastlog"
-            - /var/log/ssd*"
-            - /var/log/SSD*"
+    - name: "5.1.4 | PATCH | Ensure access to all logfiles has been configured | change permissions tmp min 664"
+      when:
+        - discovered_logfiles.stdout_lines | length > 0
+        - item is match("/var/log/((u|b|w)tmp*|lastlog)")
+      ansible.builtin.file:
+        path: "{{ item }}"
+        mode: 'ug-x,o-wx'
+      failed_when: discovered_logfile_list.state not in '[ file, absent ]'
+      check_mode: false
+      register: discovered_logfile_list
+      loop: "{{ discovered_logfiles.stdout_lines }}"
+
+    - name: "5.1.4 | PATCH | Ensure access to all logfiles has been configured | change permissions else all 640"
+      when:
+        - discovered_logfiles.stdout_lines | length > 0
+        - item is not match("/var/log/((u|b|w)tmp*|lastlog|sssd)")
+      ansible.builtin.file:
+        path: "{{ item }}"
+        mode: 'u-x,g-wx,o-rwx'
+      failed_when: discovered_logfile_list.state not in '[ file, absent ]'
+      check_mode: false
+      register: discovered_logfile_list
+      loop: "{{ discovered_logfiles.stdout_lines }}"

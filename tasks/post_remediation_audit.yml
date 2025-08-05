@@ -1,44 +1,42 @@
 ---
 
-- name: Post Audit | Run post_remediation {{ benchmark }} audit
-  ansible.builtin.shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -f {{ audit_format }} -o {{ post_audit_outfile }} -g \"{{ group_names }}\""
+- name: Post Audit | Run post_remediation {{ benchmark }} audit  # noqa name[template]
+  ansible.builtin.command: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -f {{ audit_format }} -o {{ post_audit_outfile }} -g \"{{ group_names }}\""
   changed_when: true
   environment:
-      AUDIT_BIN: "{{ audit_bin }}"
-      AUDIT_CONTENT_LOCATION: "{{ audit_conf_dest | default('/opt') }}"
-      AUDIT_FILE: goss.yml
+    AUDIT_BIN: "{{ audit_bin }}"
+    AUDIT_CONTENT_LOCATION: "{{ audit_conf_dest | default('/opt') }}"
+    AUDIT_FILE: goss.yml
 
 - name: Post Audit | Ensure audit files readable by users
   ansible.builtin.file:
-      path: "{{ item }}"
-      mode: '0644'
-      state: file
+    path: "{{ item }}"
+    mode: 'u-x,go=r'
+    state: file
   loop:
-      - "{{ post_audit_outfile }}"
-      - "{{ pre_audit_outfile }}"
+    - "{{ post_audit_outfile }}"
+    - "{{ pre_audit_outfile }}"
 
 - name: Post Audit | Capture audit data if json format
-  when:
-      - audit_format == "json"
+  when: audit_format == "json"
   block:
-      - name: Post Audit | Capture audit data if json format
-        ansible.builtin.shell: grep -E '"summary-line.*Count:.*Failed' "{{ post_audit_outfile }}" | cut -d'"' -f4
-        register: post_audit_summary
-        changed_when: false
+    - name: Post Audit | Capture audit data if json format
+      ansible.builtin.shell: grep -E '"summary-line.*Count:.*Failed' "{{ post_audit_outfile }}" | cut -d'"' -f4
+      changed_when: false
+      register: post_audit_summary
 
-      - name: Post Audit | Set Fact for audit summary
-        ansible.builtin.set_fact:
-            post_audit_results: "{{ post_audit_summary.stdout }}"
+    - name: Post Audit | Set Fact for audit summary
+      ansible.builtin.set_fact:
+        post_audit_results: "{{ post_audit_summary.stdout }}"
 
 - name: Post Audit | Capture audit data if documentation format
-  when:
-      - audit_format == "documentation"
+  when: audit_format == "documentation"
   block:
-      - name: Post Audit | Capture audit data if documentation format
-        ansible.builtin.shell: "tail -2 {{ post_audit_outfile }}"
-        register: post_audit_summary
-        changed_when: false
+    - name: Post Audit | Capture audit data if documentation format
+      ansible.builtin.shell: tail -2 "{{ post_audit_outfile }}"  | tac | tr '\n' ' '
+      changed_when: false
+      register: post_audit_summary
 
-      - name: Post Audit | Set Fact for audit summary
-        ansible.builtin.set_fact:
-            post_audit_results: "{{ post_audit_summary.stdout }}"
+    - name: Post Audit | Set Fact for audit summary
+      ansible.builtin.set_fact:
+        post_audit_results: "{{ post_audit_summary.stdout }}"

@@ -2,110 +2,112 @@
 # handlers file for RHEL8-CIS
 
 - name: Update_authselect
-  ansible.builtin.shell: authselect apply-changes
+  ansible.builtin.command: authselect apply-changes
+  changed_when: true
 
 - name: Remount_tmp
-  ansible.builtin.shell: mount -o remount /tmp
+  ansible.posix.mount:
+    name: /tmp
+    state: remounted
 
 - name: Systemd_restart_tmp.mount
   ansible.builtin.systemd:
-      name: tmp.mount
-      daemon_reload: true
-      enabled: true
-      masked: false
-      state: reloaded
+    name: tmp.mount
+    daemon_reload: true
+    enabled: true
+    masked: false
+    state: reloaded
 
 - name: Reload_sysctl
-  ansible.builtin.shell: sysctl --system
+  ansible.builtin.command: sysctl --system
+  changed_when: true
 
 - name: Sysctl_flush_ipv4_routes
+  when: not system_is_container
   ansible.posix.sysctl:
-      name: net.ipv4.route.flush
-      value: '1'
-      sysctl_set: true
+    name: net.ipv4.route.flush
+    value: '1'
+    sysctl_set: true
   ignore_errors: true  # noqa ignore-errors
-  when:
-      - not system_is_container
 
 - name: Sysctl_flush_ipv6_routes
+  when: not system_is_container
   ansible.posix.sysctl:
-      name: net.ipv6.route.flush
-      value: '1'
-      sysctl_set: true
+    name: net.ipv6.route.flush
+    value: '1'
+    sysctl_set: true
   ignore_errors: true  # noqa ignore-errors
-  when:
-      - not system_is_container
 
 - name: Restart_sshd
   ansible.builtin.service:
-      name: sshd
-      state: restarted
+    name: sshd
+    state: restarted
 
 - name: Restart_chronyd
   ansible.builtin.service:
-      name: chronyd
-      state: restarted
+    name: chronyd
+    state: restarted
 
 - name: Restart_postfix
   ansible.builtin.service:
-      name: postfix
-      state: restarted
+    name: postfix
+    state: restarted
 
 - name: Reload_dconf
-  ansible.builtin.shell: dconf update
+  ansible.builtin.command: dconf update
+  changed_when: true
 
 - name: Update_auditd_rules
   ansible.builtin.template:
-      src: audit/99_auditd.rules.j2
-      dest: /etc/audit/rules.d/99_auditd.rules
-      owner: root
-      group: root
-      mode: '0600'
+    src: audit/99_auditd.rules.j2
+    dest: /etc/audit/rules.d/99_auditd.rules
+    owner: root
+    group: root
+    mode: 'go-rwx'
   notify: Restart_auditd
 
 - name: Restart_journald
   ansible.builtin.service:
-      name: systemd-journald
-      state: restarted
+    name: systemd-journald
+    state: restarted
 
 - name: Restart_systemd_journal_upload
   ansible.builtin.service:
-      name: systemd-journal-upload
-      state: restarted
+    name: systemd-journal-upload
+    state: restarted
 
 - name: Rebuild_grub
-  ansible.builtin.shell: "grub2-mkconfig -o {{ prelim_grub_cfg.stat.lnk_source }}"
+  ansible.builtin.command: "grub2-mkconfig -o {{ prelim_grub_cfg.stat.lnk_source }}"
+  changed_when: true
   ignore_errors: true  # noqa ignore-errors
   notify: Change_requires_reboot
-  tags:
-      - skip_ansible_lint
 
 - name: Restart_rsyslog
   ansible.builtin.service:
-      name: rsyslog
-      state: restarted
+    name: rsyslog
+    state: restarted
 
 - name: Systemd_daemon_reload
   ansible.builtin.systemd:
-      daemon-reload: true
+    daemon-reload: true
 
 ## Auditd tasks note order for handlers to run
 
 - name: Auditd_immutable_check
-  ansible.builtin.shell: grep -c "^-e 2" /etc/audit/rules.d/99_auditd.rules
+  ansible.builtin.command: grep -c "^-e 2" /etc/audit/rules.d/99_auditd.rules
   changed_when: false
   register: discovered_auditd_immutable_check
 
 - name: Audit_immutable_fact
+  when: discovered_auditd_immutable_check.stdout == '1'
   ansible.builtin.debug:
-      msg: "Reboot required for auditd to apply new rules as immutable set"
+    msg: "Reboot required for auditd to apply new rules as immutable set"
   notify: Change_requires_reboot
-  when:
-      - discovered_auditd_immutable_check.stdout == '1'
 
 - name: Restart_auditd
-  ansible.builtin.shell: /sbin/service auditd restart
+  ansible.builtin.command: /sbin/service auditd restart  # noqa command-instead-of-module
+  changed_when: true
 
 - name: Change_requires_reboot
   ansible.builtin.set_fact:
-      reboot_required: true
+    reboot_required: true

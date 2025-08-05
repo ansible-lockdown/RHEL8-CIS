@@ -1,0 +1,40 @@
+# CIS Hardening Carried out
+# Added as part of ansible-lockdown CIS baseline
+# provided by Mindpoint Group - A Tyto Athene Company
+
+[lockdown_details]
+# Benchmark release
+Benchmark_release = CIS-{{ benchmark_version }}
+Benchmark_run_date = {{ '%Y-%m-%d - %H:%M:%S' | ansible.builtin.strftime }}
+# If options set (doesn't mean it ran all controls)
+level_1_hardening_enabled = {{ rhel8cis_level_1 }}
+level_2_hardening_enabled = {{ rhel8cis_level_2 }}
+
+{% if ansible_run_tags | length > 0 %}
+# If tags used to stipulate run level
+{% if 'level1-server' in ansible_run_tags %}
+Level_1_Server_tag_run = true
+{% endif %}
+{% if 'level2-server' in ansible_run_tags %}
+Level_2_Server_tag_run = true
+{% endif %}
+{% if 'level1-workstation' in ansible_run_tags %}
+Level_1_workstation_tag_run = true
+{% endif %}
+{% if 'level2-workstation' in ansible_run_tags %}
+Level_2_workstation_tag_run = true
+{% endif %}
+{% endif %}
+
+[lockdown_audit_details]
+{% if run_audit %}
+# Audit run
+audit_run_date = {{ '%Y-%m-%d - %H:%M:%S' | ansible.builtin.strftime }}
+audit_file_local_location = {{ audit_log_dir }}
+{% if not audit_only %}
+audit_summary = {{ post_audit_results }}
+{% endif %}
+{% if fetch_audit_output %}
+audit_files_centralized_location = {{ audit_output_destination }}
+{% endif %}
+{% endif %}

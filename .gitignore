@@ -1,7 +1,6 @@
 .env
 *.log
 *.retry
-.cache
 .vagrant
 tests/*redhat-subscription
 tests/Dockerfile
@@ -10,9 +9,9 @@ tests/Dockerfile
 packer_cache
 delete*
 ignore*
-test_inv
 # VSCode
 .vscode
+vagrant
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -45,5 +44,5 @@ benchparse/
 # GitHub Action/Workflow files
 .github/
 
-# ansible lint cache
+# ansible-lint cache
 .ansible/

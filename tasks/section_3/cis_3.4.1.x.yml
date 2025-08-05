@@ -2,55 +2,53 @@
 
 - name: "3.4.1.1 | PATCH | Ensure nftables is installed"
   when:
-      - rhel8cis_rule_3_4_1_1
-      - "'nftables' not in ansible_facts.packages"
+    - rhel8cis_rule_3_4_1_1
+    - "'nftables' not in ansible_facts.packages"
   tags:
-      - level1-server
-      - level1-workstation
-      - patch
-      - nftables
-      - NIST800-53R5_CA-9
-      - rule_3.4.1.1
+    - level1-server
+    - level1-workstation
+    - patch
+    - nftables
+    - NIST800-53R5_CA-9
+    - rule_3.4.1.1
   ansible.builtin.package:
-      name:
-          - nftables
-      state: present
+    name: nftables
+    state: present
 
 - name: "3.4.1.2 | PATCH | Ensure a single firewall configuration utility is in use"
-  when:
-      - rhel8cis_rule_3_4_1_2
+  when: rhel8cis_rule_3_4_1_2
   tags:
-      - level1-server
-      - level1-workstation
-      - patch
-      - firewalld
-      - nftables
-      - rule_3.4.1.2
+    - level1-server
+    - level1-workstation
+    - patch
+    - firewalld
+    - nftables
+    - rule_3.4.1.2
   block:
-      - name: "3.4.1.2 | PATCH | Ensure a single firewall configuration utility is in use | nftables"
-        when:
-            - "'firewalld' in ansible_facts.packages"
-            - rhel8cis_firewall == "nftables"
-        ansible.builtin.systemd:
-            name: firewalld
-            masked: true
+    - name: "3.4.1.2 | PATCH | Ensure a single firewall configuration utility is in use | nftables"
+      when:
+        - "'firewalld' in ansible_facts.packages"
+        - rhel8cis_firewall == "nftables"
+      ansible.builtin.systemd:
+        name: firewalld
+        masked: true
 
-      - name: "3.4.1.2 | PATCH | Ensure a single firewall configuration utility is in use | firewalld"
-        when:
-            - "'nftables' in ansible_facts.packages"
-            - rhel8cis_firewall == "firewalld"
-        ansible.builtin.systemd:
-            name: nftables
-            masked: true
+    - name: "3.4.1.2 | PATCH | Ensure a single firewall configuration utility is in use | firewalld"
+      when:
+        - "'nftables' in ansible_facts.packages"
+        - rhel8cis_firewall == "firewalld"
+      ansible.builtin.systemd:
+        name: nftables
+        masked: true
 
-      - name: "3.4.1.2 | PATCH | Ensure a single firewall configuration utility is in use | {{ rhel8cis_firewall }} package installed"
-        when: "rhel8cis_firewall not in ansible_facts.packages"
-        ansible.builtin.package:
-            name: "{{ rhel8cis_firewall }}"
-            state: present
+    - name: "3.4.1.2 | PATCH | Ensure a single firewall configuration utility is in use | {{ rhel8cis_firewall }} package installed"  # noqa name[template]
+      when: "rhel8cis_firewall not in ansible_facts.packages"
+      ansible.builtin.package:
+        name: "{{ rhel8cis_firewall }}"
+        state: present
 
-      - name: "3.4.1.2 | PATCH | Ensure a single firewall configuration utility is in use | {{ rhel8cis_firewall }} started and enabled"
-        ansible.builtin.systemd:
-            name: "{{ rhel8cis_firewall }}"
-            enabled: true
-            state: started
+    - name: "3.4.1.2 | PATCH | Ensure a single firewall configuration utility is in use | {{ rhel8cis_firewall }} started and enabled"  # noqa name[template]
+      ansible.builtin.systemd:
+        name: "{{ rhel8cis_firewall }}"
+        enabled: true
+        state: started

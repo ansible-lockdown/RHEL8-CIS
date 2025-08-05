@@ -1,117 +1,111 @@
 ---
 
 - name: "1.7.1 | PATCH | Ensure message of the day is configured properly"
-  when:
-      - rhel8cis_rule_1_7_1
+  when: rhel8cis_rule_1_7_1
   tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - banner
-      - patch
-      - NIST800-53R5_CM-1
-      - NIST800-53R5_CM-3
-      - NIST800-53R5_CM-6
-      - rule_1.7.1
+    - level1-server
+    - level1-workstation
+    - automated
+    - banner
+    - patch
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-3
+    - NIST800-53R5_CM-6
+    - rule_1.7.1
   ansible.builtin.template:
-      src: etc/motd.j2
-      dest: /etc/motd
-      owner: root
-      group: root
-      mode: 'go-rx'
+    src: etc/motd.j2
+    dest: /etc/motd
+    owner: root
+    group: root
+    mode: 'go-rx'
 
 - name: "1.7.2 | PATCH | Ensure local login warning banner is configured properly"
-  when:
-      - rhel8cis_rule_1_7_2
+  when: rhel8cis_rule_1_7_2
   tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - NIST800-53R5_CM-1
-      - NIST800-53R5_CM-3
-      - NIST800-53R5_CM-6
-      - rule_1.7.2
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-3
+    - NIST800-53R5_CM-6
+    - rule_1.7.2
   ansible.builtin.template:
-      src: etc/issue.j2
-      dest: /etc/issue
-      owner: root
-      group: root
-      mode: 'go-rx'
+    src: etc/issue.j2
+    dest: /etc/issue
+    owner: root
+    group: root
+    mode: 'go-rx'
 
 - name: "1.7.3 | PATCH | Ensure remote login warning banner is configured properly"
-  when:
-      - rhel8cis_rule_1_7_3
+  when: rhel8cis_rule_1_7_3
   tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - banner
-      - patch
-      - NIST800-53R5_CM-1
-      - NIST800-53R5_CM-3
-      - NIST800-53R5_CM-6
-      - rule_1.7.3
+    - level1-server
+    - level1-workstation
+    - automated
+    - banner
+    - patch
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-3
+    - NIST800-53R5_CM-6
+    - rule_1.7.3
   ansible.builtin.template:
-      src: etc/issue.net.j2
-      dest: /etc/issue.net
-      owner: root
-      group: root
-      mode: 'go-wx'
+    src: etc/issue.net.j2
+    dest: /etc/issue.net
+    owner: root
+    group: root
+    mode: 'go-wx'
 
 - name: "1.7.4 | PATCH | Ensure access to /etc/motd is configured"
-  when:
-      - rhel8cis_rule_1_7_4
+  when: rhel8cis_rule_1_7_4
   tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - perms
-      - patch
-      - NIST800-53R5_AC-3
-      - NIST800-53R5_MP-2
-      - rule_1.7.4
+    - level1-server
+    - level1-workstation
+    - automated
+    - perms
+    - patch
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+    - rule_1.7.4
   ansible.builtin.file:
-      path: /etc/motd
-      state: file
-      owner: root
-      group: root
-      mode: 'go-wx'
+    path: /etc/motd
+    state: file
+    owner: root
+    group: root
+    mode: 'go-wx'
 
 - name: "1.7.5 | PATCH | Ensure access to /etc/issue is configured"
-  when:
-      - rhel8cis_rule_1_7_5
+  when: rhel8cis_rule_1_7_5
   tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - perms
-      - patch
-      - NIST800-53R5_AC-3
-      - NIST800-53R5_MP-2
-      - rule_1.7.5
+    - level1-server
+    - level1-workstation
+    - automated
+    - perms
+    - patch
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+    - rule_1.7.5
   ansible.builtin.file:
-      path: /etc/issue
-      state: file
-      owner: root
-      group: root
-      mode: 'go-wx'
+    path: /etc/issue
+    state: file
+    owner: root
+    group: root
+    mode: 'go-wx'
 
 - name: "1.7.6 | PATCH | Ensure access to /etc/issue.net is configured"
-  when:
-      - rhel8cis_rule_1_7_6
+  when: rhel8cis_rule_1_7_6
   tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - perms
-      - patch
-      - NIST800-53R5_AC-3
-      - NIST800-53R5_MP-2
-      - rule_1.7.6
+    - level1-server
+    - level1-workstation
+    - automated
+    - perms
+    - patch
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+    - rule_1.7.6
   ansible.builtin.file:
-      path: /etc/issue.net
-      state: file
-      owner: root
-      group: root
-      mode: 'go-wx'
+    path: /etc/issue.net
+    state: file
+    owner: root
+    group: root
+    mode: 'go-wx'

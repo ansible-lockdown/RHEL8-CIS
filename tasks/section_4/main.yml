@@ -4,61 +4,60 @@
 
 - name: "SECTION | 4.1.1 | Configure time-based job schedulers | cron"
   ansible.builtin.import_tasks:
-      file: cis_4.1.1.x.yml
+    file: cis_4.1.1.x.yml
 
 - name: "SECTION | 4.1.2 | Configure job schedulers | at"
   ansible.builtin.import_tasks:
-      file: cis_4.1.2.x.yml
+    file: cis_4.1.2.x.yml
 
 - name: "SECTION | 4.2 | Configure SSH Server"
+  when: "'openssh-server' in ansible_facts.packages"
   ansible.builtin.import_tasks:
-      file: cis_4.2.x.yml
-  when:
-      - "'openssh-server' in ansible_facts.packages"
+    file: cis_4.2.x.yml
 
 - name: "SECTION | 4.3 | Configure privilege escalation"
   ansible.builtin.import_tasks:
-      file: cis_4.3.x.yml
+    file: cis_4.3.x.yml
 
 - name: "SECTION | 4.4.1 | Configure PAM software packages"
   ansible.builtin.import_tasks:
-      file: cis_4.4.1.x.yml
+    file: cis_4.4.1.x.yml
 
 - name: "SECTION | 4.4.2 | Authselect"
   when:
-      - rhel8cis_allow_authselect_updates
-      - rhel8cis_disruption_high
+    - rhel8cis_allow_authselect_updates
+    - rhel8cis_disruption_high
   ansible.builtin.import_tasks:
-      file: cis_4.4.2.x.yml
+    file: cis_4.4.2.x.yml
 
 - name: "SECTION | 4.4.3.1.x | Configure module pam_faillock"
   when: rhel8cis_disruption_high
   ansible.builtin.import_tasks:
-      file: cis_4.4.3.1.x.yml
+    file: cis_4.4.3.1.x.yml
 
 - name: "SECTION | 4.4.3.2.x | Configure module pam_pwquality"
   when: rhel8cis_disruption_high
   ansible.builtin.import_tasks:
-      file: cis_4.4.3.2.x.yml
+    file: cis_4.4.3.2.x.yml
 
 - name: "SECTION | 4.4.3.3.x | Configure module pam_pwhistory"
   when: rhel8cis_disruption_high
   ansible.builtin.import_tasks:
-      file: cis_4.4.3.3.x.yml
+    file: cis_4.4.3.3.x.yml
 
 - name: "SECTION | 4.4.3.4.x | Configure module pam_unix"
   when: rhel8cis_disruption_high
   ansible.builtin.import_tasks:
-      file: cis_4.4.3.4.x.yml
+    file: cis_4.4.3.4.x.yml
 
 - name: "SECTION | 4.5.1.x | Shadow suite"
   ansible.builtin.import_tasks:
-      file: cis_4.5.1.x.yml
+    file: cis_4.5.1.x.yml
 
 - name: "SECTION | 4.5.2.x | Root and sys accounts"
   ansible.builtin.import_tasks:
-      file: cis_4.5.2.x.yml
+    file: cis_4.5.2.x.yml
 
-- name: "SECTION | 4.5.3.x | User enviroment"
+- name: "SECTION | 4.5.3.x | User environment"
   ansible.builtin.import_tasks:
-      file: cis_4.5.3.x.yml
+    file: cis_4.5.3.x.yml
