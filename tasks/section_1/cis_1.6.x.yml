@@ -44,7 +44,7 @@
       changed_when: discovered_no_sha1_template is changed # noqa: no-handler
       notify:
         - Update_Crypto_Policy
-        - Set Crypto Policy
+        - Set_Crypto_Policy
 
 - name: "1.6.3 | PATCH | Ensure system wide crypto policy disables cbc for ssh"
   when:
