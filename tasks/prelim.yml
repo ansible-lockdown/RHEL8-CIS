@@ -127,27 +127,32 @@
     path: /etc/systemd/coredump.conf
   register: prelim_systemd_coredump
 
-- name: "PRELIM | AUDIT | Ensure crypto-policies-scripts package is installed"
-  when: "'crypto-policies-scripts' not in ansible_facts.packages"
-  tags: always
-  ansible.builtin.package:
-    name: crypto-policies-scripts
-    state: installed
-
-- name: "PRELIM | AUDIT | Gather system-wide crypto-policy settings"
-  tags: always
+- name: "PRELIM | PATCH | Setup crypto-policy"
+  when: rhel8cis_rule_1_6_1
+  tags:
+    - level1-server
+    - level1-workstation
+    - rule_1.6.1
+    - crypto
   block:
-    - name: "PRELIM | AUDIT | Gather system-wide crypto-policy settings"
-      ansible.builtin.command: 'update-crypto-policies --show'
+    - name: "PRELIM | PATCH | Install crypto-policies | pkgs present"
+      ansible.builtin.package:
+        name:
+          - crypto-policies
+          - crypto-policies-scripts
+        state: present
+
+    - name: "PRELIM | AUDIT | Gather system-wide crypto-policy"
+      ansible.builtin.command: "update-crypto-policies --show"
       changed_when: false
       check_mode: false
       register: prelim_system_wide_crypto_policy
 
-    - name: "PRELIM | AUDIT | Gather system-wide crypto-policy | set fact for crypto policy"
+    - name: "PRELIM | AUDIT | Gather system-wide crypto-policy | set fact system policy"
       ansible.builtin.set_fact:
         current_crypto_policy: "{{ prelim_system_wide_crypto_policy.stdout.split(':')[0] }}"
 
-    - name: "PRELIM | AUDIT | Gather system-wide crypto-policy module | set fact for crypto submodule"
+    - name: "PRELIM | AUDIT | Gather system-wide crypto-policy module | set fact system policy submodule"
       when: "':' in prelim_system_wide_crypto_policy.stdout"
       ansible.builtin.set_fact:
         current_crypto_module: "{{ prelim_system_wide_crypto_policy.stdout.split(':')[1] }}"
