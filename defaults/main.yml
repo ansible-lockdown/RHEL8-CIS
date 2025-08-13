@@ -530,18 +530,20 @@ rhel8cis_selinux_state: enforcing
 # Valid Inputs: targeted or mls
 rhel8cis_selinux_policy: targeted
 
-# 1.6 Set crypto policy (LEGACY, DEFAULT, FUTURE, FIPS)
+## Control 1.6
+# This variable contains the value to be set as the system-wide crypto policy. Current rule enforces NOT USING
+# 'LEGACY' value(as it is less secure, it just ensures compatibility with legacy systems), therefore
+# possible values for this variable are, as explained by RedHat docs:
+#  -'DEFAULT': reasonable default policy for today's standards (balances usability and security)
+#  -'FUTURE': conservative security level that is believed to withstand any near-term future attacks
+#  -'FIPS': A level that conforms to the FIPS140-2 requirements
 rhel8cis_crypto_policy: 'DEFAULT'
 
-# 1.6.1 Allowed crypto-policy modules
-## list of allowed crypto policies as per baseline
-rhel8cis_allowed_crypto_policies_modules:
-  - 'AD-SUPPORT'
-  - 'NO-SHA1'
-  - 'OSPP'
-
-# Added module to be loaded take from the list about required to be colon ':' separated
-rhel8cis_crypto_policy_module: ''
+## Control 1.6
+# This variable contains the value of the crypto policy module(combinations of policies and
+# sub-policies) to be allowed as default setting. Allowed options are defined in 'vars/main.yml' file,
+# using those listed in the 'rhel9cis_allowed_crypto_policies_modules' variable.
+rhel8cis_additional_crypto_policy_module: ''
 
 # 1.7
 # Warning Banner Content (issue, issue.net, motd)

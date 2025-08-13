@@ -43,6 +43,20 @@
     name: sshd
     state: restarted
 
+- name: Update_Crypto_Policy
+  ansible.builtin.set_fact:
+    rhel8cis_full_crypto_policy: "{{ rhel8cis_crypto_policy }}{{ rhel8cis_crypto_policy_module }}{% if rhel8cis_additional_crypto_policy_module | length > 0 %}:{{ rhel8cis_additional_crypto_policy_module }}{% endif %}"
+  notify: Set_Crypto_Policy
+
+- name: Set_Crypto_Policy
+  when: prelim_system_wide_crypto_policy.stdout != rhel8cis_full_crypto_policy
+  ansible.builtin.command: |
+    update-crypto-policies --set "{{ rhel8cis_full_crypto_policy }}"
+  changed_when: true
+  notify:
+    - Change_requires_reboot
+    - Restart_sshd
+
 - name: Restart_chronyd
   ansible.builtin.service:
     name: chronyd
