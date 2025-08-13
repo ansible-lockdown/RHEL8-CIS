@@ -7,6 +7,8 @@
 Update to audit_only to allow fetching results
 resolved false warning for fetch audit
 
+July 2025 QA Fixes
+- Addresses #451 - Update tasks/1.6.x with handler and vars logic
 
 June 2025 QA Fixes
 - Addresses #440 - tasks/prelim and defaults/main var standardization
