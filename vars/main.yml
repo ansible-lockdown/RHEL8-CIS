@@ -7,6 +7,23 @@ rhel8cis_allowed_crypto_policies:
   - 'FUTURE'
   - 'FIPS'
 
+# Following is left blank for ability to build string
+rhel8cis_crypto_policy_module: ''
+
+# Do not adjust these are recognized as part of the CIS benchmark and used during testing
+rhel8cis_allowed_crypto_policies_modules:
+  # Recognized by CIS as possible extra options
+  - 'OSPP'
+  - 'AD-SUPPORT'
+  - 'AD-SUPPORT-LEGACY'
+  # The following are already included in 1.6.x controls
+  - 'NO-SHA1'
+  - 'NO-SSHCBC'
+  - 'NO-SSHETM'
+  - 'NO-SSHWEAKCIPHER'
+  - 'NO-SSHWEAKMAC'
+  - 'NO-WEAKMAC'
+
 rhel8cis_auditd_binaries:
   - /sbin/auditctl
   - /sbin/aureport
