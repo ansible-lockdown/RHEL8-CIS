@@ -43,7 +43,7 @@
         rhel8cis_crypto_policy_module: "{{ rhel8cis_crypto_policy_module + ':' + 'NO-SHA1' }}"
       changed_when: discovered_no_sha1_template is changed # noqa: no-handler
       notify:
-        - Update Crypto Policy
+        - Update_Crypto_Policy
         - Set Crypto Policy
 
 - name: "1.6.3 | PATCH | Ensure system wide crypto policy disables cbc for ssh"
