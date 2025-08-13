@@ -29,7 +29,7 @@
     - NIST800-53R5_SC-8
     - rule_1.6.2
   block:
-    - name: "1.6.3 | PATCH | Ensure system wide crypto policy disables sha1 hash and signature support"
+    - name: "1.6.2 | PATCH | Ensure system wide crypto policy disables sha1 hash and signature support"
       ansible.builtin.template:
         src: etc/crypto-policies/policies/modules/NO-SHA1.pmod.j2
         dest: /etc/crypto-policies/policies/modules/NO-SHA1.pmod
@@ -38,7 +38,7 @@
         mode: 'u-x,g-wx,o-rwx'
       register: discovered_no_sha1_template
 
-    - name: "1.6.3 | PATCH | Ensure system wide crypto policy disables sha1 hash and signature support | submodule to crypto policy modules"
+    - name: "1.6.2 | PATCH | Ensure system wide crypto policy disables sha1 hash and signature support | submodule to crypto policy modules"
       ansible.builtin.set_fact:
         rhel8cis_crypto_policy_module: "{{ rhel8cis_crypto_policy_module + ':' + 'NO-SHA1' }}"
       changed_when: discovered_no_sha1_template is changed # noqa: no-handler
