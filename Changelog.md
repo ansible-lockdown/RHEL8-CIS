@@ -8,6 +8,9 @@
 Update to audit_only to allow fetching results
 resolved false warning for fetch audit
 
+July 2025 QA Fixes
+- Addresses #451 - Update tasks/1.6.x with handler and vars logic
+
 May 2025 QA Fixes
 Thank you @tgoetheyn
 - 1.2.5 => fix typo in tag
