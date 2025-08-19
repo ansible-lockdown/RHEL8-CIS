@@ -4,6 +4,9 @@
 
 ### 2.2 Updates
 
+August 2025 - 6.2.9_fix
+- Addresses #485 - Update logic on prelim and task 6.2.9 when logic
+
 Update to audit_only to allow fetching results
 resolved false warning for fetch audit
 
