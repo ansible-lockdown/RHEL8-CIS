@@ -132,11 +132,18 @@
   register: prelim_systemd_coredump
 
 - name: "PRELIM | PATCH | Setup crypto-policy"
-  when: rhel8cis_rule_1_6_1
+  when:
+    - rhel8cis_rule_1_6_1 or
+      rhel8cis_rule_1_6_2 or
+      rhel8cis_rule_1_6_3 or
+      rhel8cis_rule_1_6_4
   tags:
     - level1-server
     - level1-workstation
     - rule_1.6.1
+    - rule_1.6.2
+    - rule_1.6.3
+    - rule_1.6.4
     - crypto
   block:
     - name: "PRELIM | PATCH | Install crypto-policies | pkgs present"
