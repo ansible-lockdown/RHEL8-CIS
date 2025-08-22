@@ -154,7 +154,7 @@
         state: present
 
     - name: "PRELIM | AUDIT | Gather system-wide crypto-policy"
-      ansible.builtin.command: "update-crypto-policies --show"
+      ansible.builtin.command: update-crypto-policies --show
       changed_when: false
       check_mode: false
       register: prelim_system_wide_crypto_policy

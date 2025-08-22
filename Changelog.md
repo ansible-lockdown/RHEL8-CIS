@@ -6,12 +6,11 @@
 
 August 2025 - 6.2.9_fix
 - Addresses #485 - Update logic on prelim and task 6.2.9 when logic
+- Addresses #488 - Update command vs shell modules
+- Addresses #451 - Update tasks/1.6.x with handler, prelim and vars logic
 
 Update to audit_only to allow fetching results
 resolved false warning for fetch audit
-
-July 2025 QA Fixes
-- Addresses #451 - Update tasks/1.6.x with handler and vars logic
 
 June 2025 QA Fixes
 - Addresses #440 - tasks/prelim and defaults/main var standardization

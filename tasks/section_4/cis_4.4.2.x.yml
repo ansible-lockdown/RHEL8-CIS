@@ -88,7 +88,7 @@
     - rule_4.4.2.3
   block:
     - name: "4.4.2.3 | AUDIT | Ensure pam_pwquality module is enabled | Get current config"
-      ansible.builtin.command: authselect current | grep quality
+      ansible.builtin.shell: authselect current | grep quality
       changed_when: false
       failed_when: discovered_authselect_current_quality.rc not in [ 0, 1 ]
       check_mode: false
