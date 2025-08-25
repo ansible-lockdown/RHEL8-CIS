@@ -1,12 +1,11 @@
 ---
 # Preliminary tasks that should always be run
 
-- name: "PRELIM | PATCH | Add the required packages"
+- name: "PRELIM | PATCH | Ensure libselinux is installed"
+  when: '"libselinux" not in ansible_facts.packages'
   tags: always
   ansible.builtin.package:
-    name:
-      - python3-libselinux
-      - python3-rpm
+    name: libselinux
     state: present
 
 - name: "PRELIM | AUDIT | Interactive Users"
