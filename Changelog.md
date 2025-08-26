@@ -2,8 +2,15 @@
 
 ## Benchmark v3.0.0
 
+### 3.2.1 Updates
 
-### 2.2 Updates
+August 2025
+- Addresses #492 - Update find logic on 5.1.4
+- Addresses #485 - Update logic on prelim and task 6.2.9 when logic
+- Addresses #488 - Update command vs shell modules
+- Addresses #451 - Update tasks/1.6.x with handler, prelim and vars logic
+
+### 3.2.0 Updates
 
 Update to audit_only to allow fetching results
 resolved false warning for fetch audit
@@ -39,7 +46,7 @@ https://github.com/ansible-lockdown/RHEL8-CIS/pull/429
 https://github.com/ansible-lockdown/RHEL8-CIS/issues/433
 https://github.com/ansible-lockdown/RHEL8-CIS/issues/434
 
-### 2.1 updates August 2024
+### 3.1.2 updates August 2024
 
 new workflow
 audit updates
@@ -48,7 +55,7 @@ thanks to @msachikanta, @fgierlinger, @bantify, @txdavec, @csabapatyi @dirkvdpla
 now able to run audit on ARM64 although not officially supported by CIS feedback needed
 audit binary update to 0.4.8
 
-## 2.0 based on CIS 3.0.0
+## 3.0.0 based on CIS 3.0.0
 
 ### This is not an upgrade for CIS v2.0.0 due to the number of changes treat as a new baseline
 
