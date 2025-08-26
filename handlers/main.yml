@@ -50,8 +50,7 @@
 
 - name: Set_Crypto_Policy
   when: prelim_system_wide_crypto_policy.stdout != rhel8cis_full_crypto_policy
-  ansible.builtin.command: |
-    update-crypto-policies --set "{{ rhel8cis_full_crypto_policy }}"
+  ansible.builtin.command: update-crypto-policies --set "{{ rhel8cis_full_crypto_policy }}"
   changed_when: true
   notify:
     - Change_requires_reboot

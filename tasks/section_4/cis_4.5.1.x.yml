@@ -91,7 +91,7 @@
         line: "PASS_WARN_AGE {{ rhel8cis_pam_pass_warn_age }}"
 
     - name: "4.5.1.3 | AUDIT | Ensure password expiration warning days is 7 or more | capture users not matching"
-      ansible.builtin.command: >
+      ansible.builtin.shell: >
         awk -F: '/^[^:\n\r]+:[^!*xX\n\r]/ {print $1}' /etc/shadow
       changed_when: false
       failed_when: discovered_users_warn_days.rc not in [ 0, 1 ]
@@ -178,7 +178,7 @@
         days_since_epoch: "{{ (ansible_facts['date_time']['epoch'] | int)/86400 }}"  # noqa jinja[spacing]
 
     - name: "4.5.1.5 | AUDIT | Ensure inactive password lock is 30 days or less | capture users date in future"
-      ansible.builtin.command: >
+      ansible.builtin.shell: >
         awk -F: '{ if ($3 > "{{ days_since_epoch }}") { print $1 }  }' /etc/shadow
       changed_when: false
       failed_when: discovered_users_user_future.rc not in [ 0, 1 ]
