@@ -4,7 +4,8 @@
 
 ### 2.2 Updates
 
-August 2025 - 6.2.9_fix
+August 2025
+- Addresses #492 - Update find logic on 5.1.4
 - Addresses #485 - Update logic on prelim and task 6.2.9 when logic
 - Addresses #488 - Update command vs shell modules
 - Addresses #451 - Update tasks/1.6.x with handler, prelim and vars logic
