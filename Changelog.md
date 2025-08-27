@@ -5,6 +5,7 @@
 ### 3.2.1 Updates
 
 August 2025
+- Addresses #496 - Tyto fix on handler Remount_tmp
 - Addresses #492 - Update find logic on 5.1.4
 - Addresses #485 - Update logic on prelim and task 6.2.9 when logic
 - Addresses #488 - Update command vs shell modules

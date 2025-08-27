@@ -53,7 +53,7 @@
     fstype: "{{ item.fstype }}"
     state: present
     opts: "{{ item.options }}{% if ('nodev' not in item.options and rhel8cis_rule_1_1_2_1_2) %},nodev{% endif %}{% if ('nosuid' not in item.options and rhel8cis_rule_1_1_2_1_3) %},nosuid{% endif %}{% if ('noexec' not in item.options and rhel8cis_rule_1_1_2_1_4) %},noexec{% endif %}"  # noqa yaml[line-length]
-  notify: Remount tmp
+  notify: Remount_tmp
   loop: "{{ ansible_facts.mounts }}"
   loop_control:
     label: "{{ item.device }}"
