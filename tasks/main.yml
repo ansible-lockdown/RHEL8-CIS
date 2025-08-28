@@ -68,6 +68,11 @@
         fail_msg: "You have rule 4.5.2.4 enabled this requires that you have a root password set"
         success_msg: "You have a root password set"
 
+- name: Gather the package facts in prelim
+  tags: always
+  ansible.builtin.package_facts:
+    manager: auto
+
 - name: Setup rules if container
   when: ansible_connection == 'docker' or ansible_facts.virtualization_type in ["docker", "lxc", "openvz", "podman", "container"]
   tags:

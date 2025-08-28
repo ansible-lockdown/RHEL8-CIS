@@ -1,7 +1,9 @@
 ---
 
 - name: "5.1.4 | PATCH | Ensure access to all logfiles has been configured"
-  when: rhel8cis_rule_5_1_4
+  when:
+    - rhel8cis_rule_5_1_4
+    - rhel8cis_disruption_high
   tags:
     - level1-server
     - level1-workstation
@@ -12,7 +14,7 @@
     - rule_5.1.4
   block:
     - name: "5.1.4 | AUDIT | Ensure access to all logfiles has been configured | find log files"
-      ansible.builtin.shell: find /var/log/ -type f -exec ls {} \;
+      ansible.builtin.shell: find -L /var/log -type f \( -perm /0137 -o ! -user root -o ! -group root \) -exec ls -l {} \;
       changed_when: false
       failed_when: false
       check_mode: false
