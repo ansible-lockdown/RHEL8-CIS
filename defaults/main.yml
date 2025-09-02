@@ -11,10 +11,17 @@ os_check: true
 # system_is_ec2 toggle will disable tasks that fail on Amazon EC2 instances. Set true to skip and false to run tasks
 system_is_ec2: false
 
+# Some sections support sub-section modularization. The super-section and sub-section must both be true 
+# for the sub-section to execute.
 rhel8cis_section1: true
 rhel8cis_section2: true
 rhel8cis_section3: true
 rhel8cis_section4: true
+rhel8cis_section4_1: true
+rhel8cis_section4_2: true
+rhel8cis_section4_3: true
+rhel8cis_section4_4: true
+rhel8cis_section4_5: true
 rhel8cis_section5: true
 rhel8cis_section6: true
 
