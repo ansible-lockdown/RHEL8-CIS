@@ -307,5 +307,5 @@
     path: /etc/audit/auditd.conf
     regexp: "^{{ item }}( |=)"
     line: "{{ item }} = {{ rhel8cis_auditd_extra_conf[item] }}"
-  notify: Restart_auditd
+  notify: Restart auditd
   loop: "{{ rhel8cis_auditd_extra_conf.keys() }}"
