@@ -58,6 +58,7 @@
     - name: Pre Audit Setup | If audit ensure goss is available
       when: not prelim_goss_available.stat.exists
       ansible.builtin.assert:
+        that: prelim_goss_available['stat']['exists'] == true
         msg: "Audit has been selected: unable to find goss binary at {{ audit_bin }}"
 
 - name: Pre Audit Setup | Copy ansible default vars values to test audit
@@ -71,7 +72,7 @@
     mode: 'go-rwx'
 
 - name: Pre Audit | Run pre_remediation audit {{ benchmark }}  # noqa name[template]
-  ansible.builtin.command: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -f {{ audit_format }} -o {{ pre_audit_outfile }} -g \"{{ group_names }}\""  # noqa yaml[line-length]
+  ansible.builtin.shell: "umask 0022 && {{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -f {{ audit_format }} -m {{ audit_max_concurrent }} -o {{ pre_audit_outfile }} -g \"{{ group_names }}\"" # noqa yaml[line-length]
   changed_when: true
   environment:
     AUDIT_BIN: "{{ audit_bin }}"
