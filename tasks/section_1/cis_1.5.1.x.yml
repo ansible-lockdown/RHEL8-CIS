@@ -41,7 +41,7 @@
     - NIST800-53R5_AC-3
     - NIST800-53R5_MP-2
     - rule_1.5.1.3
-  notify: Change_requires_reboot
+  notify: Set_reboot_required
   ansible.posix.selinux:
     conf: /etc/selinux/config
     policy: "{{ rhel8cis_selinux_policy }}"
