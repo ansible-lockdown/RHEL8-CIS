@@ -87,9 +87,7 @@
     manager: auto
 
 - name: PRELIM | Include audit specific variables
-  when:
-    - run_audit or audit_only
-    - setup_audit
+  when: run_audit or audit_only or setup_audit
   tags:
     - setup_audit
     - run_audit
@@ -97,9 +95,7 @@
     file: audit.yml
 
 - name: PRELIM | Include pre-remediation audit tasks
-  when:
-    - run_audit or audit_only
-    - setup_audit
+  when: run_audit or audit_only or setup_audit
   tags: run_audit
   ansible.builtin.import_tasks:
     file: pre_remediation_audit.yml
@@ -216,20 +212,10 @@
       rhel8cis_rule_5_2_4_2 or
       rhel8cis_rule_5_2_4_3 or
       rhel8cis_rule_5_2_4_4
-  tags:
-    - always
-    - level2-server
-    - level2-workstation
-    - patch
-    - auditd
-    - rule_5.2.4.1
-    - rule_5.2.4.2
-    - rule_5.2.4.3
-    - rule_5.2.4.4
+  tags: always
   ansible.builtin.shell: "grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'"
   changed_when: false
   failed_when: prelim_audit_logfile.rc not in [0, 1]
-  check_mode: false
   register: prelim_audit_logfile
 
 - name: "PRELIM | AUDIT | 5.2.4.5/6/7 | Audit conf and rules files | list files"
@@ -251,6 +237,15 @@
     recurse: true
     patterns: '*.conf,*.rules'
   register: prelim_auditd_conf_files
+
+- name: "PRELIM | AUDIT | Check if auditd is immutable before changes"
+  when: "'auditd' in ansible_facts.packages"
+  tags: always
+  ansible.builtin.shell: auditctl -l | grep -c '-e 2'
+  changed_when: false
+  check_mode: false
+  failed_when: prelim_auditd_immutable_check.rc not in [ 0, 1 ]
+  register: prelim_auditd_immutable_check
 
 - name: "PRELIM | AUDIT | Gather UID 0 accounts other than root"
   when: rhel8cis_rule_6_2_9

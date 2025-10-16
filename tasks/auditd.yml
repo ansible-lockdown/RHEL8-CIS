@@ -1,13 +1,46 @@
 ---
 
-- name: POST | AUDITD | Apply auditd template will for section 5.2.3 - only required rules will be added
+# Since auditd rules are dependent on syscalls and syscall tables are architecture specific,
+# we need to update the auditd rules depending on the architecture of the system.
+# This task passed the syscalls table to the auditd template and updates the auditd rules
+
+- name: "POST | AUDITD | Set supported_syscalls variable"
+  ansible.builtin.shell: ausyscall --dump |  awk  '{print $2}'
+  changed_when: false
+  failed_when: discovered_auditd_syscalls.rc not in [ 0, 1 ]
+  register: discovered_auditd_syscalls
+
+- name: "POST | AUDITD | Apply auditd template for section 6.3.3.x"
+  when: rhel8cis_update_audit_template
+  vars:
+    supported_syscalls: "{{ discovered_auditd_syscalls.stdout_lines }}"
   ansible.builtin.template:
     src: audit/99_auditd.rules.j2
     dest: /etc/audit/rules.d/99_auditd.rules
     owner: root
     group: root
-    mode: 'go-rwx'
+    mode: 'u-x,go-wx'
+  register: discovered_audit_rules_updated
   notify:
-    - Auditd_immutable_check
+    - Auditd rules reload
     - Audit_immutable_fact
-    - Restart_auditd
+    - Restart auditd
+    - Set_reboot_required
+
+- name: POST | AUDITD | Set up auditd user logging exceptions
+  when: rhel8cis_allow_auditd_uid_user_exclusions
+  ansible.builtin.template:
+    src: audit/98_auditd_exception.rules.j2
+    dest: /etc/audit/rules.d/98_auditd_exceptions.rules
+    owner: root
+    group: root
+    mode: 'u-x,go-rwx'
+  notify: Restart auditd
+
+- name: POST | AUDITD | Check for auditd differences if reload required
+  ansible.builtin.command: augenrules --check
+  changed_when: false
+  register: discovered_audit_rules_diff
+
+- name: POST | AUDITD | Flush handlers
+  ansible.builtin.meta: flush_handlers
