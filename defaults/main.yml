@@ -66,10 +66,15 @@ setup_audit: false
 run_audit: false
 # Run heavy tests - some tests can have more impact on a system enabling these can have greater impact on a system
 audit_run_heavy_tests: true
+# Ability to limit the number of concurrent processes used by goss (default 50)
+audit_max_concurrent: 50
 
 ## Only run Audit do not remediate
 audit_only: false
 
+### As part of audit_only ###
+# Path to copy the files to will create dir structure in audit_only mode
+audit_capture_files_dir: /some/location to copy to on control node
 #############################
 
 # How to retrieve audit binary
@@ -846,6 +851,14 @@ rhel8cis_auditd_extra_conf: {}
 # Example:
 # rhel8cis_auditd_extra_conf:
 #     admin_space_left: '10%'
+
+## Advanced option found in auditd post
+## users whose actions are not logged by auditd
+rhel8cis_allow_auditd_uid_user_exclusions: false
+
+# add a list of uids
+rhel8cis_auditd_uid_exclude:
+  - 1999
 
 rhel8cis_logrotate: "daily"
 
