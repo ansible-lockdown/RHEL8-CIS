@@ -5,8 +5,8 @@
 
 ## Oct 25
 - workflow updates
-- #499
-- #501
+- #499 thanks to @polski-g
+- #501 thanks to @vfroes
 - audit template using benchmark_version variable
 - audit rules not work through validation for ARM64 vs AMD64
 - 1.4.2. titles changed
