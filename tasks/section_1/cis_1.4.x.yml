@@ -30,7 +30,7 @@
     - rule_1.4.2
   notify: Reload_sysctl
   block:
-    - name: Ensure ptrace_scope is restricted | Set file
+    - name: 1.4.2 | PATCH | Ensure ptrace_scope is restricted | Set file
       ansible.builtin.lineinfile:
         path: /etc/sysctl.d/60-kernel_sysctl.conf
         regexp: kernel.yama.ptrace_scope
@@ -38,7 +38,7 @@
         create: true
         mode: 'go-wx'
 
-    - name: Ensure ptrace_scope is restricted | comment out other entry
+    - name: 1.4.2 | PATCH | Ensure ptrace_scope is restricted | comment out other entry
       ansible.builtin.lineinfile:
         path: /lib/sysctl.d/10-default-yama-scope.conf
         backrefs: true
