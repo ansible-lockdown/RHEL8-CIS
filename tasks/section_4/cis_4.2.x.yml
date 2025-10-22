@@ -201,7 +201,7 @@
     - name: "4.2.8 | PATCH | Ensure sshd DisableForwarding is enabled"
       ansible.builtin.replace:
         path: /etc/ssh/sshd_config
-        regexp: '^(#|)\s*DisableForwarding.*'
+        regexp: '^(#?)\s*DisableForwarding.*'
         replace: 'DisableForwarding yes'
 
     - name: "4.2.8 | PATCH | Ensure sshd DisableForwarding is enabled | ensure x11 disabled"
