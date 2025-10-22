@@ -2,7 +2,7 @@
 
 ## Configure a RHEL/Rocky/AlmaLinux 8 machine to be [CIS](https://www.cisecurity.org/cis-benchmarks/) compliant
 
-### Based on [ CIS RedHat Enterprise Linux 8 Benchmark v3.0.0 - 11-10-2023 ](https://www.cisecurity.org/cis-benchmarks/)
+### Based on [ CIS RedHat Enterprise Linux 8 Benchmark v4.0.0 - 28-August-2025 ](https://www.cisecurity.org/cis-benchmarks/)
 
 ---
 

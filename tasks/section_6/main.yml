@@ -1,9 +1,37 @@
 ---
 
-- name: "SECTION | 6.1 | System File Permissions"
+- name: "SECTION | 6.1.x | Aide"
   ansible.builtin.import_tasks:
     file: cis_6.1.x.yml
 
-- name: "SECTION | 6.2 | User and Group Settings"
+- name: "SECTION | 6.2.1.1.x | Configure journald"
+  when: rhel8cis_syslog == 'journald'
   ansible.builtin.import_tasks:
-    file: cis_6.2.x.yml
+    file: cis_6.2.1.1.x.yml
+
+- name: "SECTION | 6.2.1.2.x | Configure journald-remote"
+  when: rhel8cis_syslog == 'journald'
+  ansible.builtin.import_tasks:
+    file: cis_6.2.1.2.x.yml
+
+- name: "SECTION | 6.2.2.x | Rsyslog"
+  when: rhel8cis_syslog == "rsyslog"
+  ansible.builtin.import_tasks:
+    file: cis_6.2.2.x.yml
+
+- name: "SECTION | 6.3.1.x | Configure auditd"
+  ansible.builtin.import_tasks:
+    file: cis_6.3.1.x.yml
+
+- name: "SECTION | 6.3.2.x | Configure Data Retention"
+  when: not system_is_container
+  ansible.builtin.import_tasks:
+    file: cis_6.3.2.x.yml
+
+- name: "SECTION | 6.3.3.x | Configure auditd rules"
+  ansible.builtin.import_tasks:
+    file: cis_6.3.3.x.yml
+
+- name: "SECTION | 6.3.4.x | Audit file permissions"
+  ansible.builtin.import_tasks:
+    file: cis_6.3.4.x.yml

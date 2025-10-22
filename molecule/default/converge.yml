@@ -9,18 +9,20 @@
       ansible_user: root
       system_is_container: true
       rhel8cis_selinux_disable: true
-      rhel8cis_rule_5_3_4: false
-      rhel8cis_rule_1_1_10: false
       rhel8cis_rsyslog_ansiblemanaged: false
-      rhel8cis_rule_3_4_1_3: false
-      rhel8cis_rule_3_4_1_4: false
-      rhel8cis_rule_4_1_1_1: false
-      rhel8cis_rule_4_1_1_2: false
-      rhel8cis_rule_4_1_1_3: false
-      rhel8cis_rule_4_1_1_4: false
-      rhel8cis_rule_4_2_1_2: false
-      rhel8cis_rule_4_2_1_4: false
-      rhel8cis_rule_5_1_1: false
+      rhel8cis_firewall: none
+      # Cron
+      rhel8cis_rule_2_4_1_1: false
+       # passwd escalation
+      rhel8cis_rule_5_2_4: false
+      # rsyslog
+      rhel8cis_rule_6_2_2_1: false
+      rhel8cis_rule_6_2_2_2: false
+      # auditd
+      rhel8cis_rule_6_3_1_1: false
+      rhel8cis_rule_6_3_1_2: false
+      rhel8cis_rule_6_3_1_3: false
+      rhel8cis_rule_6_3_1_4: false
 
   pre_tasks:
   tasks:

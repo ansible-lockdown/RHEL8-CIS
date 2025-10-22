@@ -52,22 +52,6 @@
     fail_msg: "Crypto policy module is not a permitted version"
     success_msg: "Crypto policy module is a permitted version"
 
-- name: Ensure root password is set
-  when: rhel8cis_rule_4_5_2_4
-  tags: always
-  block:
-    - name: Ensure root password is set
-      ansible.builtin.shell: passwd -S root | grep -E "(Password set, SHA512 crypt|Password locked|root\s(LK|L)\s)"
-      changed_when: false
-      failed_when: false
-      register: discovered_root_passwd_set
-
-    - name: Ensure root password is set
-      ansible.builtin.assert:
-        that: discovered_root_passwd_set.rc == 0
-        fail_msg: "You have rule 4.5.2.4 enabled this requires that you have a root password set"
-        success_msg: "You have a root password set"
-
 - name: Gather the package facts in prelim
   tags: always
   ansible.builtin.package_facts:
@@ -97,7 +81,7 @@
     - ansible_env.SUDO_USER is defined
     - not system_is_ec2
     - not audit_only
-    - rhel8cis_rule_4_3_4
+    - rhel8cis_rule_5_2_4
   block:
     - name: Capture current password state of connecting user"
       ansible.builtin.shell: "grep {{ ansible_env.SUDO_USER }} /etc/shadow | awk -F: '{print $2}'"
@@ -112,7 +96,7 @@
         fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_env.SUDO_USER }} has no password set - It can break access"
         success_msg: "You have a password set for the {{ ansible_env.SUDO_USER }} user"
       vars:
-        sudo_password_rule: rhel8cis_rule_4_3_4  # pragma: allowlist secret
+        sudo_password_rule: rhel8cis_rule_5_2_4  # pragma: allowlist secret
 
 - name: "PRELIM | AUDIT | Check authselect profile is selected"
   when: rhel8cis_allow_authselect_updates
@@ -185,6 +169,11 @@
   when: rhel8cis_section6
   ansible.builtin.import_tasks:
     file: section_6/main.yml
+
+- name: Run Section 7 tasks
+  when: rhel8cis_section7
+  ansible.builtin.import_tasks:
+    file: section_7/main.yml
 
 - name: Run auditd logic
   when: rhel8cis_update_audit_template

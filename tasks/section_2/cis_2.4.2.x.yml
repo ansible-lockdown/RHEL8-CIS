@@ -1,0 +1,31 @@
+---
+
+- name: "2.4.2.1 | PATCH | Ensure access to at is configured"
+  when: rhel8cis_rule_2_4_2_1
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - cron
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+    - rule_2.4.2.1
+  block:
+    - name: "2.4.2.1 | PATCH | Ensure access to at is configured | Remove at.deny"
+      ansible.builtin.file:
+        path: /etc/at.deny
+        state: absent
+
+    - name: "2.4.2.1 | PATCH | Ensure access to at is configured  | Check if at.allow exists"
+      ansible.builtin.stat:
+        path: "/etc/at.allow"
+      register: discovered_at_allow_state
+
+    - name: "2.4.2.1 | PATCH | Ensure access to at is configured | Ensure at.allow is restricted to authorized users"
+      ansible.builtin.file:
+        path: /etc/at.allow
+        state: '{{ "file" if discovered_at_allow_state.stat.exists else "touch" }}'
+        owner: root
+        group: root
+        mode: 'go-rwx'

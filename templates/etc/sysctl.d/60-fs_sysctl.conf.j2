@@ -1,0 +1,15 @@
+# File managed by ansible as part of rhel8 CIS benchmark
+# Provided by Ansible-lockdown by Tyto Athene
+
+{% if rhel8cis_rule_1_5_2 %}
+# Control 1.5.2 - protected_hardlinks
+fs.protected_hardlinks = 1
+{% endif %}
+{% if rhel8cis_rule_1_5_3 %}
+# Control 1.5.3 - protected_symlinks
+fs.protected_symlinks = 1
+{% endif %}
+{% if rhel8cis_rule_1_5_3 %}
+# Control 1.5.3 - suid_dumpable
+fs.suid_dumpable = 0
+{% endif %}

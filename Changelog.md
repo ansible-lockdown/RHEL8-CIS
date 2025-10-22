@@ -1,5 +1,12 @@
 # Changes to rhel8CIS
 
+## Benchmark 4.0.0
+
+Complete rewrite
+Many controls moved sections and renumbered
+new services added to be removed/updated
+handlers renamed
+
 ## Benchmark v3.0.0
 
 ### 3.2.1 Updates

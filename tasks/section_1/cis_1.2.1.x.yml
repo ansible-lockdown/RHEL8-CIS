@@ -1,0 +1,136 @@
+---
+
+- name: "1.2.1.1 | AUDIT | Ensure GPG keys are configured"  # noqa inline-env-var
+  when:
+    - rhel8cis_rule_1_2_1_1
+    - ansible_distribution == "RedHat" or
+      ansible_distribution == "Rocky" or
+      ansible_distribution == "AlmaLinux" or
+      ansible_distribution == "Oracle Linux"
+  tags:
+    - level1-server
+    - level1-workstation
+    - manual
+    - patch
+    - NIST800-53R5_SI-2
+    - rule_1.2.1.1
+  ansible.builtin.shell: "PKG=`rpm -qf {{ rpm_gpg_key }}` && rpm -q --queryformat \"%{PACKAGER} %{SIGPGP:pgpsig}\\n\" \"${PKG}\" | grep \"^{{ rpm_packager }}.*Key.ID.{{ rpm_key }}\""  # noqa command-instead-of-shell
+  changed_when: false
+
+- name: "1.2.1.2 | PATCH | Ensure gpgcheck is configured"
+  when: rhel8cis_rule_1_2_1_2
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - NIST800-53R5_CM-14
+    - rule_1.2.1.2
+  block:
+    - name: "1.2.1.2 | AUDIT | Ensure gpgcheck is configured | Find repos"
+      ansible.builtin.find:
+        paths: /etc/yum.repos.d
+        patterns: "*.repo"
+      register: discovered_yum_repos
+      changed_when: false
+
+    - name: "1.2.1.2 | PATCH | Ensure gpgcheck is configured | Update yum.repos"
+      ansible.builtin.replace:
+        name: "{{ item.path }}"
+        regexp: ^gpgcheck\s*=\s*0
+        replace: "gpgcheck=1"
+      loop: "{{ discovered_yum_repos.files }}"
+      loop_control:
+        label: "{{ item.path }}"
+
+    - name: "1.2.1.2 | PATCH | Ensure gpgcheck is configured | Update dnf.conf"
+      ansible.builtin.lineinfile:
+        path: /etc/dnf/dnf.conf
+        regexp: ^(#|)gpgcheck\s*=
+        line: gpgcheck=1
+
+- name: "1.2.1.3 | PATCH | Ensure repo_gpgcheck is globally activated"
+  when: rhel8cis_rule_1_2_1_3
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_SI-2
+    - rule_1.2.1.3
+  block:
+    - name: "1.2.1.3 | AUDIT | Ensure repo_gpgcheck is globally activated | Find repos"
+      ansible.builtin.find:
+        paths: /etc/yum.repos.d
+        patterns: "*.repo"
+      register: discovered_yum_repos
+      changed_when: false
+
+    - name: "1.2.1.3 | PATCH | Ensure repo_gpgcheck is globally activated | Update yum.repos"
+      ansible.builtin.replace:
+        name: "{{ item.path }}"
+        regexp: ^repo_gpgcheck\s*=\s*0"
+        replace: "repo_gpgcheck=1"
+      loop: "{{ discovered_yum_repos.files }}"
+      loop_control:
+        label: "{{ item.path }}"
+
+    - name: "1.2.1.3 | PATCH | Ensure repo_gpgcheck is globally activated | Update dnf.conf"
+      ansible.builtin.lineinfile:
+        path: /etc/dnf/dnf.conf
+        regexp: ^(#|)repo_gpgcheck\s*=
+        line: repo_gpgcheck=1
+
+- name: "1.2.1.4 | AUDIT | Ensure package manager repositories are configured"
+  when: rhel8cis_rule_1_2_1_4
+  tags:
+    - level1-server
+    - level1-workstation
+    - manual
+    - audit
+    - NIST800-53R5_SI-2
+    - rule_1.2.1.4
+  vars:
+    warn_control_id: '1.2.1.4'
+  block:
+    - name: "1.2.1.4 | AUDIT | Ensure package manager repositories are configured | Get repo list"
+      ansible.builtin.command: dnf repolist
+      changed_when: false
+      failed_when: false
+      register: discovered_dnf_configured
+      check_mode: false
+
+    - name: "1.2.1.4 | AUDIT | Ensure package manager repositories are configured | Display repo list"
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! Below are the configured repos. Please review and make sure all align with site policy"
+          - "{{ discovered_dnf_configured.stdout_lines }}"
+
+    - name: "1.2.1.4 | AUDIT | Ensure package manager repositories are configured | Warn Count"
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
+
+- name: "1.2.1.5 | PATCH | Ensure weak dependencies are configured"
+  when:
+    - rhel8cis_rule_1_2_1_5
+    - not system_is_ec2
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - rule_1.2.1.5
+  notify: Set reboot required
+  block:
+    - name: "1.2.1.5 | AUDIT | Ensure weak dependencies are configured | find"
+      ansible.builtin.find:
+        paths: /etc/yum.repos.d
+        patterns: "*.repo"
+      register: discovered_yum_repos
+      changed_when: false
+
+    - name: "1.2.1.5 | PATCH | Ensure weak dependencies are configured | Adjust"
+      ansible.builtin.lineinfile:
+        path: /etc/dnf/dnf.conf
+        regexp: ^install_weak_deps\s*=\s*(true|1|yes)"
+        line: "install_weak_deps=0"

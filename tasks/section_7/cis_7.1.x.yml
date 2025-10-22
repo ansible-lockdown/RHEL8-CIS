@@ -1,0 +1,318 @@
+---
+
+- name: "7.1.1 | PATCH | Ensure access to /etc/passwd is configured"
+  when: rhel8cis_rule_7_1_1
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - permissions
+    - rule_7.1.1
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+  ansible.builtin.file:
+    path: /etc/passwd
+    owner: root
+    group: root
+    mode: 'u-x,go-wx'
+
+- name: "7.1.2 | PATCH | Ensure access to /etc/passwd- is configured"
+  when: rhel8cis_rule_7_1_2
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - permissions
+    - rule_7.1.2
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+  ansible.builtin.file:
+    path: /etc/passwd-
+    owner: root
+    group: root
+    mode: 'u-x,go-wx'
+  failed_when: discovered_file_exists.state not in '[ file, absent ]'
+  register: discovered_file_exists
+
+- name: "7.1.3 | PATCH | Ensure access to /etc/group is configured"
+  when: rhel8cis_rule_7_1_3
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - permissions
+    - rule_7.1.3
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+  ansible.builtin.file:
+    path: /etc/group
+    owner: root
+    group: root
+    mode: 'u-x,go-wx'
+
+- name: "7.1.4 | PATCH | Ensure access to /etc/group- is configured"
+  when: rhel8cis_rule_7_1_4
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - permissions
+    - rule_7.1.4
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+  ansible.builtin.file:
+    path: /etc/group-
+    owner: root
+    group: root
+    mode: 'u-x,go-wx'
+  failed_when: discovered_file_exists.state not in '[ file, absent ]'
+  register: discovered_file_exists
+
+- name: "7.1.5 | PATCH | Ensure access to /etc/shadow is configured"
+  when: rhel8cis_rule_7_1_5
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - permissions
+    - rule_7.1.5
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+  ansible.builtin.file:
+    path: /etc/shadow
+    owner: root
+    group: root
+    mode: 'u-x,g-wx,o-rwx'
+
+- name: "7.1.6 | PATCH | Ensure access to /etc/shadow- is configured"
+  when: rhel8cis_rule_7_1_6
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - permissions
+    - rule_7.1.6
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+  ansible.builtin.file:
+    path: /etc/shadow-
+    owner: root
+    group: root
+    mode: 'u-x,g-wx,o-rwx'
+  failed_when: discovered_file_exists.state not in '[ file, absent ]'
+  register: discovered_file_exists
+
+- name: "7.1.7 | PATCH | Ensure access to /etc/gshadow is configured"
+  when: rhel8cis_rule_7_1_7
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - permissions
+    - rule_7.1.7
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+  ansible.builtin.file:
+    path: /etc/gshadow
+    owner: root
+    group: root
+    mode: 'u-x,g-wx,o-rwx'
+
+- name: "7.1.8 | PATCH | Ensure access to /etc/gshadow- is configured"
+  when: rhel8cis_rule_7_1_8
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - permissions
+    - rule_7.1.8
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+  ansible.builtin.file:
+    path: /etc/gshadow-
+    owner: root
+    group: root
+    mode: 'u-x,g-wx,o-rwx'
+  failed_when: discovered_file_exists.state not in '[ file, absent ]'
+  register: discovered_file_exists
+
+- name: "7.1.9 | PATCH | Ensure access to /etc/shells is configured"
+  when: rhel8cis_rule_7_1_9
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - permissions
+    - rule_7.1.9
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+  ansible.builtin.file:
+    path: /etc/shells
+    owner: root
+    group: root
+    mode: 'u-x,go-wx'
+
+- name: "7.1.10 | PATCH | Ensure access to /etc/security/opasswd is configured"
+  when: rhel8cis_rule_7_1_10
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - permissions
+    - rule_7.1.10
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: root
+    group: root
+    mode: 'u-x,go-rwx'
+  failed_when: discovered_file_exists.state not in '[ file, absent ]'
+  register: discovered_file_exists
+  loop:
+    - /etc/security/opasswd
+    - /etc/security/opasswd.old
+
+- name: "7.1.11 | PATCH | Ensure world writable files and directories are secured"
+  when: rhel8cis_rule_7_1_11
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - files
+    - permissions
+    - rule_7.1.11
+    - NIST800-53R5_SC-4
+  block:
+    - name: "7.1.11 | AUDIT | Ensure world writable files and directories are secured | Get list of world-writable files"
+      ansible.builtin.shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -0002
+      failed_when: false
+      changed_when: false
+      register: discovered_worldwriteable_files
+
+    - name: "7.1.11 | PATCH | Ensure world writable files and directories are secured | Adjust world-writable files if they exist (Configurable)"
+      when:
+        - discovered_worldwriteable_files.stdout_lines is defined
+        - rhel8cis_no_world_write_adjust
+      ansible.builtin.file:
+        path: "{{ item }}"
+        mode: 'o-w'
+        state: touch
+      loop: "{{ discovered_worldwriteable_files.stdout_lines }}"
+
+    - name: "7.1.11 | PATCH | Ensure world writable files and directories are secured | sticky bit set on world-writable directories"
+      ansible.builtin.shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d -perm -0002 2>/dev/null | xargs chmod a+t
+      changed_when: false
+      failed_when: false
+
+- name: "7.1.12 | PATCH | Ensure no files or directories without an owner and a group exist"
+  when: rhel8cis_rule_7_1_12
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_7.1.12
+    - permissions
+    - NIST800-53R5_CM-6
+  vars:
+    warn_control_id: "7.1.12"
+  block:
+    - name: "7.1.12 | AUDIT | Ensure no files or directories without an owner and a group exist | Get list files or directories"
+      ansible.builtin.command: "find {{ rhel8cis_exclude_unowned_search_path }} {{ item.mount }} -xdev \\( -nouser -o -nogroup \\) -not -fstype nfs"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_unowned_files
+      loop: "{{ ansible_facts.mounts }}"
+      loop_control:
+        label: "{{ item.mount }}"
+
+    - name: "7.1.12 | AUDIT | Ensure no files or directories without an owner and a group exist | Flatten no_user_items results for easier use"
+      ansible.builtin.set_fact:
+        discovered_unowned_files_flatten: "{{ discovered_unowned_files.results | map(attribute='stdout_lines') | flatten }}"
+
+    - name: "7.1.12 | AUDIT | Ensure no files or directories without an owner and a group exist | Alert on unowned files and directories"
+      when:
+        - not rhel8cis_ownership_adjust
+        - discovered_unowned_files_flatten | length > 0
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! You have unowned files and are configured to not auto-remediate for this task"
+          - "Please review the files/directories below and assign an owner"
+          - "{{ discovered_unowned_files_flatten }}"
+
+    - name: "7.1.12 | PATCH | Ensure no files or directories without an owner and a group exist | Set files/directories to configured owner and group"
+      when:
+        - rhel8cis_ownership_adjust
+        - discovered_unowned_files_flatten | length > 0
+      ansible.builtin.file:
+        path: "{{ item }}"
+        owner: "{{ rhel8cis_unowned_owner }}"
+        group: "{{ rhel8cis_unowned_group }}"
+      with_items:
+        - "{{ discovered_unowned_files_flatten }}"
+
+    - name: "7.1.12 | AUDIT | Ensure no files or directories without an owner and a group exist | Warn Count"
+      when:
+        - not rhel8cis_ownership_adjust
+        - discovered_unowned_files_flatten | length > 0
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
+
+- name: "7.1.13 | AUDIT | Ensure SUID and SGID files are reviewed"
+  when: rhel8cis_rule_7_1_13
+  tags:
+    - level1-server
+    - level1-workstation
+    - audit
+    - rule_7.1.13
+    - permissions
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+  vars:
+    warn_control_id: "7.1.13"
+  block:
+    - name: "7.1.13 | AUDIT | Ensure SUID and SGID files are reviewed | Find SUID and SGID"
+      ansible.builtin.command: find {{ item.mount }} -xdev -type f -perm \( -02000 or -04000 \) -not -fstype nfs
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_suid_sgid_files
+      loop: "{{ ansible_facts.mounts }}"
+      loop_control:
+        label: "{{ item.mount }}"
+
+    - name: "7.1.13 | AUDIT | Audit SUID executables | Flatten suid_executables results for easier use"
+      ansible.builtin.set_fact:
+        discovered_suid_sgid_files_flatten: "{{ discovered_suid_sgid_files.results | map(attribute='stdout_lines') | flatten }}"
+
+    - name: "7.1.13 | AUDIT | Audit SUID executables | Alert SUID executables exist"
+      when:
+        - discovered_suid_sgid_files_flatten | length > 0
+        - not rhel8cis_suid_sgid_adjust
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! You have SUID executables"
+          - "The files are listed below, please confirm the integrity of these binaries"
+          - "{{ discovered_suid_sgid_files_flatten }}"
+
+    - name: "7.1.13 | PATCH | Audit SUID executables | Remove SUID bit"
+      when:
+        - rhel8cis_suid_sgid_adjust
+        - discovered_suid_sgid_files_flatten | length > 0
+      ansible.builtin.file:
+        path: "{{ item }}"
+        mode: 'u-s'
+      loop: "{{ discovered_suid_sgid_files_flatten }}"
+
+    - name: "7.1.13 | AUDIT | Audit SUID executables | Warn Count"
+      when:
+        - discovered_suid_sgid_files_flatten | length > 0
+        - not rhel8cis_suid_sgid_adjust
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml

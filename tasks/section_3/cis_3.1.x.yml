@@ -1,8 +1,7 @@
 ---
 # The CIS Control wants IPv6 disabled if not in use.
 # We are using the rhel8cis_ipv6_required to specify if you have IPv6 in use
-
-- name: "3.1.1 | PATCH | Verify if IPv6 is enabled on the system"
+- name: "3.1.1 | PATCH | Ensure IPv6 status is identified"
   when:
     - not rhel8cis_ipv6_required
     - rhel8cis_rule_3_1_1
@@ -13,78 +12,66 @@
     - patch
     - ipv6
     - networking
-    - NIST800-53R5_CM-7
     - rule_3.1.1
-  notify: Change_requires_reboot
+    - NIST800-53R5_CM-7
   block:
-    - name: "3.1.1 | PATCH | Verify if IPv6 is enabled on the system | disable all except localhost"
-      ansible.posix.sysctl:
-        name: "{{ item }}"
-        value: '1'
-        sysctl_set: true
-        sysctl_file: "{{ rhel8cis_sysctl_file }}"
-      loop:
-        - net.ipv6.conf.all.disable_ipv6
-        - net.ipv6.conf.default.disable_ipv6
+    - name: "3.1.1 | PATCH | Ensure IPv6 status is identified | refresh"
+      ansible.builtin.set_fact:
+        rhel8cis_sysctl_update: true
+        rhel8cis_flush_ipv6_route: true
 
-    - name: "3.1.1 | PATCH | Verify if IPv6 is enabled on the system | disable localhost sysctl"
-      when: rhel8cis_ipv6_disable_localhost
-      ansible.posix.sysctl:
-        name: net.ipv6.conf.lo.disable_ipv6
-        value: '1'
-        sysctl_set: true
-        sysctl_file: "{{ rhel8cis_sysctl_file }}"
+    - name: "3.1.1 | PATCH | Ensure IPv6 status is identified | disable"
+      ansible.builtin.debug:
+        msg: "Control being set via post action 'Update sysctl' which writes to /etc/sysctl.d/60-disable_ipv6.conf"
 
-    - name: "3.1.1 | PATCH | Verify if IPv6 is enabled on the system | disable localhost /etc/hosts"
-      when: rhel8cis_ipv6_disable_localhost
-      ansible.builtin.lineinfile:
-        path: /etc/hosts
-        regexp: "^(::1.*)"
-        line: "#\\1"
-        backrefs: true
-
-- name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled"
-  when: rhel8cis_rule_3_1_2
+- name: "3.1.2 | PATCH | Ensure wireless interfaces are not available"
+  when:
+    - rhel8cis_rule_3_1_2
+    - discover_wireless_adapters.rc == 0
   tags:
     - level1-server
-    - automated
     - patch
-    - wireless
-    - NIST800-53R5_CM-7
     - rule_3.1.2
+    - wireless
+    - NIST800-53R5_AC-18
+  vars:
+    warn_control_id: "3.1.2"
   block:
-    - name: "3.1.2 | AUDIT | Ensure wireless interfaces are disabled | Check if nmcli command is available"
-      ansible.builtin.command: rpm -q NetworkManager # noqa command-instead-of-module
+    - name: "3.1.2 | PATCH | Ensure wireless interfaces are not available | Check for NetworkManager cli tool"
+      when: "'NetworkManager' in ansible_facts.packages"
+      ansible.builtin.command: nmcli radio wifi
       changed_when: false
       failed_when: false
       check_mode: false
-      register: discovered_nmcli_available
+      register: discovered_wifi_status
 
-    - name: "3.1.2 | AUDIT | Ensure wireless interfaces are disabled | Check if wifi is enabled"
-      when: discovered_nmcli_available.rc == 0
-      ansible.builtin.command: nmcli radio wifi
-      changed_when: discovered_wifi_enabled.stdout != "disabled"
-      failed_when: false
-      check_mode: false
-      register: discovered_wifi_enabled
-
-    - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | Disable wifi if enabled"
-      when: discovered_wifi_enabled is changed # noqa no-handler
+    - name: "3.1.2 | PATCH | Ensure wireless interfaces are not available | Disable wireless if NetworkManager installed"
+      when:
+        - "'NetworkManager' in ansible_facts.packages"
+        - "'enabled' in discovered_wifi_status.stdout"
       ansible.builtin.command: nmcli radio all off
-      changed_when: true
-      failed_when: false
-      check_mode: false
+      changed_when: discovered_nmcli_radio_off.rc == 0
+      register: discovered_nmcli_radio_off
+
+    - name: "3.1.2 | PATCH | Ensure wireless interfaces are not available | Warn about wireless if NetworkManager not installed"
+      when: "'NetworkManager' not in ansible_facts.packages"
+      ansible.builtin.debug:
+        msg: "Warning!! You need to disable wireless interfaces manually since NetworkManager is not installed"
+
+    - name: "3.1.2 | PATCH | Ensure wireless interfaces are not available | Set warning count"
+      when: "'NetworkManager' not in ansible_facts.packages"
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
 
 - name: "3.1.3 | PATCH | Ensure bluetooth services are not in use"
   when: rhel8cis_rule_3_1_3
   tags:
     - level1-server
     - level2-workstation
-    - automated
     - patch
-    - sctp
-    - NIST800-53R5_CM-7
+    - bluetooth
     - rule_3.1.3
+    - NIST800-53R5_CM-7
   block:
     - name: "3.1.3 | PATCH | Ensure bluetooth services are not in use | pkg"
       when:

@@ -24,7 +24,12 @@ rhel8cis_allowed_crypto_policies_modules:
   - 'NO-SSHWEAKMAC'
   - 'NO-WEAKMAC'
 
-rhel8cis_auditd_binaries:
+aide_packages:
+  - aide
+
+# Aide initiate command for new DB creation
+aide_initiate_command: /usr/sbin/aide --init
+auditd_binaries:
   - /sbin/auditctl
   - /sbin/aureport
   - /sbin/ausearch

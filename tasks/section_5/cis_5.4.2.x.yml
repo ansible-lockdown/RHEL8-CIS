@@ -1,0 +1,252 @@
+---
+
+- name: "5.4.2.1 | PATCH | Ensure root is the only UID 0 account"
+  when:
+    - rhel8cis_rule_5_4_2_1
+    - prelim_uid_zero_accounts_except_root.rc
+    - rhel8cis_disruption_high
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - accounts
+    - users
+    - rule_5.4.2.1
+    - NIST800-53R5_CM-6
+  ansible.builtin.command: passwd -l {{ item }}
+  changed_when: false
+  failed_when: false
+  loop: "{{ prelim_uid_zero_accounts_except_root.stdout_lines }}"
+
+- name: "5.4.2.2 | PATCH | Ensure root is the only GID 0 account"
+  when:
+    - rhel8cis_rule_5_4_2_2
+    - rhel8cis_disruption_high
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_5.4.2.2
+    - user
+    - system
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
+  block:
+    - name: "5.4.2.2 | AUDIT | Ensure root is the only GID 0 account | Get members of gid 0"
+      ansible.builtin.shell: "awk -F: '($1 !~ /^(sync|shutdown|halt|operator)/ && $4==\"0\") {print $1}' /etc/passwd | grep -wv 'root'"
+      changed_when: false
+      failed_when: discovered_gid0_members.rc not in [ 0, 1 ]
+      register: discovered_gid0_members
+
+    - name: "5.4.2.2 | PATCH | Ensure root is the only GID 0 account | Remove users not root from gid 0"
+      when:
+        - discovered_gid0_members is defined
+        - discovered_gid0_members.stdout | length > 0
+      ansible.builtin.user:
+        name: "{{ item }}"
+        group: root
+        state: absent
+      loop: "{{ discovered_gid0_members.stdout_lines }}"
+
+- name: "5.4.2.3 | AUDIT | Ensure group root is the only GID 0 group"
+  when: rhel8cis_rule_5_4_2_3
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_5.4.2.3
+    - user
+    - system
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
+  block:
+    - name: "5.4.2.3 | AUDIT | Ensure group root is the only GID 0 group | Get groups with gid 0"
+      ansible.builtin.shell: "awk -F: '$3==\"0\"{print $1}' /etc/group | grep -vw 'root'"
+      changed_when: false
+      failed_when: discovered_gid0_groups.rc not in [ 0, 1 ]
+      register: discovered_gid0_groups
+
+    - name: "5.4.2.3 | AUDIT | Ensure group root is the only GID 0 group | Warning if others gid 0 groups"
+      when:
+        - discovered_gid0_groups is defined
+        - discovered_gid0_groups.stdout | length > 0
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! You have other groups assigned to GID 0 - Please resolve"
+          - "{{ discovered_gid0_groups.stdout_lines }}"
+
+    - name: "5.4.2.3 | WARN | Ensure group root is the only GID 0 group | warn_count"
+      when:
+        - discovered_gid0_groups is defined
+        - discovered_gid0_groups.stdout | length > 0
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
+      vars:
+        warn_control_id: "5.4.2.3"
+
+- name: "5.4.2.4 | PATCH | Ensure root account access is controlled "
+  when: rhel8cis_rule_5_4_2_4
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - shadow_suite
+    - rule_5.4.2.4
+  ansible.builtin.debug:
+    msg: "This is set as an assert in tasks/main"
+
+- name: "5.4.2.5 | PATCH | Ensure root PATH Integrity"
+  when: rhel8cis_rule_5_4_2_5
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - paths
+    - rule_5.4.2.5
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
+  block:
+    - name: "5.4.2.5 | AUDIT | Ensure root PATH Integrity | Get root paths"
+      ansible.builtin.shell: sudo -Hiu root env | grep '^PATH' | cut -d= -f2
+      changed_when: false
+      register: discovered_root_paths
+
+    - name: "5.4.2.5 | AUDIT | Ensure root PATH Integrity | Get root paths"
+      when: discovered_root_paths is defined
+      ansible.builtin.shell: sudo -Hiu root env | grep '^PATH' | cut -d= -f2 | tr ":" "\n"
+      changed_when: false
+      register: discovered_root_paths_split
+
+    - name: "5.4.2.5 | AUDIT | Ensure root PATH Integrity | Set fact"
+      when: discovered_root_paths is defined
+      ansible.builtin.set_fact:
+        root_paths: "{{ discovered_root_paths.stdout }}"
+
+    - name: "5.4.2.5 | AUDIT | Ensure root PATH Integrity | Check for presence of non-dirs"
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      loop: "{{ discovered_root_paths_split.stdout_lines }}"
+      register: discovered_paths_stat
+
+    - name: "5.4.2.5 | AUDIT | Ensure root PATH Integrity | Create dirs for some paths that are not dirs"
+      ansible.builtin.file:
+        path: "{{ item.item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: 'go-w'
+      loop: "{{ discovered_paths_stat.results }}"
+      when: not item.stat.exists
+
+    - name: "5.4.2.5 | AUDIT | Ensure root PATH Integrity | Check for empty dirs"
+      when: discovered_root_paths is defined
+      ansible.builtin.shell: 'echo {{ root_paths }} | grep -q "::" && echo "roots path contains a empty directory (::)"'
+      changed_when: false
+      failed_when: discovered_root_path_empty_dir.rc not in [ 0, 1 ]
+      register: discovered_root_path_empty_dir
+
+    - name: "5.4.2.5 | AUDIT | Ensure root PATH Integrity | Check for trailing ':'"
+      when: discovered_root_paths is defined
+      ansible.builtin.shell: '{{ root_paths }} | cut -d= -f2 | grep -q ":$" && echo "roots path contains a trailing (:)"'
+      changed_when: false
+      failed_when: discovered_root_path_trailing_colon.rc not in [ 0, 1 ]
+      register: discovered_root_path_trailing_colon
+
+    - name: "5.4.2.5 | AUDIT | Ensure root PATH Integrity | Check for owner and permissions"
+      when: discovered_root_paths is defined
+      block:
+        - name: "5.4.2.5 | AUDIT | Ensure root PATH Integrity | Check for owner and permissions"
+          ansible.builtin.stat:
+            path: "{{ item }}"
+          loop: "{{ discovered_root_paths_split.stdout_lines }}"
+          register: discovered_root_path_perms
+
+        - name: "5.4.2.5 | AUDIT | Ensure root PATH Integrity | Set permissions"
+          when:
+            - item.stat.exists
+            - item.stat.isdir
+            - item.stat.pw_name != 'root' or item.stat.gr_name != 'root' or item.stat.woth or item.stat.wgrp
+            - (item != 'root') and (not rhel8cis_uses_root)
+          ansible.builtin.file:
+            path: "{{ item.stat.path }}"
+            state: directory
+            owner: root
+            group: root
+            mode: 'u+rwx,go-w'
+            follow: false
+          loop: "{{ discovered_root_path_perms.results }}"
+          loop_control:
+            label: "{{ item }}"
+
+- name: "5.4.2.6 | PATCH | Ensure root user umask is configured"
+  when: rhel8cis_rule_5_4_2_6
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - shadow_suite
+    - rule_5.4.2.6
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+  ansible.builtin.lineinfile:
+    path: /root/.bash_profile
+    regexp: ^\s*umask
+    line: "umask {{ rhel8cis_root_umask }}"
+    create: true
+    mode: 'g-wx,o-rwx'
+
+- name: "5.4.2.7 | PATCH | Ensure system accounts do not have a valid login shell"
+  when:
+    - rhel8cis_rule_5_4_2_7
+    - "item.id not in prelim_interactive_users | map(attribute='username')"
+    - item.id not in rhel8cis_system_users_shell
+    - "'root' not in item.id"
+    - rhel8cis_disruption_high
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - shadow_suite
+    - rule_5.4.2.7
+    - NIST800-53R5_AC-2
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_AC-11
+    - NIST800-53R5_MP-2
+  ansible.builtin.user:
+    name: "{{ item.id }}"
+    shell: /usr/sbin/nologin
+  loop: "{{ prelim_captured_passwd_data }}"
+  loop_control:
+    label: "{{ item.id }}"
+
+- name: "5.4.2.8 | PATCH | Ensure accounts without a valid login shell are locked | Lock accounts"
+  when:
+    - rhel8cis_rule_5_4_2_8
+    - rhel8cis_disruption_high
+    - "item.id not in prelim_interactive_users | map(attribute='username')"
+    - "'root' not in item.id"
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - shadow_suite
+    - rule_5.4.2.8
+    - NIST800-53R5_AC-2
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_AC-11
+    - NIST800-53R5_MP-2
+  ansible.builtin.user:
+    name: "{{ item.id }}"
+    password_lock: true
+  loop: "{{ prelim_captured_passwd_data }}"
+  loop_control:
+    label: "{{ item.id }}"
