@@ -641,18 +641,6 @@ rhel8cis_screensaver_lock_delay: 5
 ##
 ## Section 2 vars
 ##
-# 2.1.1 Time Synchronization - Either chrony or ntp
-rhel8cis_time_synchronization: chrony
-
-# Time Synchronization servers - used in template file chrony.conf.j2
-rhel8cis_time_synchronization_servers:
-  - 0.pool.ntp.org
-  - 1.pool.ntp.org
-  - 2.pool.ntp.org
-  - 3.pool.ntp.org
-
-rhel8cis_chrony_server_options: "minpoll 8"
-rhel8cis_ntp_server_options: "iburst"
 
 # 2.1 Service configuration
 # Options are
@@ -717,6 +705,19 @@ rhel8cis_ypbind_required: "{{ rhel8cis_nfs_server }}"  # Same package as NIS ser
 rhel8cis_telnet_required: false
 rhel8cis_tftp_client: false
 
+# 2.3 Time Synchronization - Either chrony
+rhel8cis_time_synchronization: chrony
+
+# Time Synchronization servers - used in template file chrony.conf.j2
+rhel8cis_time_synchronization_servers:
+  - 0.pool.ntp.org
+  - 1.pool.ntp.org
+  - 2.pool.ntp.org
+  - 3.pool.ntp.org
+
+rhel8cis_chrony_server_options: "minpoll 8"
+rhel8cis_ntp_server_options: "iburst"
+
 ##
 ## Section 3 vars
 ##
@@ -770,19 +771,30 @@ rhel8cis_sshd_maxsessions: 10
 rhel8cis_sshd_maxstartups: "10:30:60"
 rhel8cis_sshd_ciphers: '-3des-cbc,aes128-cbc,aes192-cbc,aes256-cbc,chacha20-poly1305@openssh.com'
 rhel8cis_sshd_kex: '-diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1'
-# WARNING: make sure you understand the precedence when working with these values!!
-## Only runs if value rhel8cis_sshd_limited is true
-# rhel8cis_sshd_allowusers:
-# rhel8cis_sshd_allowgroups: systems dba
-# rhel8cis_sshd_denyusers:
-# rhel8cis_sshd_denygroups:
 
-# 4.3. sudo
+## Control 5.1.6 - Ensure sshd access is configured
+# (String) This variable, if specified, configures a list of GROUP name patterns, separated by spaces, to allow SSH access
+# for users whose primary group or supplementary group list matches one of the patterns. This is done
+# by setting the value of `AllowGroups` option in `/etc/ssh/sshd_config` file.
+rhel8cis_sshd_allowgroups: ""
+## Control 5.1.6 - Ensure sshd access is configured
+# This variable, if specified, configures a list of USER name patterns, separated by spaces, to prevent SSH access
+# for users whose user name matches one of the patterns. This is done
+# by setting the value of `DenyUsers` option in `/etc/ssh/sshd_config` file.
+# If an USER@HOST format will be used, the specified user will be restricted only on that particular host.
+rhel8cis_sshd_denyusers: "nobody"
+## Control 5.1.6 - Ensure sshd access is configured
+# This variable, if specified, configures a list of GROUP name patterns, separated by spaces,
+# to prevent SSH access for users whose primary group or supplementary group list matches one of the patterns. This is done
+# by setting the value of `DenyGroups` option in `/etc/ssh/sshd_config` file.
+rhel8cis_sshd_denygroups: ""
+
+# 5.2. sudo
 rhel8cis_sudolog_location: "/var/log/sudo.log"
 rhel8cis_sudo_timestamp_timeout: 15
 
 ## PAM
-## 4.4.2.x PAM and Authselect
+## 5.3.2.x PAM and Authselect
 # Do not use authselect if:
 # Your host is part of Linux Identity Management.
 # Joining your host to an IdM domain with the ipa-client-install command automatically configures SSSD authentication on your host.
@@ -795,7 +807,7 @@ rhel8cis_authselect_pkg_update: false  # NOTE the risks if system is using SSSD 
 ## PAM AND Authselect
 
 ## Controls:
-#  - 4.4.2.1 - Ensure custom authselect profile is used
+#  - 5.3.2.x - Ensure custom authselect profile is used
 # Settings in place now will fail, they are placeholders from the control example. Due to the way many multiple
 # options and ways to configure this control needs to be enabled and settings adjusted to minimise risk.
 
@@ -825,7 +837,7 @@ rhel8cis_pam_pwhistory_remember: 24
 
 rhel8cis_pam_pwhash: sha512
 
-## Control 4.5.2.3 - Ensure system accounts are secured | Set nologin
+## Control 5.4.2 - Ensure system accounts are secured | Set nologin
 # The system users on this list are allowed to have a shell (e.g. applications
 # that require a shell to function)
 rhel8cis_system_users_shell: []
@@ -878,89 +890,9 @@ rhel8cis_inactive_lock_days: 30
 # to 'false' will just display users in violation, while 'true' will expire those users passwords.
 rhel8cis_futurepwchgdate_autofix: true
 
-## Controls 6.3.3.x allow exceptions for UID in auditd config
-## Advanced option found in auditd post
-# This variable governs if defining user exceptions for auditd logging is acceptable.
-rhel8cis_allow_auditd_uid_user_exclusions: false
-# This variable contains a list of uids to be excluded(users whose actions are not logged by auditd)
-rhel8cis_auditd_uid_exclude:
-  - 1999
-
-## Section5 vars
-
-## Preferred method of logging
-## Whether rsyslog or journald preferred method for local logging
-rhel8cis_syslog: rsyslog
-rhel8cis_rsyslog_ansiblemanaged: true
-# Set if system is the log server
-rhel8cis_system_is_log_server: false
-
-#### remote and destination log server name
-rhel8cis_remote_log_server: false
-rhel8cis_remote_log_host: logagg.example.com
-rhel8cis_remote_log_port: 514
-rhel8cis_remote_log_protocol: tcp
-rhel8cis_remote_log_retrycount: 100
-rhel8cis_remote_log_queuesize: 1000
-
-rhel8cis_update_audit_template: false
-
-# The audit_back_log_limit value should never be below 8192
-rhel8cis_auditd_back_log_limit: 8192
-
-# The max_log_file parameter should be based on your sites policy
-rhel8cis_auditd_max_log_file_size: 10
-
-rhel8cis_auditd_disk_error_action: halt
-rhel8cis_auditd_disk_full_action: halt
-rhel8cis_auditd_action_mail_acct: root
-rhel8cis_auditd_space_left_action: email
-rhel8cis_auditd_admin_space_left_action: single
-rhel8cis_auditd_max_log_file_action: keep_logs
-
-# UID settings for interactive users
-# These are discovered via logins.def if set true
-rhel8cis_discover_int_uid: true
-### Controls:
-# This variable sets the minimum number from which to search for UID
-# Note that the value will be dynamically overwritten if variable `rhel8cis_discover_int_uid` has
-# been set to `true`. These are not prefixed with rhel8cis as can be set via prelim
-min_int_uid: 1000
-### Controls:
-# Note that the value will be dynamically overwritten if variable `rhel8cis_discover_int_uid` has
-# been set to `true`. These are not prefixed with rhel8cis as can be set via prelim
-max_int_uid: 65533
-
-# This can be used to configure other keys in auditd.conf
-rhel8cis_auditd_extra_conf: {}
-# Example:
-# rhel8cis_auditd_extra_conf:
-#     admin_space_left: '10%'
-
-rhel8cis_logrotate: "daily"
-
-# Journald
-# rhel8cis_journal_upload_url is the ip address to upload the journal entries to
-rhel8cis_journal_upload_url: 192.168.50.42
-# The paths below have the default paths/files, but allow user to create custom paths/filenames
-rhel8cis_journal_upload_serverkeyfile: "/etc/ssl/private/journal-upload.pem"
-rhel8cis_journal_servercertificatefile: "/etc/ssl/certs/journal-upload.pem"
-rhel8cis_journal_trustedcertificatefile: "/etc/ssl/ca/trusted.pem"
-
-# The variables below related to journald, please set these to your site specific values
-# rhel8cis_journald_systemmaxuse is the max amount of disk space the logs will use
-rhel8cis_journald_systemmaxuse: 10M
-# rhel8cis_journald_systemkeepfree is the amount of disk space to keep free
-rhel8cis_journald_systemkeepfree: 100G
-rhel8cis_journald_runtimemaxuse: 10M
-rhel8cis_journald_runtimekeepfree: 100G
-# rhel8cis_journald_MaxFileSec is how long in time to keep log files. Values are Xm, Xh, Xday, Xweek, Xmonth, Xyear, for example 2week is two weeks
-rhel8cis_journald_maxfilesec: 1month
-
-# logrotate configuration
-# change to true if you wish to change logrotate.d conf files
-rhel8cis_allow_logrotate_conf_umask_updates: false
-
+#
+## Section6 vars
+#
 ## Control 6.1.1 - Ensure AIDE is installed
 # AIDE is a file integrity checking tool, similar in nature to Tripwire.
 # While it cannot prevent intrusions, it can detect unauthorized changes
@@ -1021,20 +953,95 @@ rhel8cis_aide_cron_month: '*'
 # can be concatenated with commas.
 rhel8cis_aide_cron_weekday: '*'
 
+## Preferred method of logging
+## Whether rsyslog or journald preferred method for local logging
+rhel8cis_syslog: rsyslog
+
+# Journald
+# rhel8cis_journal_upload_url is the ip address to upload the journal entries to
+rhel8cis_journal_upload_url: 192.168.50.42
+# The paths below have the default paths/files, but allow user to create custom paths/filenames
+rhel8cis_journal_upload_serverkeyfile: "/etc/ssl/private/journal-upload.pem"
+rhel8cis_journal_servercertificatefile: "/etc/ssl/certs/journal-upload.pem"
+rhel8cis_journal_trustedcertificatefile: "/etc/ssl/ca/trusted.pem"
+
+# The variables below related to journald, please set these to your site specific values
+# rhel8cis_journald_systemmaxuse is the max amount of disk space the logs will use
+rhel8cis_journald_systemmaxuse: 10M
+# rhel8cis_journald_systemkeepfree is the amount of disk space to keep free
+rhel8cis_journald_systemkeepfree: 100G
+rhel8cis_journald_runtimemaxuse: 10M
+rhel8cis_journald_runtimekeepfree: 100G
+# rhel8cis_journald_MaxFileSec is how long in time to keep log files. Values are Xm, Xh, Xday, Xweek, Xmonth, Xyear, for example 2week is two weeks
+rhel8cis_journald_maxfilesec: 1month
+
+# logrotate configuration
+# change to true if you wish to change logrotate.d conf files
+rhel8cis_allow_logrotate_conf_umask_updates: false
+
+rhel8cis_rsyslog_ansiblemanaged: true
+# Set if system is the log server
+rhel8cis_system_is_log_server: false
+
+#### remote and destination log server name
+rhel8cis_remote_log_server: false
+rhel8cis_remote_log_host: logagg.example.com
+rhel8cis_remote_log_port: 514
+rhel8cis_remote_log_protocol: tcp
+rhel8cis_remote_log_retrycount: 100
+rhel8cis_remote_log_queuesize: 1000
+
+# 6.2.2.x
+rhel8cis_logrotate: "daily"
+
+# Auditd 6.3.x.x
+
+# The audit_back_log_limit value should never be below 8192
+rhel8cis_auditd_back_log_limit: 8192
+
+# The max_log_file parameter should be based on your sites policy
+rhel8cis_auditd_max_log_file_size: 10
+
+rhel8cis_auditd_disk_error_action: halt
+rhel8cis_auditd_disk_full_action: halt
+rhel8cis_auditd_action_mail_acct: root
+rhel8cis_auditd_space_left_action: email
+rhel8cis_auditd_admin_space_left_action: single
+rhel8cis_auditd_max_log_file_action: keep_logs
+
+## Allow the auditd template to be updated
+rhel8cis_update_audit_template: false
+
+## Controls 6.3.3.x allow exceptions for UID in auditd config
+## Advanced option found in auditd post
+# This variable governs if defining user exceptions for auditd logging is acceptable.
+rhel8cis_allow_auditd_uid_user_exclusions: false
+# This variable contains a list of uids to be excluded(users whose actions are not logged by auditd)
+rhel8cis_auditd_uid_exclude:
+  - 1999
+
+# UID settings for interactive users
+# These are discovered via logins.def if set true
+rhel8cis_discover_int_uid: true
+### Controls:
+# This variable sets the minimum number from which to search for UID
+# Note that the value will be dynamically overwritten if variable `rhel8cis_discover_int_uid` has
+# been set to `true`. These are not prefixed with rhel8cis as can be set via prelim
+min_int_uid: 1000
+### Controls:
+# Note that the value will be dynamically overwritten if variable `rhel8cis_discover_int_uid` has
+# been set to `true`. These are not prefixed with rhel8cis as can be set via prelim
+max_int_uid: 65533
+
+# This can be used to configure other keys in auditd.conf
+rhel8cis_auditd_extra_conf: {}
+# Example:
+# rhel8cis_auditd_extra_conf:
+#     admin_space_left: '10%'
+
+#
 # Section 7 Vars
-
-## Control 7.1.11 - Ensure no world writable files exist
-# The following variable is a toggle for enabling/disabling the automated
-# removal of world-writable permissions from all files.
-# Possible values are `true` and `false`.
-rhel8cis_no_world_write_adjust: true
-
-## Control 7.1.12 - Ensure no files or directories without an owner and a group exist
-# This variable holds the part of the command that helps detect which files and
-# directories do not have an owner and an affiliated group.
-rhel8cis_exclude_unowned_search_path: (! -path "/run/user/*" -a ! -path "/proc/*" -a ! -path "*/containerd/*" -a ! -path "*/kubelet/pods/*" -a ! -path "*/kubelet/plugins/*" -a ! -path "/sys/fs/cgroup/memory/*" -a ! -path "/var/*/private/*")
-# The value of this variable specifies the owner that will be set for unowned files and directories.
-rhel8cis_unowned_owner: root
+#
 
 # This variable is a toggle for enabling/disabling the automated
 # setting of an owner (specified in variable `rhel8cis_unowned_owner`)
@@ -1054,3 +1061,16 @@ rhel8cis_suid_sgid_adjust: false
 # Possible values are `true` and `false`
 # This setting can impact a running system if not tested sufficiently
 rhel8cis_dotperm_ansiblemanaged: false
+
+## Control 7.1.11 - Ensure no world writable files exist
+# The following variable is a toggle for enabling/disabling the automated
+# removal of world-writable permissions from all files.
+# Possible values are `true` and `false`.
+rhel8cis_no_world_write_adjust: true
+
+## Control 7.1.12 - Ensure no files or directories without an owner and a group exist
+# This variable holds the part of the command that helps detect which files and
+# directories do not have an owner and an affiliated group.
+rhel8cis_exclude_unowned_search_path: (! -path "/run/user/*" -a ! -path "/proc/*" -a ! -path "*/containerd/*" -a ! -path "*/kubelet/pods/*" -a ! -path "*/kubelet/plugins/*" -a ! -path "/sys/fs/cgroup/memory/*" -a ! -path "/var/*/private/*")
+# The value of this variable specifies the owner that will be set for unowned files and directories.
+rhel8cis_unowned_owner: root
