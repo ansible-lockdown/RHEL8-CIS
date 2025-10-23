@@ -56,8 +56,8 @@
       register: prelim_goss_available
 
     - name: Pre Audit Setup | If audit ensure goss is available
-      when: not prelim_goss_available.stat.exists
       ansible.builtin.assert:
+        that: prelim_goss_available.stat.exists
         msg: "Audit has been selected: unable to find goss binary at {{ audit_bin }}"
 
 - name: Pre Audit Setup | Copy ansible default vars values to test audit
