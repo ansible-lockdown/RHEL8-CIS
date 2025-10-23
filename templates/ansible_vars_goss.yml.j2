@@ -14,6 +14,7 @@ rhel8cis_section3: {{ rhel8cis_section3 }}
 rhel8cis_section4: {{ rhel8cis_section4 }}
 rhel8cis_section5: {{ rhel8cis_section5 }}
 rhel8cis_section6: {{ rhel8cis_section6 }}
+rhel8cis_section7: {{ rhel8cis_section7 }}
 
 rhel8cis_level_1: {{ rhel8cis_level_1 }}
 rhel8cis_level_2: {{ rhel8cis_level_2 }}
@@ -498,8 +499,8 @@ rhel8cis_warning_banner: {{ rhel8cis_warning_banner }}
 
 # 1.8 Gnome Desktop
 # Whether or not to run tasks related to auditing/patching the desktop environment
-rhel8cis_gui: {{ rhel8cis_gui }}
-rhel8cis_dconf_db_name: {{ rhel8cis_dconf_db_name }}
+rhel8cis_gui: {{ rhel8cis_desktop_required }}
+
 rhel8cis_screensaver_idle_delay: {{ rhel8cis_screensaver_idle_delay }}  # Set max value for idle-delay in seconds (between 1 and 900)
 rhel8cis_screensaver_lock_delay: {{ rhel8cis_screensaver_lock_delay }}  # Set max value for lock-delay in seconds (between 0 and 5)
 ##
@@ -527,6 +528,8 @@ rhel8cis_autofs_services: {{ rhel8cis_autofs_services }}
 rhel8cis_autofs_mask: {{ rhel8cis_autofs_mask }}
 rhel8cis_avahi_server: {{ rhel8cis_avahi_server }}
 rhel8cis_avahi_mask: {{ rhel8cis_avahi_mask }}
+rhel8cis_cockpit_server: {{ rhel8cis_cockpit_server }}
+rhel8cis_cockpit_mask: {{ rhel8cis_cockpit_mask }}
 rhel8cis_dhcp_server: {{ rhel8cis_dhcp_server }}
 rhel8cis_dhcp_mask: {{ rhel8cis_dhcp_mask }}
 rhel8cis_dns_server: {{ rhel8cis_dns_server }}
@@ -549,8 +552,8 @@ rhel8cis_rpc_server: {{ rhel8cis_rpc_server }}
 rhel8cis_rpc_mask: {{ rhel8cis_rpc_mask }}
 rhel8cis_rsync_server: {{ rhel8cis_rsync_server }}
 rhel8cis_rsync_mask: {{ rhel8cis_rsync_mask }}
-rhel8cis_net_snmp_server: {{ rhel8cis_net_snmp_server }}
-rhel8cis_net_snmp_mask: {{ rhel8cis_net_snmp_mask }}
+rhel8cis_snmp_server: {{ rhel8cis_net_snmp_server }}
+rhel8cis_snmp_mask: {{ rhel8cis_net_snmp_mask }}
 rhel8cis_telnet_server: {{ rhel8cis_telnet_server }}
 rhel8cis_telnet_mask: {{ rhel8cis_telnet_mask }}
 rhel8cis_tftp_server: {{ rhel8cis_tftp_server }}
@@ -621,21 +624,30 @@ rhel8cis_sshd:
     maxstartups: '{{ rhel8cis_sshd_maxstartups }}'
     ciphers: '{{ rhel8cis_sshd_ciphers }}'
     kex: '{{ rhel8cis_sshd_kex }}'
-{% if rhel8cis_sshd_limited %}
-    # WARNING: make sure you understand the precedence when working with these values!!
-    {% if rhel8cis_sshd_allowusers is defined %}
-    # allowusers: '{{ rhel8cis_sshd_allowusers }}'
-    {% endif %}
-    {% if rhel8cis_sshd_allowgroups is defined %}
-    # allowgroups: '{{ rhel8cis_sshd_allowgroups }}'
-    {% endif %}
-    {% if rhel8cis_sshd_denyusers is defined %}
-    # denyusers: '{{ rhel8cis_sshd.denyusers }}'
-    {% endif %}
-    {% if rhel8cis_sshd_denygroups is defined %}
-    # denygroups: '{{ rhel8cis_sshd_denygroups }}'
-    {% endif %}
-{% endif %}
+
+# Controls:
+## - 5.1.7  - Ensure SSH access is limited
+# This variable, if specified, configures a list of USER name patterns, separated by spaces, to allow SSH
+# access for users whose user name matches one of the patterns. This is done
+# by setting the value of `AllowUsers` option in `/etc/ssh/sshd_config` file.
+# If an USER@HOST format will be used, the specified user will be allowed only on that particular host.
+rhel8cis_sshd_allowusers: "{% if ansible_facts.user_id != 'root' %}{{ ansible_facts.user_id }}{% elif ansible_env.SUDO_USER is defined %}{{ ansible_env.SUDO_USER }}{% endif %}"
+
+# (String) This variable, if specified, configures a list of GROUP name patterns, separated by spaces, to allow SSH access
+# for users whose primary group or supplementary group list matches one of the patterns. This is done
+# by setting the value of `AllowGroups` option in `/etc/ssh/sshd_config` file.
+rhel8cis_sshd_allowgroups: {{ rhel8cis_sshd_allowgroups }}
+
+# This variable, if specified, configures a list of USER name patterns, separated by spaces, to prevent SSH access
+# for users whose user name matches one of the patterns. This is done
+# by setting the value of `DenyUsers` option in `/etc/ssh/sshd_config` file.
+# If an USER@HOST format will be used, the specified user will be restricted only on that particular host.
+rhel8cis_sshd_denyusers: {{ rhel8cis_sshd_denyusers }}
+
+# This variable, if specified, configures a list of GROUP name patterns, separated by spaces,
+# to prevent SSH access for users whose primary group or supplementary group list matches one of the patterns. This is done
+# by setting the value of `DenyGroups` option in `/etc/ssh/sshd_config` file.
+rhel8cis_sshd_denygroups: {{ rhel8cis_sshd_denygroups }}
 
 # 4.3. sudo
 rhel8cis_sudolog_location: "{{ rhel8cis_sudolog_location }}"
@@ -668,10 +680,10 @@ rhel8cis_pam_pwhistory:
 rhel8cis_pam_pwhash: {{ rhel8cis_pam_pwhash }}
 
 rhel8cis_pass:
-    inactive: {{ rhel8cis_pam_pass_inactive }}
-    max_days: {{ rhel8cis_pam_pass_max_days }}
-    min_days: {{ rhel8cis_pam_pass_min_days }}
-    warn_age: {{ rhel8cis_pam_pass_warn_age }}
+    inactive: {{ rhel8cis_inactive_lock_days }}
+    max_days: {{ rhel8cis_pass_max_days }}
+    min_days: {{ rhel8cis_pass_min_days }}
+    warn_age: {{ rhel8cis_pass_warn_age }}
 
 rhel8cis_root_umask: {{ rhel8cis_root_umask }}  # 0027 or more restrictive
 
@@ -685,8 +697,6 @@ rhel8cis_sugroup: {{ rhel8cis_sugroup }}
 # wheel users list
 rhel8cis_sugroup_users: "{{ rhel8cis_sugroup_users }}"
 
-rhel8cis_inactivelock:
-    lock_days: {{ rhel8cis_inactivelock.lock_days }}
 
 # 5.6.1.5 Allow ansible to expire password for account with a last changed date in the future. False will just display users in violation, true will expire those users passwords
 rhel8cis_futurepwchgdate_autofix: {{ rhel8cis_futurepwchgdate_autofix }}
@@ -757,3 +767,7 @@ rhel8cis_aide_cron:
     aide_weekday: '{{ rhel8cis_aide_cron_weekday }}'
 
 ## Section6 vars
+
+
+# Control 7.1.12
+rhel8cis_exclude_unowned_search_path: '{{ rhel8cis_exclude_unowned_search_path }}'
