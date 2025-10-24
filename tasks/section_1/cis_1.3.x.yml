@@ -58,7 +58,7 @@
       when:
         - not rhel8cis_legacy_boot
         - item.mount == "/boot/efi"
-      notify: Change_requires_reboot
+      notify: Set_reboot_required
       ansible.posix.mount:
         name: /boot/efi
         src: "UUID={{ item.uuid }}"

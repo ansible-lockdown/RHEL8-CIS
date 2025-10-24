@@ -15,7 +15,7 @@
     - networking
     - NIST800-53R5_CM-7
     - rule_3.1.1
-  notify: Change_requires_reboot
+  notify: Set_reboot_required
   block:
     - name: "3.1.1 | PATCH | Verify if IPv6 is enabled on the system | disable all except localhost"
       ansible.posix.sysctl:

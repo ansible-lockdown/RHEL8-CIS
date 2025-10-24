@@ -1,0 +1,54 @@
+---
+
+# GitHub schedules all cron jobs in UTC.
+# ──────────────────────────────────────────────────────────────────────────────
+# Schedule:
+#   - '0 13 * * *' runs at 13:00 UTC every day.
+#   - This corresponds to:
+#       • 9:00 AM Eastern **during Daylight Saving Time** (mid-Mar → early-Nov)
+#       • 8:00 AM Eastern **during Standard Time** (early-Nov → mid-Mar)
+#
+# Job routing:
+#   - call-benchmark-tracker:
+#       • Runs on manual dispatch, and on pushes to the 'latest' branch.
+#   - call-monitor-promotions:
+#       • Runs on schedule or manual dispatch **only in repos named ansible-lockdown/Private-***.
+#       • Skips automatically in public repos (e.g., Windows-2022-CIS) to avoid false failures.
+#
+# Defense-in-depth:
+#   - The called promotion workflow may still keep its own guard to ensure only Private-* repos execute it.
+
+name: Central Benchmark Orchestrator
+
+on:
+  push:
+    branches:
+      - latest
+  schedule:
+    - cron: '0 13 * * *'  # 13:00 UTC → 9 AM ET (DST) / 8 AM ET (Standard Time)
+  workflow_dispatch:
+
+jobs:
+  call-benchmark-tracker:
+    # Run on manual dispatch OR when 'latest' branch receives a push
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref_name == 'latest')
+    name: Start Benchmark Tracker
+    uses: ansible-lockdown/github_linux_IaC/.github/workflows/benchmark_track.yml@self_hosted
+    with:
+      repo_name: ${{ github.repository }}
+    secrets:
+      TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+      BADGE_PUSH_TOKEN: ${{ secrets.BADGE_PUSH_TOKEN }}
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+  call-monitor-promotions:
+    # Run on schedule or manual dispatch, but only for Private-* repos
+    if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && startsWith(github.repository, 'ansible-lockdown/Private-')
+    name: Monitor Promotions and Auto-Promote
+    uses: ansible-lockdown/github_linux_IaC/.github/workflows/benchmark_promote.yml@self_hosted
+    with:
+      repo_name: ${{ github.repository }}
+    secrets:
+      TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+      BADGE_PUSH_TOKEN: ${{ secrets.BADGE_PUSH_TOKEN }}
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}

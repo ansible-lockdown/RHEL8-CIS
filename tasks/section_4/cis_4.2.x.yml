@@ -201,14 +201,14 @@
     - name: "4.2.8 | PATCH | Ensure sshd DisableForwarding is enabled"
       ansible.builtin.replace:
         path: /etc/ssh/sshd_config
-        regexp: '^(#|)\s*DisableForwarding.*'
+        regexp: '^(#?)\s*DisableForwarding.*'
         replace: 'DisableForwarding yes'
 
     - name: "4.2.8 | PATCH | Ensure sshd DisableForwarding is enabled | ensure x11 disabled"
       ansible.builtin.replace:
         path: /etc/ssh/sshd_config
-        regexp: ^X11Forwarding (yes|no)
-        replace: '#DisableForwarding yes'
+        regexp: (^\s*X11Forwarding .*$)
+        replace: '# \1'
 
 - name: "4.2.9 | PATCH | Ensure SSH HostbasedAuthentication is disabled"
   when: rhel8cis_rule_4_2_9

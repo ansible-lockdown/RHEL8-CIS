@@ -48,7 +48,7 @@
     - rule_1.1.2.7.4
     - NIST800-53R5_AC-3
     - NIST800-53R5_MP-2
-  notify: Change_requires_reboot
+  notify: Set_reboot_required
   ansible.posix.mount:
     name: /var/log/audit
     src: "{{ item.device }}"

@@ -41,7 +41,7 @@
     - NIST800-53R5_AC-3
     - NIST800-53R5_MP-2
     - rule_1.5.1.3
-  notify: Change_requires_reboot
+  notify: Set_reboot_required
   ansible.posix.selinux:
     conf: /etc/selinux/config
     policy: "{{ rhel8cis_selinux_policy }}"
@@ -53,7 +53,7 @@
   tags:
     - level1-server
     - level1-workstation
-    - auotmated
+    - automated
     - selinux
     - patch
     - NIST800-53R5_AC-3
@@ -95,7 +95,7 @@
     warn_control_id: '1.5.1.6'
   block:
     - name: "1.5.1.6 | AUDIT | Ensure no unconfined services exist | Find the unconfined services"
-      ansible.builtin.shell: ps -eZ | grep unconfined_service_t | egrep -vw "tr|ps|egrep|bash|awk" | tr ':' ' ' | awk '{ print $NF }'
+      ansible.builtin.shell: ps -eZ | grep unconfined_service_t | grep -Evw "tr|ps|egrep|bash|awk" | tr ':' ' ' | awk '{ print $NF }'
       register: discovered_unconf_services
       failed_when: false
       changed_when: false

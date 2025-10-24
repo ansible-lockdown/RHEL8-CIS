@@ -1,0 +1,27 @@
+---
+
+name: Export Private Repo Badges
+
+# Use different minute offsets with the same hourly pattern:
+# Repo Group Suggested Cron Expression Explanation
+# Group A 0 */6 * * * Starts at top of hour
+# Group B 10 */6 * * * Starts at 10 after
+# And So On
+
+on:
+  push:
+    branches:
+      - latest
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  export-badges:
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && startsWith(github.repository, 'ansible-lockdown/Private-')) || (github.event_name == 'push' && github.ref_name == 'latest')
+    uses: ansible-lockdown/github_linux_IaC/.github/workflows/export_badges_private.yml@self_hosted
+    with:
+      # Full org/repo path passed for GitHub API calls (e.g., ansible-lockdown/Private-Windows-2016-CIS)
+      repo_name: ${{ github.repository }}
+    secrets:
+      BADGE_PUSH_TOKEN: ${{ secrets.BADGE_PUSH_TOKEN }}

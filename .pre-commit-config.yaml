@@ -1,4 +1,5 @@
 ---
+
 ##### CI for use by github no need for action to be added
 ##### Inherited
 ci:
@@ -11,12 +12,17 @@ repos:
   hooks:
   # Safety
   - id: detect-aws-credentials
+    name: Detect AWS Credentials
   - id: detect-private-key
+    name: Detect Private Keys
 
   # git checks
   - id: check-merge-conflict
+    name: Check for merge conflicts
   - id: check-added-large-files
+    name: Check for Large files
   - id: check-case-conflict
+    name: Check case conflict
 
   # General checks
   - id: trailing-whitespace
@@ -27,17 +33,20 @@ repos:
     types: [text]
     args: [--markdown-linebreak-ext=md]
   - id: end-of-file-fixer
+    name: Ensure line at end of file
 
 # Scan for passwords
 - repo: https://github.com/Yelp/detect-secrets
   rev: v1.5.0
   hooks:
   - id: detect-secrets
+    name: Detect Secrets
 
 - repo: https://github.com/gitleaks/gitleaks
   rev: v8.28.0
   hooks:
   - id: gitleaks
+    name: gitleaks
 
 - repo: https://github.com/ansible-community/ansible-lint
   rev: v25.9.2
@@ -51,14 +60,15 @@ repos:
     # https://github.com/ansible/ansible-lint/issues/611
     pass_filenames: false
     always_run: true
-    additional_dependencies:
+    # additional_dependencies:
     # https://github.com/pre-commit/pre-commit/issues/1526
     # If you want to use specific version of ansible-core or ansible, feel
     # free to override `additional_dependencies` in your own hook config
     # file.
-    - ansible-core>=2.10.1
+    # - ansible-core>=2.10.1
 
 - repo: https://github.com/adrienverge/yamllint.git
   rev: v1.37.1  # or higher tag
   hooks:
   - id: yamllint
+    name: Check YAML Lint
