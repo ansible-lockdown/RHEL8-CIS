@@ -26,17 +26,17 @@
   when: not system_is_container
   ansible.posix.sysctl:
     name: net.ipv4.route.flush
-    value: '1'
+    value: "1"
     sysctl_set: true
-  ignore_errors: true  # noqa ignore-errors
+  ignore_errors: true # noqa ignore-errors
 
 - name: Sysctl_flush_ipv6_routes
   when: not system_is_container
   ansible.posix.sysctl:
     name: net.ipv6.route.flush
-    value: '1'
+    value: "1"
     sysctl_set: true
-  ignore_errors: true  # noqa ignore-errors
+  ignore_errors: true # noqa ignore-errors
 
 - name: Restart_sshd
   ansible.builtin.service:
@@ -83,7 +83,7 @@
 - name: Rebuild_grub
   ansible.builtin.command: "grub2-mkconfig -o {{ prelim_grub_cfg.stat.lnk_source }}"
   changed_when: true
-  ignore_errors: true  # noqa ignore-errors
+  ignore_errors: true # noqa ignore-errors
   notify: Set_reboot_required
 
 - name: Restart_rsyslog
@@ -113,12 +113,12 @@
   notify: Set_reboot_required
 
 - name: Stop auditd process
-  ansible.builtin.command: systemctl kill auditd  # noqa command-instead-of-module
+  ansible.builtin.command: systemctl kill auditd # noqa command-instead-of-module
   changed_when: true
   listen: Restart auditd
 
 - name: Start auditd process
-  ansible.builtin.systemd_service:
+  ansible.builtin.systemd:
     name: auditd
     state: started
   listen: Restart auditd
