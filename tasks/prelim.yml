@@ -262,6 +262,37 @@
 
 ##### Optional #####
 
+# Added to ensure ssh drop in file exists if not default /etc/ssh/sshd_config
+- name: "PRELIM | PATCH | SSH Config file is not exist"
+  when:
+    - rhel8cis_sshd_config_file != '/etc/ssh/sshd_config'
+    - "'openssh-server' in ansible_facts.packages"
+  tags:
+    - always
+    - level1_server
+    - level1_workstation
+  block:
+    - name: "PRELIM | AUDIT | Check SSH Config drop in is supported for distribution version"
+      ansible.builtin.assert:
+        that: ansible_distribution_version is version_compare('8.6', '>=')
+        fail_msg: "{{ ansible_distribution }} {{ ansible_distribution_version }} does not support SSH Config drop in"
+
+    - name: "PRELIM | PATCH | SSH Config drop in directory is not exist"
+      ansible.builtin.file:
+        path: "{{ rhel8cis_sshd_config_file | dirname }}"
+        owner: root
+        group: root
+        mode: 'go-rwx'
+        state: directory
+
+    - name: "PRELIM | PATCH | SSH Config file is not exist"
+      ansible.builtin.file:
+        path: "{{ rhel8cis_sshd_config_file }}"
+        owner: root
+        group: root
+        mode: 'go-rwx'
+        state: touch
+
 - name: "PRELIM | Optional | If IPv6 disable to stop ssh listening"
   when:
     - rhel8cis_ipv6_sshd_disable

@@ -96,7 +96,7 @@
     - name: "4.2.4 | PATCH | Ensure SSH access is configured | Add line to sshd_config for allowusers"
       when: "rhel8cis_sshd_allowusers|default('') | length > 0"
       ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
+        path: "{{ rhel8cis_sshd_config_file }}"
         regexp: "^AllowUsers"
         line: AllowUsers {{ rhel8cis_sshd_allowusers }}
       notify: Restart_sshd
@@ -104,7 +104,7 @@
     - name: "4.2.4 | PATCH | Ensure SSH access is configured | Add line to sshd_config for allowgroups"
       when: "rhel8cis_sshd_allowgroups|default('') | length > 0"
       ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
+        path: "{{ rhel8cis_sshd_config_file }}"
         regexp: "^AllowGroups"
         line: AllowGroups {{ rhel8cis_sshd_allowgroups }}
       notify: Restart_sshd
@@ -112,7 +112,7 @@
     - name: "4.2.4 | PATCH | Ensure SSH access is configured | Add line to sshd_config for denyusers"
       when: "rhel8cis_sshd_denyusers|default('') | length > 0"
       ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
+        path: "{{ rhel8cis_sshd_config_file }}"
         regexp: "^DenyUsers"
         line: DenyUsers {{ rhel8cis_sshd_denyusers }}
       notify: Restart_sshd
@@ -120,7 +120,7 @@
     - name: "4.2.4 | PATCH | Ensure SSH access is configured | Add line to sshd_config for denygroups"
       when: "rhel8cis_sshd_denygroups|default('') | length > 0"
       ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
+        path: "{{ rhel8cis_sshd_config_file }}"
         regexp: "^DenyGroups"
         line: DenyGroups {{ rhel8cis_sshd_denygroups }}
       notify: Restart_sshd
@@ -140,7 +140,7 @@
     - NIST800-53R5_IA-5
     - rule_4.2.5
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: '^Banner'
     line: 'Banner /etc/issue.net'
 
@@ -156,7 +156,7 @@
     - NIST800-53R5_SC-8
     - rule_4.2.6
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: "^#Ciphers|^Ciphers"
     line: "Ciphers {{ rhel8cis_sshd_ciphers }}"
 
@@ -177,13 +177,13 @@
   block:
     - name: "4.2.7 | PATCH | Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured | Add line in sshd_config for ClientAliveInterval"
       ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
+        path: "{{ rhel8cis_sshd_config_file }}"
         regexp: '^ClientAliveInterval'
         line: "ClientAliveInterval {{ rhel8cis_sshd_clientaliveinterval }}"
 
     - name: "4.2.7 | PATCH | Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured | Ensure SSH ClientAliveCountMax set to <= 3"
       ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
+        path: "{{ rhel8cis_sshd_config_file }}"
         regexp: '^ClientAliveCountMax'
         line: "ClientAliveCountMax {{ rhel8cis_sshd_clientalivecountmax }}"
 
@@ -200,13 +200,13 @@
   block:
     - name: "4.2.8 | PATCH | Ensure sshd DisableForwarding is enabled"
       ansible.builtin.replace:
-        path: /etc/ssh/sshd_config
+        path: "{{ rhel8cis_sshd_config_file }}"
         regexp: '^(#?)\s*DisableForwarding.*'
         replace: 'DisableForwarding yes'
 
     - name: "4.2.8 | PATCH | Ensure sshd DisableForwarding is enabled | ensure x11 disabled"
       ansible.builtin.replace:
-        path: /etc/ssh/sshd_config
+        path: "{{ rhel8cis_sshd_config_file }}"
         regexp: (^\s*X11Forwarding .*$)
         replace: '# \1'
 
@@ -225,7 +225,7 @@
     - NIST800-53R5_IA-5
     - rule_4.2.9
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: ^#HostbasedAuthentication|^HostbasedAuthentication"
     line: 'HostbasedAuthentication no'
 
@@ -244,7 +244,7 @@
     - NIST800-53R5_IA-5
     - rule_4.2.10
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: "^#IgnoreRhosts|^IgnoreRhosts"
     line: 'IgnoreRhosts yes'
 
@@ -260,7 +260,7 @@
     - NIST800-53R5_SC-8
     - rule_4.2.11
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: "^#KexAlgorithms|^KexAlgorithms"
     line: "KexAlgorithms {{ rhel8cis_sshd_kex }}"
 
@@ -275,7 +275,7 @@
     - NIST800-53R5_CM-6
     - rule_4.2.12
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: "^#LoginGraceTime|^LoginGraceTime"
     line: "LoginGraceTime {{ rhel8cis_sshd_logingracetime }}"
 
@@ -292,7 +292,7 @@
     - NIST800-53R5_SI-5
     - rule_4.2.13
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: "^#LogLevel|^LogLevel"
     line: "LogLevel {{ rhel8cis_sshd_loglevel }}"
 
@@ -312,7 +312,7 @@
     - NIST800-53R5_IA-5
     - rule_4.2.14
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: "^#MACs|^MACs"
     line: "MACs {{ rhel8cis_sshd_macs }}"
 
@@ -327,7 +327,7 @@
     - NIST800-53R5_AU-3
     - rule_4.2.15
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: '^(#)?MaxAuthTries \d'
     line: "MaxAuthTries {{ rhel8cis_sshd_maxauthtries }}"
 
@@ -346,7 +346,7 @@
     - NIST800-53R5_IA-5
     - rule_4.2.16
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: "^#MaxSessions|^MaxSessions"
     line: "MaxSessions {{ rhel8cis_sshd_maxsessions }}"
 
@@ -365,7 +365,7 @@
     - NIST800-53R5_IA-5
     - rule_4.2.17
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: (?i)MaxStartups
     line: "MaxStartups {{ rhel8cis_sshd_maxstartups }}"
 
@@ -384,7 +384,7 @@
     - NIST800-53R5_IA-5
     - rule_4.2.18
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: "^#PermitEmptyPasswords|^PermitEmptyPasswords"
     line: 'PermitEmptyPasswords no'
 
@@ -399,7 +399,7 @@
     - NIST800-53R5_AC-6
     - rule_4.2.19
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: "^#PermitRootLogin|^PermitRootLogin"
     line: 'PermitRootLogin no'
 
@@ -418,7 +418,7 @@
     - NIST800-53R5_IA-5
     - rule_4.2.20
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: "^#PermitUserEnvironment|^PermitUserEnvironment"
     line: 'PermitUserEnvironment no'
 
@@ -437,7 +437,7 @@
     - NIST800-53R5_IA-5
     - rule_4.2.21
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: "^#UsePAM|^UsePAM"
     line: 'UsePAM yes'
 
