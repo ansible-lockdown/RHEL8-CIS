@@ -199,7 +199,7 @@
     - rule_4.2.8
   block:
     - name: "4.2.8 | PATCH | Ensure sshd DisableForwarding is enabled"
-      ansible.builtin.lineinfile:
+      ansible.builtin.replace:
         path: /etc/ssh/sshd_config
         regexp: '^(#?)\s*DisableForwarding.*'
         replace: 'DisableForwarding yes'
