@@ -35,7 +35,7 @@
 -w /etc/hosts -p wa -k system-locale
 -w /etc/hostname -p wa -k system-locale
 -w /etc/sysconfig/network -p wa -k system-locale
--w /etc/sysconfig/network-scripts -p wa -k system-locale
+-w /etc/sysconfig/network-scripts/ -p wa -k system-locale
 -w /etc/NetworkManager -p wa -k system-locale
 {% endif %}
 {% if rhel8cis_rule_6_3_3_6 %}
@@ -121,6 +121,7 @@
 {% if rhel8cis_rule_6_3_3_19 %}
 {% set syscalls = ["init_module","finit_module","delete_module","create_module","query_module"] %}
 {% set arch_syscalls = syscalls | select("in", supported_syscalls) | list %}
+-a always,exit -F arch=b32 -S {{ arch_syscalls|join(',') }} -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k kernel_modules
 -a always,exit -F arch=b64 -S {{ arch_syscalls|join(',') }} -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k kernel_modules
 -a always,exit -F path=/usr/bin/kmod -F perm=x -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k kernel_modules
 {% endif %}

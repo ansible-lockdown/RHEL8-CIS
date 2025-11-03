@@ -38,7 +38,7 @@
       register: discovered_auditd_grub_cmdline_linux
 
     - name: "6.3.1.2 | PATCH | Ensure auditing for processes that start prior to auditd is enabled | Replace existing setting"
-      when: discovered_auditd_grub_cmdline_linux.stdout | length > 0
+      when: discovered_auditd_grub_cmdline_linux.stdout | length == 0
       ansible.builtin.command: grubby --update-kernel ALL --args 'audit=1'
       changed_when: true
 

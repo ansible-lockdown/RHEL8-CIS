@@ -24,6 +24,9 @@ rhel8cis_allowed_crypto_policies_modules:
   - 'NO-SSHWEAKMAC'
   - 'NO-WEAKMAC'
 
+# Setting default value
+rhel8cis_sysctl_update: false
+
 aide_packages:
   - aide
 

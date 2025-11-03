@@ -5,6 +5,24 @@
   ansible.builtin.dnf:
     autoremove: true
 
+- name: POST | Update sysctl
+  when:
+    - rhel8cis_sysctl_update
+    - not system_is_container
+    - "'procps-ng' in ansible_facts.packages"
+  ansible.builtin.template:
+    src: "etc/sysctl.d/{{ item }}.j2"
+    dest: "/etc/sysctl.d/{{ item }}"
+    owner: root
+    group: root
+    mode: 'u-x,go-rwx'
+  loop:
+    - 60-kernel_sysctl.conf
+    - 60-disable_ipv6.conf
+    - 60-netipv4_sysctl.conf
+    - 60-netipv6_sysctl.conf
+  notify: Reload sysctl
+
 - name: POST | flush handlers
   ansible.builtin.meta: flush_handlers
 

@@ -140,7 +140,7 @@
     - rule_5.1.6
   block:
     - name: "5.1.6 | PATCH | Ensure SSH access is configured | Add line to sshd_config for allowusers"
-      when: "rhel8cis_sshd_allowusers|default('') | length > 0"
+      when: "rhel8cis_sshd_allowusers | length > 0"
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: "^AllowUsers"
@@ -148,7 +148,7 @@
       notify: Restart sshd
 
     - name: "5.1.6 | PATCH | Ensure SSH access is configured | Add line to sshd_config for allowgroups"
-      when: "rhel8cis_sshd_allowgroups|default('') | length > 0"
+      when: "rhel8cis_sshd_allowgroups | length > 0"
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: "^AllowGroups"
@@ -156,7 +156,7 @@
       notify: Restart sshd
 
     - name: "5.1.6 | PATCH | Ensure SSH access is configured | Add line to sshd_config for denyusers"
-      when: "rhel8cis_sshd_denyusers|default('') | length > 0"
+      when: "rhel8cis_sshd_denyusers | length > 0"
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: "^DenyUsers"
@@ -164,7 +164,7 @@
       notify: Restart sshd
 
     - name: "5.1.6 | PATCH | Ensure SSH access is configured | Add line to sshd_config for denygroups"
-      when: "rhel8cis_sshd_denygroups|default('') | length > 0"
+      when: "rhel8cis_sshd_denygroups | length > 0"
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: "^DenyGroups"
@@ -188,9 +188,8 @@
   notify: Restart sshd
   ansible.builtin.replace:
     path: /etc/ssh/sshd_config
-    regexp: '^Banner'
-    replace: 'Banner /etc/issue.net'
-    validate: sshd -t -f %s
+    regexp: ^(#?)\s*Banner.*$
+    replace: Banner /etc/issue.net
 
 - name: "5.1.8 | PATCH | Ensure sshd Ciphers are configured"
   when:
@@ -261,19 +260,25 @@
     - patch
     - sshd
     - NIST800-53R5_CM-7
-    - rule_5.1.8
+    - rule_5.1.10
   block:
     - name: "5.1.10 | PATCH | Ensure sshd DisableForwarding is enabled"
       ansible.builtin.replace:
         path: /etc/ssh/sshd_config
-        regexp: '^(#?)\s*DisableForwarding.*'
+        regexp: (?i)^(#?)\s*DisableForwarding (no|false)
         replace: 'DisableForwarding yes'
+        validate: sshd -t -f %s
+
+    - name: "5.1.10 | PATCH | Ensure sshd DisableForwarding is enabled"
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        line: 'DisableForwarding yes'
         validate: sshd -t -f %s
 
     - name: "5.1.10 | PATCH | Ensure sshd DisableForwarding is enabled | ensure x11 disabled"
       ansible.builtin.replace:
         path: /etc/ssh/sshd_config
-        regexp: ^X11Forwarding\s*(yes|no)
+        regexp: (?i)^\s*X11Forwarding\s*(yes|no)
         replace: '# X11Forwarding no'
         validate: sshd -t -f %s
 
@@ -345,7 +350,6 @@
 - name: "5.1.14 | PATCH | Ensure sshd KexAlgorithms is configured"
   when:
     - rhel8cis_rule_5_1_14
-    - not rhel8cis_rule_1_6_2  # Use systemwide policy as preferred
   tags:
     - level1-server
     - level1-workstation

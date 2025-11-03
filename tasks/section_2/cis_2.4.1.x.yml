@@ -107,7 +107,7 @@
     group: root
     mode: 'go-rwx'
 
-- name: "2.4.1.7 | PATCH | Ensure access to  /etc/cron.yearlyy is configured"
+- name: "2.4.1.7 | PATCH | Ensure access to  /etc/cron.yearly is configured"
   when: rhel8cis_rule_2_4_1_7
   tags:
     - level1-server
@@ -119,10 +119,11 @@
     - NIST800-53R5_MP-2
     - rule_2.4.1.7
   ansible.builtin.file:
-    path: /etc/cron.monthly
+    path: /etc/cron.yearly
     state: directory
     owner: root
     group: root
+    create: true
     mode: 'go-rwx'
 
 - name: "2.4.1.8 | PATCH | Ensure permissions on /etc/cron.d are configured"

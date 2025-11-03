@@ -765,13 +765,18 @@ rhel8cis_sshd_clientalivecountmax: 3
 rhel8cis_sshd_clientaliveinterval: 15
 rhel8cis_sshd_logingracetime: 60
 rhel8cis_sshd_loglevel: INFO
-rhel8cis_sshd_macs: '-hmac-md5,hmac-md5-96,hmac-ripemd160,hmac-sha1-96,umac-64@openssh.com,hmac-md5-etm@openssh.com,hmac-md5-96-etm@openssh.com,hmac-ripemd160-etm@openssh.com,hmac-sha1-96-etm@openssh.com,umac-64-etm@openssh.com'
+rhel8cis_sshd_macs: '-hmac-md5,hmac-md5-96,hmac-ripemd160,hmac-sha1-96,umac-64@openssh.com,hmac-md5-etm@openssh.com,hmac-md5-96-etm@openssh.com,hmac-ripemd160-etm@openssh.com,hmac-sha1-96-etm@openssh.com,umac-64-etm@openssh.com,umac-128-etm@openssh.com'
 rhel8cis_sshd_maxauthtries: 4
 rhel8cis_sshd_maxsessions: 10
 rhel8cis_sshd_maxstartups: "10:30:60"
 rhel8cis_sshd_ciphers: '-3des-cbc,aes128-cbc,aes192-cbc,aes256-cbc,chacha20-poly1305@openssh.com'
 rhel8cis_sshd_kex: '-diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1'
 
+## Control 5.1.6 - Ensure sshd access is configured
+# (String) This variable, if specified, configures a list of GROUP name patterns, separated by spaces, to allow SSH access
+# for users whose primary group or supplementary group list matches one of the patterns. This is done
+# by setting the value of `AllowGroups` option in `/etc/ssh/sshd_config` file.
+rhel8cis_sshd_allowusers: ""
 ## Control 5.1.6 - Ensure sshd access is configured
 # (String) This variable, if specified, configures a list of GROUP name patterns, separated by spaces, to allow SSH access
 # for users whose primary group or supplementary group list matches one of the patterns. This is done

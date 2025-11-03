@@ -9,6 +9,7 @@
     - level2-server
     - level1-workstation
     - sysctl
+    - ipv6
     - patch
     - rule_3.3.2.1
     - CCI-000366
@@ -32,6 +33,7 @@
     - level2-server
     - level1-workstation
     - sysctl
+    - ipv6
     - patch
     - rule_3.3.2.2
     - CCI-000366
@@ -56,6 +58,7 @@
     - level1-workstation
     - patch
     - sysctl
+    - ipv6
     - rule_3.3.2.3
     - CCI-000366
     - NIST800-53R5_CM-6
@@ -79,6 +82,7 @@
     - level1-workstation
     - patch
     - sysctl
+    - ipv6
     - rule_3.3.2.4
     - CCI-000366
     - NIST800-53R5_CM-6
@@ -100,6 +104,7 @@
     - level1-server
     - level1-workstation
     - sysctl
+    - ipv6
     - patch
     - rule_3.3.2.5
     - CCI-000366
@@ -122,6 +127,7 @@
     - level1-server
     - level1-workstation
     - sysctl
+    - ipv6
     - patch
     - rule_3.3.2.6
     - CCI-000366
@@ -144,6 +150,7 @@
     - level1-server
     - level1-workstation
     - sysctl
+    - ipv6
     - patch
     - rule_3.3.2.7
     - CCI-000366
@@ -166,6 +173,7 @@
     - level1-server
     - level1-workstation
     - sysctl
+    - ipv6
     - patch
     - rule_3.3.2.8
     - CCI-000366
