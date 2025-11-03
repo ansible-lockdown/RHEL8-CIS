@@ -1,0 +1,19 @@
+---
+
+name: Export Public Repo Badges
+
+on:
+  push:
+    branches:
+      - main
+      - devel
+  workflow_dispatch:
+
+jobs:
+  export-badges:
+    if: github.repository_visibility == 'public' && (github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && (github.ref_name == 'devel' || github.ref_name == 'main')))
+    uses: ansible-lockdown/github_linux_IaC/.github/workflows/export_badges_public.yml@self_hosted
+    with:
+      repo_name: ${{ github.repository }}
+    secrets:
+      BADGE_PUSH_TOKEN: ${{ secrets.BADGE_PUSH_TOKEN }}
