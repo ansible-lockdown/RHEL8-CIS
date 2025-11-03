@@ -6,6 +6,8 @@ Complete rewrite
 Many controls moved sections and renumbered
 new services added to be removed/updated
 handlers renamed
+audit improved
+workflow updates
 
 ## Benchmark v3.0.0
 

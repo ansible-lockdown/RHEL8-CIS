@@ -55,7 +55,7 @@ This role **will make changes to the system** which may have unintended conseque
 
 - To use release version please point to main branch and relevant release/tag for the cis benchmark you wish to work with.
 
-- If moving across major releases e.g. v2.0.0 - v3.0.0 there are significant changes to the benchmarks and controls it is suggested to start as a new standard not to upgrade.
+- If moving across major releases e.g. v2.0.0 - v3.0.0 - v4.0.0there are significant changes to the benchmarks and controls it is suggested to start as a new standard not to upgrade.
 
 - Containers references vars/is_container.yml this is an example and to be updated for your requirements
 
