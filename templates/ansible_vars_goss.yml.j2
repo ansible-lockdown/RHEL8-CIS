@@ -1,5 +1,5 @@
 ## metadata for Audit benchmark
-benchmark_version: '3.0.0'
+benchmark_version: {{ benchmark_version }}
 
 # Set if genuine RHEL (subscription manager check) not for derivatives e.g. CentOS
 host_os_distribution: {{ ansible_distribution }}
@@ -305,7 +305,7 @@ rhel8cis_rule_4_5_2_3: {{ rhel8cis_rule_4_5_2_3 }}
 rhel8cis_rule_4_5_2_4: {{ rhel8cis_rule_4_5_2_4 }}
 rhel8cis_rule_4_5_2_5: {{ rhel8cis_rule_4_5_2_5 }}
 
-# User enviroment
+# User environment
 rhel8cis_rule_4_5_3_1: {{ rhel8cis_rule_4_5_3_1 }}
 rhel8cis_rule_4_5_3_2: {{ rhel8cis_rule_4_5_3_2 }}
 rhel8cis_rule_4_5_3_3: {{ rhel8cis_rule_4_5_3_3 }}
@@ -480,7 +480,7 @@ rhel8cis_ntp_server_options: "{{ rhel8cis_ntp_server_options }}"
 # Options are
 # true to leave installed if exists not changes take place
 # false - this removes the package
-# mask - if a dependancy for product so cannot be removed
+# mask - if a dependency for product so cannot be removed
 # Server Services
 rhel8cis_autofs_services: {{ rhel8cis_autofs_services }}
 rhel8cis_autofs_mask: {{ rhel8cis_autofs_mask }}

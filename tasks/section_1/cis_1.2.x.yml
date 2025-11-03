@@ -120,7 +120,7 @@
     - automated
     - patch
     - rule_1.2.5
-  notify: Change_requires_reboot
+  notify: Set_reboot_required
   block:
     - name: "1.2.5 | PATCH | Ensure updates, patches, and additional security software are installed | Patch"
       ansible.builtin.package:
