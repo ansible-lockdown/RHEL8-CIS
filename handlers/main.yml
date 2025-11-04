@@ -6,7 +6,7 @@
   changed_when: true
 
 - name: "Adding options for /tmp"
-  when: not rhel9cis_tmp_svc
+  when: not rhel8cis_tmp_svc
   vars:
     mount_point: '/tmp'
   ansible.posix.mount:
