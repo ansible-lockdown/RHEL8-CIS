@@ -1,66 +1,65 @@
-# RHEL 10 CIS
+# RHEL 8 CIS
 
-## Configure a RHEL 10 machine to be [CIS](https://www.cisecurity.org/cis-benchmarks/) compliant
+## Configure a RHEL 8 machine to be [CIS](https://www.cisecurity.org/cis-benchmarks/) compliant
 
-### Based on [CIS RedHat Enterprise Linux 10 Benchmark v4.0.0 (https://www.cisecurity.org/cis-benchmarks/)
+### Based on [CIS RedHat Enterprise Linux 8 Benchmark v4.0.0 (https://www.cisecurity.org/cis-benchmarks/)
 
 ---
 
 ## Public Repository 📣
 
 ![Org Stars](https://img.shields.io/github/stars/ansible-lockdown?label=Org%20Stars&style=social)
-![Stars](https://img.shields.io/github/stars/ansible-lockdown/RHEL10-CIS?label=Repo%20Stars&style=social)
-![Forks](https://img.shields.io/github/forks/ansible-lockdown/RHEL10-CIS?style=social)
+![Stars](https://img.shields.io/github/stars/ansible-lockdown/RHEL8-CIS?label=Repo%20Stars&style=social)
+![Forks](https://img.shields.io/github/forks/ansible-lockdown/RHEL8-CIS?style=social)
 ![Followers](https://img.shields.io/github/followers/ansible-lockdown?style=social)
 [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/AnsibleLockdown.svg?style=social&label=Follow%20%40AnsibleLockdown)](https://twitter.com/AnsibleLockdown)
 ![Discord Badge](https://img.shields.io/discord/925818806838919229?logo=discord)
 
-![License](https://img.shields.io/github/license/ansible-lockdown/RHEL10-CIS?label=License)
+![License](https://img.shields.io/github/license/ansible-lockdown/RHEL8-CIS?label=License)
 
 ## Lint & Pre-Commit Tools 🔧
 
-[![Pre-Commit.ci](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/RHEL10-CIS/pre-commit-ci.json)](https://results.pre-commit.ci/latest/github/ansible-lockdown/RHEL10-CIS/devel)
 ![YamlLint](https://img.shields.io/badge/yamllint-Present-brightgreen?style=flat&logo=yaml&logoColor=white)
 ![Ansible-Lint](https://img.shields.io/badge/ansible--lint-Present-brightgreen?style=flat&logo=ansible&logoColor=white)
 
 ## Community Release Information 📂
 
 ![Release Branch](https://img.shields.io/badge/Release%20Branch-Main-brightgreen)
-![Release Tag](https://img.shields.io/github/v/tag/ansible-lockdown/RHEL10-CIS?label=Release%20Tag&&color=success)
-![Main Release Date](https://img.shields.io/github/release-date/ansible-lockdown/RHEL10-CIS?label=Release%20Date)
-![Benchmark Version Main](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/RHEL10-CIS/benchmark-version-main.json)
-![Benchmark Version Devel](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/RHEL10-CIS/benchmark-version-devel.json)
+![Release Tag](https://img.shields.io/github/v/tag/ansible-lockdown/RHEL8-CIS?label=Release%20Tag&&color=success)
+![Main Release Date](https://img.shields.io/github/release-date/ansible-lockdown/RHEL8-CIS?label=Release%20Date)
+![Benchmark Version Main](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/RHEL8-CIS/benchmark-version-main.json)
+![Benchmark Version Devel](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/RHEL8-CIS/benchmark-version-devel.json)
 
-[![Main Pipeline Status](https://github.com/ansible-lockdown/RHEL10-CIS/actions/workflows/main_pipeline_validation.yml/badge.svg?)](https://github.com/ansible-lockdown/RHEL10-CIS/actions/workflows/main_pipeline_validation.yml)
+[![Main Pipeline Status](https://github.com/ansible-lockdown/RHEL8-CIS/actions/workflows/main_pipeline_validation.yml/badge.svg?)](https://github.com/ansible-lockdown/RHEL8-CIS/actions/workflows/main_pipeline_validation.yml)
 
-[![Devel Pipeline Status](https://github.com/ansible-lockdown/RHEL10-CIS/actions/workflows/devel_pipeline_validation.yml/badge.svg?)](https://github.com/ansible-lockdown/RHEL10-CIS/actions/workflows/devel_pipeline_validation.yml)
+[![Devel Pipeline Status](https://github.com/ansible-lockdown/RHEL8-CIS/actions/workflows/devel_pipeline_validation.yml/badge.svg?)](https://github.com/ansible-lockdown/RHEL8-CIS/actions/workflows/devel_pipeline_validation.yml)
 
 
-![Devel Commits](https://img.shields.io/github/commit-activity/m/ansible-lockdown/RHEL10-CIS/devel?color=dark%20green&label=Devel%20Branch%20Commits)
-![Open Issues](https://img.shields.io/github/issues-raw/ansible-lockdown/RHEL10-CIS?label=Open%20Issues)
-![Closed Issues](https://img.shields.io/github/issues-closed-raw/ansible-lockdown/RHEL10-CIS?label=Closed%20Issues&&color=success)
-![Pull Requests](https://img.shields.io/github/issues-pr/ansible-lockdown/RHEL10-CIS?label=Pull%20Requests)
+![Devel Commits](https://img.shields.io/github/commit-activity/m/ansible-lockdown/RHEL8-CIS/devel?color=dark%20green&label=Devel%20Branch%20Commits)
+![Open Issues](https://img.shields.io/github/issues-raw/ansible-lockdown/RHEL8-CIS?label=Open%20Issues)
+![Closed Issues](https://img.shields.io/github/issues-closed-raw/ansible-lockdown/RHEL8-CIS?label=Closed%20Issues&&color=success)
+![Pull Requests](https://img.shields.io/github/issues-pr/ansible-lockdown/RHEL8-CIS?label=Pull%20Requests)
 
 ---
 
 ## Subscriber Release Information 🔐
 
-![Private Release Branch](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-RHEL10-CIS/release-branch.json)
-![Private Benchmark Version](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-RHEL10-CIS/benchmark-version.json)
+![Private Release Branch](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-RHEL8-CIS/release-branch.json)
+![Private Benchmark Version](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-RHEL8-CIS/benchmark-version.json)
 
-[![Private Remediate Pipeline](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-RHEL10-CIS/remediate.json)](https://github.com/ansible-lockdown/Private-RHEL10-CIS/actions/workflows/main_pipeline_validation.yml)
-[![Private GPO Pipeline](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-RHEL10-CIS/gpo.json)](https://github.com/ansible-lockdown/Private-RHEL10-CIS/actions/workflows/main_pipeline_validation_gpo.yml)
+[![Private Remediate Pipeline](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-RHEL8-CIS/remediate.json)](https://github.com/ansible-lockdown/Private-RHEL8-CIS/actions/workflows/main_pipeline_validation.yml)
+[![Private GPO Pipeline](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-RHEL8-CIS/gpo.json)](https://github.com/ansible-lockdown/Private-RHEL8-CIS/actions/workflows/main_pipeline_validation_gpo.yml)
 
-![Private Pull Requests](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-RHEL10-CIS/prs.json)
-![Private Closed Issues](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-RHEL10-CIS/issues-closed.json)
+![Private Pull Requests](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-RHEL8-CIS/prs.json)
+![Private Closed Issues](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-RHEL8-CIS/issues-closed.json)
 
 ---
 
 ## Looking for support? 🤝
 
-[Lockdown Enterprise](https://www.lockdownenterprise.com#GH_AL_RHEL10-CIS)
+[Lockdown Enterprise](https://www.lockdownenterprise.com#GH_AL_RHEL8-CIS)
 
-[Ansible support](https://www.mindpointgroup.com/cybersecurity-products/ansible-counselor#GH_AL_RHEL10-CIS)
+[Ansible support](https://www.mindpointgroup.com/cybersecurity-products/ansible-counselor#GH_AL_RHEL8-CIS)
 
 ### Community 💬
 
@@ -121,7 +120,7 @@ The control found in defaults main also need to reflect this as this control the
 
 **Technical Dependencies:**
 
-RHEL family 10 - Other versions are not supported.
+RHEL family 8 - Other versions are not supported.
 
 - Access to download or add the goss binary and content to the system if using auditing
 (other options are available on how to get the content to the system.)
@@ -141,7 +140,7 @@ This is a much quicker, very lightweight, checking (where possible) config compl
 A new form of auditing has been developed, by using a small (12MB) go binary called [goss](https://github.com/goss-org/goss) along with the relevant configurations to check. Without the need for infrastructure or other tooling.
 This audit will not only check the config has the correct setting but aims to capture if it is running with that configuration also trying to remove [false positives](https://www.mindpointgroup.com/blog/is-compliance-scanning-still-relevant/) in the process.
 
-Refer to [RHEL10-CIS-Audit](https://github.com/ansible-lockdown/RHEL10-CIS-Audit).
+Refer to [RHEL8-CIS-Audit](https://github.com/ansible-lockdown/RHEL8-CIS-Audit).
 
 ## Example Audit Summary
 
@@ -166,10 +165,10 @@ default                    : ok=270  changed=23   unreachable=0    failed=0    s
 ## Documentation 📖
 
 - [Read The Docs](https://ansible-lockdown.readthedocs.io/en/latest/)
-- [Getting Started](https://www.lockdownenterprise.com/docs/getting-started-with-lockdown#GH_AL_RH10_cis)
-- [Customizing Roles](https://www.lockdownenterprise.com/docs/customizing-lockdown-enterprise#GH_AL_RH10_cis)
-- [Per-Host Configuration](https://www.lockdownenterprise.com/docs/per-host-lockdown-enterprise-configuration#GH_AL_RH10_cis)
-- [Getting the Most Out of the Role](https://www.lockdownenterprise.com/docs/get-the-most-out-of-lockdown-enterprise#GH_AL_RH10_cis)
+- [Getting Started](https://www.lockdownenterprise.com/docs/getting-started-with-lockdown#GH_AL_RH8_cis)
+- [Customizing Roles](https://www.lockdownenterprise.com/docs/customizing-lockdown-enterprise#GH_AL_RH8_cis)
+- [Per-Host Configuration](https://www.lockdownenterprise.com/docs/per-host-lockdown-enterprise-configuration#GH_AL_RH8_cis)
+- [Getting the Most Out of the Role](https://www.lockdownenterprise.com/docs/get-the-most-out-of-lockdown-enterprise#GH_AL_RH8_cis)
 
 
 ## Role Variables
