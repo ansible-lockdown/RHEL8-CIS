@@ -759,6 +759,11 @@ rhel8cis_firewalld_target: DROP
 #######
 ## Section5 vars
 ######
+# This value, containing the absolute filepath of the produced 'sshd' config file, allows usage of
+# drop-in files('/etc/ssh/ssh_config.d/{ssh_drop_in_name}.conf', supported by RHEL>=8.6) when CIS adopts them.
+# Otherwise, the default value is '/etc/ssh/ssh_config'.
+rhel8cis_sshd_config_file: /etc/ssh/sshd_config
+
 ## If using the allow/deny user groups options
 rhel8cis_sshd_limited: false
 rhel8cis_sshd_clientalivecountmax: 3

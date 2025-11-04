@@ -40,7 +40,7 @@
 
     - name: "5.1.2 | Ensure access to /etc/ssh/sshd_config is configured"
       ansible.builtin.file:
-        path: /etc/ssh/sshd_config
+        path: "{{ rhel8cis_sshd_config_file }}"
         owner: root
         group: root
         mode: 'go-rwx'
@@ -142,7 +142,7 @@
     - name: "5.1.6 | PATCH | Ensure SSH access is configured | Add line to sshd_config for allowusers"
       when: "rhel8cis_sshd_allowusers | length > 0"
       ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
+        path: "{{ rhel8cis_sshd_config_file }}"
         regexp: "^AllowUsers"
         line: AllowUsers {{ rhel8cis_sshd_allowusers }}
       notify: Restart sshd
@@ -150,7 +150,7 @@
     - name: "5.1.6 | PATCH | Ensure SSH access is configured | Add line to sshd_config for allowgroups"
       when: "rhel8cis_sshd_allowgroups | length > 0"
       ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
+        path: "{{ rhel8cis_sshd_config_file }}"
         regexp: "^AllowGroups"
         line: AllowGroups {{ rhel8cis_sshd_allowgroups }}
       notify: Restart sshd
@@ -158,7 +158,7 @@
     - name: "5.1.6 | PATCH | Ensure SSH access is configured | Add line to sshd_config for denyusers"
       when: "rhel8cis_sshd_denyusers | length > 0"
       ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
+        path: "{{ rhel8cis_sshd_config_file }}"
         regexp: "^DenyUsers"
         line: DenyUsers {{ rhel8cis_sshd_denyusers }}
       notify: Restart sshd
@@ -166,7 +166,7 @@
     - name: "5.1.6 | PATCH | Ensure SSH access is configured | Add line to sshd_config for denygroups"
       when: "rhel8cis_sshd_denygroups | length > 0"
       ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
+        path: "{{ rhel8cis_sshd_config_file }}"
         regexp: "^DenyGroups"
         line: DenyGroups {{ rhel8cis_sshd_denygroups }}
       notify: Restart sshd
@@ -187,7 +187,7 @@
     - rule_5.1.7
   notify: Restart sshd
   ansible.builtin.replace:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: ^(#?)\s*Banner.*$
     replace: Banner /etc/issue.net
 
@@ -239,14 +239,14 @@
   block:
     - name: "5.1.9 | PATCH | Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured | Add line in sshd_config for ClientAliveInterval"
       ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
+        path: "{{ rhel8cis_sshd_config_file }}"
         regexp: '^ClientAliveInterval'
         line: "ClientAliveInterval {{ rhel8cis_sshd_clientaliveinterval }}"
         validate: sshd -t -f %s
 
     - name: "5.1.9 | PATCH | Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured | Ensure SSH ClientAliveCountMax set to <= 3"
       ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
+        path: "{{ rhel8cis_sshd_config_file }}"
         regexp: '^ClientAliveCountMax'
         line: "ClientAliveCountMax {{ rhel8cis_sshd_clientalivecountmax }}"
         validate: sshd -t -f %s
@@ -264,20 +264,20 @@
   block:
     - name: "5.1.10 | PATCH | Ensure sshd DisableForwarding is enabled"
       ansible.builtin.replace:
-        path: /etc/ssh/sshd_config
+        path: "{{ rhel8cis_sshd_config_file }}"
         regexp: (?i)^(#?)\s*DisableForwarding (no|false)
         replace: 'DisableForwarding yes'
         validate: sshd -t -f %s
 
     - name: "5.1.10 | PATCH | Ensure sshd DisableForwarding is enabled"
       ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
+        path: "{{ rhel8cis_sshd_config_file }}"
         line: 'DisableForwarding yes'
         validate: sshd -t -f %s
 
     - name: "5.1.10 | PATCH | Ensure sshd DisableForwarding is enabled | ensure x11 disabled"
       ansible.builtin.replace:
-        path: /etc/ssh/sshd_config
+        path: "{{ rhel8cis_sshd_config_file }}"
         regexp: (?i)^\s*X11Forwarding\s*(yes|no)
         replace: '# X11Forwarding no'
         validate: sshd -t -f %s
@@ -296,14 +296,14 @@
       when: prelim_sshd_50_redhat_file.stat.exists
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config.d/50-redhat.conf
-        regexp: (?i)^(#?)\s*GSSAPIAuthentication
+        regexp: (?i)^(#?)\s*GSSAPIAuthentication\s*yes
         line: GSSAPIAuthentication no
         validate: sshd -t -f %s
       notify: Restart sshd
 
     - name: "5.1.11 | PATCH | Ensure sshd GSSAPIAuthentication is disabled | ssh config"
       ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
+        path: "{{ rhel8cis_sshd_config_file }}"
         regexp: (?i)^(#?)\s*GSSAPIAuthentication
         line: GSSAPIAuthentication no
         validate: sshd -t -f %s
@@ -320,7 +320,7 @@
     - NIST800-53R5_CM-6
     - rule_5.1.12
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: ^(#?)HostbasedAuthentication
     line: 'HostbasedAuthentication no'
     validate: sshd -t -f %s
@@ -341,7 +341,7 @@
     - NIST800-53R5_IA-5
     - rule_5.1.13
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: ^(#?)IgnoreRhosts
     line: 'IgnoreRhosts yes'
     validate: sshd -t -f %s
@@ -360,7 +360,7 @@
     - NIST800-53R5_SC-8
     - rule_5.1.14
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: ^(#?)KexAlgorithms
     line: "KexAlgorithms {{ rhel8cis_sshd_kex }}"
     validate: sshd -t -f %s
@@ -377,7 +377,7 @@
     - NIST800-53R5_CM-6
     - rule_5.1.15
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: ^(#?)LoginGraceTime
     line: "LoginGraceTime {{ rhel8cis_sshd_logingracetime }}"
     validate: sshd -t -f %s
@@ -396,7 +396,7 @@
     - NIST800-53R5_SI-5
     - rule_5.1.16
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: ^(#?)LogLevel
     line: "LogLevel {{ rhel8cis_sshd_loglevel }}"
     validate: sshd -t -f %s
@@ -446,7 +446,7 @@
     - NIST800-53R5_AU-3
     - rule_5.1.15
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: '^(#)?MaxAuthTries \d'
     line: "MaxAuthTries {{ rhel8cis_sshd_maxauthtries }}"
     validate: sshd -t -f %s
@@ -467,7 +467,7 @@
     - NIST800-53R5_IA-5
     - rule_5.1.19
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: ^(#?)MaxSessions
     line: "MaxSessions {{ rhel8cis_sshd_maxsessions }}"
     validate: sshd -t -f %s
@@ -488,7 +488,7 @@
     - NIST800-53R5_IA-5
     - rule_5.1.20
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: (?i)MaxStartups
     line: "MaxStartups {{ rhel8cis_sshd_maxstartups }}"
     validate: sshd -t -f %s
@@ -505,7 +505,7 @@
     - NIST800-53R5_CM-6
     - rule_5.1.21
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: ^(#?)PermitEmptyPasswords
     line: 'PermitEmptyPasswords no'
     validate: sshd -t -f %s
@@ -522,7 +522,7 @@
     - NIST800-53R5_AC-6
     - rule_5.1.22
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: ^(#?)PermitRootLogin
     line: 'PermitRootLogin no'
     validate: sshd -t -f %s
@@ -543,7 +543,7 @@
     - NIST800-53R5_IA-5
     - rule_5.1.23
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: ^(#?)PermitUserEnvironment
     line: 'PermitUserEnvironment no'
     validate: sshd -t -f %s
@@ -564,7 +564,7 @@
     - NIST800-53R5_IA-5
     - rule_5.1.24
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
+    path: "{{ rhel8cis_sshd_config_file }}"
     regexp: ^(#?)UsePAM
     line: 'UsePAM yes'
     validate: sshd -t -f %s
