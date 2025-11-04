@@ -617,7 +617,7 @@ rhel8cis_crypto_policy: 'DEFAULT'
 ## Control 1.6
 # This variable contains the value of the crypto policy module(combinations of policies and
 # sub-policies) to be allowed as default setting. Allowed options are defined in 'vars/main.yml' file,
-# using those listed in the 'rhel9cis_allowed_crypto_policies_modules' variable.
+# using those listed in the 'rhel8cis_allowed_crypto_policies_modules' variable.
 rhel8cis_additional_crypto_policy_module: ''
 
 # 1.7
