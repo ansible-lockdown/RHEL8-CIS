@@ -216,12 +216,12 @@
   notify: Restart auditd
 
 - name: Restart journald
-  ansible.builtin.service:
+  ansible.builtin.systemd:
     name: systemd-journald
     state: restarted
 
 - name: Restart systemd journal upload
-  ansible.builtin.service:
+  ansible.builtin.systemd:
     name: systemd-journal-upload
     state: restarted
 

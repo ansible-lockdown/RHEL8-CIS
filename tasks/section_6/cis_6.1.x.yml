@@ -48,21 +48,22 @@
         - name: "6.1.1 | PATCH | Ensure AIDE is installed | Build AIDE DB"
           ansible.builtin.command: "{{ aide_initiate_command }}"
           changed_when: true
-
-        - name: "6.1.1 | PATCH | Ensure AIDE is installed | Build AIDE DB | Wait for file before continuing"
-          ansible.builtin.wait_for:
-            path: /var/lib/aide/aide.db.new.gz
+          args:
+            creates: /var/lib/aide/aide.db.new.gz
+          async: "{{ rhel8cis_aide_init_async }}"
+          poll: "{{ rhel8cis_aide_init_poll }}"
 
         - name: "6.1.1 | PATCH | Ensure AIDE is installed | Build AIDE DB | copy AIDE DB"
           ansible.builtin.copy:
             src: /var/lib/aide/aide.db.new.gz
-            dest: /var/lib/aide/aide.db.gz
+            dest: "{{ rhel8cis_aide_db_file }}"
             remote_src: true
             mode: 'u-x,g-wx,o-rwx'
           register: discovered_aide_db_cp
           failed_when:
             - not ansible_check_mode
             - discovered_aide_db_cp.failed
+
 - name: "6.1.2 | PATCH | Ensure filesystem integrity is regularly checked"
   when:
     - rhel8cis_config_aide
