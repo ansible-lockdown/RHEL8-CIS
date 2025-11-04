@@ -923,6 +923,12 @@ rhel8cis_aide_db_recreate: false
 # created by AIDE on the target system. If it is not present, the role will generate
 # a database file with the same name as the value of this variable.
 rhel8cis_aide_db_file: /var/lib/aide/aide.db.gz
+## When Initializing aide this can take longer on some systems
+# changing the values enables user to change to thier own requirements
+# Maximum Time in seconds
+rhel8cis_aide_init_async: 600
+# Polling Interval in seconds
+rhel8cis_aide_init_poll: 15
 
 ## Control 6.1.2 - Ensure filesystem integrity is regularly checked
 # The following variable sets how AIDE is scanned.
