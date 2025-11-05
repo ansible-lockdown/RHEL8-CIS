@@ -198,17 +198,22 @@
     - NIST800-53R5_CM-7
     - rule_4.2.8
   block:
-    - name: "4.2.8 | PATCH | Ensure sshd DisableForwarding is enabled"
+    - name: "4.2.8 | PATCH | Ensure sshd DisableForwarding is enabled | replace"
       ansible.builtin.replace:
         path: "{{ rhel8cis_sshd_config_file }}"
-        regexp: '^(#?)\s*DisableForwarding.*'
+        regexp: (?i)^(#?)\s*DisableForwarding (no|false)
         replace: 'DisableForwarding yes'
+
+    - name: "4.2.8 | PATCH | Ensure sshd DisableForwarding is enabled | add line if missing"
+      ansible.builtin.lineinfile:
+        path: "{{ rhel8cis_sshd_config_file }}"
+        line: 'DisableForwarding yes'
 
     - name: "4.2.8 | PATCH | Ensure sshd DisableForwarding is enabled | ensure x11 disabled"
       ansible.builtin.replace:
         path: "{{ rhel8cis_sshd_config_file }}"
-        regexp: (^\s*X11Forwarding .*$)
-        replace: '# \1'
+        regexp: (?i)^\s*X11Forwarding\s*(yes|no)
+        replace: '# X11Forwarding no'
 
 - name: "4.2.9 | PATCH | Ensure SSH HostbasedAuthentication is disabled"
   when: rhel8cis_rule_4_2_9
