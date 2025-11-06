@@ -3,20 +3,7 @@
 parseable: true
 quiet: true
 skip_list:
-  - 'schema'
-  - 'no-changed-when'
-  - 'var-spacing'
-  - 'experimental'
-  - 'name[play]'
-  - 'name[casing]'
-  - 'name[template]'
-  - 'key-order[task]'
-  - '204'
-  - '305'
-  - '303'
-  - '403'
-  - '306'
-  - '602'
-  - '208'
+  - 'package-latest'
+  - 'risky-shell-pipe'
 use_default_rules: true
 verbosity: 0

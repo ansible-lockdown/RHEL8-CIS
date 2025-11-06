@@ -9,10 +9,10 @@
   ansible.builtin.meta: flush_handlers
 
 - name: POST | reboot system if changes require it and not skipped
-  when: reboot_required
+  when: change_requires_reboot
   tags: always
   vars:
-    warn_control_id: Reboot_required
+    warn_control_id: change_requires_reboot
   block:
     - name: POST | Reboot system if changes require it and not skipped
       when: not skip_reboot

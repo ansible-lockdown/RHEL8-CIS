@@ -1,12 +1,11 @@
 ---
 # Preliminary tasks that should always be run
 
-- name: "PRELIM | PATCH | Add the required packages"
+- name: "PRELIM | PATCH | Ensure libselinux is installed"
+  when: '"libselinux" not in ansible_facts.packages'
   tags: always
   ansible.builtin.package:
-    name:
-      - python3-libselinux
-      - python3-rpm
+    name: libselinux
     state: present
 
 - name: "PRELIM | AUDIT | Interactive Users"
@@ -88,9 +87,7 @@
     manager: auto
 
 - name: PRELIM | Include audit specific variables
-  when:
-    - run_audit or audit_only
-    - setup_audit
+  when: run_audit or audit_only or setup_audit
   tags:
     - setup_audit
     - run_audit
@@ -98,9 +95,7 @@
     file: audit.yml
 
 - name: PRELIM | Include pre-remediation audit tasks
-  when:
-    - run_audit or audit_only
-    - setup_audit
+  when: run_audit or audit_only or setup_audit
   tags: run_audit
   ansible.builtin.import_tasks:
     file: pre_remediation_audit.yml
@@ -131,27 +126,39 @@
     path: /etc/systemd/coredump.conf
   register: prelim_systemd_coredump
 
-- name: "PRELIM | AUDIT | Ensure crypto-policies-scripts package is installed"
-  when: "'crypto-policies-scripts' not in ansible_facts.packages"
-  tags: always
-  ansible.builtin.package:
-    name: crypto-policies-scripts
-    state: installed
-
-- name: "PRELIM | AUDIT | Gather system-wide crypto-policy settings"
-  tags: always
+- name: "PRELIM | PATCH | Setup crypto-policy"
+  when:
+    - rhel8cis_rule_1_6_1 or
+      rhel8cis_rule_1_6_2 or
+      rhel8cis_rule_1_6_3 or
+      rhel8cis_rule_1_6_4
+  tags:
+    - level1-server
+    - level1-workstation
+    - rule_1.6.1
+    - rule_1.6.2
+    - rule_1.6.3
+    - rule_1.6.4
+    - crypto
   block:
-    - name: "PRELIM | AUDIT | Gather system-wide crypto-policy settings"
-      ansible.builtin.command: 'update-crypto-policies --show'
+    - name: "PRELIM | PATCH | Install crypto-policies | pkgs present"
+      ansible.builtin.package:
+        name:
+          - crypto-policies
+          - crypto-policies-scripts
+        state: present
+
+    - name: "PRELIM | AUDIT | Gather system-wide crypto-policy"
+      ansible.builtin.command: update-crypto-policies --show
       changed_when: false
       check_mode: false
       register: prelim_system_wide_crypto_policy
 
-    - name: "PRELIM | AUDIT | Gather system-wide crypto-policy | set fact for crypto policy"
+    - name: "PRELIM | AUDIT | Gather system-wide crypto-policy | set fact system policy"
       ansible.builtin.set_fact:
         current_crypto_policy: "{{ prelim_system_wide_crypto_policy.stdout.split(':')[0] }}"
 
-    - name: "PRELIM | AUDIT | Gather system-wide crypto-policy module | set fact for crypto submodule"
+    - name: "PRELIM | AUDIT | Gather system-wide crypto-policy module | set fact system policy submodule"
       when: "':' in prelim_system_wide_crypto_policy.stdout"
       ansible.builtin.set_fact:
         current_crypto_module: "{{ prelim_system_wide_crypto_policy.stdout.split(':')[1] }}"
@@ -205,20 +212,10 @@
       rhel8cis_rule_5_2_4_2 or
       rhel8cis_rule_5_2_4_3 or
       rhel8cis_rule_5_2_4_4
-  tags:
-    - always
-    - level2-server
-    - level2-workstation
-    - patch
-    - auditd
-    - rule_5.2.4.1
-    - rule_5.2.4.2
-    - rule_5.2.4.3
-    - rule_5.2.4.4
+  tags: always
   ansible.builtin.shell: "grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'"
   changed_when: false
   failed_when: prelim_audit_logfile.rc not in [0, 1]
-  check_mode: false
   register: prelim_audit_logfile
 
 - name: "PRELIM | AUDIT | 5.2.4.5/6/7 | Audit conf and rules files | list files"
@@ -241,9 +238,22 @@
     patterns: '*.conf,*.rules'
   register: prelim_auditd_conf_files
 
+- name: "PRELIM | AUDIT | Check if auditd is immutable before changes"
+  when: "'auditd' in ansible_facts.packages"
+  tags: always
+  ansible.builtin.shell: auditctl -l | grep -c '-e 2'
+  changed_when: false
+  check_mode: false
+  failed_when: prelim_auditd_immutable_check.rc not in [ 0, 1 ]
+  register: prelim_auditd_immutable_check
+
 - name: "PRELIM | AUDIT | Gather UID 0 accounts other than root"
   when: rhel8cis_rule_6_2_9
-  tags: always
+  tags:
+    - rule_6.2.9
+    - level1-server
+    - level1-workstation
+    - users
   ansible.builtin.shell: "cat /etc/passwd | awk -F: '($3 == 0 && $1 != \"root\") {i++;print $1 } END {exit 1}'"
   failed_when: prelim_uid_zero_accounts_except_root.rc not in [ 0, 1 ]
   changed_when: false
@@ -251,6 +261,37 @@
   register: prelim_uid_zero_accounts_except_root
 
 ##### Optional #####
+
+# Added to ensure ssh drop in file exists if not default /etc/ssh/sshd_config
+- name: "PRELIM | PATCH | SSH Config file is not exist"
+  when:
+    - rhel8cis_sshd_config_file != '/etc/ssh/sshd_config'
+    - "'openssh-server' in ansible_facts.packages"
+  tags:
+    - always
+    - level1_server
+    - level1_workstation
+  block:
+    - name: "PRELIM | AUDIT | Check SSH Config drop in is supported for distribution version"
+      ansible.builtin.assert:
+        that: ansible_distribution_version is version_compare('8.6', '>=')
+        fail_msg: "{{ ansible_distribution }} {{ ansible_distribution_version }} does not support SSH Config drop in"
+
+    - name: "PRELIM | PATCH | SSH Config drop in directory is not exist"
+      ansible.builtin.file:
+        path: "{{ rhel8cis_sshd_config_file | dirname }}"
+        owner: root
+        group: root
+        mode: 'go-rwx'
+        state: directory
+
+    - name: "PRELIM | PATCH | SSH Config file is not exist"
+      ansible.builtin.file:
+        path: "{{ rhel8cis_sshd_config_file }}"
+        owner: root
+        group: root
+        mode: 'go-rwx'
+        state: touch
 
 - name: "PRELIM | Optional | If IPv6 disable to stop ssh listening"
   when:
@@ -297,5 +338,5 @@
     path: /etc/audit/auditd.conf
     regexp: "^{{ item }}( |=)"
     line: "{{ item }} = {{ rhel8cis_auditd_extra_conf[item] }}"
-  notify: Restart_auditd
+  notify: Restart auditd
   loop: "{{ rhel8cis_auditd_extra_conf.keys() }}"

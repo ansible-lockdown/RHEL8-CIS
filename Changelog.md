@@ -2,11 +2,28 @@
 
 ## Benchmark v3.0.0
 
+
+## Oct 25
+- workflow updates
+- #499 thanks to @polski-g
+- #501 thanks to @vfroes
+- audit template using benchmark_version variable
+- audit rules not work through validation for ARM64 vs AMD64
+- 1.4.2. titles changed
+- Change_require_reboot notify changes to Set_reboot_required
+- lint and typo updates
+
 ### 2.2 Updates
+
+August 2025
+- Addresses #496 - Fix for var, thank you @ajjamieson
+- Addresses #492 - Update find logic on 5.1.4
+- Addresses #485 - Update logic on prelim and task 6.2.9 when logic
+- Addresses #488 - Update command vs shell modules
+- Addresses #451 - Update tasks/1.6.x with handler, prelim and vars logic
 
 Update to audit_only to allow fetching results
 resolved false warning for fetch audit
-
 
 June 2025 QA Fixes
 - Addresses #440 - tasks/prelim and defaults/main var standardization

@@ -39,6 +39,19 @@
     that: rhel8cis_bootloader_password_hash.find('grub.pbkdf2.sha512') != -1 and rhel8cis_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'  # pragma: allowlist secret
     msg: "This role will not be able to run single user password commands as rhel8cis_bootloader_password_hash variable has not been set correctly"  # pragma: allowlist secret
 
+- name: "Check crypto-policy module input"
+  when:
+    - rhel8cis_rule_1_6_1
+    - rhel8cis_crypto_policy_module | length > 0
+  tags:
+    - rule_1.6.1
+    - crypto
+    - NIST800-53R5_SC-6
+  ansible.builtin.assert:
+    that: rhel8cis_additional_crypto_policy_module in rhel8cis_allowed_crypto_policies_modules
+    fail_msg: "Crypto policy module is not a permitted version"
+    success_msg: "Crypto policy module is a permitted version"
+
 - name: Ensure root password is set
   when: rhel8cis_rule_4_5_2_4
   tags: always
@@ -54,6 +67,11 @@
         that: discovered_root_passwd_set.rc == 0
         fail_msg: "You have rule 4.5.2.4 enabled this requires that you have a root password set"
         success_msg: "You have a root password set"
+
+- name: Gather the package facts in prelim
+  tags: always
+  ansible.builtin.package_facts:
+    manager: auto
 
 - name: Setup rules if container
   when: ansible_connection == 'docker' or ansible_facts.virtualization_type in ["docker", "lxc", "openvz", "podman", "container"]
