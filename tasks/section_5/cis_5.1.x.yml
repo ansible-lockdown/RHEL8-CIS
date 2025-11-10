@@ -32,7 +32,7 @@
   block:
     - name: "5.1.2 | Ensure access to /etc/ssh/sshd_config is configured"
       ansible.builtin.file:
-        path: "{{ item }}"
+        path: "{{ item.path }}"
         owner: root
         group: root
         mode: 'u-x,go-rwx'
@@ -309,7 +309,7 @@
         validate: sshd -t -f %s
       notify: Restart sshd
 
-- name: "5.1.12 | PATCH | Ensure SSH HostbasedAuthentication is disabled"
+- name: "5.1.12 | PATCH | Ensure sshd HostbasedAuthentication is disabled"
   when: rhel8cis_rule_5_1_12
   tags:
     - level1-server
@@ -326,7 +326,7 @@
     validate: sshd -t -f %s
   notify: Restart sshd
 
-- name: "5.1.13 | PATCH | Ensure SSH IgnoreRhosts is enabled"
+- name: "5.1.13 | PATCH | Ensure sshd IgnoreRhosts is enabled"
   when: rhel8cis_rule_5_1_13
   tags:
     - level1-server
@@ -494,7 +494,7 @@
     validate: sshd -t -f %s
   notify: Restart sshd
 
-- name: "5.1.21 | PATCH | Ensure SSH PermitEmptyPasswords is disabled"
+- name: "5.1.21 | PATCH | Ensure sshd PermitEmptyPasswords is disabled"
   when: rhel8cis_rule_5_1_21
   tags:
     - level1-server
