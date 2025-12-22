@@ -92,7 +92,7 @@
 
     - name: "4.5.1.3 | AUDIT | Ensure password expiration warning days is 7 or more | capture users not matching"
       ansible.builtin.shell: >
-        awk -F: '/^[^:\n\r]+:[^!*xX\n\r]/ {print $1}' /etc/shadow
+        "awk -F: '/^[^:]+:[^!*]/ && $6< {{ rhel8cis_pam_pass_warn_age }} {print $1}' /etc/shadow"
       changed_when: false
       failed_when: discovered_users_warn_days.rc not in [ 0, 1 ]
       check_mode: false
