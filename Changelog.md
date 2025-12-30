@@ -2,12 +2,15 @@
 
 ## Benchmark 4.0.0
 
-Complete rewrite
-Many controls moved sections and renumbered
-new services added to be removed/updated
-handlers renamed
-audit improved
-workflow updates
+- Control 3.1.1
+  - Added better sysctl logic to disable IPv6
+  - Added option to disable IPv6 via sysctl (original method) or via the kernel
+- Complete rewrite
+- Many controls moved sections and renumbered
+- new services added to be removed/updated
+- handlers renamed
+- audit improved
+- workflow updates
 
 ## Benchmark v3.0.0
 
