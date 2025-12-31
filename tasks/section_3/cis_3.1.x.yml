@@ -1,8 +1,8 @@
 ---
+
 # The CIS Control wants IPv6 disabled if not in use.
 # We are using the rhel8cis_ipv6_required to specify if you have IPv6 in use
-
-- name: "3.1.1 | PATCH | Verify if IPv6 is enabled on the system"
+- name: "3.1.1 | PATCH | Ensure IPv6 status is identified"
   when:
     - not rhel8cis_ipv6_required
     - rhel8cis_rule_3_1_1
@@ -13,35 +13,33 @@
     - patch
     - ipv6
     - networking
-    - NIST800-53R5_CM-7
     - rule_3.1.1
-  notify: Set_reboot_required
+    - NIST800-53R5_CM-7
   block:
-    - name: "3.1.1 | PATCH | Verify if IPv6 is enabled on the system | disable all except localhost"
-      ansible.posix.sysctl:
-        name: "{{ item }}"
-        value: '1'
-        sysctl_set: true
-        sysctl_file: "{{ rhel8cis_sysctl_file }}"
-      loop:
-        - net.ipv6.conf.all.disable_ipv6
-        - net.ipv6.conf.default.disable_ipv6
+    - name: "3.1.1 | PATCH | Ensure IPv6 status is identified | Set vars for sysctl template"
+      when: "'sysctl' in rhel8cis_ipv6_disable_method"
+      ansible.builtin.set_fact:
+        rhel8cis_sysctl_update: true
+        rhel8cis_flush_ipv6_route: true
 
-    - name: "3.1.1 | PATCH | Verify if IPv6 is enabled on the system | disable localhost sysctl"
-      when: rhel8cis_ipv6_disable_localhost
-      ansible.posix.sysctl:
-        name: net.ipv6.conf.lo.disable_ipv6
-        value: '1'
-        sysctl_set: true
-        sysctl_file: "{{ rhel8cis_sysctl_file }}"
+    - name: "3.1.1 | AUDIT | Ensure IPv6 status is identified | Message out implementation info"
+      when: "'sysctl' in rhel8cis_ipv6_disable_method"
+      ansible.builtin.debug:
+        msg: "Control being set via Handler 'update sysctl' which writes to /etc/sysctl.d/60-disable_ipv6.conf"
 
-    - name: "3.1.1 | PATCH | Verify if IPv6 is enabled on the system | disable localhost /etc/hosts"
-      when: rhel8cis_ipv6_disable_localhost
-      ansible.builtin.lineinfile:
-        path: /etc/hosts
-        regexp: "^(::1.*)"
-        line: "#\\1"
-        backrefs: true
+    - name: "3.1.1 | AUDIT | Ensure IPv6 status is identified | Find IPv6 status"
+      when: "'kernel' in rhel8cis_ipv6_disable_method"
+      ansible.builtin.command: grubby --info=ALL
+      changed_when: false
+      failed_when: false
+      register: discovered_rhel8cis_3_1_1_ipv6_status
+
+    - name: "3.1.1 | PATCH | Ensure IPv6 status is identified | Disable IPV6 via Kernel"
+      when:
+        - "'kernel' in rhel8cis_ipv6_disable_method"
+        - "'ipv6.disable=1' not in discovered_rhel8cis_3_1_1_ipv6_status.stdout"
+      ansible.builtin.command: grubby --update-kernel=ALL --args="ipv6.disable=1"
+      changed_when: discovered_rhel8cis_3_1_1_ipv6_status.rc == 0
 
 - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled"
   when: rhel8cis_rule_3_1_2

@@ -649,6 +649,8 @@ rhel8cis_is_router: false
 
 # IPv6 required
 rhel8cis_ipv6_required: true
+# rhel8cis_ipv6_disable defines the method of disabling IPv6, sysctl vs kernel
+rhel8cis_ipv6_disable_method: "sysctl"
 
 rhel8cis_ipv6_sysctl_force: true
 

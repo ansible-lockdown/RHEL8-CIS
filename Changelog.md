@@ -2,6 +2,9 @@
 
 ## Benchmark v3.0.0
 
+- Control 3.1.1
+  - Added better sysctl logic to disable IPv6
+  - Added option to disable IPv6 via sysctl (original method) or via the
 
 ## Oct 25
 - workflow updates
