@@ -1,4 +1,5 @@
 ---
+
 # The CIS Control wants IPv6 disabled if not in use.
 # We are using the rhel8cis_ipv6_required to specify if you have IPv6 in use
 - name: "3.1.1 | PATCH | Ensure IPv6 status is identified"
@@ -15,14 +16,30 @@
     - rule_3.1.1
     - NIST800-53R5_CM-7
   block:
-    - name: "3.1.1 | PATCH | Ensure IPv6 status is identified | refresh"
+    - name: "3.1.1 | PATCH | Ensure IPv6 status is identified | Set vars for sysctl template"
+      when: "'sysctl' in rhel8cis_ipv6_disable_method"
       ansible.builtin.set_fact:
         rhel8cis_sysctl_update: true
         rhel8cis_flush_ipv6_route: true
 
-    - name: "3.1.1 | PATCH | Ensure IPv6 status is identified | disable"
+    - name: "3.1.1 | AUDIT | Ensure IPv6 status is identified | Message out implementation info"
+      when: "'sysctl' in rhel8cis_ipv6_disable_method"
       ansible.builtin.debug:
-        msg: "Control being set via post action 'Update sysctl' which writes to /etc/sysctl.d/60-disable_ipv6.conf"
+        msg: "Control being set via Handler 'update sysctl' which writes to /etc/sysctl.d/60-disable_ipv6.conf"
+
+    - name: "3.1.1 | AUDIT | Ensure IPv6 status is identified | Find IPv6 status"
+      when: "'kernel' in rhel8cis_ipv6_disable_method"
+      ansible.builtin.command: grubby --info=ALL
+      changed_when: false
+      failed_when: false
+      register: discovered_rhel8cis_3_1_1_ipv6_status
+
+    - name: "3.1.1 | PATCH | Ensure IPv6 status is identified | Disable IPV6 via Kernel"
+      when:
+        - "'kernel' in rhel8cis_ipv6_disable_method"
+        - "'ipv6.disable=1' not in discovered_rhel8cis_3_1_1_ipv6_status.stdout"
+      ansible.builtin.command: grubby --update-kernel=ALL --args="ipv6.disable=1"
+      changed_when: discovered_rhel8cis_3_1_1_ipv6_status.rc == 0
 
 - name: "3.1.2 | PATCH | Ensure wireless interfaces are not available"
   when:

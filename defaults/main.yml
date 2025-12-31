@@ -730,6 +730,8 @@ rhel8cis_is_router: false
 
 # IPv6 required
 rhel8cis_ipv6_required: true
+# rhel8cis_ipv6_disable defines the method of disabling IPv6, sysctl vs kernel
+rhel8cis_ipv6_disable_method: "sysctl"
 
 ##  Optional - Understand the impact of making the following two control to true
 # By default, we do not disable IPv6 on localhost, as it's important for multiple
