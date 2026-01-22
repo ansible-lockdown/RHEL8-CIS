@@ -1,6 +1,5 @@
 ---
 
-parseable: true
 quiet: true
 skip_list:
   - 'package-latest'
