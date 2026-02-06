@@ -11,6 +11,8 @@
 - handlers renamed
 - audit improved
 - workflow updates
+- Ability to create use your own hashed password
+- company name update
 
 ## Benchmark v3.0.0
 
