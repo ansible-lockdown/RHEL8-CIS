@@ -36,8 +36,8 @@
     - rhel8cis_rule_1_4_1
   tags: always
   ansible.builtin.assert:
-    that: rhel8cis_bootloader_password_hash.find('grub.pbkdf2.sha512') != -1 and rhel8cis_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'  # pragma: allowlist secret
-    msg: "This role will not be able to run single user password commands as rhel8cis_bootloader_password_hash variable has not been set correctly"  # pragma: allowlist secret
+    that: rhel8cis_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword' or (rhel8cis_bootloader_salt != '' and rhel8cis_bootloader_password != 'password') # pragma: allowlist secret
+    msg: "This role will not be able to run single user password commands as rhel8cis_bootloader_password or rhel8cis_bootloader_password_hash variable has not been set correctly"
 
 - name: "Check crypto-policy module input"
   when:
@@ -120,7 +120,6 @@
         fail_msg: Authselect updates have been selected there are issues with profile selection"
 
 - name: Include prelim tasks
-  tags: always
   ansible.builtin.import_tasks:
     file: prelim.yml
 

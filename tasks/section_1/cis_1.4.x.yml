@@ -14,7 +14,7 @@
     - rule_1.4.1
   ansible.builtin.copy:
     dest: "{{ rhel8cis_boot_path }}user.cfg"  # noqa template-instead-of-copy
-    content: "GRUB2_PASSWORD={{ rhel8cis_bootloader_password_hash }}"
+    content: "GRUB2_PASSWORD={{ rhel8_compiled_bootloader_password }}"
     owner: root
     group: root
     mode: 'go-rwx'

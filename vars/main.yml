@@ -10,6 +10,9 @@ rhel8cis_allowed_crypto_policies:
 # Following is left blank for ability to build string
 rhel8cis_crypto_policy_module: ''
 
+# variable built from rhel8cis_bootloader_password and rhel8cis_bootloader_salt or rhel8cis_bootloader_password_hash
+rhel8_compiled_bootloader_password: "{% if rhel8cis_bootloader_salt != '' %}{{ (rhel8cis_bootloader_password | grub_hash(salt=rhel8cis_bootloader_salt)) }}{% else %}{{ rhel8cis_bootloader_password_hash }}{% endif %}" # noqa template-instead-of-copy
+
 # Do not adjust these are recognized as part of the CIS benchmark and used during testing
 rhel8cis_allowed_crypto_policies_modules:
   # Recognized by CIS as possible extra options
