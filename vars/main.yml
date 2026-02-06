@@ -48,3 +48,5 @@ rhel8cis_legacy_boot: false
 # Used to control warning summary
 warn_control_list: ""
 warn_count: 0
+
+company_title: 'Mindpoint Group - A Tyto Athene Company'
