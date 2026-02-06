@@ -573,20 +573,30 @@ rhel8cis_enable_selinux_relabel: false
 # This variable governs whether a bootloader password should be set in '/boot/grub2/user.cfg' file.
 rhel8cis_set_boot_pass: false
 
-# 2 Options for setting the bootloader password
-# 1. Set the bootloader password and salt - Reqiured the passlib python module available to the ansible controller
-# or
-# 2. Set the bootloader password hash
+################### bootloader password #####################################
 #
-# Option 1: Set the bootloader password and salt - if salt is set, the password will be hashed using the salt
-# Set this value to anything secure to have predictable hashes, which will prevent unnecessary changes
+# Two options for for setting the bootloader password
+#
+# Option 1: Set the bootloader password and salt – requires the passlib Python module
+# to be available on the Ansible controller.
+# Set this value to something secure to have predictable hashes,
+# which will prevent unnecessary changes.
+
 rhel8cis_bootloader_salt: ''
-# This variable will store the GRUB bootloader password to be stored in '/boot/grub2/user.cfg' file. The default value must be changed.
+
+# This variable stores the GRUB bootloader password to be written
+# to the '/boot/grub2/user.cfg' file. The default value must be changed.
+
 rhel8cis_bootloader_password: 'password'  # pragma: allowlist secret
 
-# Option 2: Set the bootloader password hash - if the salt value is empty, the password will be set using below variable
-# If you are not using the bootloader hash filter you can set it here if the encrypted format e.g. grub.pbkdf2.sha512.hashstring
+# Option 2: Set the bootloader password hash – if the salt value is empty,
+# the password will be set using the variable below.
+# If you are not using the bootloader hash filter, you can set it here
+# in encrypted format, e.g. grub.pbkdf2.sha512.hashstring
+
 rhel8cis_bootloader_password_hash: 'grub.pbkdf2.sha512.changethispassword'  # pragma: allowlist secret
+
+####################################################
 
 ## Controls 1.5.x
 
