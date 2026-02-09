@@ -573,9 +573,9 @@ rhel8cis_enable_selinux_relabel: false
 # This variable governs whether a bootloader password should be set in '/boot/grub2/user.cfg' file.
 rhel8cis_set_boot_pass: false
 
-################### bootloader password #####################################
+################### bootloader password ##########################################################
 #
-# Two options for for setting the bootloader password
+# Two options for setting the bootloader password
 #
 # Option 1: Set the bootloader password and salt – requires the passlib Python module
 # to be available on the Ansible controller.
@@ -596,7 +596,7 @@ rhel8cis_bootloader_password: 'password'  # pragma: allowlist secret
 
 rhel8cis_bootloader_password_hash: 'grub.pbkdf2.sha512.changethispassword'  # pragma: allowlist secret
 
-####################################################
+######################################################################################################
 
 ## Controls 1.5.x
 
