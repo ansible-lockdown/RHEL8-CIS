@@ -1,6 +1,4 @@
-## Ansible controlled file
-# Added as part of ansible-lockdown CIS baseline
-# provided by {{ company_title }}
+{{ file_managed_by_ansible }}
 
 # 5.3.3.2.3 Ensure password complexity is configured
 {% if rhel8cis_passwd_complex_option == 'minclass' %}  # pragma: allowlist secret
