@@ -2,6 +2,21 @@
 
 ## Benchmark 4.0.0
 
+### 2026 February QA Updates
+
+- Spelling fixes
+  - vars/is_container.yml: "dependant" -> "dependent", "enviroment" -> "environment"
+  - defaults/main.yml: "thier" -> "their"
+  - tasks/section_2/cis_2.1.x.yml: "ngnix.service" -> "nginx.service"
+- Grammar fixes
+  - tasks/prelim.yml: "is not exist" -> "does not exist" in SSH Config task names
+  - tasks/prelim.yml: Capitalized "Set" in task names for consistency
+  - defaults/main.yml: "need to access to" -> "need access to"
+  - defaults/main.yml: Added missing spaces before parentheses in comments
+- Task name corrections
+  - tasks/section_1/cis_1.1.1.x.yml: Fixed incorrect "Disable usb" to "Disable udf" (1.1.1.8)
+  - tasks/section_1/cis_1.1.1.x.yml: Fixed incorrect "Disable usb" to "Disable firewire-core" (1.1.1.9)
+  - tasks/section_2/cis_2.4.1.x.yml: Removed double spaces in cron task names (2.4.1.6, 2.4.1.7)
 - Control 3.1.1
   - Added better sysctl logic to disable IPv6
   - Added option to disable IPv6 via sysctl (original method) or via the kernel

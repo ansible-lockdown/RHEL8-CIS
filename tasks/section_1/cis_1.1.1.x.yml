@@ -267,7 +267,7 @@
         create: true
         mode: 'go-rwx'
 
-    - name: "1.1.1.8 | PATCH | Ensure udf kernel module is not available | Disable usb"
+    - name: "1.1.1.8 | PATCH | Ensure udf kernel module is not available | Disable udf"
       when: not system_is_container
       community.general.modprobe:
         name: udf
@@ -301,7 +301,7 @@
         create: true
         mode: 'go-rwx'
 
-    - name: "1.1.1.9 | PATCH | Ensure firewire-core kernel module is not available | Disable usb"
+    - name: "1.1.1.9 | PATCH | Ensure firewire-core kernel module is not available | Disable firewire-core"
       when: not system_is_container
       community.general.modprobe:
         name: firewire-core
