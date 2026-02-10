@@ -2,11 +2,11 @@
 
 galaxy_info:
   author: "MindPoint Group"
-  description: "Apply the RHEL 8 CIS"
+  description: "Apply the DISA RHEL 8 CIS"
   company: "MindPoint Group"
   license: MIT
+  namespace: mindpointgroup
   role_name: rhel8_cis
-  namespace: ansible-lockdown
   min_ansible_version: 2.11.1
   platforms:
     - name: EL
@@ -15,17 +15,15 @@ galaxy_info:
   galaxy_tags:
     - system
     - security
-    - stig
-    - hardening
-    - benchmark
-    - compliance
-    - redhat
-    - complianceascode
-    - disa
-    - rhel8
     - cis
+    - hardening
     - rocky
     - alma
+    - oel
+    - redhat
+    - rhel
+    - compliance
+    - complianceascode
 collections:
   - community.general
   - community.crypto

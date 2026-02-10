@@ -1,53 +1,770 @@
 ---
 
-- name: "2.1.1 | PATCH | Ensure time synchronization is in use"
-  when:
-    - rhel8cis_rule_2_1_1
-    - not system_is_container
+- name: "2.1.1 | PATCH | Ensure autofs services are not in use"
+  when: rhel8cis_rule_2_1_1
+  tags:
+    - level1-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_SI-3
+    - NIST800-53R5_MP-7
+    - rule_2.1.1
+  block:
+    - name: "2.1.1 | PATCH | Ensure autofs services are not in use | Remove Package"
+      when:
+        - not rhel8cis_autofs_services
+        - not rhel8cis_autofs_mask
+      ansible.builtin.package:
+        name: autofs
+        state: absent
+
+    - name: "2.1.1 | PATCH | Ensure autofs services are not in use | Mask service"
+      when:
+        - not rhel8cis_autofs_services
+        - rhel8cis_autofs_mask
+      notify: Systemd daemon reload
+      ansible.builtin.systemd:
+        name: autofs.service
+        masked: true
+
+- name: "2.1.2 | PATCH | Ensure avahi daemon services are not in use"
+  when: rhel8cis_rule_2_1_2
+  tags:
+    - level1-server
+    - level2-workstation
+    - automated
+    - patch
+    - avahi
+    - NIST800-53R5_SI-4
+    - rule_2.1.2
+  block:
+    - name: "2.1.2 | PATCH | Ensure avahi daemon services are not in use | Remove package"
+      when:
+        - not rhel8cis_avahi_server
+        - not rhel8cis_avahi_mask
+      ansible.builtin.package:
+        name:
+          - avahi
+        state: absent
+
+    - name: "2.1.2 | PATCH | Ensure avahi daemon services are not in use | Mask service"
+      when:
+        - not rhel8cis_avahi_server
+        - rhel8cis_avahi_mask
+      notify: Systemd daemon reload
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        enabled: false
+        state: stopped
+        masked: true
+      loop:
+        - avahi-daemon.socket
+        - avahi-daemon.service
+
+- name: "2.1.3 | PATCH | Ensure cockpit web services are not in use"
+  when: rhel8cis_rule_2_1_3
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - dhcp
+    - NIST800-53R5_CM-7
+    - rule_2.1.3
+  block:
+    - name: "2.1.3 | PATCH | Ensure cockpit web services are not in use | Remove package"
+      when:
+        - not rhel8cis_cockpit_server
+        - not rhel8cis_cockpit_mask
+      ansible.builtin.package:
+        name: cockpit-ws
+        state: absent
+
+    - name: "2.1.3 | PATCH | Ensure cockpit web services are not in use | Mask service"
+      when:
+        - not rhel8cis_cockpit_server
+        - rhel8cis_cockpit_mask
+      notify: Systemd daemon reload
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        enabled: false
+        state: stopped
+        masked: true
+      loop:
+        - cockpit.service
+        - cockpit.socket
+
+- name: "2.1.4 | PATCH | Ensure dhcp server services are not in use"
+  when: rhel8cis_rule_2_1_4
   tags:
     - level1-server
     - level1-workstation
     - automated
     - patch
-    - rule_2.1.1
+    - dhcp
+    - NIST800-53R5_CM-7
+    - rule_2.1.4
+  block:
+    - name: "2.1.4 | PATCH | Ensure dhcp server services are not in use | Remove package"
+      when:
+        - not rhel8cis_dhcp_server
+        - not rhel8cis_dhcp_mask
+      ansible.builtin.package:
+        name: dhcp-server
+        state: absent
+
+    - name: "2.1.4 | PATCH | Ensure dhcp server services are not in use | Mask service"
+      when:
+        - not rhel8cis_dhcp_server
+        - rhel8cis_dhcp_mask
+      notify: Systemd daemon reload
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        enabled: false
+        state: stopped
+        masked: true
+      loop:
+        - dhcpd.service
+        - dhcpd6.service
+
+- name: "2.1.5 | PATCH | Ensure dns server services are not in use"
+  when: rhel8cis_rule_2_1_5
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - dns
+    - NIST800-53R5_CM-7
+    - rule_2.1.5
+  block:
+    - name: "2.1.5 | PATCH | Ensure dns server services are not in use | Remove package"
+      when:
+        - not rhel8cis_dns_server
+        - not rhel8cis_dns_mask
+      ansible.builtin.package:
+        name: bind
+        state: absent
+
+    - name: "2.1.5 | PATCH | Ensure dns server services are not in use | Mask service"
+      when:
+        - not rhel8cis_dns_server
+        - rhel8cis_dns_mask
+      notify: Systemd daemon reload
+      ansible.builtin.systemd:
+        name: named.service
+        enabled: false
+        state: stopped
+        masked: true
+
+- name: "2.1.6 | PATCH | Ensure dnsmasq server services are not in use"
+  when: rhel8cis_rule_2_1_6
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - dns
+    - NIST800-53R5_CM-7
+    - rule_2.1.6
+  block:
+    - name: "2.1.6 | PATCH | Ensure dnsmasq server services are not in use | Remove package"
+      when:
+        - not rhel8cis_dnsmasq_server
+        - not rhel8cis_dnsmasq_mask
+      ansible.builtin.package:
+        name: dnsmasq
+        state: absent
+
+    - name: "2.1.6 | PATCH | Ensure dnsmasq server services are not in use | Mask service"
+      when:
+        - not rhel8cis_dnsmasq_server
+        - rhel8cis_dnsmasq_mask
+      notify: Systemd daemon reload
+      ansible.builtin.systemd:
+        name: dnsmasq.service
+        enabled: false
+        state: stopped
+        masked: true
+
+- name: "2.1.7 | PATCH | Ensure ftp server services are not in use"
+  when: rhel8cis_rule_2_1_7
+  tags:
+    - level1-server
+    - level1-workstation
+    - automation
+    - patch
+    - ftp
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - rule_2.1.7
+  block:
+    - name: "2.1.7 | PATCH | Ensure ftp server services are not in use | Remove package"
+      when:
+        - not rhel8cis_ftp_server
+        - not rhel8cis_ftp_mask
+      ansible.builtin.package:
+        name: vsftpd
+        state: absent
+
+    - name: "2.1.7 | PATCH | Ensure ftp server services are not in use | Mask service"
+      when:
+        - not rhel8cis_ftp_server
+        - rhel8cis_ftp_mask
+      notify: Systemd daemon reload
+      ansible.builtin.systemd:
+        name: vsftpd.service
+        enabled: false
+        state: stopped
+        masked: true
+
+- name: "2.1.8 | PATCH | Ensure message access server services are not in use"
+  when: rhel8cis_rule_2_1_8
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - dovecot
+    - imap
+    - pop3
+    - NIST800-53R5_CM-7
+    - rule_2.1.8
+  block:
+    - name: "2.1.8 | PATCH | Ensure message access server services are not in use | Remove package"
+      when:
+        - not rhel8cis_message_server
+        - not rhel8cis_message_mask
+      ansible.builtin.package:
+        name:
+          - dovecot
+          - cyrus-imapd
+        state: absent
+
+    - name: "2.1.8 | PATCH | Ensure message access server services are not in use | Mask service"
+      when:
+        - not rhel8cis_message_server
+        - rhel8cis_message_mask
+      notify: Systemd daemon reload
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        enabled: false
+        state: stopped
+        masked: true
+      loop:
+        - "dovecot.socket"
+        - "dovecot.service"
+        - "cyrus-imapd.service"
+
+- name: "2.1.9 | PATCH | Ensure network file system services are not in use"
+  when: rhel8cis_rule_2_1_9
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - nfs
+    - services
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - rule_2.1.9
+  block:
+    - name: "2.1.9 | PATCH | Ensure network file system services are not in use | Remove package"
+      when:
+        - not rhel8cis_nfs_server
+        - not rhel8cis_nfs_mask
+      ansible.builtin.package:
+        name: nfs-utils
+        state: absent
+
+    - name: "2.1.9 | PATCH | Ensure network file system services are not in use | Mask service"
+      when:
+        - not rhel8cis_nfs_server
+        - rhel8cis_nfs_mask
+      notify: Systemd daemon reload
+      ansible.builtin.systemd:
+        name: nfs-server.service
+        enabled: false
+        state: stopped
+        masked: true
+
+- name: "2.1.10 | PATCH | Ensure print server services are not in use"
+  when: rhel8cis_rule_2_1_10
+  tags:
+    - level1-server
+    - automated
+    - patch
+    - cups
+    - NIST800-53R5_CM-7
+    - rule_2.1.10
+  block:
+    - name: "2.1.10 | PATCH | Ensure print server services are not in use | Remove package"
+      when:
+        - not rhel8cis_nis_server
+        - not rhel8cis_nis_mask
+      ansible.builtin.package:
+        name: ypserv
+        state: absent
+
+    - name: "2.1.10 | PATCH | Ensure print server services are not in use | Mask service"
+      when:
+        - not rhel8cis_nis_server
+        - rhel8cis_nis_mask
+      notify: Systemd daemon reload
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        enabled: false
+        state: stopped
+        masked: true
+      loop:
+        - "ypserv"
+
+- name: "2.1.11 | PATCH | Ensure print server services are not in use"
+  when: rhel8cis_rule_2_1_11
+  tags:
+    - level1-server
+    - automated
+    - patch
+    - cups
+    - NIST800-53R5_CM-7
+    - rule_2.1.11
+  block:
+    - name: "2.1.11 | PATCH | Ensure print server services are not in use | Remove package"
+      when:
+        - not rhel8cis_print_server
+        - not rhel8cis_print_mask
+      ansible.builtin.package:
+        name: cups
+        state: absent
+
+    - name: "2.1.11 | PATCH | Ensure print server services are not in use | Mask service"
+      when:
+        - not rhel8cis_print_server
+        - rhel8cis_print_mask
+      notify: Systemd daemon reload
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        enabled: false
+        state: stopped
+        masked: true
+      loop:
+        - "cups.socket"
+        - "cups.service"
+
+- name: "2.1.12 | PATCH | Ensure rpcbind services are not in use"
+  when: rhel8cis_rule_2_1_12
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - rpc
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - rule_2.1.12
+  block:
+    - name: "2.1.12 | PATCH | Ensure rpcbind services are not in use | Remove package"
+      when:
+        - not rhel8cis_rpc_server
+        - not rhel8cis_rpc_mask
+      ansible.builtin.package:
+        name: rpcbind
+        state: absent
+
+    - name: "2.1.12 | PATCH | Ensure rpcbind services are not in use | Mask service"
+      when:
+        - not rhel8cis_rpc_server
+        - rhel8cis_rpc_mask
+      notify: Systemd daemon reload
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        enabled: false
+        state: stopped
+        masked: true
+      loop:
+        - rpcbind.service
+        - rpcbind.socket
+
+- name: "2.1.13 | PATCH | Ensure rsync services are not in use"
+  when: rhel8cis_rule_2_1_13
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - rsync
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - rule_2.1.13
+  block:
+    - name: "2.1.13 | PATCH | Ensure rsync services are not in use | Remove package"
+      when:
+        - not rhel8cis_rsync_server
+        - not rhel8cis_rsync_mask
+      ansible.builtin.package:
+        name: rsync-daemon
+        state: absent
+
+    - name: "2.1.13 | PATCH | Ensure rsync services are not in use | Mask service"
+      when:
+        - not rhel8cis_rsync_server
+        - rhel8cis_rsync_mask
+      notify: Systemd daemon reload
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        enabled: false
+        state: stopped
+        masked: true
+      loop:
+        - "rsyncd.socket"
+        - "rsyncd.service"
+
+- name: "2.1.14 | PATCH | Ensure samba file server services are not in use"
+  when: rhel8cis_rule_2_1_14
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - samba
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - rule_2.1.14
+  block:
+    - name: "2.1.14 | PATCH | Ensure samba file server services are not in use | Remove package"
+      when:
+        - not rhel8cis_samba_server
+        - not rhel8cis_samba_mask
+      ansible.builtin.package:
+        name: samba
+        state: absent
+
+    - name: "2.1.14 | PATCH | Ensure samba file server services are not in use | Mask service"
+      when:
+        - not rhel8cis_samba_server
+        - rhel8cis_samba_mask
+      notify: Systemd daemon reload
+      ansible.builtin.systemd:
+        name: smb.service
+        enabled: false
+        state: stopped
+        masked: true
+
+- name: "2.1.15 | PATCH | Ensure snmp services are not in use"
+  when:
+    - "'net-snmp' in ansible_facts.packages"
+    - rhel8cis_rule_2_1_15
+  tags:
+    - level1-server
+    - level1-workstation
+    - automation
+    - patch
+    - snmp
+    - NIST800-53R5_CM-7
+    - rule_2.1.15
+  block:
+    - name: "2.1.15 | PATCH | Ensure snmp services are not in use | Remove package"
+      when:
+        - not rhel8cis_snmp_server
+        - not rhel8cis_snmp_mask
+      ansible.builtin.package:
+        name: net-snmp
+        state: absent
+
+    - name: "2.1.15 | PATCH | Ensure snmp services are not in use | Mask service"
+      when:
+        - not rhel8cis_snmp_server
+        - rhel8cis_snmp_mask
+      notify: Systemd daemon reload
+      ansible.builtin.systemd:
+        name: snmpd.service
+        enabled: false
+        state: stopped
+        masked: true
+
+- name: "2.1.16 | PATCH | Ensure telnet server services are not in use"
+  when:
+    - "'telnet-server' in ansible_facts.packages"
+    - rhel8cis_rule_2_1_16
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - telnet
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_CM-11
+    - rule_2.1.16
+  block:
+    - name: "2.1.16 | PATCH | Ensure telnet server services are not in use | Remove package"
+      when:
+        - not rhel8cis_telnet_server
+        - not rhel8cis_telnet_mask
+      ansible.builtin.package:
+        name: telnet-server
+        state: absent
+
+    - name: "2.1.16 | PATCH | Ensure telnet server services are not in use | Mask service"
+      when:
+        - not rhel8cis_telnet_server
+        - rhel8cis_telnet_mask
+      notify: Systemd daemon reload
+      ansible.builtin.systemd:
+        name: telnet.socket
+        enabled: false
+        state: stopped
+        masked: true
+
+- name: "2.1.17 | PATCH | Ensure tftp server services are not in use"
+  when:
+    - "'tftp-server' in ansible_facts.packages"
+    - rhel8cis_rule_2_1_17
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - tftp
+    - NIST800-53R5_CM-7
+    - rule_2.1.17
+  block:
+    - name: "2.1.17 | PATCH | Ensure tftp server services are not in use | Remove package"
+      when:
+        - not rhel8cis_tftp_server
+        - not rhel8cis_tftp_mask
+      ansible.builtin.package:
+        name: tftp-server
+        state: absent
+
+    - name: "2.1.17 | PATCH | Ensure tftp server services are not in use | Mask service"
+      when:
+        - not rhel8cis_tftp_server
+        - rhel8cis_tftp_mask
+      notify: Systemd daemon reload
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        enabled: false
+        state: stopped
+        masked: true
+      loop:
+        - "tftp.socket"
+        - "tftp.service"
+
+- name: "2.1.18 | PATCH | Ensure web proxy server services are not in use"
+  when: rhel8cis_rule_2_1_18
+  tags:
+    - level1-server
+    - level1-workstation
+    - automation
+    - patch
+    - squid
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - rule_2.1.18
+  block:
+    - name: "2.1.18 | PATCH | Ensure web proxy server services are not in use | Remove package"
+      when:
+        - not rhel8cis_squid_server
+        - not rhel8cis_squid_mask
+      ansible.builtin.package:
+        name: squid
+        state: absent
+
+    - name: "2.1.18 | PATCH | Ensure web proxy server services are not in use | Mask service"
+      when:
+        - not rhel8cis_squid_server
+        - rhel8cis_squid_mask
+      notify: Systemd daemon reload
+      ansible.builtin.systemd:
+        name: squid.service
+        enabled: false
+        state: stopped
+        masked: true
+
+- name: "2.1.19 | PATCH | Ensure web server services are not in use"
+  when: rhel8cis_rule_2_1_19
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - httpd
+    - nginx
+    - webserver
+    - NIST800-53R5_CM-7
+    - rule_2.1.19
+  block:
+    - name: "2.1.19 | PATCH | Ensure web server services are not in use | Remove httpd server"
+      when:
+        - not rhel8cis_httpd_server
+        - not rhel8cis_httpd_mask
+      ansible.builtin.package:
+        name: httpd
+        state: absent
+
+    - name: "2.1.19 | PATCH | Ensure web server services are not in use | Remove nginx server"
+      when:
+        - not rhel8cis_nginx_server
+        - not rhel8cis_nginx_mask
+      ansible.builtin.package:
+        name: nginx
+        state: absent
+
+    - name: "2.1.19 | PATCH | Ensure web server services are not in use | Mask httpd service"
+      when:
+        - not rhel8cis_httpd_server
+        - rhel8cis_httpd_mask
+      notify: Systemd daemon reload
+      ansible.builtin.systemd:
+        name: httpd.service
+        enabled: false
+        state: stopped
+        masked: true
+
+    - name: "2.1.19 | PATCH | Ensure web server services are not in use | Mask nginx service"
+      when:
+        - not rhel8cis_nginx_server
+        - rhel8cis_nginx_mask
+        - "'nginx' in ansible_facts.packages"
+      notify: Systemd daemon reload
+      ansible.builtin.systemd:
+        name: nginx.service
+        enabled: false
+        state: stopped
+        masked: true
+
+- name: "2.1.20 | PATCH | Ensure xinetd services are not in use | remove xinetd"
+  when: rhel8cis_rule_2_1_20
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - xwindow
+    - NIST800-53R5_CM-11
+    - rule_2.1.20
+  block:
+    - name: "2.1.20 | PATCH | Ensure xinetd services are not in use | Remove Package"
+      when:
+        - not rhel8cis_xinetd_server
+        - not rhel8cis_xinetd_mask
+      ansible.builtin.package:
+        name: xinetd
+        state: absent
+
+    - name: "2.1.20 | PATCH | Ensure xinetd services are not in use | Mask xinetd service"
+      when:
+        - not rhel8cis_xinetd_server
+        - rhel8cis_xinetd_mask
+      notify: Systemd daemon reload
+      ansible.builtin.systemd:
+        name: xinetd.service
+        enabled: false
+        state: stopped
+        masked: true
+
+- name: "2.1.21 | PATCH | Ensure GNOME Display Manager is removed"
+  when:
+    - rhel8cis_rule_2_1_21
+    - not rhel8cis_desktop_required
+  tags:
+    - level2-server
+    - automated
+    - patch
+    - gdm
+    - NIST800-53R5_CM-7
+    - rule_2.1.19
+  block:
+    - name: "2.1.21 | PATCH | Ensure GNOME Display Manager is removed | Single Package"
+      ansible.builtin.package:
+        name: gdm
+        state: absent
+
+    - name: "2.1.21 | PATCH | Ensure GNOME Display Manager is removed | Complete group removal"
+      when:
+        - rhel8cis_gui_group_removal
+        - rhel8_disruption_high
+      block:
+        - name: "2.1.21 | PATCH | Ensure GNOME Display Manager is removed | Complete removal | Ensure minimal setup"
+          ansible.builtin.package:
+            name: '@Minimal Install'
+            state: present
+          notify: Set reboot required
+
+        - name: "2.1.21 | PATCH | Ensure GNOME Display Manager is removed | Complete removal | remove gui group"
+          ansible.builtin.package:
+            name: '@Server with GUI'
+            state: absent
+          notify: Set reboot required
+
+        - name: "2.1.21 | PATCH | Ensure GNOME Display Manager is removed | Complete removal | Install Server group"
+          ansible.builtin.package:
+            name: '@Server'
+            state: present
+          notify: Set reboot required
+
+- name: "2.1.22 | PATCH | Ensure X window server services are not in use"
+  when:
+    - not rhel8cis_xwindow_server
+    - rhel8cis_rule_2_1_22
+  tags:
+    - level2-server
+    - automated
+    - patch
+    - xwindow
+    - NIST800-53R5_CM-11
+    - rule_2.2.20
   ansible.builtin.package:
-    name: "{{ rhel8cis_time_synchronization }}"
-    state: present
+    name: xorg-x11-server-common
+    state: absent
 
-- name: "2.1.2 | PATCH | Ensure chrony is configured"
+- name: "2.1.23 | PATCH | Ensure mail transfer agents are configured for local-only mode"
   when:
-    - rhel8cis_time_synchronization == "chrony"
-    - rhel8cis_rule_2_1_2
-    - not system_is_container
+    - not rhel8cis_is_mail_server
+    - "'postfix' in ansible_facts.packages"
+    - rhel8cis_rule_2_1_23
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
-    - NIST800-53R5_AU-3
-    - NIST800-53R5_AU-12
-    - rule_2.1.2
-  ansible.builtin.template:
-    src: chrony.conf.j2
-    dest: /etc/chrony.conf
-    owner: root
-    group: root
-    mode: 'go-wx'
-
-- name: "2.1.3 | PATCH | Ensure chrony is not run as the root user"
-  when:
-    - rhel8cis_time_synchronization == "chrony"
-    - rhel8cis_rule_2_1_3
-    - not system_is_container
-  tags:
-    - level1-server
-    - level1-workstation
-    - patch
-    - rule_2.1.3
+    - postfix
+    - NIST800-53R5_CM-7
+    - rule_2.1.23
+  notify: Restart postfix
   ansible.builtin.lineinfile:
-    path: /etc/sysconfig/chronyd
-    regexp: ^OPTIONS="(?!.* -u chrony.*)(.*)"
-    line: OPTIONS="\1 -u chrony"
-    create: true
-    backrefs: true
-    mode: 'go-wx'
-  notify: Restart_chronyd
+    path: /etc/postfix/main.cf
+    regexp: "^(#)?inet_interfaces"
+    line: "inet_interfaces = loopback-only"
+
+- name: "2.1.24 | AUDIT | Ensure only approved services are listening on a network interface"
+  when: rhel8cis_rule_2_1_24
+  tags:
+    - level1-server
+    - level1-workstation
+    - manual
+    - audit
+    - services
+    - NIST800-53R5_CM-7
+    - rule_2.1.24
+  vars:
+    warn_control_id: "2.1.24"
+  block:
+    - name: "2.1.24 | AUDIT | Ensure only approved services are listening on a network interface | Get list of services"
+      ansible.builtin.command: systemctl list-units --type=service  # noqa command-instead-of-module
+      changed_when: false
+      failed_when: discovered_running_services.rc not in [ 0, 1 ]
+      check_mode: false
+      register: discovered_running_services
+
+    - name: "2.1.24 | AUDIT | Ensure only approved services are listening on a network interface | Display list of services"
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! Below are the list of services, both active and inactive"
+          - "Please review to make sure all are essential"
+          - "{{ discovered_running_services.stdout_lines }}"
+
+    - name: "2.1.24 | AUDIT | Ensure only approved services are listening on a network interface | Warn Count"
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml

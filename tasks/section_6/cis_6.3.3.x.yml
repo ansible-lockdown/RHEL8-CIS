@@ -1,0 +1,310 @@
+---
+
+- name: "6.3.3.1 | PATCH | Ensure changes to system administration scope (sudoers) is collected"
+  when: rhel8cis_rule_6_3_3_1
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-12
+    - auditd
+    - rule_6.3.3.1
+  ansible.builtin.set_fact:
+    rhel8cis_update_audit_template: true
+
+- name: "6.3.3.2 | PATCH | Ensure actions as another user are always logged"
+  when: rhel8cis_rule_6_3_3_2
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AC-6
+    - auditd
+    - rule_6.3.3.2
+  ansible.builtin.set_fact:
+    rhel8cis_update_audit_template: true
+
+- name: "6.3.3.3 | PATCH | Ensure events that modify the sudo log file are collected"
+  when: rhel8cis_rule_6_3_3_3
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_NA
+    - auditd
+    - rule_6.3.3.3
+  ansible.builtin.set_fact:
+    rhel8cis_update_audit_template: true
+
+- name: "6.3.3.4 | PATCH | Ensure events that modify date and time information are collected"
+  when: rhel8cis_rule_6_3_3_4
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-3
+    - NIST800-53R5_CM-6
+    - auditd
+    - rule_6.3.3.4
+  ansible.builtin.set_fact:
+    rhel8cis_update_audit_template: true
+
+- name: "6.3.3.5 | PATCH | Ensure events that modify the system's network environment are collected"
+  when: rhel8cis_rule_6_3_3_5
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-3
+    - NIST800-53R5_CM-6
+    - auditd
+    - rule_6.3.3.5
+  ansible.builtin.set_fact:
+    rhel8cis_update_audit_template: true
+
+- name: "6.3.3.6 | PATCH | Ensure use of privileged commands is collected"
+  when: rhel8cis_rule_6_3_3_6
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-3
+    - auditd
+    - rule_6.3.3.6
+  block:
+    - name: "6.3.3.6 | PATCH | Ensure use of privileged commands is collected"
+      ansible.builtin.shell: for i in  $(df | grep '^/dev' | awk '{ print $NF }'); do find $i -xdev -type f -perm /6000 2>/dev/null; done
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_privilege_procs
+
+    - name: "6.3.3.6 | PATCH | Ensure use of privileged commands is collected"
+      ansible.builtin.set_fact:
+        rhel8cis_update_audit_template: true
+      notify: Update auditd rules
+
+- name: "6.3.3.7 | PATCH | Ensure unsuccessful unauthorized file access attempts are collected"
+  when: rhel8cis_rule_6_3_3_7
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-12
+    - auditd
+    - rule_6.3.3.7
+  ansible.builtin.set_fact:
+    rhel8cis_update_audit_template: true
+
+- name: "6.3.3.8 | PATCH | Ensure events that modify user/group information are collected"
+  when: rhel8cis_rule_6_3_3_8
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-12
+    - auditd
+    - rule_6.3.3.8
+  ansible.builtin.set_fact:
+    rhel8cis_update_audit_template: true
+
+- name: "6.3.3.9 | PATCH | Ensure discretionary access control permission modification events are collected"
+  when: rhel8cis_rule_6_3_3_9
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-12
+    - auditd
+    - rule_6.3.3.9
+  ansible.builtin.set_fact:
+    rhel8cis_update_audit_template: true
+
+- name: "6.3.3.10 | PATCH | Ensure successful file system mounts are collected"
+  when: rhel8cis_rule_6_3_3_10
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-12
+    - auditd
+    - rule_6.3.3.10
+  ansible.builtin.set_fact:
+    rhel8cis_update_audit_template: true
+
+- name: "6.3.3.11 | PATCH | Ensure session initiation information is collected"
+  when: rhel8cis_rule_6_3_3_11
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-3
+    - auditd
+    - rule_6.3.3.11
+  ansible.builtin.set_fact:
+    rhel8cis_update_audit_template: true
+
+- name: "6.3.3.12 | PATCH | Ensure login and logout events are collected"
+  when: rhel8cis_rule_6_3_3_12
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-12
+    - auditd
+    - rule_6.3.3.12
+  ansible.builtin.set_fact:
+    rhel8cis_update_audit_template: true
+
+- name: "6.3.3.13 | PATCH | Ensure file deletion events by users are collected"
+  when: rhel8cis_rule_6_3_3_13
+  tags:
+    - level2-server
+    - level2-workstation
+    - auditd
+    - patch
+    - NIST800-53R5_AU-12
+    - rule_6.3.3.13
+  ansible.builtin.set_fact:
+    rhel8cis_update_audit_template: true
+
+- name: "6.3.3.14 | PATCH | Ensure events that modify the system's Mandatory Access Controls are collected"
+  when: rhel8cis_rule_6_3_3_14
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-3
+    - NIST800-53R5_CM-6
+    - auditd
+    - rule_6.3.3.14
+  ansible.builtin.set_fact:
+    rhel8cis_update_audit_template: true
+
+- name: "6.3.3.15 | PATCH | Ensure successful and unsuccessful attempts to use the chcon command are recorded"
+  when: rhel8cis_rule_6_3_3_15
+  tags:
+    - level2-server
+    - level2- workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-12
+    - auditd
+    - rule_6.3.3.15
+  ansible.builtin.set_fact:
+    rhel8cis_update_audit_template: true
+
+- name: "6.3.3.16 | PATCH | Ensure successful and unsuccessful attempts to use the setfacl command are recorded"
+  when: rhel8cis_rule_6_3_3_16
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-12
+    - NIST800-53R5_SI-5
+    - auditd
+    - rule_6.3.3.16
+  ansible.builtin.set_fact:
+    rhel8cis_update_audit_template: true
+
+- name: "6.3.3.17 | PATCH | Ensure successful and unsuccessful attempts to use the chacl command are recorded"
+  when: rhel8cis_rule_6_3_3_17
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-12
+    - NIST800-53R5_SI-5
+    - auditd
+    - rule_6.3.3.17
+  ansible.builtin.set_fact:
+    rhel8cis_update_audit_template: true
+
+- name: "6.3.3.18 | PATCH | Ensure successful and unsuccessful attempts to use the usermod command are recorded"
+  when: rhel8cis_rule_6_3_3_18
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-12
+    - auditd
+    - rule_6.3.3.18
+  ansible.builtin.set_fact:
+    rhel8cis_update_audit_template: true
+
+- name: "6.3.3.19 | PATCH | Ensure kernel module loading and unloading is collected"
+  when: rhel8cis_rule_6_3_3_19
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-12
+    - auditd
+    - rule_6.3.3.19
+  ansible.builtin.set_fact:
+    rhel8cis_update_audit_template: true
+
+- name: "6.3.3.20 | PATCH | Ensure the audit configuration is loaded regardless of errors"
+  when: rhel8cis_rule_6_3_3_20
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_NA
+    - auditd
+    - rule_6.3.3.20
+  ansible.builtin.set_fact:
+    rhel8cis_update_audit_template: true
+
+- name: "6.3.3.21 | PATCH | Ensure the audit configuration is immutable"
+  when: rhel8cis_rule_6_3_3_21
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-9
+    - auditd
+    - rule_6.3.3.21
+  ansible.builtin.set_fact:
+    rhel8cis_update_audit_template: true
+
+- name: "6.3.3.22 | AUDIT | Ensure the running and on disk configuration is the same"
+  when: rhel8cis_rule_6_3_3_22
+  tags:
+    - level2-server
+    - level2-workstation
+    - manual
+    - patch
+    - NIST800-53R5_AU-3
+    - auditd
+    - rule_6.3.3.22
+  ansible.builtin.debug:
+    msg:
+      - "Please run augenrules --load if you suspect there is a configuration that is not active"
+
+- name: Auditd | 6.3.3.x | Auditd controls updated
+  when: rhel8cis_update_audit_template
+  ansible.builtin.debug:
+    msg: "Auditd Controls handled in POST using template - updating /etc/auditd/rules.d/99_auditd.rules"
+  changed_when: false

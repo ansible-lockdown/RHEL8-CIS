@@ -12,6 +12,6 @@
   ansible.builtin.debug:
     msg: "{{ audit_results.split('\n') }}"
 
-- name: Audit_only | Stop task for host as audit_only selected
+- name: Audit_only | Stop Playbook Audit Only selected
   when: audit_only
   ansible.builtin.meta: end_host

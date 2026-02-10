@@ -1,0 +1,196 @@
+---
+
+- name: "5.4.1.1 | PATCH | Ensure password expiration is configured"
+  when: rhel8cis_rule_5_4_1_1
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - password
+    - rule_5.4.1.1
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
+  block:
+    - name: "5.4.1.1 | PATCH | Ensure password expiration is configured"
+      ansible.builtin.lineinfile:
+        path: /etc/login.defs
+        regexp: "^PASS_MAX_DAYS"
+        line: "PASS_MAX_DAYS {{ rhel8cis_pass_max_days }}"
+
+    - name: "5.4.1.1 | AUDIT | Ensure password expiration is configured | Get existing users PASS_MAX_DAYS"
+      ansible.builtin.shell: "awk -F: '(/^[^:]+:[^!*]/ && ($5> {{ rhel8cis_pass_min_days }} || $5< {{ rhel8cis_pass_max_days }} || $5 == -1)){print $1}' /etc/shadow"
+      changed_when: false
+      failed_when: false
+      register: discovered_max_days
+
+    - name: "5.4.1.1 | PATCH | Ensure password expiration is configured | Set existing users PASS_MAX_DAYS"
+      when:
+        - discovered_max_days.stdout_lines | length > 0
+        - item in prelim_interactive_users | map(attribute='username') | list
+        - rhel8cis_force_user_maxdays
+        - item not in rhel8cis_user_skip_list
+      ansible.builtin.user:
+        name: "{{ item }}"
+        password_expire_max: "{{ rhel8cis_pass_max_days }}"
+      loop: "{{ discovered_max_days.stdout_lines }}"
+
+- name: "5.4.1.2 | PATCH | Ensure minimum password days is configured"
+  when: rhel8cis_rule_5_4_1_2
+  tags:
+    - level2-server
+    - level2-workstation
+    - patch
+    - password
+    - rule_5.4.1.2
+    - NIST800-53R5_IA-5
+  block:
+    - name: "5.4.1.2 | PATCH | Ensure minimum password days is configured | set login.defs"
+      ansible.builtin.lineinfile:
+        path: /etc/login.defs
+        regexp: "^PASS_MIN_DAYS"
+        line: "PASS_MIN_DAYS {{ rhel8cis_pass_min_days }}"
+
+    - name: "5.4.1.2 | AUDIT | Ensure minimum password days is configured | Get existing users PASS_MIN_DAYS"
+      ansible.builtin.shell: "awk -F: '/^[^:]+:[^!*]/ && $4< {{ rhel8cis_pass_min_days }} {print $1}' /etc/shadow"
+      changed_when: false
+      failed_when: false
+      register: discovered_min_days
+
+    - name: "5.4.1.2 | PATCH | Ensure minimum password days is configured | Set existing users PASS_MIN_DAYS"
+      when:
+        - discovered_min_days.stdout_lines | length > 0
+        - item in prelim_interactive_users | map(attribute='username') | list
+        - rhel8cis_force_user_mindays
+      ansible.builtin.user:
+        name: "{{ item }}"
+        password_expire_max: "{{ rhel8cis_pass_min_days }}"
+      loop: "{{ discovered_min_days.stdout_lines }}"
+
+- name: "5.4.1.3 | PATCH | Ensure password expiration warning days is configured"
+  when: rhel8cis_rule_5_4_1_3
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - password
+    - rule_5.4.1.3
+    - NIST800-53R5_NA
+  block:
+    - name: "5.4.1.3 | PATCH | Ensure password expiration warning days is configured | set login.defs"
+      ansible.builtin.lineinfile:
+        path: /etc/login.defs
+        regexp: "^PASS_WARN_AGE"
+        line: "PASS_WARN_AGE {{ rhel8cis_pass_warn_age }}"
+
+    - name: "5.4.1.3 | AUDIT | Ensure password expiration warning days is configured | Get existing users WARN_DAYS"
+      ansible.builtin.shell: "awk -F: '/^[^:]+:[^!*]/ && $6< {{ rhel8cis_pass_warn_age }} {print $1}' /etc/shadow"
+      changed_when: false
+      failed_when: false
+      register: discovered_warn_days
+
+    - name: "5.4.1.3 | PATCH | Ensure password expiration warning days is configured | Set existing users WARN_DAYS"
+      when:
+        - discovered_warn_days.stdout_lines | length > 0
+        - item in prelim_interactive_users | map(attribute='username') | list
+        - rhel8cis_force_user_warnage
+      ansible.builtin.command: "chage --warndays {{ rhel8cis_pass['warn_age'] }} {{ item }}"
+      changed_when: true
+      loop: "{{ discovered_warn_days.stdout_lines }}"
+
+- name: "5.4.1.4 | PATCH | Ensure strong password hashing algorithm is configured"
+  when: rhel8cis_rule_5_4_1_4
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_5.4.1.4
+    - pam
+    - NIST800-53R5_IA-5
+  ansible.builtin.lineinfile:
+    path: /etc/login.defs
+    regexp: "^ENCRYPT_METHOD"
+    line: "ENCRYPT_METHOD {{ rhel8cis_pam_pwhash | upper }}"
+
+- name: "5.4.1.5 | PATCH | Ensure inactive password lock is configured"
+  when: rhel8cis_rule_5_4_1_5
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - password
+    - rule_5.4.1.5
+    - NIST800-53R5_NA
+  block:
+    - name: "5.4.1.5 | AUDIT | Ensure inactive password lock is configured | Check current settings"
+      ansible.builtin.shell: |
+        useradd -D | grep INACTIVE={{ rhel8cis_inactive_lock_days }} | cut -f2 -d=
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_passwdlck_inactive_settings
+
+    - name: "5.4.1.5 | PATCH | Ensure inactive password lock is configured | Set default inactive setting"
+      when: discovered_passwdlck_inactive_settings.stdout | length == 0
+      ansible.builtin.command: useradd -D -f {{ rhel8cis_inactive_lock_days }}
+      changed_when: true
+
+    - name: "5.4.1.5 | AUDIT | Ensure inactive password lock is configured | Getting user list"
+      ansible.builtin.shell: "awk -F: '($2~/^\\$.+\\$/) {if($7 > {{ rhel8cis_inactive_lock_days }} || $7 < 0)print $1}' /etc/shadow" # noqa yaml[colons]
+      changed_when: false
+      check_mode: false
+      register: discovered_passwdlck_user_list
+
+    - name: "5.4.1.5 | PATCH | Ensure inactive password lock is configured | Apply Inactive setting to existing accounts"
+      when: item in prelim_interactive_users | map(attribute='username') | list
+      ansible.builtin.command: chage --inactive {{ rhel8cis_inactive_lock_days }} "{{ item }}"
+      changed_when: true
+      loop: "{{ discovered_passwdlck_user_list.stdout_lines }}"
+
+- name: "5.4.1.6 | PATCH | Ensure all users last password change date is in the past"
+  when: rhel8cis_rule_5_4_1_6
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_5.4.1.6
+  vars:
+    warn_control_id: "5.4.1.6"
+  block:
+    - name: "5.4.1.6 | AUDIT | Ensure all users last password change date is in the past | Get current date in Unix Time"
+      ansible.builtin.shell: echo $(($(date --utc --date "$1" +%s)/86400))
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_passwdlck_currentunixtime
+
+    - name: "5.4.1.6 | AUDIT | Ensure all users last password change date is in the past | Get list of users with last changed pw date in the future"
+      ansible.builtin.shell: "cat /etc/shadow | awk -F: '{if($3>{{ discovered_passwdlck_currentunixtime.stdout }})print$1}'"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_passwdlck_user_future
+
+    - name: "5.4.1.6 | AUDIT | Ensure all users last password change date is in the past | Alert on accounts with pw change in the future"
+      when:
+        - discovered_passwdlck_user_future.stdout | length > 0
+        - not rhel8cis_futurepwchgdate_autofix
+      ansible.builtin.debug:
+        msg: "Warning!! The following accounts have the last PW change date in the future: {{ discovered_passwdlck_user_future.stdout_lines }}"
+
+    - name: "5.4.1.6 | AUDIT | Ensure all users last password change date is in the past | warning count"
+      when:
+        - discovered_passwdlck_user_future.stdout | length > 0
+        - not rhel8cis_futurepwchgdate_autofix
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
+
+    - name: "5.4.1.6 | PATCH | Ensure all users last password change date is in the past | Fix accounts with pw change in the future"
+      when:
+        - discovered_passwdlck_user_future.stdout | length > 0
+        - rhel8cis_futurepwchgdate_autofix
+      ansible.builtin.command: passwd --expire {{ item }}
+      changed_when: true
+      loop: "{{ discovered_passwdlck_user_future.stdout_lines }}"

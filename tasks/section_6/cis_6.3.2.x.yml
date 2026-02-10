@@ -1,0 +1,74 @@
+---
+
+- name: "6.3.2.1 | PATCH | Ensure audit log storage size is configured"
+  when: rhel8cis_rule_6_3_2_1
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-8
+    - auditd
+    - rule_6.3.2.1
+  notify: Restart auditd
+  ansible.builtin.lineinfile:
+    path: /etc/audit/auditd.conf
+    regexp: ^max_log_file(\s|=)
+    line: "max_log_file = {{ rhel8cis_auditd_max_log_file_size }}"
+
+- name: "6.3.2.2 | PATCH | Ensure audit logs are not automatically deleted"
+  when: rhel8cis_rule_6_3_2_2
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-8
+    - auditd
+    - rule_6.3.2.2
+  notify: Restart auditd
+  ansible.builtin.lineinfile:
+    path: /etc/audit/auditd.conf
+    regexp: ^max_log_file_action
+    line: "max_log_file_action = {{ rhel8cis_auditd_max_log_file_action }}"
+
+- name: "6.3.2.3 | PATCH | Ensure system is disabled when audit logs are full"
+  when: rhel8cis_rule_6_3_2_3
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-5
+    - auditd
+    - rule_6.3.2.3
+  ansible.builtin.lineinfile:
+    path: /etc/audit/auditd.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop:
+    - { regexp: '^disk_full_action', line: 'disk_full_action = {{ rhel8cis_auditd_disk_full_action }}' }
+    - { regexp: '^disk_error_action', line: 'disk_error_action = {{ rhel8cis_auditd_disk_error_action }}' }
+  notify: Restart auditd
+
+- name: "6.3.2.4 | PATCH | Ensure system warns when audit logs are low on space"
+  when: rhel8cis_rule_6_3_2_4
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-8
+    - NIST800-53R5_AU-12
+    - NIST800-53R5_SI-5
+    - auditd
+    - rule_6.3.2.4
+  ansible.builtin.lineinfile:
+    path: /etc/audit/auditd.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop:
+    - { regexp: '^admin_space_left_action', line: 'admin_space_left_action = {{ rhel8cis_auditd_admin_space_left_action }}' }
+    - { regexp: '^space_left_action', line: 'space_left_action = {{ rhel8cis_auditd_space_left_action }}' }
+  notify: Restart auditd

@@ -1,0 +1,134 @@
+{{ file_managed_by_ansible }}
+### YOUR CHANGES WILL BE LOST!
+
+# This template will set all of the auditd configurations via a handler in the role in one task instead of individually
+{% if rhel8cis_rule_6_3_3_1 %}
+-w /etc/sudoers -p wa -k scope
+-w /etc/sudoers.d/ -p wa -k scope
+{% endif %}
+{% if rhel8cis_rule_6_3_3_2 %}
+{% set syscalls = ["execve"] %}
+{% set arch_syscalls = syscalls | select("in", supported_syscalls) | list %}
+-a always,exit -F arch=b64 -C euid!=uid -F auid!=unset -S {{ arch_syscalls|join(',') }} -k user_emulation
+-a always,exit -F arch=b32 -C euid!=uid -F auid!=unset -S {{ arch_syscalls|join(',') }} -k user_emulation
+{% endif %}
+{% if rhel8cis_rule_6_3_3_3 %}
+-w {{ rhel8cis_sudolog_location }} -p wa -k sudo_log_file
+{% endif %}
+{% if rhel8cis_rule_6_3_3_4 %}
+{% set syscalls = ["adjtimex","settimeofday"]  %}
+{% set arch_syscalls = syscalls | select("in", supported_syscalls) | list %}
+-a always,exit -F arch=b64 -S {{ arch_syscalls|join(',') }} -k time-change
+-a always,exit -F arch=b32 -S {{ arch_syscalls|join(',') }} -k time-change
+{% set syscalls = ["clock_settime"] %}
+{% set arch_syscalls = syscalls | select("in", supported_syscalls) | list %}
+-a always,exit -F arch=b32 -S {{ arch_syscalls|join(',') }} -F a0=0x0 -k time-change
+-a always,exit -F arch=b64 -S {{ arch_syscalls|join(',') }} -F a0=0x0 -k time-change
+-w /etc/localtime -p wa -k time-change
+{% endif %}
+{% if rhel8cis_rule_6_3_3_5 %}
+{% set syscalls = ["sethostname","setdomainname"] %}
+{% set arch_syscalls = syscalls | select("in", supported_syscalls) | list %}
+-a always,exit -F arch=b64 -S {{ arch_syscalls|join(',') }} -k system-locale
+-a always,exit -F arch=b32 -S {{ arch_syscalls|join(',') }} -k system-locale
+-w /etc/issue -p wa -k system-locale
+-w /etc/issue.net -p wa -k system-locale
+-w /etc/hosts -p wa -k system-locale
+-w /etc/hostname -p wa -k system-locale
+-w /etc/sysconfig/network -p wa -k system-locale
+-w /etc/sysconfig/network-scripts/ -p wa -k system-locale
+-w /etc/NetworkManager -p wa -k system-locale
+{% endif %}
+{% if rhel8cis_rule_6_3_3_6 %}
+{% for proc in discovered_privilege_procs.stdout_lines -%}
+-a always,exit -F path={{ proc }} -F perm=x -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k privileged
+{% endfor %}
+{% endif %}
+{% if rhel8cis_rule_6_3_3_7 %}
+{% set syscalls = ["creat","open","openat","truncate","ftruncate"] %}
+{% set arch_syscalls = syscalls | select("in", supported_syscalls) | list %}
+-a always,exit -F arch=b64 -S {{ arch_syscalls|join(',') }} -F exit=-EACCES -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k access
+-a always,exit -F arch=b64 -S {{ arch_syscalls|join(',') }} -F exit=-EPERM -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k access
+-a always,exit -F arch=b32 -S {{ arch_syscalls|join(',') }} -F exit=-EACCES -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k access
+-a always,exit -F arch=b32 -S {{ arch_syscalls|join(',') }} -F exit=-EPERM -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k access
+{% endif %}
+{% if rhel8cis_rule_6_3_3_8 %}
+-w /etc/group -p wa -k identity
+-w /etc/passwd -p wa -k identity
+-w /etc/gshadow -p wa -k identity
+-w /etc/shadow -p wa -k identity
+-w /etc/security/opasswd -p wa -k identity
+-w /etc/nsswitch.conf -p wa -k identity
+-w /etc/pam.conf -p wa -k identity
+-w /etc/pam.d -p wa -k identity
+{% endif %}
+{% if rhel8cis_rule_6_3_3_9 %}
+{% set syscalls = ["chmod","fchmod","fchmodat"] %}
+{% set arch_syscalls = syscalls | select("in", supported_syscalls) | list %}
+-a always,exit -F arch=b64 -S {{ arch_syscalls|join(',') }} -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k perm_mod
+{% set syscalls = ["chown","fchown","lchown","fchownat"] %}
+{% set arch_syscalls = syscalls | select("in", supported_syscalls) | list %}
+-a always,exit -F arch=b64 -S {{ arch_syscalls|join(',') }} -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k perm_mod
+{% set syscalls = ["setxattr","lsetxattr","fsetxattr","removexattr","lremovexattr","fremovexattr"] %}
+{% set arch_syscalls = syscalls | select("in", supported_syscalls) | list %}
+-a always,exit -F arch=b64 -S {{ arch_syscalls|join(',') }} -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k perm_mod
+{% set syscalls = ["chmod","fchmod","fchmodat"] %}
+{% set arch_syscalls = syscalls | select("in", supported_syscalls) | list %}
+-a always,exit -F arch=b32 -S {{ arch_syscalls|join(',') }} -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k perm_mod
+{% set syscalls = ["chown","fchown","lchown","fchownat"] %}
+{% set arch_syscalls = syscalls | select("in", supported_syscalls) | list %}
+-a always,exit -F arch=b32 -S {{ arch_syscalls|join(',') }} -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k perm_mod
+{% set syscalls = ["setxattr","lsetxattr","fsetxattr","removexattr","lremovexattr","fremovexattr"] %}
+{% set arch_syscalls = syscalls | select("in", supported_syscalls) | list %}
+-a always,exit -F arch=b32 -S {{ arch_syscalls|join(',') }} -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k perm_mod
+{% endif %}
+{% if rhel8cis_rule_6_3_3_10 %}
+{% set syscalls = ["mount"] %}
+{% set arch_syscalls = syscalls | select("in", supported_syscalls) | list %}
+-a always,exit -F arch=b64 -S {{ arch_syscalls|join(',') }} -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k mounts
+-a always,exit -F arch=b32 -S {{ arch_syscalls|join(',') }} -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k mounts
+{% endif %}
+{% if rhel8cis_rule_6_3_3_11 %}
+-w /var/run/utmp -p wa -k session
+-w /var/log/wtmp -p wa -k session
+-w /var/log/btmp -p wa -k session
+{% endif %}
+{% if rhel8cis_rule_6_3_3_12 %}
+-w /var/log/lastlog -p wa -k logins
+-w /var/run/faillock -p wa -k logins
+{% endif %}
+{% if rhel8cis_rule_6_3_3_13 %}
+{% set syscalls = ["unlink","unlinkat","rename","renameat"] %}
+{% set arch_syscalls = syscalls | select("in", supported_syscalls) | list %}
+-a always,exit -F arch=b64 -S {{ arch_syscalls|join(',') }} -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k delete
+-a always,exit -F arch=b32 -S {{ arch_syscalls|join(',') }} -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k delete
+{% endif %}
+{% if rhel8cis_rule_6_3_3_14 %}
+-w /etc/selinux/ -p wa -k MAC-policy
+-w /usr/share/selinux/ -p wa -k MAC-policy
+{% endif %}
+{% if rhel8cis_rule_6_3_3_15 %}
+-a always,exit -F path=/usr/bin/chcon -F perm=x -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k perm_chng
+{% endif %}
+{% if rhel8cis_rule_6_3_3_16 %}
+-a always,exit -F path=/usr/bin/setfacl -F perm=x -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k perm_chng
+{% endif %}
+{% if rhel8cis_rule_6_3_3_17 %}
+-a always,exit -F path=/usr/bin/chacl -F perm=x -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k perm_chng
+{% endif %}
+{% if rhel8cis_rule_6_3_3_18 %}
+-a always,exit -F path=/usr/sbin/usermod -F perm=x -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k usermod
+{% endif %}
+{% if rhel8cis_rule_6_3_3_19 %}
+{% set syscalls = ["init_module","finit_module","delete_module","create_module","query_module"] %}
+{% set arch_syscalls = syscalls | select("in", supported_syscalls) | list %}
+-a always,exit -F arch=b32 -S {{ arch_syscalls|join(',') }} -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k kernel_modules
+-a always,exit -F arch=b64 -S {{ arch_syscalls|join(',') }} -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k kernel_modules
+-a always,exit -F path=/usr/bin/kmod -F perm=x -F auid>={{ prelim_min_int_uid }} -F auid!=unset -k kernel_modules
+{% endif %}
+{% if rhel8cis_rule_6_3_3_20 %}
+-c
+{% endif %}
+{% if rhel8cis_rule_6_3_3_21 %}
+-e 2
+{% endif %}

@@ -1,0 +1,174 @@
+---
+
+- name: "2.4.1.1 | PATCH | Ensure cron daemon is enabled and active"
+  when: rhel8cis_rule_2_4_1_1
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - cron
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
+    - rule_2.4.1.1
+  ansible.builtin.systemd:
+    name: crond
+    enabled: true
+    state: started
+
+- name: "2.4.1.2 | PATCH | Ensure access to /etc/crontab is configured"
+  when: rhel8cis_rule_2_4_1_2
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - cron
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+    - rule_2.4.1.2
+  ansible.builtin.file:
+    path: /etc/crontab
+    owner: root
+    group: root
+    mode: 'go-rwx'
+
+- name: "2.4.1.3 | PATCH | Ensure access to /etc/cron.hourly is configured"
+  when: rhel8cis_rule_2_4_1_3
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - cron
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+    - rule_2.4.1.3
+  ansible.builtin.file:
+    path: /etc/cron.hourly
+    state: directory
+    owner: root
+    group: root
+    mode: 'go-rwx'
+
+- name: "2.4.1.4 | PATCH | Ensure access to /etc/cron.daily is configured"
+  when: rhel8cis_rule_2_4_1_4
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - cron
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+    - rule_2.4.1.4
+  ansible.builtin.file:
+    path: /etc/cron.daily
+    state: directory
+    owner: root
+    group: root
+    mode: 'go-rwx'
+
+- name: "2.4.1.5 | PATCH | Ensure access to /etc/cron.weekly is configured"
+  when: rhel8cis_rule_2_4_1_5
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - cron
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+    - rule_2.4.1.5
+  ansible.builtin.file:
+    path: /etc/cron.weekly
+    state: directory
+    owner: root
+    group: root
+    mode: 'go-rwx'
+
+- name: "2.4.1.6 | PATCH | Ensure access to /etc/cron.monthly is configured"
+  when: rhel8cis_rule_2_4_1_6
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - cron
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+    - rule_2.4.1.6
+  ansible.builtin.file:
+    path: /etc/cron.monthly
+    state: directory
+    owner: root
+    group: root
+    mode: 'go-rwx'
+
+- name: "2.4.1.7 | PATCH | Ensure access to /etc/cron.yearly is configured"
+  when: rhel8cis_rule_2_4_1_7
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - cron
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+    - rule_2.4.1.7
+  ansible.builtin.file:
+    path: /etc/cron.yearly
+    state: directory
+    owner: root
+    group: root
+    mode: 'go-rwx'
+
+- name: "2.4.1.8 | PATCH | Ensure permissions on /etc/cron.d are configured"
+  when: rhel8cis_rule_2_4_1_8
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - cron
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+    - rule_2.4.1.8
+  ansible.builtin.file:
+    path: /etc/cron.d
+    state: directory
+    owner: root
+    group: root
+    mode: 'go-rwx'
+
+- name: "2.4.1.9 | PATCH | Ensure access to crontab is configured"
+  when: rhel8cis_rule_2_4_1_9
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - cron
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+    - rule_2.4.1.9
+  block:
+    - name: "2.4.1.9 | PATCH | Ensure access to crontab is configured | Remove cron.deny"
+      ansible.builtin.file:
+        path: /etc/cron.deny
+        state: absent
+
+    - name: "2.4.1.9 | PATCH | Ensure access to crontab is configured | Check if cron.allow exists"
+      ansible.builtin.stat:
+        path: "/etc/cron.allow"
+      register: discovered_cron_allow_state
+
+    - name: "2.4.1.9 | PATCH | Ensure access to crontab is configured | create cron.allow"
+      ansible.builtin.file:
+        path: /etc/cron.allow
+        state: '{{ "file" if discovered_cron_allow_state.stat.exists else "touch" }}'
+        owner: root
+        group: root
+        mode: 'g-wx,o-rwx'

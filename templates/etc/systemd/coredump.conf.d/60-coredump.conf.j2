@@ -1,0 +1,11 @@
+{{ file_managed_by_ansible }}
+
+[Coredump]
+{% if rhel8cis_rule_1_5_9 %}
+# CIS Control 1.5.9 - ProcessSizeMax
+ProcessSizeMax=0
+{% endif %}
+{% if rhel8cis_rule_1_5_10 %}
+# CIS Control 1.5.10 - Storage
+Storage=none
+{% endif %}

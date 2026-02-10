@@ -13,8 +13,8 @@
   ansible.builtin.debug:
     msg: "Captured in prelim to ensure not LEGACY. Runs handler to update"
   notify:
-    - Update_Crypto_Policy
-    - Set_Crypto_Policy
+    - Update Crypto Policy
+    - Set Crypto Policy
 
 - name: "1.6.2 | PATCH | Ensure system wide crypto policy disables sha1 hash and signature support"
   when:
@@ -43,13 +43,13 @@
         rhel8cis_crypto_policy_module: "{{ rhel8cis_crypto_policy_module + ':' + 'NO-SHA1' }}"
       changed_when: discovered_no_sha1_template is changed # noqa: no-handler
       notify:
-        - Update_Crypto_Policy
-        - Set_Crypto_Policy
+        - Update Crypto Policy
+        - Set Crypto Policy
 
-- name: "1.6.3 | PATCH | Ensure system wide crypto policy disables cbc for ssh"
+- name: "1.6.3 | PATCH | Ensure system wide crypto policy macs are configured"
   when:
     - rhel8cis_rule_1_6_3
-    - "'NO-SSHCBC' not in rhel8cis_crypto_policy_module"
+    - "'NO-WEAKMAC' not in rhel8cis_crypto_policy_module"
   tags:
     - level1-server
     - level1-workstation
@@ -59,27 +59,27 @@
     - NIST800-53R5_SC-8
     - rule_1.6.3
   block:
-    - name: "1.6.3 | PATCH | Ensure system wide crypto policy disables cbc for ssh | Add submodule exclusion"
+    - name: "1.6.3 | PATCH | Ensure system wide crypto policy macs are configured | Add submodule exclusion"
       ansible.builtin.template:
-        src: etc/crypto-policies/policies/modules/NO-SSHCBC.pmod.j2
-        dest: /etc/crypto-policies/policies/modules/NO-SSHCBC.pmod
+        src: etc/crypto-policies/policies/modules/NO-WEAKMAC.pmod.j2
+        dest: /etc/crypto-policies/policies/modules/NO-WEAKMAC.pmod
         owner: root
         group: root
         mode: 'u-x,g-wx,o-rwx'
-      register: discovered_no_sshcbc_template
+      register: discovered_no_weakmac_template
 
-    - name: "1.6.3 | PATCH | Ensure system wide crypto policy disables cbc for ssh | submodule to crypto policy modules"
+    - name: "1.6.3 | PATCH | Ensure system wide crypto policy macs are configured | submodule to crypto policy modules"
       ansible.builtin.set_fact:
-        rhel8cis_crypto_policy_module: "{{ rhel8cis_crypto_policy_module + ':' + 'NO-SSHCBC' }}"
-      changed_when: discovered_no_sshcbc_template is changed # noqa: no-handler
+        rhel8cis_crypto_policy_module: "{{ rhel8cis_crypto_policy_module + ':' + 'NO-WEAKMAC' }}"
+      changed_when: discovered_no_weakmac_template is changed # noqa: no-handler
       notify:
-        - Update_Crypto_Policy
-        - Set_Crypto_Policy
+        - Update Crypto Policy
+        - Set Crypto Policy
 
-- name: "1.6.4 | PATCH | Ensure system wide crypto policy disables macs less than 128 bits"
+- name: "1.6.4 | PATCH | Ensure system wide crypto policy disables cbc for ssh"
   when:
     - rhel8cis_rule_1_6_4
-    - "'NO-WEAKMAC' not in rhel8cis_crypto_policy_module"
+    - "'NO-SSHCBC' not in rhel8cis_crypto_policy_module"
   tags:
     - level1-server
     - level1-workstation
@@ -89,19 +89,79 @@
     - NIST800-53R5_SC-8
     - rule_1.6.4
   block:
-    - name: "1.6.4 | PATCH | Ensure system wide crypto policy disables macs less than 128 bits | Add submodule exclusion"
+    - name: "1.6.4 | PATCH | Ensure system wide crypto policy disables cbc for ssh | Add submodule exclusion"
       ansible.builtin.template:
-        src: etc/crypto-policies/policies/modules/NO-WEAKMAC.pmod.j2
-        dest: /etc/crypto-policies/policies/modules/NO-WEAKMAC.pmod
+        src: etc/crypto-policies/policies/modules/NO-SSHCBC.pmod.j2
+        dest: /etc/crypto-policies/policies/modules/NO-SSHCBC.pmod
         owner: root
         group: root
         mode: 'u-x,g-wx,o-rwx'
-      register: discovered_no_weakmac_template
+      register: discovered_no_sshcbc_template
 
-    - name: "1.6.4 | PATCH | Ensure system wide crypto policy disables macs less than 128 bits | submodule to crypto policy modules"
+    - name: "1.6.4 | PATCH | Ensure system wide crypto policy disables cbc for ssh | submodule to crypto policy modules"
       ansible.builtin.set_fact:
-        rhel8cis_crypto_policy_module: "{{ rhel8cis_crypto_policy_module + ':' + 'NO-WEAKMAC' }}"
-      changed_when: discovered_no_weakmac_template is changed # noqa: no-handler
+        rhel8cis_crypto_policy_module: "{{ rhel8cis_crypto_policy_module + ':' + 'NO-SSHCBC' }}"
+      changed_when: discovered_no_sshcbc_template is changed # noqa: no-handler
       notify:
-        - Update_Crypto_Policy
-        - Set_Crypto_Policy
+        - Update Crypto Policy
+        - Set Crypto Policy
+
+- name: "1.6.5 | PATCH | Ensure system wide crypto policy disables chacha20-poly1305 for ssh"
+  when:
+    - rhel8cis_rule_1_6_5
+    - "'NO-SSHCHACHA20' not in rhel8cis_crypto_policy_module"
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - crypto
+    - NIST800-53R5_SC-8
+    - rule_1.6.5
+  block:
+    - name: "1.6.5 | PATCH | Ensure system wide crypto policy disables chacha20-poly1305 for ssh | Add submodule exclusion"
+      ansible.builtin.template:
+        src: etc/crypto-policies/policies/modules/NO-SSHCHACHA20.pmod.j2
+        dest: /etc/crypto-policies/policies/modules/NO-SSHCHACHA20.pmod
+        owner: root
+        group: root
+        mode: 'u-x,g-wx,o-rwx'
+      register: discovered_no_sshchacha_template
+
+    - name: "1.6.5 | PATCH | Ensure system wide crypto policy disables chacha20-poly1305 for ssh | submodule to crypto policy modules"
+      ansible.builtin.set_fact:
+        rhel8cis_crypto_policy_module: "{{ rhel8cis_crypto_policy_module + ':' + 'NO-SSHCHACHA20' }}"
+      changed_when: discovered_no_sshchacha_template is changed # noqa: no-handler
+      notify:
+        - Update Crypto Policy
+        - Set Crypto Policy
+
+- name: "1.6.6 | PATCH | Ensure system wide crypto policy disables EtM for ssh"
+  when:
+    - rhel8cis_rule_1_6_6
+    - "'NO-SSHETM' not in rhel8cis_crypto_policy_module"
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - crypto
+    - NIST800-53R5_SC-8
+    - rule_1.6.6
+  block:
+    - name: "1.6.6 | PATCH | Ensure system wide crypto policy disables EtM for ssh | Add submodule exclusion"
+      ansible.builtin.template:
+        src: etc/crypto-policies/policies/modules/NO-SSHETM.pmod.j2
+        dest: /etc/crypto-policies/policies/modules/NO-SSHETM.pmod
+        owner: root
+        group: root
+        mode: 'u-x,g-wx,o-rwx'
+      register: discovered_no_sshetm_template
+
+    - name: "1.6.6 | PATCH | Ensure system wide crypto policy disables EtM for ssh | submodule to crypto policy modules"
+      ansible.builtin.set_fact:
+        rhel8cis_crypto_policy_module: "{{ rhel8cis_crypto_policy_module + ':' + 'NO-SSHETM' }}"
+      changed_when: discovered_no_sshetm_template is changed # noqa: no-handler
+      notify:
+        - Update Crypto Policy
+        - Set Crypto Policy

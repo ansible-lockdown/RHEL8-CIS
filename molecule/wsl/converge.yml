@@ -10,14 +10,18 @@
       system_is_container: true
       rhel8cis_selinux_disable: true
       role_name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
-      rhel8cis_rule_5_3_4: false
-      rhel8cis_rule_1_1_10: false
+      rhel8cis_firewall: none
       rhel8cis_rsyslog_ansiblemanaged: false
-      rhel8cis_rule_3_4_1_3: false
-      rhel8cis_rule_3_4_1_4: false
+      # Crypto
+      rhel8cis_rule_1_6_1: false
+      # cron
+      rhel8cis_rule_2_4_1_1: false
+      # rsyslog enabled
       rhel8cis_rule_4_2_1_2: false
-      rhel8cis_rule_4_2_1_4: false
-      rhel8cis_rule_5_1_1: false
+      # sudo password escalation
+      rhel8cis_rule_5_2_4: false
+      # logging enabled
+      rhel8cis_rule_6_2_2_1: false
 
   pre_tasks:
   tasks:

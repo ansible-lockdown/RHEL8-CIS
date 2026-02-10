@@ -1,83 +1,55 @@
 ---
 
-- name: "2.3.1 | PATCH | Ensure ftp client is not installed"
+- name: "2.3.1 | PATCH | Ensure time synchronization is in use"
   when:
-    - not rhel8cis_ftp_client
     - rhel8cis_rule_2_3_1
+    - not system_is_container
   tags:
     - level1-server
     - level1-workstation
     - automated
     - patch
-    - ftp
-    - NIST800-53R5_CM-7
     - rule_2.3.1
+    - NIST800-53R5_AU-3
+    - NIST800-53R5_AU-12
   ansible.builtin.package:
-    name: ftp
-    state: absent
+    name: "{{ rhel8cis_time_synchronization }}"
+    state: present
 
-- name: "2.3.2 | PATCH | Ensure ldap client is not installed"
+- name: "2.3.2 | PATCH | Ensure chrony is configured"
   when:
-    - not rhel8cis_openldap_clients_required
-    - "'openldap-clients' in ansible_facts.packages"
+    - rhel8cis_time_synchronization == "chrony"
     - rhel8cis_rule_2_3_2
+    - not system_is_container
   tags:
-    - level2-server
-    - level2-workstation
-    - automated
+    - level1-server
+    - level1-workstation
     - patch
-    - ldap
-    - NIST800-53R5_CM-7
+    - NIST800-53R5_AU-3
+    - NIST800-53R5_AU-12
     - rule_2.3.2
-  ansible.builtin.package:
-    name: openldap-clients
-    state: absent
+  ansible.builtin.template:
+    src: chrony.conf.j2
+    dest: /etc/chrony.conf
+    owner: root
+    group: root
+    mode: 'go-wx'
 
-- name: "2.3.3 | PATCH | Ensure nis client is not installed"
+- name: "2.3.3 | PATCH | Ensure chrony is not run as the root user"
   when:
-    - not rhel8cis_ypbind_required
+    - rhel8cis_time_synchronization == "chrony"
     - rhel8cis_rule_2_3_3
+    - not system_is_container
   tags:
     - level1-server
     - level1-workstation
-    - automated
     - patch
-    - nis
-    - NIST800-53R5_CM-7
     - rule_2.3.3
-  ansible.builtin.package:
-    name: ypbind
-    state: absent
-
-- name: "2.3.4 | PATCH | Ensure telnet client is not installed"
-  when:
-    - not rhel8cis_telnet_required
-    - "'telnet' in ansible_facts.packages"
-    - rhel8cis_rule_2_3_4
-  tags:
-    - level1-server
-    - level1-workstation
-    - automated
-    - patch
-    - telnet
-    - NIST800-53R5_CM-7
-    - rule_2.3.4
-  ansible.builtin.package:
-    name: telnet
-    state: absent
-
-- name: "2.3.5 | PATCH | Ensure TFTP client is not installed"
-  when:
-    - not rhel8cis_tftp_client
-    - rhel8cis_rule_2_3_5
-  tags:
-    - level1-server
-    - level1-workstation
-    - automated
-    - patch
-    - tftp
-    - NIST800-53R5_CM-7
-    - rule_2.3.5
-  ansible.builtin.package:
-    name: tftp
-    state: absent
+  ansible.builtin.lineinfile:
+    path: /etc/sysconfig/chronyd
+    regexp: ^OPTIONS="(?!.* -u chrony.*)(.*)"
+    line: OPTIONS="\1 -u chrony"
+    create: true
+    backrefs: true
+    mode: 'go-wx'
+  notify: Restart chronyd

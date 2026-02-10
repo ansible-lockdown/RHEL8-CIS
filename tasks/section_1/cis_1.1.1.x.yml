@@ -9,6 +9,7 @@
     - patch
     - rule_1.1.1.1
     - NIST800-53R5_CM-7
+    - CCI-000381
     - cramfs
   block:
     - name: "1.1.1.1 | PATCH | Ensure cramfs kernel module is not available | Edit modprobe config"
@@ -43,6 +44,7 @@
     - patch
     - rule_1.1.1.2
     - NIST800-53R5_CM-7
+    - CCI-000381
     - freevxfs
   block:
     - name: "1.1.1.2 | PATCH | Ensure freevxfs kernel module is not available | Edit modprobe config"
@@ -76,6 +78,7 @@
     - patch
     - rule_1.1.1.3
     - NIST800-53R5_CM-7
+    - CCI-000381
     - hfs
   block:
     - name: "1.1.1.3 | PATCH | Ensure hfs kernel module is not available | Edit modprobe config"
@@ -109,6 +112,7 @@
     - patch
     - rule_1.1.1.4
     - NIST800-53R5_CM-7
+    - CCI-000381
     - hfsplus
   block:
     - name: "1.1.1.4 | PATCH | Ensure hfsplus kernel module is not available | Edit modprobe config"
@@ -142,6 +146,7 @@
     - patch
     - rule_1.1.1.5
     - NIST800-53R5_CM-7
+    - CCI-000381
     - jffs2
   block:
     - name: "1.1.1.5 | PATCH | Ensure jffs2 kernel module is not available | Edit modprobe config"
@@ -166,7 +171,7 @@
         name: jffs2
         state: absent
 
-- name: "1.1.1.6 | PATCH | Ensure squashfs kernel module is not available"
+- name: "1.1.1.6 | PATCH | Ensure overlay kernel module is not available"
   when: rhel8cis_rule_1_1_1_6
   tags:
     - level2-server
@@ -175,31 +180,32 @@
     - patch
     - rule_1.1.1.6
     - NIST800-53R5_CM-7
-    - squashfs
+    - CCI-000381
+    - overlay
   block:
-    - name: "1.1.1.6 | PATCH | Ensure squashfs kernel module is not available | Edit modprobe config"
+    - name: "1.1.1.6 | PATCH | Ensure overlay kernel module is not available | Edit modprobe config"
       ansible.builtin.lineinfile:
         path: /etc/modprobe.d/CIS.conf
-        regexp: "^(#)?install squashfs(\\s|$)"
-        line: "install squashfs /bin/true"
+        regexp: "^(#)?install overlay(\\s|$)"
+        line: "install overlay /bin/true"
         create: true
         mode: 'go-rwx'
 
-    - name: "1.1.1.6 | PATCH | Ensure squashfs kernel module is not available | blacklist"
+    - name: "1.1.1.6 | PATCH | Ensure overlay kernel module is not available | blacklist"
       ansible.builtin.lineinfile:
         path: /etc/modprobe.d/blacklist.conf
-        regexp: "^(#)?blacklist squashfs(\\s|$)"
-        line: "blacklist squashfs"
+        regexp: "^(#)?blacklist overlay(\\s|$)"
+        line: "blacklist overlay"
         create: true
         mode: 'go-rwx'
 
-    - name: "1.1.1.6 | PATCH | Ensure squashfs kernel module is not available | Disable squashfs"
+    - name: "1.1.1.6 | PATCH | Ensure overlay kernel module is not available | Disable overlay"
       when: not system_is_container
       community.general.modprobe:
-        name: squashfs
+        name: overlay
         state: absent
 
-- name: "1.1.1.7 | PATCH | Ensure udf kernel module is not available"
+- name: "1.1.1.7 | PATCH | Ensure squashfs kernel module is not available"
   when: rhel8cis_rule_1_1_1_7
   tags:
     - level2-server
@@ -208,9 +214,44 @@
     - patch
     - rule_1.1.1.7
     - NIST800-53R5_CM-7
+    - CCI-000381
+    - squashfs
+  block:
+    - name: "1.1.1.7 | PATCH | Ensure squashfs kernel module is not available | Edit modprobe config"
+      ansible.builtin.lineinfile:
+        path: /etc/modprobe.d/CIS.conf
+        regexp: "^(#)?install squashfs(\\s|$)"
+        line: "install squashfs /bin/true"
+        create: true
+        mode: 'go-rwx'
+
+    - name: "1.1.1.7 | PATCH | Ensure squashfs kernel module is not available | blacklist"
+      ansible.builtin.lineinfile:
+        path: /etc/modprobe.d/blacklist.conf
+        regexp: "^(#)?blacklist squashfs(\\s|$)"
+        line: "blacklist squashfs"
+        create: true
+        mode: 'go-rwx'
+
+    - name: "1.1.1.7 | PATCH | Ensure squashfs kernel module is not available | Disable squashfs"
+      when: not system_is_container
+      community.general.modprobe:
+        name: squashfs
+        state: absent
+
+- name: "1.1.1.8 | PATCH | Ensure udf kernel module is not available"
+  when: rhel8cis_rule_1_1_1_8
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - rule_1.1.1.8
+    - NIST800-53R5_SI-3
+    - CCI-000381
     - udf
   block:
-    - name: "1.1.1.7 | PATCH | Ensure udf kernel module is not available | Edit modprobe config"
+    - name: "1.1.1.8 | PATCH | Ensure udf kernel module is not available | Edit modprobe config"
       ansible.builtin.lineinfile:
         path: /etc/modprobe.d/CIS.conf
         regexp: "^(#)?install udf(\\s|$)"
@@ -218,7 +259,7 @@
         create: true
         mode: 'go-rwx'
 
-    - name: "1.1.1.7 | PATCH | Ensure udf kernel module is not available | blacklist"
+    - name: "1.1.1.8 | PATCH | Ensure udf kernel module is not available | blacklist"
       ansible.builtin.lineinfile:
         path: /etc/modprobe.d/blacklist.conf
         regexp: "^(#)?blacklist udf(\\s|$)"
@@ -226,24 +267,61 @@
         create: true
         mode: 'go-rwx'
 
-    - name: "1.1.1.7 | PATCH | Ensure udf kernel module is not available | Disable udf"
+    - name: "1.1.1.8 | PATCH | Ensure udf kernel module is not available | Disable udf"
       when: not system_is_container
       community.general.modprobe:
         name: udf
         state: absent
 
-- name: "1.1.1.8 | PATCH | Ensure usb-storage kernel module is not available"
-  when: rhel8cis_rule_1_1_1_8
+- name: "1.1.1.9 | PATCH | Ensure firewire-core kernel module is not available"
+  when: rhel8cis_rule_1_1_1_9
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - rule_1.1.1.9
+    - NIST800-53R5_SI-3
+    - CCI-000381
+    - firewire
+  block:
+    - name: "1.1.1.9 | PATCH | Ensure firewire-core kernel module is not available | Edit modprobe config"
+      ansible.builtin.lineinfile:
+        path: /etc/modprobe.d/CIS.conf
+        regexp: "^(#)?install firewire-core(\\s|$)"
+        line: "install firewire-core /bin/true"
+        create: true
+        mode: 'go-rwx'
+
+    - name: "1.1.1.9 | PATCH | Ensure firewire-core kernel module is not available | blacklist"
+      ansible.builtin.lineinfile:
+        path: /etc/modprobe.d/blacklist.conf
+        regexp: "^(#)?blacklist firewire-core(\\s|$)"
+        line: "blacklist firewire-core"
+        create: true
+        mode: 'go-rwx'
+
+    - name: "1.1.1.9 | PATCH | Ensure firewire-core kernel module is not available | Disable firewire-core"
+      when: not system_is_container
+      community.general.modprobe:
+        name: firewire-core
+        state: absent
+
+- name: "1.1.1.10 | PATCH | Ensure usb-storage kernel module is not available"
+  when: rhel8cis_rule_1_1_1_10
   tags:
     - level1-server
     - level2-workstation
     - automated
     - patch
-    - rule_1.1.1.8
+    - rule_1.1.1.10
     - NIST800-53R5_SI-3
+    - CCI-000778
+    - CCI-001958
+    - CCI-003959
     - usb
   block:
-    - name: "1.1.1.8 | PATCH | Ensure usb-storage kernel module is not available | Edit modprobe config"
+    - name: "1.1.1.10 | PATCH | Ensure usb-storage kernel module is not available | Edit modprobe config"
       ansible.builtin.lineinfile:
         path: /etc/modprobe.d/CIS.conf
         regexp: "^(#)?install usb-storage(\\s|$)"
@@ -251,7 +329,7 @@
         create: true
         mode: 'go-rwx'
 
-    - name: "1.1.1.8 | PATCH | Ensure usb-storage kernel module is not available | blacklist"
+    - name: "1.1.1.10 | PATCH | Ensure usb-storage kernel module is not available | blacklist"
       ansible.builtin.lineinfile:
         path: /etc/modprobe.d/blacklist.conf
         regexp: "^(#)?blacklist usb-storage(\\s|$)"
@@ -259,8 +337,42 @@
         create: true
         mode: 'go-rwx'
 
-    - name: "1.1.1.8 | PATCH | Ensure usb-storage kernel module is not available | Disable usb"
+    - name: "1.1.1.10 | PATCH | Ensure usb-storage kernel module is not available | Disable usb"
       when: not system_is_container
       community.general.modprobe:
         name: usb-storage
         state: absent
+
+- name: "1.1.1.11 | PATCH | Ensure unused filesystems kernel modules are not available"
+  when: rhel8cis_rule_1_1_1_11
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_1.1.1.11
+  vars:
+    warn_control_id: '1.1.1.11'
+  block:
+    - name: "1.1.1.11 | PATCH | Ensure unused filesystems kernel modules are not available | Add discovery script"
+      ansible.builtin.copy:
+        src: fs_with_cves.sh
+        dest: /var/fs_with_cves.sh
+        owner: root
+        group: root
+        mode: 'u+x,go-wx'
+
+    - name: "1.1.1.11 | AUDIT | Ensure unused filesystems kernel modules are not available | Run discovery script"
+      ansible.builtin.command: /var/fs_with_cves.sh
+      changed_when: false
+      failed_when: discovered_fs_modules_loaded.rc not in [ 0, 99 ]
+      register: discovered_fs_modules_loaded
+
+    - name: "1.1.1.11 | AUDIT | Ensure unused filesystems kernel modules are not available | Output Warning"
+      when: discovered_fs_modules_loaded.stdout | length > 0
+      ansible.builtin.debug:
+        msg: "{{ ['Warning!! Discovered loaded Filesystem modules that need attention. This is a manual task'] + discovered_fs_modules_loaded.stdout_lines }}"
+
+    - name: "1.1.1.11 | AUDIT | Ensure unused filesystems kernel modules are not available | Capture Warning"
+      when: discovered_fs_modules_loaded.stdout | length > 0
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml

@@ -1,0 +1,12 @@
+{{ file_managed_by_ansible }}
+
+# 5.3.3.2.3 Ensure password complexity is configured
+{% if rhel8cis_passwd_complex_option == 'minclass' %}  # pragma: allowlist secret
+minclass = {{ rhel8cis_passwd_minclass }}
+{% endif %}
+{% if rhel8cis_passwd_complex_option == 'credits' %}  # pragma: allowlist secret
+dcredit = {{rhel8cis_passwd_dcredit }}
+ucredit = {{ rhel8cis_passwd_ucredit }}
+ocredit = {{ rhel8cis_passwd_ocredit }}
+lcredit = {{ rhel8cis_passwd_lcredit }}
+{% endif %}

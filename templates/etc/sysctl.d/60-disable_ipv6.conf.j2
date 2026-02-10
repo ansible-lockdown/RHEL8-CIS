@@ -1,0 +1,11 @@
+{{ file_managed_by_ansible }}
+### YOUR CHANGES WILL BE LOST!
+
+# IPv6 disable
+{% if rhel8cis_rule_3_1_1 and not rhel8cis_ipv6_required %}
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.default.disable_ipv6 = 1
+{% for interface in ansible_interfaces %}
+net.ipv6.conf.{{ interface }}.disable_ipv6 = 1
+{% endfor %}
+{% endif %}

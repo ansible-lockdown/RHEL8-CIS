@@ -1,0 +1,19 @@
+{{ file_managed_by_ansible }}
+
+{% if rhel8cis_rule_1_5_5 %}
+# Control 1.5.5 - kernel.dmesg_restrict
+kernel.dmesg_restrict = 1
+{% endif %}
+{% if rhel8cis_rule_1_5_6 %}
+# Control 1.5.6 - kernel.fs.kptr_restrict
+# kernel.kpttr_restrict is set to a value of: 1 or 2.
+kernel.kptr_restrict = {{ rhel8cis_kptr_restrict_value }}
+{% endif %}
+{% if rhel8cis_rule_1_5_7 %}
+# Control 1.5.7 - kernel.yama.ptrace_scope
+kernel.yama.ptrace_scope = {{ rhel8cis_yama_ptrace_scope_value }}
+{% endif %}
+{% if rhel8cis_rule_1_5_8 %}
+# Control 1.5.8 - kernel.randomize_va_space
+kernel.randomize_va_space = 2
+{% endif %}
