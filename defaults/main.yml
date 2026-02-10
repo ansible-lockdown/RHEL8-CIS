@@ -38,6 +38,9 @@ benchmark_version: v4.0.0
 # Whether to skip the reboot
 skip_reboot: true
 
+# default value will change to true but wont reboot if not enabled but will error
+change_requires_reboot: false
+
 # Modify behavior of changed_when if reboot is pending and skipped to allow idempotency to succeed
 reboot_warning_changed_when: true
 
@@ -56,10 +59,15 @@ setup_audit: false
 run_audit: false
 # Run heavy tests - some tests can have more impact on a system enabling these can have greater impact on a system
 audit_run_heavy_tests: true
+# Ability to limit the number of concurrent processes used by goss (default 50)
+audit_max_concurrent: 50
 
 ## Only run Audit do not remediate
 audit_only: false
 
+### As part of audit_only ###
+# Path to copy the files to will create dir structure in audit_only mode
+audit_capture_files_dir: /some/location to copy to on control node
 #############################
 
 # How to retrieve audit binary
@@ -89,7 +97,7 @@ audit_conf_dest: "/opt"
 # Where the audit logs are stored
 audit_log_dir: '/opt'
 
-## Ability to collect and take audit files moving to a centralised location
+## Ability to collect and take audit files moving to a centralized location
 # This enables the collection of the files from the host
 fetch_audit_output: false
 
@@ -845,7 +853,7 @@ rhel8cis_authselect_pkg_update: false  # NOTE the risks if system is using SSSD 
 ## Controls:
 #  - 5.3.2.x - Ensure custom authselect profile is used
 # Settings in place now will fail, they are placeholders from the control example. Due to the way many multiple
-# options and ways to configure this control needs to be enabled and settings adjusted to minimise risk.
+# options and ways to configure this control needs to be enabled and settings adjusted to minimize risk.
 
 # This variable configures the name of the custom profile to be created and selected.
 # To be changed from default - cis_example_profile

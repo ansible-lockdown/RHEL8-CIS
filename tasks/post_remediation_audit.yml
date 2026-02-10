@@ -1,21 +1,12 @@
 ---
 
 - name: Post Audit | Run post_remediation {{ benchmark }} audit  # noqa name[template]
-  ansible.builtin.command: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -f {{ audit_format }} -o {{ post_audit_outfile }} -g \"{{ group_names }}\""
+  ansible.builtin.shell: "umask 0022 && {{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -f {{ audit_format }} -m {{ audit_max_concurrent }} -o {{ post_audit_outfile }} -g \"{{ group_names }}\""  # noqa yaml[line-length]
   changed_when: true
   environment:
     AUDIT_BIN: "{{ audit_bin }}"
     AUDIT_CONTENT_LOCATION: "{{ audit_conf_dest | default('/opt') }}"
     AUDIT_FILE: goss.yml
-
-- name: Post Audit | Ensure audit files readable by users
-  ansible.builtin.file:
-    path: "{{ item }}"
-    mode: 'u-x,go=r'
-    state: file
-  loop:
-    - "{{ post_audit_outfile }}"
-    - "{{ pre_audit_outfile }}"
 
 - name: Post Audit | Capture audit data if json format
   when: audit_format == "json"

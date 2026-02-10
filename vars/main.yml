@@ -44,7 +44,7 @@ auditd_binaries:
   - /sbin/augenrules
 # default setting, this should not be changed
 # and is overridden if a task that changed sets the value if required.
-reboot_required: false
+change_requires_reboot: false
 
 rhel8cis_legacy_boot: false
 
