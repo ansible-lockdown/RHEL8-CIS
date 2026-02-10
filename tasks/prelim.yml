@@ -69,14 +69,14 @@
         path: /sys/firmware/efi
       register: prelim_efi_boot
 
-    - name: "PRELIM | AUDIT | set legacy boot and grub path fact | Bios"
+    - name: "PRELIM | AUDIT | Set legacy boot and grub path fact | Bios"
       when: not prelim_efi_boot.stat.exists
       ansible.builtin.set_fact:
         rhel8cis_legacy_boot: true
         grub2_path: /etc/grub2.cfg
         rhel8cis_boot_path: /boot/grub2/
 
-    - name: "PRELIM | AUDIT | set grub fact | UEFI"
+    - name: "PRELIM | AUDIT | Set grub fact | UEFI"
       when: prelim_efi_boot.stat.exists
       ansible.builtin.set_fact:
         grub2_path: /etc/grub2-efi.cfg
@@ -327,7 +327,7 @@
 #### Optional #####
 
 # Added to ensure ssh drop in file exists if not default /etc/ssh/sshd_config
-- name: "PRELIM | PATCH | SSH Config file is not exist"
+- name: "PRELIM | PATCH | SSH Config file does not exist"
   when:
     - rhel8cis_sshd_config_file != '/etc/ssh/sshd_config'
     - "'openssh-server' in ansible_facts.packages"
@@ -338,7 +338,7 @@
         that: ansible_distribution_version is version_compare('8.6', '>=')
         fail_msg: "{{ ansible_distribution }} {{ ansible_distribution_version }} does not support SSH Config drop in"
 
-    - name: "PRELIM | PATCH | SSH Config drop in directory is not exist"
+    - name: "PRELIM | PATCH | SSH Config drop in directory does not exist"
       ansible.builtin.file:
         path: "{{ rhel8cis_sshd_config_file | dirname }}"
         owner: root
@@ -346,7 +346,7 @@
         mode: 'go-rwx'
         state: directory
 
-    - name: "PRELIM | PATCH | SSH Config file is not exist"
+    - name: "PRELIM | PATCH | SSH Config file does not exist"
       ansible.builtin.file:
         path: "{{ rhel8cis_sshd_config_file }}"
         owner: root

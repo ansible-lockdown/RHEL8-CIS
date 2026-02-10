@@ -629,7 +629,7 @@
         - "'nginx' in ansible_facts.packages"
       notify: Systemd daemon reload
       ansible.builtin.systemd:
-        name: ngnix.service
+        name: nginx.service
         enabled: false
         state: stopped
         masked: true

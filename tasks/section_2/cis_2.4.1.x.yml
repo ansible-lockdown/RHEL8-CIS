@@ -89,7 +89,7 @@
     group: root
     mode: 'go-rwx'
 
-- name: "2.4.1.6 | PATCH | Ensure access to  /etc/cron.monthly is configured"
+- name: "2.4.1.6 | PATCH | Ensure access to /etc/cron.monthly is configured"
   when: rhel8cis_rule_2_4_1_6
   tags:
     - level1-server
@@ -107,7 +107,7 @@
     group: root
     mode: 'go-rwx'
 
-- name: "2.4.1.7 | PATCH | Ensure access to  /etc/cron.yearly is configured"
+- name: "2.4.1.7 | PATCH | Ensure access to /etc/cron.yearly is configured"
   when: rhel8cis_rule_2_4_1_7
   tags:
     - level1-server

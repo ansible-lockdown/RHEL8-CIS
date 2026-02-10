@@ -1,7 +1,7 @@
 ---
 
 ## Example file that maybe used for containers
-## This is still dependant in the container usage
+## This is still dependent on the container usage
 ## Please confirm before running that it is suitable for your environment
 
 rhel8cis_section1: true
@@ -237,7 +237,7 @@ rhel8cis_rule_4_5_2_3: true
 rhel8cis_rule_4_5_2_4: true
 rhel8cis_rule_4_5_2_5: true
 
-# User enviroment
+# User environment
 rhel8cis_rule_4_5_3_1: true
 rhel8cis_rule_4_5_3_2: true
 rhel8cis_rule_4_5_3_3: true

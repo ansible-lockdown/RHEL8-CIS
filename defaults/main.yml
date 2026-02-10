@@ -1,6 +1,6 @@
 ---
 
-# defaults file for rhel8-cis
+# defaults file for RHEL8-CIS
 
 system_is_container: false
 # Place to find the container yml file for your environment - /vars/... This can be adjusted for your requirements.
@@ -64,7 +64,7 @@ audit_only: false
 
 # How to retrieve audit binary
 # Options are copy or download - detailed settings at the bottom of this file
-# you will need to access to either github or the file already downloaded
+# you will need access to either github or the file already downloaded
 get_audit_binary_method: download
 
 ## if get_audit_binary_method - copy the following needs to be updated for your environment
@@ -277,7 +277,7 @@ rhel8cis_rule_2_4_1_9: true
 rhel8cis_rule_2_4_2_1: true
 
 ## Section 3 Fixes
-# Section 3 rules are used for securely configuring the network configuration(kernel params, ACL, Firewall settings)
+# Section 3 rules are used for securely configuring the network configuration (kernel params, ACL, Firewall settings)
 # Network Devices
 rhel8cis_rule_3_1_1: true
 rhel8cis_rule_3_1_2: true
@@ -569,10 +569,34 @@ rhel8cis_selinux_policy: targeted
 # NOTE: This take significant time during a reboot
 rhel8cis_enable_selinux_relabel: false
 
-# 1.4 Bootloader settings
-rhel8cis_bootloader_password_hash: 'grub.pbkdf2.sha512.changethispassword'  # pragma: allowlist secret
-rhel8cis_bootloader_password: random  # pragma: allowlist secret
+## Control 1.4.1
+# This variable governs whether a bootloader password should be set in '/boot/grub2/user.cfg' file.
 rhel8cis_set_boot_pass: false
+
+################### bootloader password ##########################################################
+#
+# Two options for setting the bootloader password
+#
+# Option 1: Set the bootloader password and salt – requires the passlib Python module
+# to be available on the Ansible controller.
+# Set this value to something secure to have predictable hashes,
+# which will prevent unnecessary changes.
+
+rhel8cis_bootloader_salt: ''
+
+# This variable stores the GRUB bootloader password to be written
+# to the '/boot/grub2/user.cfg' file. The default value must be changed.
+
+rhel8cis_bootloader_password: 'password'  # pragma: allowlist secret
+
+# Option 2: Set the bootloader password hash – if the salt value is empty,
+# the password will be set using the variable below.
+# If you are not using the bootloader hash filter, you can set it here
+# in encrypted format, e.g. grub.pbkdf2.sha512.hashstring
+
+rhel8cis_bootloader_password_hash: 'grub.pbkdf2.sha512.changethispassword'  # pragma: allowlist secret
+
+######################################################################################################
 
 ## Controls 1.5.x
 
@@ -926,7 +950,7 @@ rhel8cis_aide_db_recreate: false
 # a database file with the same name as the value of this variable.
 rhel8cis_aide_db_file: /var/lib/aide/aide.db.gz
 ## When Initializing aide this can take longer on some systems
-# changing the values enables user to change to thier own requirements
+# changing the values enables user to change to their own requirements
 # Maximum Time in seconds
 rhel8cis_aide_init_async: 600
 # Polling Interval in seconds
@@ -1034,7 +1058,7 @@ rhel8cis_update_audit_template: false
 ## Advanced option found in auditd post
 # This variable governs if defining user exceptions for auditd logging is acceptable.
 rhel8cis_allow_auditd_uid_user_exclusions: false
-# This variable contains a list of uids to be excluded(users whose actions are not logged by auditd)
+# This variable contains a list of uids to be excluded (users whose actions are not logged by auditd)
 rhel8cis_auditd_uid_exclude:
   - 1999
 
