@@ -1,6 +1,6 @@
 ---
 
-# defaults file for rhel8-cis
+# defaults file for RHEL8-CIS
 
 system_is_container: false
 # Place to find the container yml file for your environment - /vars/... This can be adjusted for your requirements.
@@ -17,6 +17,7 @@ rhel8cis_section3: true
 rhel8cis_section4: true
 rhel8cis_section5: true
 rhel8cis_section6: true
+rhel8cis_section7: true
 
 rhel8cis_level_1: true
 rhel8cis_level_2: true
@@ -25,10 +26,6 @@ rhel8cis_selinux_disable: false
 # Some tests can have a heavy impact on system e.g. find on all filesystems etc
 rhel8cis_disruption_high: false
 
-## Python Binary
-## This is used for python3 Installations where python2 OS modules are used in ansible
-python2_bin: /bin/python2.7
-
 # Create managed not custom local_facts files
 create_benchmark_facts: true
 ansible_facts_path: /etc/ansible/facts.d
@@ -36,7 +33,7 @@ ansible_facts_path: /etc/ansible/facts.d
 ## Benchmark name used by auditing control role
 # The audit variable found at the base
 benchmark: RHEL8-CIS
-benchmark_version: v3.0.0
+benchmark_version: v4.0.0
 
 # Whether to skip the reboot
 skip_reboot: true
@@ -75,7 +72,7 @@ audit_capture_files_dir: /some/location to copy to on control node
 
 # How to retrieve audit binary
 # Options are copy or download - detailed settings at the bottom of this file
-# you will need to access to either github or the file already downloaded
+# you will need access to either github or the file already downloaded
 get_audit_binary_method: download
 
 ## if get_audit_binary_method - copy the following needs to be updated for your environment
@@ -130,6 +127,9 @@ rhel8cis_rule_1_1_1_5: true
 rhel8cis_rule_1_1_1_6: true
 rhel8cis_rule_1_1_1_7: true
 rhel8cis_rule_1_1_1_8: true
+rhel8cis_rule_1_1_1_9: true
+rhel8cis_rule_1_1_1_10: true
+rhel8cis_rule_1_1_1_11: true
 
 # /tmp
 rhel8cis_rule_1_1_2_1_1: true
@@ -172,37 +172,47 @@ rhel8cis_rule_1_1_2_7_3: true
 rhel8cis_rule_1_1_2_7_4: true
 
 # DNF - Patching
-rhel8cis_rule_1_2_1: true
-rhel8cis_rule_1_2_2: true
-rhel8cis_rule_1_2_3: true
-rhel8cis_rule_1_2_4: true
-rhel8cis_rule_1_2_5: true
+rhel8cis_rule_1_2_1_1: true
+rhel8cis_rule_1_2_1_2: true
+rhel8cis_rule_1_2_1_3: true
+rhel8cis_rule_1_2_1_4: true
+rhel8cis_rule_1_2_1_5: true
+
+rhel8cis_rule_1_2_2_1: true
 
 # bootloader grub
-rhel8cis_rule_1_3_1: true
-rhel8cis_rule_1_3_2: true
+rhel8cis_rule_1_3_1_1: true
+rhel8cis_rule_1_3_1_2: true
+rhel8cis_rule_1_3_1_3: true
+rhel8cis_rule_1_3_1_4: true
+rhel8cis_rule_1_3_1_5: true
+rhel8cis_rule_1_3_1_6: true
+rhel8cis_rule_1_3_1_7: true
+rhel8cis_rule_1_3_1_8: true
 
 # kernel sysctl and coredumps
 rhel8cis_rule_1_4_1: true
 rhel8cis_rule_1_4_2: true
-rhel8cis_rule_1_4_3: true
-rhel8cis_rule_1_4_4: true
 
 # SElinux
-rhel8cis_rule_1_5_1_1: true
-rhel8cis_rule_1_5_1_2: true
-rhel8cis_rule_1_5_1_3: true
-rhel8cis_rule_1_5_1_4: true
-rhel8cis_rule_1_5_1_5: true
-rhel8cis_rule_1_5_1_6: true
-rhel8cis_rule_1_5_1_7: true
-rhel8cis_rule_1_5_1_8: true
+rhel8cis_rule_1_5_1: true
+rhel8cis_rule_1_5_2: true
+rhel8cis_rule_1_5_3: true
+rhel8cis_rule_1_5_4: true
+rhel8cis_rule_1_5_5: true
+rhel8cis_rule_1_5_6: true
+rhel8cis_rule_1_5_7: true
+rhel8cis_rule_1_5_8: true
+rhel8cis_rule_1_5_9: true
+rhel8cis_rule_1_5_10: true
 
 # Crypto Policies
 rhel8cis_rule_1_6_1: true
 rhel8cis_rule_1_6_2: true
 rhel8cis_rule_1_6_3: true
 rhel8cis_rule_1_6_4: true
+rhel8cis_rule_1_6_5: true
+rhel8cis_rule_1_6_6: true
 
 # MOTD and messages
 rhel8cis_rule_1_7_1: true
@@ -220,323 +230,412 @@ rhel8cis_rule_1_8_4: true
 rhel8cis_rule_1_8_5: true
 rhel8cis_rule_1_8_6: true
 rhel8cis_rule_1_8_7: true
-rhel8cis_rule_1_8_8: true
-rhel8cis_rule_1_8_9: true
-rhel8cis_rule_1_8_10: true
 
 # Section 2 rules
-# time sync
+# Server services
 rhel8cis_rule_2_1_1: true
 rhel8cis_rule_2_1_2: true
 rhel8cis_rule_2_1_3: true
+rhel8cis_rule_2_1_4: true
+rhel8cis_rule_2_1_5: true
+rhel8cis_rule_2_1_6: true
+rhel8cis_rule_2_1_7: true
+rhel8cis_rule_2_1_8: true
+rhel8cis_rule_2_1_9: true
+rhel8cis_rule_2_1_10: true
+rhel8cis_rule_2_1_11: true
+rhel8cis_rule_2_1_12: true
+rhel8cis_rule_2_1_13: true
+rhel8cis_rule_2_1_14: true
+rhel8cis_rule_2_1_15: true
+rhel8cis_rule_2_1_16: true
+rhel8cis_rule_2_1_17: true
+rhel8cis_rule_2_1_18: true
+rhel8cis_rule_2_1_19: true
+rhel8cis_rule_2_1_20: true
+rhel8cis_rule_2_1_21: true
+rhel8cis_rule_2_1_22: true
+rhel8cis_rule_2_1_23: true
+rhel8cis_rule_2_1_24: true
 
-# Server services
+# Client services
 rhel8cis_rule_2_2_1: true
 rhel8cis_rule_2_2_2: true
 rhel8cis_rule_2_2_3: true
 rhel8cis_rule_2_2_4: true
 rhel8cis_rule_2_2_5: true
-rhel8cis_rule_2_2_6: true
-rhel8cis_rule_2_2_7: true
-rhel8cis_rule_2_2_8: true
-rhel8cis_rule_2_2_9: true
-rhel8cis_rule_2_2_10: true
-rhel8cis_rule_2_2_11: true
-rhel8cis_rule_2_2_12: true
-rhel8cis_rule_2_2_13: true
-rhel8cis_rule_2_2_14: true
-rhel8cis_rule_2_2_15: true
-rhel8cis_rule_2_2_16: true
-rhel8cis_rule_2_2_17: true
-rhel8cis_rule_2_2_18: true
-rhel8cis_rule_2_2_19: true
-rhel8cis_rule_2_2_20: true
-rhel8cis_rule_2_2_21: true
-rhel8cis_rule_2_2_22: true
 
-# Client services
+# Time services
 rhel8cis_rule_2_3_1: true
 rhel8cis_rule_2_3_2: true
 rhel8cis_rule_2_3_3: true
-rhel8cis_rule_2_3_4: true
-rhel8cis_rule_2_3_5: true
 
-# Section 3 rules
-# network connectivity wifi/bluetooth/ipv6
+# Job Scheduler | cron
+rhel8cis_rule_2_4_1_1: true
+rhel8cis_rule_2_4_1_2: true
+rhel8cis_rule_2_4_1_3: true
+rhel8cis_rule_2_4_1_4: true
+rhel8cis_rule_2_4_1_5: true
+rhel8cis_rule_2_4_1_6: true
+rhel8cis_rule_2_4_1_7: true
+rhel8cis_rule_2_4_1_8: true
+rhel8cis_rule_2_4_1_9: true
+
+# Job Scheduler | at
+rhel8cis_rule_2_4_2_1: true
+
+## Section 3 Fixes
+# Section 3 rules are used for securely configuring the network configuration (kernel params, ACL, Firewall settings)
+# Network Devices
 rhel8cis_rule_3_1_1: true
 rhel8cis_rule_3_1_2: true
 rhel8cis_rule_3_1_3: true
-
-# Network Kernel module
+# Network Kernel Modules
 rhel8cis_rule_3_2_1: true
 rhel8cis_rule_3_2_2: true
 rhel8cis_rule_3_2_3: true
 rhel8cis_rule_3_2_4: true
+rhel8cis_rule_3_2_5: true
+rhel8cis_rule_3_2_6: true
+# Configure IPv4 parameters
+rhel8cis_rule_3_3_1_1: true
+rhel8cis_rule_3_3_1_2: true
+rhel8cis_rule_3_3_1_3: true
+rhel8cis_rule_3_3_1_4: true
+rhel8cis_rule_3_3_1_5: true
+rhel8cis_rule_3_3_1_6: true
+rhel8cis_rule_3_3_1_7: true
+rhel8cis_rule_3_3_1_8: true
+rhel8cis_rule_3_3_1_9: true
+rhel8cis_rule_3_3_1_10: true
+rhel8cis_rule_3_3_1_11: true
+rhel8cis_rule_3_3_1_12: true
+rhel8cis_rule_3_3_1_13: true
+rhel8cis_rule_3_3_1_14: true
+rhel8cis_rule_3_3_1_15: true
+rhel8cis_rule_3_3_1_16: true
+rhel8cis_rule_3_3_1_17: true
+rhel8cis_rule_3_3_1_18: true
+# Configure IPv6 parameters
+rhel8cis_rule_3_3_2_1: true
+rhel8cis_rule_3_3_2_2: true
+rhel8cis_rule_3_3_2_3: true
+rhel8cis_rule_3_3_2_4: true
+rhel8cis_rule_3_3_2_5: true
+rhel8cis_rule_3_3_2_6: true
+rhel8cis_rule_3_3_2_7: true
+rhel8cis_rule_3_3_2_8: true
 
-# Network Kernel Params
-rhel8cis_rule_3_3_1: true
-rhel8cis_rule_3_3_2: true
-rhel8cis_rule_3_3_3: true
-rhel8cis_rule_3_3_4: true
-rhel8cis_rule_3_3_5: true
-rhel8cis_rule_3_3_6: true
-rhel8cis_rule_3_3_7: true
-rhel8cis_rule_3_3_8: true
-rhel8cis_rule_3_3_9: true
-rhel8cis_rule_3_3_10: true
-rhel8cis_rule_3_3_11: true
-
-# Firewall
-rhel8cis_rule_3_4_1_1: true
-rhel8cis_rule_3_4_1_2: true
-
-# Firewall rules
-rhel8cis_rule_3_4_2_1: true
-rhel8cis_rule_3_4_2_2: true
-rhel8cis_rule_3_4_2_3: true
-rhel8cis_rule_3_4_2_4: true
-rhel8cis_rule_3_4_2_5: true
-
-##
-## Section 4 rules
-##
-# cron
-rhel8cis_rule_4_1_1_1: true
-rhel8cis_rule_4_1_1_2: true
-rhel8cis_rule_4_1_1_3: true
-rhel8cis_rule_4_1_1_4: true
-rhel8cis_rule_4_1_1_5: true
-rhel8cis_rule_4_1_1_6: true
-rhel8cis_rule_4_1_1_7: true
-rhel8cis_rule_4_1_1_8: true
-
-# at
-rhel8cis_rule_4_1_2_1: true
-
-# sshd
-rhel8cis_rule_4_2_1: true
-rhel8cis_rule_4_2_2: true
-rhel8cis_rule_4_2_3: true
-rhel8cis_rule_4_2_4: true
-rhel8cis_rule_4_2_5: true
-rhel8cis_rule_4_2_6: true
-rhel8cis_rule_4_2_7: true
-rhel8cis_rule_4_2_8: true
-rhel8cis_rule_4_2_9: true
-rhel8cis_rule_4_2_10: true
-rhel8cis_rule_4_2_12: true
-rhel8cis_rule_4_2_11: true
-rhel8cis_rule_4_2_13: true
-rhel8cis_rule_4_2_14: true
-rhel8cis_rule_4_2_15: true
-rhel8cis_rule_4_2_16: true
-rhel8cis_rule_4_2_17: true
-rhel8cis_rule_4_2_18: true
-rhel8cis_rule_4_2_19: true
-rhel8cis_rule_4_2_20: true
-rhel8cis_rule_4_2_21: true
-rhel8cis_rule_4_2_22: true
-
-# sudo
-rhel8cis_rule_4_3_1: true
-rhel8cis_rule_4_3_2: true
-rhel8cis_rule_4_3_3: true
-rhel8cis_rule_4_3_4: true
-rhel8cis_rule_4_3_5: true
-rhel8cis_rule_4_3_6: true
-rhel8cis_rule_4_3_7: true
-
-# Pam software pkgs
-rhel8cis_rule_4_4_1_1: true
-rhel8cis_rule_4_4_1_2: true
-
-# authselect
-rhel8cis_rule_4_4_2_1: true
-rhel8cis_rule_4_4_2_2: true
-rhel8cis_rule_4_4_2_3: true
-rhel8cis_rule_4_4_2_4: true
-rhel8cis_rule_4_4_2_5: true
-
-# pam faillock
-rhel8cis_rule_4_4_3_1_1: true
-rhel8cis_rule_4_4_3_1_2: true
-rhel8cis_rule_4_4_3_1_3: true
-
-# pam pwquality
-rhel8cis_rule_4_4_3_2_1: true
-rhel8cis_rule_4_4_3_2_2: true
-rhel8cis_rule_4_4_3_2_3: true
-rhel8cis_rule_4_4_3_2_4: true
-rhel8cis_rule_4_4_3_2_5: true
-rhel8cis_rule_4_4_3_2_6: true
-rhel8cis_rule_4_4_3_2_7: true
-
-# pam pwhistory
-rhel8cis_rule_4_4_3_3_1: true
-rhel8cis_rule_4_4_3_3_2: true
-rhel8cis_rule_4_4_3_3_3: true
-
-# pam pam_unix
-rhel8cis_rule_4_4_3_4_1: true
-rhel8cis_rule_4_4_3_4_2: true
-rhel8cis_rule_4_4_3_4_3: true
-rhel8cis_rule_4_4_3_4_4: true
-
-# Shadow user settings
-rhel8cis_rule_4_5_1_1: true
-rhel8cis_rule_4_5_1_2: true
-rhel8cis_rule_4_5_1_3: true
-rhel8cis_rule_4_5_1_4: true
-rhel8cis_rule_4_5_1_5: true
-
-# root and sys accts and env
-rhel8cis_rule_4_5_2_1: true
-rhel8cis_rule_4_5_2_2: true
-rhel8cis_rule_4_5_2_3: true
-rhel8cis_rule_4_5_2_4: true
-rhel8cis_rule_4_5_2_5: true
-
-# User environment
-rhel8cis_rule_4_5_3_1: true
-rhel8cis_rule_4_5_3_2: true
-rhel8cis_rule_4_5_3_3: true
+## Section 4 Fixes
+# Section 4 rules are Logging and Auditing (Configure System Accounting (auditd),
+# Configure Data Retention, and Configure Logging)
+# Firewall utility
+rhel8cis_rule_4_1_1: true
+rhel8cis_rule_4_1_2: true
+rhel8cis_rule_4_1_3: true
+rhel8cis_rule_4_1_4: true
+rhel8cis_rule_4_1_5: true
+rhel8cis_rule_4_1_6: true
+rhel8cis_rule_4_1_7: true
 
 ##
 ## Section 5 rules
 ##
-
-# Rsyslog
-rhel8cis_rule_5_1_1_1: true
-rhel8cis_rule_5_1_1_2: true
-rhel8cis_rule_5_1_1_3: true
-rhel8cis_rule_5_1_1_4: true
-rhel8cis_rule_5_1_1_5: true
-rhel8cis_rule_5_1_1_6: true
-rhel8cis_rule_5_1_1_7: true
-
-# Journald
-rhel8cis_rule_5_1_2_1_1: true
-rhel8cis_rule_5_1_2_1_2: true
-rhel8cis_rule_5_1_2_1_3: true
-rhel8cis_rule_5_1_2_1_4: true
-rhel8cis_rule_5_1_2_2: true
-rhel8cis_rule_5_1_2_3: true
-rhel8cis_rule_5_1_2_4: true
-rhel8cis_rule_5_1_2_5: true
-rhel8cis_rule_5_1_2_6: true
+# sshd
+rhel8cis_rule_5_1_1: true
+rhel8cis_rule_5_1_2: true
 rhel8cis_rule_5_1_3: true
 rhel8cis_rule_5_1_4: true
+rhel8cis_rule_5_1_5: true
+rhel8cis_rule_5_1_6: true
+rhel8cis_rule_5_1_7: true
+rhel8cis_rule_5_1_8: true
+rhel8cis_rule_5_1_9: true
+rhel8cis_rule_5_1_10: true
+rhel8cis_rule_5_1_12: true
+rhel8cis_rule_5_1_11: true
+rhel8cis_rule_5_1_13: true
+rhel8cis_rule_5_1_14: true
+rhel8cis_rule_5_1_15: true
+rhel8cis_rule_5_1_16: true
+rhel8cis_rule_5_1_17: true
+rhel8cis_rule_5_1_18: true
+rhel8cis_rule_5_1_19: true
+rhel8cis_rule_5_1_20: true
+rhel8cis_rule_5_1_21: true
+rhel8cis_rule_5_1_22: true
+rhel8cis_rule_5_1_23: true
+rhel8cis_rule_5_1_24: true
 
-# Auditd
-rhel8cis_rule_5_2_1_1: true
-rhel8cis_rule_5_2_1_2: true
-rhel8cis_rule_5_2_1_3: true
-rhel8cis_rule_5_2_1_4: true
-rhel8cis_rule_5_2_2_1: true
-rhel8cis_rule_5_2_2_2: true
-rhel8cis_rule_5_2_2_3: true
-rhel8cis_rule_5_2_2_4: true
+# sudo
+rhel8cis_rule_5_2_1: true
+rhel8cis_rule_5_2_2: true
+rhel8cis_rule_5_2_3: true
+rhel8cis_rule_5_2_4: true
+rhel8cis_rule_5_2_5: true
+rhel8cis_rule_5_2_6: true
+rhel8cis_rule_5_2_7: true
 
-# auditd rules
-rhel8cis_rule_5_2_3_1: true
-rhel8cis_rule_5_2_3_2: true
-rhel8cis_rule_5_2_3_3: true
-rhel8cis_rule_5_2_3_4: true
-rhel8cis_rule_5_2_3_5: true
-rhel8cis_rule_5_2_3_6: true
-rhel8cis_rule_5_2_3_7: true
-rhel8cis_rule_5_2_3_8: true
-rhel8cis_rule_5_2_3_9: true
-rhel8cis_rule_5_2_3_10: true
-rhel8cis_rule_5_2_3_11: true
-rhel8cis_rule_5_2_3_12: true
-rhel8cis_rule_5_2_3_13: true
-rhel8cis_rule_5_2_3_14: true
-rhel8cis_rule_5_2_3_15: true
-rhel8cis_rule_5_2_3_16: true
-rhel8cis_rule_5_2_3_17: true
-rhel8cis_rule_5_2_3_18: true
-rhel8cis_rule_5_2_3_19: true
-rhel8cis_rule_5_2_3_20: true
-rhel8cis_rule_5_2_3_21: true
+# Pam software pkgs
+rhel8cis_rule_5_3_1_1: true
+rhel8cis_rule_5_3_1_2: true
 
-# auditd log perms
-rhel8cis_rule_5_2_4_1: true
-rhel8cis_rule_5_2_4_2: true
-rhel8cis_rule_5_2_4_3: true
-rhel8cis_rule_5_2_4_4: true
-rhel8cis_rule_5_2_4_5: true
-rhel8cis_rule_5_2_4_6: true
-rhel8cis_rule_5_2_4_7: true
-rhel8cis_rule_5_2_4_8: true
-rhel8cis_rule_5_2_4_9: true
-rhel8cis_rule_5_2_4_10: true
+# authselect
+rhel8cis_rule_5_3_2_1: true
+rhel8cis_rule_5_3_2_2: true
+rhel8cis_rule_5_3_2_3: true
+rhel8cis_rule_5_3_2_4: true
+rhel8cis_rule_5_3_2_5: true
 
-# AIDE
+# pam faillock
+rhel8cis_rule_5_3_3_1_1: true
+rhel8cis_rule_5_3_3_1_2: true
+rhel8cis_rule_5_3_3_1_3: true
 
-rhel8cis_rule_5_3_1: true
-rhel8cis_rule_5_3_2: true
-rhel8cis_rule_5_3_3: true
+# pam pwquality
+rhel8cis_rule_5_3_3_2_1: true
+rhel8cis_rule_5_3_3_2_2: true
+rhel8cis_rule_5_3_3_2_3: true
+rhel8cis_rule_5_3_3_2_4: true
+rhel8cis_rule_5_3_3_2_5: true
+rhel8cis_rule_5_3_3_2_6: true
+rhel8cis_rule_5_3_3_2_7: true
+
+# pam pwhistory
+rhel8cis_rule_5_3_3_3_1: true
+rhel8cis_rule_5_3_3_3_2: true
+rhel8cis_rule_5_3_3_3_3: true
+
+# pam pam_unix
+rhel8cis_rule_5_3_3_4_1: true
+rhel8cis_rule_5_3_3_4_2: true
+rhel8cis_rule_5_3_3_4_3: true
+rhel8cis_rule_5_3_3_4_4: true
+
+# Shadow user settings
+rhel8cis_rule_5_4_1_1: true
+rhel8cis_rule_5_4_1_2: true
+rhel8cis_rule_5_4_1_3: true
+rhel8cis_rule_5_4_1_4: true
+rhel8cis_rule_5_4_1_5: true
+rhel8cis_rule_5_4_1_6: true
+
+# root and sys accts and env
+rhel8cis_rule_5_4_2_1: true
+rhel8cis_rule_5_4_2_2: true
+rhel8cis_rule_5_4_2_3: true
+rhel8cis_rule_5_4_2_4: true
+rhel8cis_rule_5_4_2_5: true
+rhel8cis_rule_5_4_2_6: true
+rhel8cis_rule_5_4_2_7: true
+rhel8cis_rule_5_4_2_8: true
+
+# User environment
+rhel8cis_rule_5_4_3_1: true
+rhel8cis_rule_5_4_3_2: true
+rhel8cis_rule_5_4_3_3: true
 
 ##
 ## Section 6 rules
 ##
 
-# System file perms
+# AIDE
+
 rhel8cis_rule_6_1_1: true
 rhel8cis_rule_6_1_2: true
 rhel8cis_rule_6_1_3: true
-rhel8cis_rule_6_1_4: true
-rhel8cis_rule_6_1_5: true
-rhel8cis_rule_6_1_6: true
-rhel8cis_rule_6_1_7: true
-rhel8cis_rule_6_1_8: true
-rhel8cis_rule_6_1_9: true
-rhel8cis_rule_6_1_10: true
-rhel8cis_rule_6_1_11: true
-rhel8cis_rule_6_1_12: true
-rhel8cis_rule_6_1_13: true
-rhel8cis_rule_6_1_14: true
+
+# Journald
+rhel8cis_rule_6_2_1_1_1: true
+rhel8cis_rule_6_2_1_1_2: true
+rhel8cis_rule_6_2_1_1_3: true
+rhel8cis_rule_6_2_1_1_4: true
+rhel8cis_rule_6_2_1_1_5: true
+rhel8cis_rule_6_2_1_1_6: true
+
+# Journald- Remote
+rhel8cis_rule_6_2_1_2_1: true
+rhel8cis_rule_6_2_1_2_2: true
+rhel8cis_rule_6_2_1_2_3: true
+rhel8cis_rule_6_2_1_2_4: true
+
+# Rsyslog
+rhel8cis_rule_6_2_2_1: true
+rhel8cis_rule_6_2_2_2: true
+rhel8cis_rule_6_2_2_3: true
+rhel8cis_rule_6_2_2_4: true
+rhel8cis_rule_6_2_2_5: true
+rhel8cis_rule_6_2_2_6: true
+rhel8cis_rule_6_2_2_7: true
+rhel8cis_rule_6_2_2_8: true
+
+# Logfiles
+rhel8cis_rule_6_2_3_1: true
+
+# Auditd
+rhel8cis_rule_6_3_1_1: true
+rhel8cis_rule_6_3_1_2: true
+rhel8cis_rule_6_3_1_3: true
+rhel8cis_rule_6_3_1_4: true
+rhel8cis_rule_6_3_2_1: true
+rhel8cis_rule_6_3_2_2: true
+rhel8cis_rule_6_3_2_3: true
+rhel8cis_rule_6_3_2_4: true
+
+# auditd rules
+rhel8cis_rule_6_3_3_1: true
+rhel8cis_rule_6_3_3_2: true
+rhel8cis_rule_6_3_3_3: true
+rhel8cis_rule_6_3_3_4: true
+rhel8cis_rule_6_3_3_5: true
+rhel8cis_rule_6_3_3_6: true
+rhel8cis_rule_6_3_3_7: true
+rhel8cis_rule_6_3_3_8: true
+rhel8cis_rule_6_3_3_9: true
+rhel8cis_rule_6_3_3_10: true
+rhel8cis_rule_6_3_3_11: true
+rhel8cis_rule_6_3_3_12: true
+rhel8cis_rule_6_3_3_13: true
+rhel8cis_rule_6_3_3_14: true
+rhel8cis_rule_6_3_3_15: true
+rhel8cis_rule_6_3_3_16: true
+rhel8cis_rule_6_3_3_17: true
+rhel8cis_rule_6_3_3_18: true
+rhel8cis_rule_6_3_3_19: true
+rhel8cis_rule_6_3_3_20: true
+rhel8cis_rule_6_3_3_21: true
+rhel8cis_rule_6_3_3_22: true
+
+# auditd log perms
+rhel8cis_rule_6_3_4_1: true
+rhel8cis_rule_6_3_4_2: true
+rhel8cis_rule_6_3_4_3: true
+rhel8cis_rule_6_3_4_4: true
+rhel8cis_rule_6_3_4_5: true
+rhel8cis_rule_6_3_4_6: true
+rhel8cis_rule_6_3_4_7: true
+rhel8cis_rule_6_3_4_8: true
+rhel8cis_rule_6_3_4_9: true
+rhel8cis_rule_6_3_4_10: true
+
+##
+## Section 7 rules
+##
+
+# System file perms
+rhel8cis_rule_7_1_1: true
+rhel8cis_rule_7_1_2: true
+rhel8cis_rule_7_1_3: true
+rhel8cis_rule_7_1_4: true
+rhel8cis_rule_7_1_5: true
+rhel8cis_rule_7_1_6: true
+rhel8cis_rule_7_1_7: true
+rhel8cis_rule_7_1_8: true
+rhel8cis_rule_7_1_9: true
+rhel8cis_rule_7_1_10: true
+rhel8cis_rule_7_1_11: true
+rhel8cis_rule_7_1_12: true
+rhel8cis_rule_7_1_13: true
 
 # local and usergroup
-rhel8cis_rule_6_2_1: true
-rhel8cis_rule_6_2_2: true
-rhel8cis_rule_6_2_3: true
-rhel8cis_rule_6_2_4: true
-rhel8cis_rule_6_2_5: true
-rhel8cis_rule_6_2_6: true
-rhel8cis_rule_6_2_7: true
-rhel8cis_rule_6_2_8: true
-rhel8cis_rule_6_2_9: true
-rhel8cis_rule_6_2_10: true
-rhel8cis_rule_6_2_11: true
+rhel8cis_rule_7_2_1: true
+rhel8cis_rule_7_2_2: true
+rhel8cis_rule_7_2_3: true
+rhel8cis_rule_7_2_4: true
+rhel8cis_rule_7_2_5: true
+rhel8cis_rule_7_2_6: true
+rhel8cis_rule_7_2_7: true
+rhel8cis_rule_7_2_8: true
+rhel8cis_rule_7_2_9: true
 
 ##
 ## Section 1 vars
-##
-# 1.1.2.2
-# 1.1.2.3
-# 1.1.2.4
-# These settings go into the /etc/fstab file for the /tmp mount settings
-# The value must contain nosuid,nodev,noexec to conform to CIS standards
-# rhel8cis_tmp_tmpfs_settings: "defaults,rw,nosuid,nodev,noexec,relatime 0 0"
-# If set true uses the tmp.mount service else using fstab configuration
+#
+
+## Ability to enable debug on mounts to assist in troubleshooting
+# Mount point changes are set based upon facts created in Prelim
+# these then build the variable and options that is passed to the handler to set the mount point for the controls in section1.
+rhel8cis_debug_mount_data: false
+
+## Control 1.1.2
+# If set to `true`, rule will be implemented using the `tmp.mount` systemd-service,
+# otherwise fstab configuration will be used.
+# These /tmp settings will include nosuid,nodev,noexec to conform to CIS standards.
 rhel8cis_tmp_svc: false
 
 # 1.2 patch system
 rhel8cis_apply_installed_kernel_limit: false
 rhel8cis_installed_kernel_limit: 2
 
-# 1.3 Bootloader password
-rhel8cis_bootloader_password_hash: 'grub.pbkdf2.sha512.changethispassword'  # pragma: allowlist secret
-rhel8cis_bootloader_password: random  # pragma: allowlist secret
-rhel8cis_set_boot_pass: false
-
-# 1.5 SELinux policy
+# 1.3 SElinux
+# Set Enforcing -
 rhel8cis_selinux_state: enforcing
 # Configure SELinux to meet or exceed the default targeted policy, which constrains daemons and system software only.
 # Valid Inputs: targeted or mls
 rhel8cis_selinux_policy: targeted
+# Ability to relabel the filesystem if selinux currently disabled
+# NOTE: This take significant time during a reboot
+rhel8cis_enable_selinux_relabel: false
+
+## Control 1.4.1
+# This variable governs whether a bootloader password should be set in '/boot/grub2/user.cfg' file.
+rhel8cis_set_boot_pass: false
+
+################### bootloader password ##########################################################
+#
+# Two options for setting the bootloader password
+#
+# Option 1: Set the bootloader password and salt – requires the passlib Python module
+# to be available on the Ansible controller.
+# Set this value to something secure to have predictable hashes,
+# which will prevent unnecessary changes.
+
+rhel8cis_bootloader_salt: ''
+
+# This variable stores the GRUB bootloader password to be written
+# to the '/boot/grub2/user.cfg' file. The default value must be changed.
+
+rhel8cis_bootloader_password: 'password'  # pragma: allowlist secret
+
+# Option 2: Set the bootloader password hash – if the salt value is empty,
+# the password will be set using the variable below.
+# If you are not using the bootloader hash filter, you can set it here
+# in encrypted format, e.g. grub.pbkdf2.sha512.hashstring
+
+rhel8cis_bootloader_password_hash: 'grub.pbkdf2.sha512.changethispassword'  # pragma: allowlist secret
+
+######################################################################################################
+
+## Controls 1.5.x
+
+## Control 1.5.6 - kptr_restrict
+## Masking the kernel symbols in /proc/kallsyms reduces the ability of an attacker using them to learn more about what to attack on your system.
+# kptr_restrict = 1 - kernel pointers printed using the %pK format specifier will be replaced with 0's.
+# kptr_restrict = 2 - kernel pointers printed using %pK will be replaced with 0's regardless of privileges.
+# kernel.kptr_restrict is set to a value of: 1 or 2.
+rhel8cis_kptr_restrict_value: 1
+
+## Control 1.5.7 - yama.ptrace_scope
+# The ptrace() system call provides a means by which one process (the "tracer") may
+# observe and control the execution of another process (the "tracee"), and examine and
+# change the tracee's memory and registers.
+# The sysctl settings (writable only with CAP_SYS_PTRACE) are:
+# 0 - classic ptrace permissions: a process can PTRACE_ATTACH to any other
+# process running under the same uid, as long as it is dumpable (i.e. did not
+# transition uids, start privileged, or have called prctl(PR_SET_DUMPABLE...)
+#
+# already). Similarly, PTRACE_TRACEME is unchanged.
+# 1 - restricted ptrace: a process must have a predefined relationship with the
+# inferior it wants to call PTRACE_ATTACH on. By default, this relationship is that
+# of only its descendants when the above classic criteria is also met. To change
+# the relationship, an inferior can call prctl(PR_SET_PTRACER, debugger, ...) to
+# declare an allowed debugger PID to call PTRACE_ATTACH on the inferior.
+# Using PTRACE_TRACEME is unchanged.
+#
+# 2 - admin-only attach: only processes with CAP_SYS_PTRACE may use ptrace with PTRACE_ATTACH, or through children calling PTRACE_TRACEME.
+# 3 - no attach: no processes may use ptrace with PTRACE_ATTACH nor via PTRACE_TRACEME.
+# Once set, this sysctl value cannot be changed.
+rhel8cis_yama_ptrace_scope_value: 1
 
 ## Control 1.6
 # This variable contains the value to be set as the system-wide crypto policy. Current rule enforces NOT USING
@@ -550,7 +649,7 @@ rhel8cis_crypto_policy: 'DEFAULT'
 ## Control 1.6
 # This variable contains the value of the crypto policy module(combinations of policies and
 # sub-policies) to be allowed as default setting. Allowed options are defined in 'vars/main.yml' file,
-# using those listed in the 'rhel9cis_allowed_crypto_policies_modules' variable.
+# using those listed in the 'rhel8cis_allowed_crypto_policies_modules' variable.
 rhel8cis_additional_crypto_policy_module: ''
 
 # 1.7
@@ -559,29 +658,23 @@ rhel8cis_warning_banner: |
     Authorized users only. All activity may be monitored and reported.
 # End Banner
 
-# 1.8 Gnome Desktop
-# Whether or not to run tasks related to auditing/patching the desktop environment
-rhel8cis_gui: false
-rhel8cis_dconf_db_name: local
-rhel8cis_screensaver_idle_delay: 900  # Set max value for idle-delay in seconds (between 1 and 900)
-rhel8cis_screensaver_lock_delay: 5  # Set max value for lock-delay in seconds (between 0 and 5)
+## Control 1.8.x - Settings for GDM
+# If the system is running a desktop this will turn off removal of the GUI pkgs
+# and configure the required settings
+rhel8cis_desktop_required: false
+
+# This variable governs the number of seconds of inactivity before the screen goes blank.
+# Set max value for idle-delay in seconds (between 1 and 900)
+rhel8cis_screensaver_idle_delay: 900
+# This variable governs the number of seconds the screen remains blank before it is locked.
+# Set max value for lock-delay in seconds (between 0 and 5)
+rhel8cis_screensaver_lock_delay: 5
+
 ##
 ## Section 2 vars
 ##
-# 2.1.1 Time Synchronization - Either chrony or ntp
-rhel8cis_time_synchronization: chrony
 
-# Time Synchronization servers - used in template file chrony.conf.j2
-rhel8cis_time_synchronization_servers:
-  - 0.pool.ntp.org
-  - 1.pool.ntp.org
-  - 2.pool.ntp.org
-  - 3.pool.ntp.org
-
-rhel8cis_chrony_server_options: "minpoll 8"
-rhel8cis_ntp_server_options: "iburst"
-
-# Service configuration
+# 2.1 Service configuration
 # Options are
 # true to leave installed if exists not changes take place
 # false - this removes the package
@@ -591,6 +684,8 @@ rhel8cis_autofs_services: false
 rhel8cis_autofs_mask: false
 rhel8cis_avahi_server: false
 rhel8cis_avahi_mask: false
+rhel8cis_cockpit_server: false
+rhel8cis_cockpit_mask: false
 rhel8cis_dhcp_server: false
 rhel8cis_dhcp_mask: false
 rhel8cis_dns_server: false
@@ -630,12 +725,30 @@ rhel8cis_xinetd_mask: false
 rhel8cis_xwindow_server: false  # will remove mask not an option
 rhel8cis_is_mail_server: false
 
-# Client Services
+# Option during the gdm removal to attempt to remove and reset the system without GUI
+# NOTE: Group removal doesn’t work if the group was installed with Ansible because upstream dnf’s API doesn’t properly mark groups as installed,
+# therefore upon removal the module is unable to detect that the group is installed https://bugzilla.redhat.com/show_bug.cgi?id=1620324.
+rhel8cis_gui_group_removal: false
+
+# 2.2 Client Services
 rhel8cis_ftp_client: false
 rhel8cis_openldap_clients_required: false
-rhel8cis_ypbind_required: false  # Same package as NIS server
+rhel8cis_ypbind_required: "{{ rhel8cis_nfs_server }}"  # Same package as NIS server
 rhel8cis_telnet_required: false
 rhel8cis_tftp_client: false
+
+# 2.3 Time Synchronization - Either chrony
+rhel8cis_time_synchronization: chrony
+
+# Time Synchronization servers - used in template file chrony.conf.j2
+rhel8cis_time_synchronization_servers:
+  - 0.pool.ntp.org
+  - 1.pool.ntp.org
+  - 2.pool.ntp.org
+  - 3.pool.ntp.org
+
+rhel8cis_chrony_server_options: "minpoll 8"
+rhel8cis_ntp_server_options: "iburst"
 
 ##
 ## Section 3 vars
@@ -649,8 +762,8 @@ rhel8cis_is_router: false
 
 # IPv6 required
 rhel8cis_ipv6_required: true
-
-rhel8cis_ipv6_sysctl_force: true
+# rhel8cis_ipv6_disable defines the method of disabling IPv6, sysctl vs kernel
+rhel8cis_ipv6_disable_method: "sysctl"
 
 ##  Optional - Understand the impact of making the following two control to true
 # By default, we do not disable IPv6 on localhost, as it's important for multiple
@@ -658,35 +771,28 @@ rhel8cis_ipv6_sysctl_force: true
 # value to true refer https://access.redhat.com/solutions/8709
 # this changes sysctl and /etc/hosts
 # requires reboot
-rhel8cis_ipv6_disable_localhost: false
 # disable ipv6 for sshd
 rhel8cis_ipv6_sshd_disable: false
 # disable chrony on ipv6
 rhel8cis_ipv6_chrony_disable: false
 
-# Set to 'true' if X Windows is needed in your environment
-rhel8cis_xwindows_required: false
+## Section 4 vars
 
-## Section3 vars
+### Firewall Service to install and configure - Options are:
+# firewalld anything else this will skip
+rhel8cis_firewall: firewalld
 
-# default location for the sysctl overrides.
-rhel8cis_sysctl_file: /etc/sysctl.d/99_cis.conf
-
-# Firewall Service - either firewalld or nftables
-rhel8cis_firewall: 'firewalld'
-
-rhel8cis_default_zone: public
-
-rhel8cis_nft_tables_autonewtable: true
-rhel8cis_nft_tables_tablename: filter
-
-# 3.4.2.6 Set nftables new chain create
-rhel8cis_nft_tables_autochaincreate: true
+# Rule 4.1.4
+# Name of the new firewall zone that should be live
+rhel8cis_active_firewall_zone: public
+# If set to accept change to one of DROP or DEFAULT
+# DEFAULT - Deny by default, allow by exception including ICMP
+# DROP - Will drop all attempts to connect that are not whitelisted
+rhel8cis_firewalld_target: DROP
 
 #######
 ## Section5 vars
 ######
-
 # This value, containing the absolute filepath of the produced 'sshd' config file, allows usage of
 # drop-in files('/etc/ssh/ssh_config.d/{ssh_drop_in_name}.conf', supported by RHEL>=8.6) when CIS adopts them.
 # Otherwise, the default value is '/etc/ssh/ssh_config'.
@@ -698,25 +804,41 @@ rhel8cis_sshd_clientalivecountmax: 3
 rhel8cis_sshd_clientaliveinterval: 15
 rhel8cis_sshd_logingracetime: 60
 rhel8cis_sshd_loglevel: INFO
-rhel8cis_sshd_macs: '-hmac-md5,hmac-md5-96,hmac-ripemd160,hmac-sha1-96,umac-64@openssh.com,hmac-md5-etm@openssh.com,hmac-md5-96-etm@openssh.com,hmac-ripemd160-etm@openssh.com,hmac-sha1-96-etm@openssh.com,umac-64-etm@openssh.com'
+rhel8cis_sshd_macs: '-hmac-md5,hmac-md5-96,hmac-ripemd160,hmac-sha1-96,umac-64@openssh.com,hmac-md5-etm@openssh.com,hmac-md5-96-etm@openssh.com,hmac-ripemd160-etm@openssh.com,hmac-sha1-96-etm@openssh.com,umac-64-etm@openssh.com,umac-128-etm@openssh.com'
 rhel8cis_sshd_maxauthtries: 4
 rhel8cis_sshd_maxsessions: 10
 rhel8cis_sshd_maxstartups: "10:30:60"
-rhel8cis_sshd_ciphers: '-3des-cbc,aes128-cbc,aes192-cbc,aes256-cbc,rijndael-cbc@lysator.liu.se'
+rhel8cis_sshd_ciphers: '-3des-cbc,aes128-cbc,aes192-cbc,aes256-cbc,chacha20-poly1305@openssh.com'
 rhel8cis_sshd_kex: '-diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1'
-# WARNING: make sure you understand the precedence when working with these values!!
-## Only runs if value rhel8cis_sshd_limited is true
-# rhel8cis_sshd_allowusers:
-# rhel8cis_sshd_allowgroups: systems dba
-# rhel8cis_sshd_denyusers:
-# rhel8cis_sshd_denygroups:
 
-# 4.3. sudo
+## Control 5.1.6 - Ensure sshd access is configured
+# (String) This variable, if specified, configures a list of GROUP name patterns, separated by spaces, to allow SSH access
+# for users whose primary group or supplementary group list matches one of the patterns. This is done
+# by setting the value of `AllowGroups` option in `/etc/ssh/sshd_config` file.
+rhel8cis_sshd_allowusers: ""
+## Control 5.1.6 - Ensure sshd access is configured
+# (String) This variable, if specified, configures a list of GROUP name patterns, separated by spaces, to allow SSH access
+# for users whose primary group or supplementary group list matches one of the patterns. This is done
+# by setting the value of `AllowGroups` option in `/etc/ssh/sshd_config` file.
+rhel8cis_sshd_allowgroups: ""
+## Control 5.1.6 - Ensure sshd access is configured
+# This variable, if specified, configures a list of USER name patterns, separated by spaces, to prevent SSH access
+# for users whose user name matches one of the patterns. This is done
+# by setting the value of `DenyUsers` option in `/etc/ssh/sshd_config` file.
+# If an USER@HOST format will be used, the specified user will be restricted only on that particular host.
+rhel8cis_sshd_denyusers: "nobody"
+## Control 5.1.6 - Ensure sshd access is configured
+# This variable, if specified, configures a list of GROUP name patterns, separated by spaces,
+# to prevent SSH access for users whose primary group or supplementary group list matches one of the patterns. This is done
+# by setting the value of `DenyGroups` option in `/etc/ssh/sshd_config` file.
+rhel8cis_sshd_denygroups: ""
+
+# 5.2. sudo
 rhel8cis_sudolog_location: "/var/log/sudo.log"
 rhel8cis_sudo_timestamp_timeout: 15
 
 ## PAM
-## 4.4.2.x PAM and Authselect
+## 5.3.2.x PAM and Authselect
 # Do not use authselect if:
 # Your host is part of Linux Identity Management.
 # Joining your host to an IdM domain with the ipa-client-install command automatically configures SSSD authentication on your host.
@@ -728,13 +850,8 @@ rhel8cis_authselect_pkg_update: false  # NOTE the risks if system is using SSSD 
 
 ## PAM AND Authselect
 
-# To create a new profile (best for greenfield fresh sites not configured)
-# This allows creation of a custom profile using an existing one to build from
-# will only create if profile does not already exist
-## options true or false
-rhel8cis_authselect_custom_profile_create: true
 ## Controls:
-#  - 4.4.2.1 - Ensure custom authselect profile is used
+#  - 5.3.2.x - Ensure custom authselect profile is used
 # Settings in place now will fail, they are placeholders from the control example. Due to the way many multiple
 # options and ways to configure this control needs to be enabled and settings adjusted to minimize risk.
 
@@ -764,18 +881,10 @@ rhel8cis_pam_pwhistory_remember: 24
 
 rhel8cis_pam_pwhash: sha512
 
-rhel8cis_pam_pass_inactive: 30
-rhel8cis_pam_pass_max_days: 365  # Max 365
-rhel8cis_pam_pass_min_days: 7
-rhel8cis_pam_pass_warn_age: 7
-
-## Control 4.5.2.3 - Ensure system accounts are secured | Set nologin
+## Control 5.4.2 - Ensure system accounts are secured | Set nologin
 # The system users on this list are allowed to have a shell (e.g. applications
 # that require a shell to function)
 rhel8cis_system_users_shell: []
-
-## Set the following to true if you wish to adjust accounts greater than rhel8cis_pass['max_days']
-rhel8cis_set_max_expiry: false
 
 ## Add users to be skipped if required
 rhel8cis_user_skip_list:
@@ -792,77 +901,111 @@ rhel8cis_sugroup: sugroup
 # wheel users list
 rhel8cis_sugroup_users: "root"
 
-# Its not provider recommended to run changes to pam files manually that affects authentication
-# This control needs to be set to ACCEPT this so that the changes do take place
-# Any other value does nothing
-rhel8cis_pamd_manual_risks: NEVER
+## Control 5.4.1.1 - Ensure password expiration is 365 days or less
+# This variable governs after how many days a password expires.
+# CIS requires a value of 365 or less.
+rhel8cis_pass_max_days: 365
+# The following variable allows the forcing of setting user_max_days for logins.
+# This can break current connecting user access
+rhel8cis_force_user_maxdays: false
+## Control 5.4.1.2 - Ensure minimum days between password changes is 7 or more
+# This variable specifies the minimum number of days allowed between changing
+# passwords. CIS requires a value of at least 1.
+rhel8cis_pass_min_days: 7
+# The following variable allows the force setting of minimum days between changing the password
+# This can break current connecting user access
+rhel8cis_force_user_mindays: false
+## Control 5.4.1.3 - Ensure password expiration warning days is 7 or more
+# This variable governs, how many days before a password expires, the user will be warned.
+# CIS requires a value of at least 7.
+rhel8cis_pass_warn_age: 7
+# The following variable allows the forcing of number of days before warning users of password expiry
+# This can break current connecting user access
+rhel8cis_force_user_warnage: false
 
-rhel8cis_inactivelock:
-  lock_days: 30
+## Control 5.4.1.5 - Ensure inactive password lock is configured
+# This variable specifies the number of days of inactivity before an account will be locked.
+# CIS requires a value of 30 days or less.
 
-# Allow ansible to expire password for account with a last changed date in the future. False will just display users in violation, true will expire those users passwords
+rhel8cis_inactive_lock_days: 30
+
+## Control 5.4.1.6 - Ensure all users last password change date is in the past
+# Allow ansible to expire password for account with a last changed date in the future. Setting it
+# to 'false' will just display users in violation, while 'true' will expire those users passwords.
 rhel8cis_futurepwchgdate_autofix: true
 
-## Section5 vars
+#
+## Section6 vars
+#
+## Control 6.1.1 - Ensure AIDE is installed
+# AIDE is a file integrity checking tool, similar in nature to Tripwire.
+# While it cannot prevent intrusions, it can detect unauthorized changes
+# to configuration files by alerting when the files are changed. Review
+# the AIDE quick start guide and AIDE documentation before proceeding.
+# By setting this variable to `true`, all the settings related to AIDE
+# will be applied!
+rhel8cis_config_aide: true
+# This variable sets a maximum allowed age of the AIDE database file until
+# the file is rebuilt. If the file is older than the value below, the role
+# will automatically rebuild the database file.
+# e.g. options:1w = 1 week, 1d = 1day 1h = 1 hour
+rhel8cis_aide_db_file_age: 1w
+# If AIDE is already setup this variable forces a new database
+# file to be created.
+rhel8cis_aide_db_recreate: false
+# This variable is used to check if there is already an existing database file
+# created by AIDE on the target system. If it is not present, the role will generate
+# a database file with the same name as the value of this variable.
+rhel8cis_aide_db_file: /var/lib/aide/aide.db.gz
+## When Initializing aide this can take longer on some systems
+# changing the values enables user to change to their own requirements
+# Maximum Time in seconds
+rhel8cis_aide_init_async: 600
+# Polling Interval in seconds
+rhel8cis_aide_init_poll: 15
+
+## Control 6.1.2 - Ensure filesystem integrity is regularly checked
+# The following variable sets how AIDE is scanned.
+# Available options are either cron or timer.
+rhel8cis_aide_scan: cron
+# These are the crontab settings for periodical checking of the filesystem's integrity using AIDE.
+# The sub-settings of this variable provide the parameters required to configure
+# the cron job on the target system.
+# Cron is a time-based job scheduling program in Unix OS, which allows tasks to be scheduled
+# and executed automatically at a certain point in time.
+# This variable represents the user account under which the cron job for AIDE will run.
+rhel8cis_aide_cron_user: root
+# This variable represents the path to the AIDE crontab file.
+rhel8cis_aide_cron_file: /etc/cron.d/aide_cron
+# This variable represents the actual command or script that the cron job
+# will execute for running AIDE.
+rhel8cis_aide_cron_job: '/usr/sbin/aide --check'
+# These variables define the schedule for the cron job
+# This variable governs the minute of the time of day when the AIDE cronjob is run.
+# It must be in the range `0-59`.
+rhel8cis_aide_cron_minute: 0
+# This variable governs the hour of the time of day when the AIDE cronjob is run.
+# It must be in the range `0-23`.
+rhel8cis_aide_cron_hour: 5
+# This variable governs the day of the month when the AIDE cronjob is run.
+# `*` signifies that the job is run on all days; furthermore, specific days
+# can be given in the range `1-31`; several days can be concatenated with a comma.
+# The specified day(s) can must be in the range  `1-31`.
+rhel8cis_aide_cron_day: '*'
+# This variable governs months when the AIDE cronjob is run.
+# `*` signifies that the job is run in every month; furthermore, specific months
+# can be given in the range `1-12`; several months can be concatenated with commas.
+# The specified month(s) can must be in the range  `1-12`.
+rhel8cis_aide_cron_month: '*'
+# This variable governs the weekdays, when the AIDE cronjob is run.
+# `*` signifies that the job is run on all weekdays; furthermore, specific weekdays
+# can be given in the range `0-7` (both `0` and `7` represent Sunday); several weekdays
+# can be concatenated with commas.
+rhel8cis_aide_cron_weekday: '*'
 
 ## Preferred method of logging
 ## Whether rsyslog or journald preferred method for local logging
 rhel8cis_syslog: rsyslog
-rhel8cis_rsyslog_ansiblemanaged: true
-# Set if system is the log server
-rhel8cis_system_is_log_server: false
-
-#### remote and destination log server name
-rhel8cis_remote_log_server: false
-rhel8cis_remote_log_host: logagg.example.com
-rhel8cis_remote_log_port: 514
-rhel8cis_remote_log_protocol: tcp
-rhel8cis_remote_log_retrycount: 100
-rhel8cis_remote_log_queuesize: 1000
-
-rhel8cis_update_audit_template: false
-
-# The audit_back_log_limit value should never be below 8192
-rhel8cis_auditd_back_log_limit: 8192
-
-# The max_log_file parameter should be based on your sites policy
-rhel8cis_auditd_max_log_file_size: 10
-
-rhel8cis_auditd_disk_error_action: halt
-rhel8cis_auditd_disk_full_action: halt
-rhel8cis_auditd_action_mail_acct: root
-rhel8cis_auditd_space_left_action: email
-rhel8cis_auditd_admin_space_left_action: single
-rhel8cis_auditd_max_log_file_action: keep_logs
-
-# UID settings for interactive users
-# These are discovered via logins.def if set true
-rhel8cis_discover_int_uid: true
-### Controls:
-# This variable sets the minimum number from which to search for UID
-# Note that the value will be dynamically overwritten if variable `rhel8cis_discover_int_uid` has
-# been set to `true`. These are not prefixed with rhel8cis as can be set via prelim
-min_int_uid: 1000
-### Controls:
-# Note that the value will be dynamically overwritten if variable `rhel8cis_discover_int_uid` has
-# been set to `true`. These are not prefixed with rhel8cis as can be set via prelim
-max_int_uid: 65533
-
-# This can be used to configure other keys in auditd.conf
-rhel8cis_auditd_extra_conf: {}
-# Example:
-# rhel8cis_auditd_extra_conf:
-#     admin_space_left: '10%'
-
-## Advanced option found in auditd post
-## users whose actions are not logged by auditd
-rhel8cis_allow_auditd_uid_user_exclusions: false
-
-# add a list of uids
-rhel8cis_auditd_uid_exclude:
-  - 1999
-
-rhel8cis_logrotate: "daily"
 
 # Journald
 # rhel8cis_journal_upload_url is the ip address to upload the journal entries to
@@ -886,44 +1029,98 @@ rhel8cis_journald_maxfilesec: 1month
 # change to true if you wish to change logrotate.d conf files
 rhel8cis_allow_logrotate_conf_umask_updates: false
 
-# AIDE
-# aide setup via - cron, timer
-rhel8cis_aide_scan: cron
-rhel8cis_config_aide: true
-# AIDE cron settings
-rhel8cis_aide_cron_user: root
-rhel8cis_aide_cron_file: /etc/cron.d/cis_aide
-rhel8cis_aide_cron_job: '/usr/sbin/aide --check'
-rhel8cis_aide_cron_minute: 0
-rhel8cis_aide_cron_hour: 5
-rhel8cis_aide_cron_day: '*'
-rhel8cis_aide_cron_month: '*'
-rhel8cis_aide_cron_weekday: '*'
+rhel8cis_rsyslog_ansiblemanaged: true
+# Set if system is the log server
+rhel8cis_system_is_log_server: false
 
-## Section6 vars
+#### remote and destination log server name
+rhel8cis_remote_log_server: false
+rhel8cis_remote_log_host: logagg.example.com
+rhel8cis_remote_log_port: 514
+rhel8cis_remote_log_protocol: tcp
+rhel8cis_remote_log_retrycount: 100
+rhel8cis_remote_log_queuesize: 1000
 
-# RHEL-08_6.1.1
-rhel8cis_rpm_audit_file: /var/tmp/rpm_file_check
+# 6.2.2.x
+rhel8cis_logrotate: "daily"
 
-# RHEL-08_6.1.11 Allow ansible to adjust world-writable files. False will just display world-writable files, True will remove world-writable
-rhel8cis_no_world_write_adjust: true
-rhel8cis_passwd_label: "{{ (this_item | default(item)).id }}: {{ (this_item | default(item)).dir }}"
+# Auditd 6.3.x.x
 
-## 6.1.12 adjust files if ungrouped
-rhel8cis_ungrouped_adjust: false
+# The audit_back_log_limit value should never be below 8192
+rhel8cis_auditd_back_log_limit: 8192
 
-## 6.1.13 Remove suid/sgid from files
-rhel8cis_suid_adjust: false
-rhel8cis_sgid_adjust: false
+# The max_log_file parameter should be based on your sites policy
+rhel8cis_auditd_max_log_file_size: 10
 
-# 6.2.8
-## Root user used
-# Root by default is not used unless setup by user
-# The role will only run certain commands if set to true
-# This allows the ability to skip tasks that may cause an issue
-# With the understanding root has full access
-rhel8cis_uses_root: false
+rhel8cis_auditd_disk_error_action: halt
+rhel8cis_auditd_disk_full_action: halt
+rhel8cis_auditd_action_mail_acct: root
+rhel8cis_auditd_space_left_action: email
+rhel8cis_auditd_admin_space_left_action: single
+rhel8cis_auditd_max_log_file_action: keep_logs
 
-# 6.2.11
-# Allow changes to take place on system
+## Allow the auditd template to be updated
+rhel8cis_update_audit_template: false
+
+## Controls 6.3.3.x allow exceptions for UID in auditd config
+## Advanced option found in auditd post
+# This variable governs if defining user exceptions for auditd logging is acceptable.
+rhel8cis_allow_auditd_uid_user_exclusions: false
+# This variable contains a list of uids to be excluded (users whose actions are not logged by auditd)
+rhel8cis_auditd_uid_exclude:
+  - 1999
+
+# UID settings for interactive users
+# These are discovered via logins.def if set true
+rhel8cis_discover_int_uid: true
+### Controls:
+# This variable sets the minimum number from which to search for UID
+# Note that the value will be dynamically overwritten if variable `rhel8cis_discover_int_uid` has
+# been set to `true`. These are not prefixed with rhel8cis as can be set via prelim
+min_int_uid: 1000
+### Controls:
+# Note that the value will be dynamically overwritten if variable `rhel8cis_discover_int_uid` has
+# been set to `true`. These are not prefixed with rhel8cis as can be set via prelim
+max_int_uid: 65533
+
+# This can be used to configure other keys in auditd.conf
+rhel8cis_auditd_extra_conf: {}
+# Example:
+# rhel8cis_auditd_extra_conf:
+#     admin_space_left: '10%'
+
+#
+# Section 7 Vars
+#
+
+# This variable is a toggle for enabling/disabling the automated
+# setting of an owner (specified in variable `rhel8cis_unowned_owner`)
+# for all unowned files and directories.
+# Possible values are `true` and `false`.
+rhel8cis_ownership_adjust: true
+
+## Control 7.1.13 - Ensure SUID and SGID files are reviewed
+# This variable is a toggle for enabling/disabling the automated removal
+# of the SUID bit from all files on all mounts.
+# Possible values are `true` and `false`.
+rhel8cis_suid_sgid_adjust: false
+
+## Control 7.2.9 - Ensure local interactive user dot files access is configured
+# This variable is a toggle for enabling/disabling the automated modification of
+# permissions on dot files.
+# Possible values are `true` and `false`
+# This setting can impact a running system if not tested sufficiently
 rhel8cis_dotperm_ansiblemanaged: false
+
+## Control 7.1.11 - Ensure no world writable files exist
+# The following variable is a toggle for enabling/disabling the automated
+# removal of world-writable permissions from all files.
+# Possible values are `true` and `false`.
+rhel8cis_no_world_write_adjust: true
+
+## Control 7.1.12 - Ensure no files or directories without an owner and a group exist
+# This variable holds the part of the command that helps detect which files and
+# directories do not have an owner and an affiliated group.
+rhel8cis_exclude_unowned_search_path: (! -path "/run/user/*" -a ! -path "/proc/*" -a ! -path "*/containerd/*" -a ! -path "*/kubelet/pods/*" -a ! -path "*/kubelet/plugins/*" -a ! -path "/sys/fs/cgroup/memory/*" -a ! -path "/var/*/private/*")
+# The value of this variable specifies the owner that will be set for unowned files and directories.
+rhel8cis_unowned_owner: root

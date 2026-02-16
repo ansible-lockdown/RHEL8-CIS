@@ -1,0 +1,18 @@
+---
+
+- name: "1.2.2.1 | PATCH | Ensure updates, patches, and additional security software are installed | limit kernels"
+  when:
+    - rhel8cis_rule_1_2_2_1
+    - rhel8cis_apply_installed_kernel_limit
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - kernel_limit
+    - rule_1.2.2.1
+    - NIST800-53R5_SI-2
+  ansible.builtin.lineinfile:
+    path: /etc/dnf/dnf.conf
+    regexp: ^installonly_limit=
+    line: installonly_limit={{ rhel8cis_installed_kernel_limit }}

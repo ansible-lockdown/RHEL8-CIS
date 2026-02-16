@@ -2,18 +2,10 @@
 
 name: Export Private Repo Badges
 
-# Use different minute offsets with the same hourly pattern:
-# Repo Group Suggested Cron Expression Explanation
-# Group A 0 */6 * * * Starts at top of hour
-# Group B 10 */6 * * * Starts at 10 after
-# And So On
-
 on:
   push:
     branches:
       - latest
-  schedule:
-    - cron: '0 */6 * * *'
   workflow_dispatch:
 
 jobs:

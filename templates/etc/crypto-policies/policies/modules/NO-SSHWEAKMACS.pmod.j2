@@ -1,0 +1,6 @@
+{{ file_managed_by_ansible }}
+# This is a subpolicy to disable weak macs
+# for the SSH protocol (libssh and OpenSSH)
+# Carried out as part of CIS Benchmark rule 5.1.17
+
+{% if rhel8cis_rule_5_1_17 %}mac@SSH = -HMAC-MD5* -UMAC-64* -UMAC-128*{% endif %}

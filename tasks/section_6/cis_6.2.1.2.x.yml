@@ -1,0 +1,106 @@
+---
+
+- name: "6.2.1.2.1 | PATCH | Ensure systemd-journal-remote is installed"
+  when:
+    - rhel8cis_rule_6_2_1_2_1
+    - not rhel8cis_system_is_log_server
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - journald
+    - rule_6.2.1.2.1
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-7
+    - NIST800-53R5_AU-12
+  ansible.builtin.package:
+    name: systemd-journal-remote
+    state: present
+
+- name: "6.2.1.2.2 | PATCH | Ensure systemd-journal-remote authentication is configured"
+  when:
+    - rhel8cis_rule_6_2_1_2_2
+    - not rhel8cis_system_is_log_server
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - journald
+    - rule_6.2.1.2.2
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-12
+  block:
+    - name: "6.2.1.2.2 | PATCH | Ensure systemd-journal-remote authentication is configured | Create conf.d"
+      ansible.builtin.file:
+        path: /etc/systemd/journal-upload.conf.d
+        owner: root
+        group: root
+        mode: 'u+rwx,g-w,o-rwx'
+        state: directory
+      register: discovered_journal_upload_conf_dir_created
+
+    - name: "6.2.1.2.2 | AUDIT | Ensure systemd-journal-remote authentication is configured | find upload confs"
+      when: not discovered_journal_upload_conf_dir_created.changed
+      ansible.builtin.find:
+        paths: /etc/systemd/journal-upload.conf.d/
+        contains: ^\[Upload\]
+        patterns: "*.conf"
+        exclude: "{{ rhel8cis_journal_remote_upload_config_file }}"
+        read_whole_file: true
+      register: discovered_journald_remote_upload_conf
+
+    - name: "6.2.1.2.2 | PATCH| Ensure systemd-journal-remote authentication is configured"
+      when: not discovered_journal_upload_conf_dir_created.changed
+      ansible.builtin.replace:
+        path: "{{ item.path }}"
+        regexp: ^(?#)(URL=.*)
+        replace: "#\\1"
+      loop: "{{ discovered_journald_remote_upload_conf.files }}"
+
+    - name: "6.2.1.2.2 | PATCH | Ensure systemd-journal-remote authentication is configured | Add config"
+      ansible.builtin.template:
+        src: "etc/systemd/journal-upload.conf.d/{{ rhel8cis_journal_remote_upload_config_file }}.j2"
+        dest: "/etc/systemd/journal-upload.conf.d/{{ rhel8cis_journal_remote_upload_config_file }}"
+        owner: root
+        group: root
+        mode: 'u-x,g-wx,o-rwx'
+      notify: Restart journald
+
+- name: "6.2.1.2.3 | PATCH | Ensure systemd-journal-upload is enabled and active"
+  when:
+    - not rhel8cis_system_is_log_server
+    - rhel8cis_rule_6_2_1_2_3
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - journald
+    - rule_6.2.1.2.3
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-12
+  ansible.builtin.systemd:
+    name: systemd-journal-upload
+    masked: false
+    enabled: true
+
+- name: "6.2.1.2.4 | PATCH | Ensure systemd-journal-remote service is not in use"
+  when:
+    - not rhel8cis_system_is_log_server
+    - rhel8cis_rule_6_2_1_2_4
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - journald
+    - rule_6.2.2.1.4
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-7
+    - NIST800-53R5_AU-12
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: false
+    masked: true
+  loop:
+    - systemd-journal-remote.socket
+    - systemd-journal-remote.service

@@ -1,0 +1,75 @@
+{{ file_managed_by_ansible }}
+
+# IPv4 Network sysctl
+{% if rhel8cis_rule_3_3_1_1 %}
+# CIS 3.3.1.1
+net.ipv4.ip_forward = 0
+{% endif %}
+{% if rhel8cis_rule_3_3_1_2 %}
+# CIS 3.3.1.2
+net.ipv4.conf.all.forwarding = 0
+{% endif %}
+{% if rhel8cis_rule_3_3_1_3 %}
+# CIS 3.3.1.3
+net.ipv4.conf.default.forwarding = 0
+{% endif %}
+{% if rhel8cis_rule_3_3_1_4 %}
+# CIS 3.3.1.4
+net.ipv4.conf.all.send_redirects = 0
+{% endif %}
+{% if rhel8cis_rule_3_3_1_5 %}
+# CIS 3.3.1.5
+net.ipv4.conf.default.send_redirects = 0
+{% endif %}
+{% if rhel8cis_rule_3_3_1_6 %}
+# CIS 3.3.1.6
+net.ipv4.icmp_ignore_bogus_error_responses = 1
+{% endif %}
+{% if rhel8cis_rule_3_3_1_7 %}
+# CIS 3.3.1.7
+net.ipv4.icmp_echo_ignore_broadcasts = 1
+{% endif %}
+{% if rhel8cis_rule_3_3_1_8 %}
+# CIS 3.3.1.8
+net.ipv4.conf.all.accept_redirects = 0
+{% endif %}
+{% if rhel8cis_rule_3_3_1_9 %}
+# CIS 3.3.1.9
+net.ipv4.conf.default.accept_redirects = 0
+{% endif %}
+{% if rhel8cis_rule_3_3_1_10 %}
+# CIS 3.3.1.10
+net.ipv4.conf.all.secure_redirects = 0
+{% endif %}
+{% if rhel8cis_rule_3_3_1_11 %}
+# CIS 3.3.1.11
+net.ipv4.conf.default.secure_redirects = 0
+{% endif %}
+{% if rhel8cis_rule_3_3_1_12 %}
+# CIS 3.3.1.12
+net.ipv4.conf.all.rp_filter = 1
+{% endif %}
+{% if rhel8cis_rule_3_3_1_13 %}
+# CIS 3.3.1.13
+net.ipv4.conf.default.rp_filter = 1
+{% endif %}
+{% if rhel8cis_rule_3_3_1_14 %}
+# CIS 3.3.1.14
+net.ipv4.conf.all.accept_source_route = 0
+{% endif %}
+{% if rhel8cis_rule_3_3_1_15 %}
+# CIS 3.3.1.15
+net.ipv4.conf.default.accept_source_route = 0
+{% endif %}
+{% if rhel8cis_rule_3_3_1_16 %}
+# CIS 3.3.1.16
+net.ipv4.conf.all.log_martians = 1
+{% endif %}
+{% if rhel8cis_rule_3_3_1_17 %}
+# CIS 3.3.1.17
+net.ipv4.conf.default.log_martians = 1
+{% endif %}
+{% if rhel8cis_rule_3_3_1_18 %}
+# CIS 3.3.1.18
+net.ipv4.tcp_syncookies = 1
+{% endif %}

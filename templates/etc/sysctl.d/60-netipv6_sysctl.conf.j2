@@ -1,0 +1,38 @@
+{{ file_managed_by_ansible }}
+
+
+# IPv6 Network sysctl
+{% if rhel8cis_ipv6_required %}
+{% if rhel8cis_rule_3_3_2_1 %}
+# CIS 3.3.2.1
+net.ipv6.conf.all.forwarding = 0
+{% endif %}
+{% if rhel8cis_rule_3_3_2_2 %}
+# CIS 3.3.2.1
+net.ipv6.conf.default.forwarding = 0
+{% endif %}
+{% if rhel8cis_rule_3_3_2_3 %}
+# CIS 3.3.2.3
+net.ipv6.conf.all.accept_redirects = 0
+{% endif %}
+{% if rhel8cis_rule_3_3_2_4 %}
+# CIS 3.3.2.4
+net.ipv6.conf.default.accept_redirects = 0
+{% endif %}
+{% if rhel8cis_rule_3_3_2_5 %}
+# CIS 3.3.2.5
+net.ipv6.conf.all.accept_source_route = 0
+{% endif %}
+{% if rhel8cis_rule_3_3_2_6 %}
+# CIS 3.3.2.6
+net.ipv6.conf.default.accept_source_route = 0
+{% endif %}
+{% if rhel8cis_rule_3_3_2_7 %}
+# CIS 3.3.2.7
+net.ipv6.conf.all.accept_ra = 0
+{% endif %}
+{% if rhel8cis_rule_3_3_2_8 %}
+# CIS 3.3.2.8
+net.ipv6.conf.default.accept_ra = 0
+{% endif %}
+{% endif %}

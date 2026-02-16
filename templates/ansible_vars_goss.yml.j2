@@ -14,6 +14,7 @@ rhel8cis_section3: {{ rhel8cis_section3 }}
 rhel8cis_section4: {{ rhel8cis_section4 }}
 rhel8cis_section5: {{ rhel8cis_section5 }}
 rhel8cis_section6: {{ rhel8cis_section6 }}
+rhel8cis_section7: {{ rhel8cis_section7 }}
 
 rhel8cis_level_1: {{ rhel8cis_level_1 }}
 rhel8cis_level_2: {{ rhel8cis_level_2 }}
@@ -40,6 +41,9 @@ rhel8cis_rule_1_1_1_5: {{ rhel8cis_rule_1_1_1_5 }}
 rhel8cis_rule_1_1_1_6: {{ rhel8cis_rule_1_1_1_6 }}
 rhel8cis_rule_1_1_1_7: {{ rhel8cis_rule_1_1_1_7 }}
 rhel8cis_rule_1_1_1_8: {{ rhel8cis_rule_1_1_1_8 }}
+rhel8cis_rule_1_1_1_9: {{ rhel8cis_rule_1_1_1_9 }}
+rhel8cis_rule_1_1_1_10: {{ rhel8cis_rule_1_1_1_10 }}
+rhel8cis_rule_1_1_1_11: {{ rhel8cis_rule_1_1_1_11 }}
 # /tmp
 rhel8cis_rule_1_1_2_1_1: {{ rhel8cis_rule_1_1_2_1_1 }}
 rhel8cis_rule_1_1_2_1_2: {{ rhel8cis_rule_1_1_2_1_2 }}
@@ -81,37 +85,47 @@ rhel8cis_rule_1_1_2_7_3: {{ rhel8cis_rule_1_1_2_7_3 }}
 rhel8cis_rule_1_1_2_7_4: {{ rhel8cis_rule_1_1_2_7_4 }}
 
 # DNF - Patching
-rhel8cis_rule_1_2_1: {{ rhel8cis_rule_1_2_1 }}
-rhel8cis_rule_1_2_2: {{ rhel8cis_rule_1_2_2 }}
-rhel8cis_rule_1_2_3: {{ rhel8cis_rule_1_2_3 }}
-rhel8cis_rule_1_2_4: {{ rhel8cis_rule_1_2_4 }}
-rhel8cis_rule_1_2_5: {{ rhel8cis_rule_1_2_5 }}
+rhel8cis_rule_1_2_1_1: {{ rhel8cis_rule_1_2_1_1 }}
+rhel8cis_rule_1_2_1_2: {{ rhel8cis_rule_1_2_1_2 }}
+rhel8cis_rule_1_2_1_3: {{ rhel8cis_rule_1_2_1_3 }}
+rhel8cis_rule_1_2_1_4: {{ rhel8cis_rule_1_2_1_4 }}
+rhel8cis_rule_1_2_1_5: {{ rhel8cis_rule_1_2_1_5 }}
+rhel8cis_rule_1_2_2_1: {{ rhel8cis_rule_1_2_2_1 }}
 
 # bootloader grub
-rhel8cis_rule_1_3_1: {{ rhel8cis_rule_1_3_1 }}
-rhel8cis_rule_1_3_2: {{ rhel8cis_rule_1_3_2 }}
+rhel8cis_rule_1_3_1_1: {{ rhel8cis_rule_1_3_1_1 }}
+rhel8cis_rule_1_3_1_2: {{ rhel8cis_rule_1_3_1_2 }}
+rhel8cis_rule_1_3_1_3: {{ rhel8cis_rule_1_3_1_3 }}
+rhel8cis_rule_1_3_1_4: {{ rhel8cis_rule_1_3_1_4 }}
+rhel8cis_rule_1_3_1_5: {{ rhel8cis_rule_1_3_1_5 }}
+rhel8cis_rule_1_3_1_6: {{ rhel8cis_rule_1_3_1_6 }}
+rhel8cis_rule_1_3_1_7: {{ rhel8cis_rule_1_3_1_7 }}
+rhel8cis_rule_1_3_1_8: {{ rhel8cis_rule_1_3_1_8 }}
 
 # kernel sysctl and coredumps
 rhel8cis_rule_1_4_1: {{ rhel8cis_rule_1_4_1 }}
 rhel8cis_rule_1_4_2: {{ rhel8cis_rule_1_4_2 }}
-rhel8cis_rule_1_4_3: {{ rhel8cis_rule_1_4_3 }}
-rhel8cis_rule_1_4_4: {{ rhel8cis_rule_1_4_4 }}
+
 
 # SElinux
-rhel8cis_rule_1_5_1_1: {{ rhel8cis_rule_1_5_1_1 }}
-rhel8cis_rule_1_5_1_2: {{ rhel8cis_rule_1_5_1_2 }}
-rhel8cis_rule_1_5_1_3: {{ rhel8cis_rule_1_5_1_3 }}
-rhel8cis_rule_1_5_1_4: {{ rhel8cis_rule_1_5_1_4 }}
-rhel8cis_rule_1_5_1_5: {{ rhel8cis_rule_1_5_1_5 }}
-rhel8cis_rule_1_5_1_6: {{ rhel8cis_rule_1_5_1_6 }}
-rhel8cis_rule_1_5_1_7: {{ rhel8cis_rule_1_5_1_7 }}
-rhel8cis_rule_1_5_1_8: {{ rhel8cis_rule_1_5_1_8 }}
+rhel8cis_rule_1_5_1: {{ rhel8cis_rule_1_5_1 }}
+rhel8cis_rule_1_5_2: {{ rhel8cis_rule_1_5_2 }}
+rhel8cis_rule_1_5_3: {{ rhel8cis_rule_1_5_3 }}
+rhel8cis_rule_1_5_4: {{ rhel8cis_rule_1_5_4 }}
+rhel8cis_rule_1_5_5: {{ rhel8cis_rule_1_5_5 }}
+rhel8cis_rule_1_5_6: {{ rhel8cis_rule_1_5_6 }}
+rhel8cis_rule_1_5_7: {{ rhel8cis_rule_1_5_7 }}
+rhel8cis_rule_1_5_8: {{ rhel8cis_rule_1_5_8 }}
+rhel8cis_rule_1_5_9: {{ rhel8cis_rule_1_5_9 }}
+rhel8cis_rule_1_5_10: {{ rhel8cis_rule_1_5_10 }}
 
 # Crypto Policies
 rhel8cis_rule_1_6_1: {{ rhel8cis_rule_1_6_1 }}
 rhel8cis_rule_1_6_2: {{ rhel8cis_rule_1_6_2 }}
 rhel8cis_rule_1_6_3: {{ rhel8cis_rule_1_6_3 }}
 rhel8cis_rule_1_6_4: {{ rhel8cis_rule_1_6_4 }}
+rhel8cis_rule_1_6_5: {{ rhel8cis_rule_1_6_5 }}
+rhel8cis_rule_1_6_6: {{ rhel8cis_rule_1_6_6 }}
 
 # MOTD and messages
 rhel8cis_rule_1_7_1: {{ rhel8cis_rule_1_7_1 }}
@@ -129,296 +143,326 @@ rhel8cis_rule_1_8_4: {{ rhel8cis_rule_1_8_4 }}
 rhel8cis_rule_1_8_5: {{ rhel8cis_rule_1_8_5 }}
 rhel8cis_rule_1_8_6: {{ rhel8cis_rule_1_8_6 }}
 rhel8cis_rule_1_8_7: {{ rhel8cis_rule_1_8_7 }}
-rhel8cis_rule_1_8_8: {{ rhel8cis_rule_1_8_8 }}
-rhel8cis_rule_1_8_9: {{ rhel8cis_rule_1_8_9 }}
-rhel8cis_rule_1_8_10: {{ rhel8cis_rule_1_8_10 }}
 
 # Section 2 rules
-# time sync
+
+# Server services
 rhel8cis_rule_2_1_1: {{ rhel8cis_rule_2_1_1 }}
 rhel8cis_rule_2_1_2: {{ rhel8cis_rule_2_1_2 }}
 rhel8cis_rule_2_1_3: {{ rhel8cis_rule_2_1_3 }}
+rhel8cis_rule_2_1_4: {{ rhel8cis_rule_2_1_4 }}
+rhel8cis_rule_2_1_5: {{ rhel8cis_rule_2_1_5 }}
+rhel8cis_rule_2_1_6: {{ rhel8cis_rule_2_1_6 }}
+rhel8cis_rule_2_1_7: {{ rhel8cis_rule_2_1_7 }}
+rhel8cis_rule_2_1_8: {{ rhel8cis_rule_2_1_8 }}
+rhel8cis_rule_2_1_9: {{ rhel8cis_rule_2_1_9 }}
+rhel8cis_rule_2_1_10: {{ rhel8cis_rule_2_1_10 }}
+rhel8cis_rule_2_1_11: {{ rhel8cis_rule_2_1_11 }}
+rhel8cis_rule_2_1_12: {{ rhel8cis_rule_2_1_12 }}
+rhel8cis_rule_2_1_13: {{ rhel8cis_rule_2_1_13 }}
+rhel8cis_rule_2_1_14: {{ rhel8cis_rule_2_1_14 }}
+rhel8cis_rule_2_1_15: {{ rhel8cis_rule_2_1_15 }}
+rhel8cis_rule_2_1_16: {{ rhel8cis_rule_2_1_16 }}
+rhel8cis_rule_2_1_17: {{ rhel8cis_rule_2_1_17 }}
+rhel8cis_rule_2_1_18: {{ rhel8cis_rule_2_1_18 }}
+rhel8cis_rule_2_1_19: {{ rhel8cis_rule_2_1_19 }}
+rhel8cis_rule_2_1_20: {{ rhel8cis_rule_2_1_20 }}
+rhel8cis_rule_2_1_21: {{ rhel8cis_rule_2_1_21 }}
+rhel8cis_rule_2_1_22: {{ rhel8cis_rule_2_1_22 }}
+rhel8cis_rule_2_1_23: {{ rhel8cis_rule_2_1_23 }}
+rhel8cis_rule_2_1_24: {{ rhel8cis_rule_2_1_24 }}
 
-# Server services
+# Client services
 rhel8cis_rule_2_2_1: {{ rhel8cis_rule_2_2_1 }}
 rhel8cis_rule_2_2_2: {{ rhel8cis_rule_2_2_2 }}
 rhel8cis_rule_2_2_3: {{ rhel8cis_rule_2_2_3 }}
 rhel8cis_rule_2_2_4: {{ rhel8cis_rule_2_2_4 }}
 rhel8cis_rule_2_2_5: {{ rhel8cis_rule_2_2_5 }}
-rhel8cis_rule_2_2_6: {{ rhel8cis_rule_2_2_6 }}
-rhel8cis_rule_2_2_7: {{ rhel8cis_rule_2_2_7 }}
-rhel8cis_rule_2_2_8: {{ rhel8cis_rule_2_2_8 }}
-rhel8cis_rule_2_2_9: {{ rhel8cis_rule_2_2_9 }}
-rhel8cis_rule_2_2_10: {{ rhel8cis_rule_2_2_10 }}
-rhel8cis_rule_2_2_11: {{ rhel8cis_rule_2_2_11 }}
-rhel8cis_rule_2_2_12: {{ rhel8cis_rule_2_2_12 }}
-rhel8cis_rule_2_2_13: {{ rhel8cis_rule_2_2_13 }}
-rhel8cis_rule_2_2_14: {{ rhel8cis_rule_2_2_14 }}
-rhel8cis_rule_2_2_15: {{ rhel8cis_rule_2_2_15 }}
-rhel8cis_rule_2_2_16: {{ rhel8cis_rule_2_2_16 }}
-rhel8cis_rule_2_2_17: {{ rhel8cis_rule_2_2_17 }}
-rhel8cis_rule_2_2_18: {{ rhel8cis_rule_2_2_18 }}
-rhel8cis_rule_2_2_19: {{ rhel8cis_rule_2_2_19 }}
-rhel8cis_rule_2_2_20: {{ rhel8cis_rule_2_2_20 }}
-rhel8cis_rule_2_2_21: {{ rhel8cis_rule_2_2_21 }}
-rhel8cis_rule_2_2_22: {{ rhel8cis_rule_2_2_22 }}
 
-# Client services
+# Time Services
 rhel8cis_rule_2_3_1: {{ rhel8cis_rule_2_3_1 }}
 rhel8cis_rule_2_3_2: {{ rhel8cis_rule_2_3_2 }}
 rhel8cis_rule_2_3_3: {{ rhel8cis_rule_2_3_3 }}
-rhel8cis_rule_2_3_4: {{ rhel8cis_rule_2_3_4 }}
-rhel8cis_rule_2_3_5: {{ rhel8cis_rule_2_3_5 }}
 
-# Section 3 rules
-# network connectivity wifi/bluetooth/ipv6
+# Job Scheduler | Cron
+rhel8cis_rule_2_4_1_1: {{ rhel8cis_rule_2_4_1_1 }}
+rhel8cis_rule_2_4_1_2: {{ rhel8cis_rule_2_4_1_2 }}
+rhel8cis_rule_2_4_1_3: {{ rhel8cis_rule_2_4_1_3 }}
+rhel8cis_rule_2_4_1_4: {{ rhel8cis_rule_2_4_1_4 }}
+rhel8cis_rule_2_4_1_5: {{ rhel8cis_rule_2_4_1_5 }}
+rhel8cis_rule_2_4_1_6: {{ rhel8cis_rule_2_4_1_6 }}
+rhel8cis_rule_2_4_1_7: {{ rhel8cis_rule_2_4_1_7 }}
+rhel8cis_rule_2_4_1_8: {{ rhel8cis_rule_2_4_1_8 }}
+rhel8cis_rule_2_4_1_9: {{ rhel8cis_rule_2_4_1_9 }}
+
+# Job Scheduler | at
+rhel8cis_rule_2_4_2_1: {{ rhel8cis_rule_2_4_2_1 }}
+
+# Section 3 Network
+## Network Devices
 rhel8cis_rule_3_1_1: {{ rhel8cis_rule_3_1_1 }}
 rhel8cis_rule_3_1_2: {{ rhel8cis_rule_3_1_2 }}
 rhel8cis_rule_3_1_3: {{ rhel8cis_rule_3_1_3 }}
+rhel8cis_ipv6_disable_method: {{ rhel8cis_ipv6_disable_method }}
 
-# Network Kernel module
+## Network Kernel Modules
 rhel8cis_rule_3_2_1: {{ rhel8cis_rule_3_2_1 }}
 rhel8cis_rule_3_2_2: {{ rhel8cis_rule_3_2_2 }}
 rhel8cis_rule_3_2_3: {{ rhel8cis_rule_3_2_3 }}
 rhel8cis_rule_3_2_4: {{ rhel8cis_rule_3_2_4 }}
-
-# Network Kernel Params
-rhel8cis_rule_3_3_1: {{ rhel8cis_rule_3_3_1 }}
-rhel8cis_rule_3_3_2: {{ rhel8cis_rule_3_3_2 }}
-rhel8cis_rule_3_3_3: {{ rhel8cis_rule_3_3_3 }}
-rhel8cis_rule_3_3_4: {{ rhel8cis_rule_3_3_4 }}
-rhel8cis_rule_3_3_5: {{ rhel8cis_rule_3_3_5 }}
-rhel8cis_rule_3_3_6: {{ rhel8cis_rule_3_3_6 }}
-rhel8cis_rule_3_3_7: {{ rhel8cis_rule_3_3_7 }}
-rhel8cis_rule_3_3_8: {{ rhel8cis_rule_3_3_8 }}
-rhel8cis_rule_3_3_9: {{ rhel8cis_rule_3_3_9 }}
-rhel8cis_rule_3_3_10: {{ rhel8cis_rule_3_3_10 }}
-rhel8cis_rule_3_3_11: {{ rhel8cis_rule_3_3_11 }}
-
-# Firewall
-rhel8cis_rule_3_4_1_1: {{ rhel8cis_rule_3_4_1_1 }}
-rhel8cis_rule_3_4_1_2: {{ rhel8cis_rule_3_4_1_2 }}
-
-# Firewall rules
-rhel8cis_rule_3_4_2_1: {{ rhel8cis_rule_3_4_2_1 }}
-rhel8cis_rule_3_4_2_2: {{ rhel8cis_rule_3_4_2_2 }}
-rhel8cis_rule_3_4_2_3: {{ rhel8cis_rule_3_4_2_3 }}
-rhel8cis_rule_3_4_2_4: {{ rhel8cis_rule_3_4_2_4 }}
-rhel8cis_rule_3_4_2_5: {{ rhel8cis_rule_3_4_2_5 }}
+rhel8cis_rule_3_2_5: {{ rhel8cis_rule_3_2_5 }}
+rhel8cis_rule_3_2_6: {{ rhel8cis_rule_3_2_6 }}
+# Configure IPv4 parameters
+rhel8cis_rule_3_3_1_1: {{ rhel8cis_rule_3_3_1_1 }}
+rhel8cis_rule_3_3_1_2: {{ rhel8cis_rule_3_3_1_2 }}
+rhel8cis_rule_3_3_1_3: {{ rhel8cis_rule_3_3_1_3 }}
+rhel8cis_rule_3_3_1_4: {{ rhel8cis_rule_3_3_1_4 }}
+rhel8cis_rule_3_3_1_5: {{ rhel8cis_rule_3_3_1_5 }}
+rhel8cis_rule_3_3_1_6: {{ rhel8cis_rule_3_3_1_6 }}
+rhel8cis_rule_3_3_1_7: {{ rhel8cis_rule_3_3_1_7 }}
+rhel8cis_rule_3_3_1_8: {{ rhel8cis_rule_3_3_1_8 }}
+rhel8cis_rule_3_3_1_9: {{ rhel8cis_rule_3_3_1_9 }}
+rhel8cis_rule_3_3_1_10: {{ rhel8cis_rule_3_3_1_10 }}
+rhel8cis_rule_3_3_1_11: {{ rhel8cis_rule_3_3_1_11 }}
+rhel8cis_rule_3_3_1_12: {{ rhel8cis_rule_3_3_1_12 }}
+rhel8cis_rule_3_3_1_13: {{ rhel8cis_rule_3_3_1_13 }}
+rhel8cis_rule_3_3_1_14: {{ rhel8cis_rule_3_3_1_14 }}
+rhel8cis_rule_3_3_1_15: {{ rhel8cis_rule_3_3_1_15 }}
+rhel8cis_rule_3_3_1_16: {{ rhel8cis_rule_3_3_1_16 }}
+rhel8cis_rule_3_3_1_17: {{ rhel8cis_rule_3_3_1_17 }}
+rhel8cis_rule_3_3_1_18: {{ rhel8cis_rule_3_3_1_18 }}
+# Configure IPv6 parameters
+rhel8cis_rule_3_3_2_1: {{ rhel8cis_rule_3_3_2_1 }}
+rhel8cis_rule_3_3_2_2: {{ rhel8cis_rule_3_3_2_2 }}
+rhel8cis_rule_3_3_2_3: {{ rhel8cis_rule_3_3_2_3 }}
+rhel8cis_rule_3_3_2_4: {{ rhel8cis_rule_3_3_2_4 }}
+rhel8cis_rule_3_3_2_5: {{ rhel8cis_rule_3_3_2_5 }}
+rhel8cis_rule_3_3_2_6: {{ rhel8cis_rule_3_3_2_6 }}
+rhel8cis_rule_3_3_2_7: {{ rhel8cis_rule_3_3_2_7 }}
+rhel8cis_rule_3_3_2_8: {{ rhel8cis_rule_3_3_2_8 }}
 
 ##
 ## Section 4 rules
 ##
-# cron
-rhel8cis_rule_4_1_1_1: {{ rhel8cis_rule_4_1_1_1 }}
-rhel8cis_rule_4_1_1_2: {{ rhel8cis_rule_4_1_1_2 }}
-rhel8cis_rule_4_1_1_3: {{ rhel8cis_rule_4_1_1_3 }}
-rhel8cis_rule_4_1_1_4: {{ rhel8cis_rule_4_1_1_4 }}
-rhel8cis_rule_4_1_1_5: {{ rhel8cis_rule_4_1_1_5 }}
-rhel8cis_rule_4_1_1_6: {{ rhel8cis_rule_4_1_1_6 }}
-rhel8cis_rule_4_1_1_7: {{ rhel8cis_rule_4_1_1_7 }}
-rhel8cis_rule_4_1_1_8: {{ rhel8cis_rule_4_1_1_8 }}
+## Firewall utility
+rhel8cis_rule_4_1_1: {{ rhel8cis_rule_4_1_1 }}
+rhel8cis_rule_4_1_2: {{ rhel8cis_rule_4_1_2 }}
+rhel8cis_rule_4_1_3: {{ rhel8cis_rule_4_1_3 }}
+rhel8cis_rule_4_1_4: {{ rhel8cis_rule_4_1_4 }}
+rhel8cis_rule_4_1_5: {{ rhel8cis_rule_4_1_5 }}
+rhel8cis_rule_4_1_6: {{ rhel8cis_rule_4_1_6 }}
+rhel8cis_rule_4_1_7: {{ rhel8cis_rule_4_1_7 }}
 
-# at
-rhel8cis_rule_4_1_2_1: {{ rhel8cis_rule_4_1_2_1 }}
-
-# sshd
-rhel8cis_rule_4_2_1: {{ rhel8cis_rule_4_2_1 }}
-rhel8cis_rule_4_2_2: {{ rhel8cis_rule_4_2_2 }}
-rhel8cis_rule_4_2_3: {{ rhel8cis_rule_4_2_3 }}
-rhel8cis_rule_4_2_4: {{ rhel8cis_rule_4_2_4 }}
-rhel8cis_rule_4_2_5: {{ rhel8cis_rule_4_2_5 }}
-rhel8cis_rule_4_2_6: {{ rhel8cis_rule_4_2_6 }}
-rhel8cis_rule_4_2_7: {{ rhel8cis_rule_4_2_7 }}
-rhel8cis_rule_4_2_8: {{ rhel8cis_rule_4_2_8 }}
-rhel8cis_rule_4_2_9: {{ rhel8cis_rule_4_2_9 }}
-rhel8cis_rule_4_2_10: {{ rhel8cis_rule_4_2_10 }}
-rhel8cis_rule_4_2_12: {{ rhel8cis_rule_4_2_12 }}
-rhel8cis_rule_4_2_11: {{ rhel8cis_rule_4_2_11 }}
-rhel8cis_rule_4_2_13: {{ rhel8cis_rule_4_2_13 }}
-rhel8cis_rule_4_2_14: {{ rhel8cis_rule_4_2_14 }}
-rhel8cis_rule_4_2_15: {{ rhel8cis_rule_4_2_15 }}
-rhel8cis_rule_4_2_16: {{ rhel8cis_rule_4_2_16 }}
-rhel8cis_rule_4_2_17: {{ rhel8cis_rule_4_2_17 }}
-rhel8cis_rule_4_2_18: {{ rhel8cis_rule_4_2_18 }}
-rhel8cis_rule_4_2_19: {{ rhel8cis_rule_4_2_19 }}
-rhel8cis_rule_4_2_20: {{ rhel8cis_rule_4_2_20 }}
-rhel8cis_rule_4_2_21: {{ rhel8cis_rule_4_2_21 }}
-rhel8cis_rule_4_2_22: {{ rhel8cis_rule_4_2_22 }}
-
-# sudo
-rhel8cis_rule_4_3_1: {{ rhel8cis_rule_4_3_1 }}
-rhel8cis_rule_4_3_2: {{ rhel8cis_rule_4_3_2 }}
-rhel8cis_rule_4_3_3: {{ rhel8cis_rule_4_3_3 }}
-rhel8cis_rule_4_3_4: {{ rhel8cis_rule_4_3_4 }}
-rhel8cis_rule_4_3_5: {{ rhel8cis_rule_4_3_5 }}
-rhel8cis_rule_4_3_6: {{ rhel8cis_rule_4_3_6 }}
-rhel8cis_rule_4_3_7: {{ rhel8cis_rule_4_3_7 }}
-
-# Pam software pkgs
-rhel8cis_rule_4_4_1_1: {{ rhel8cis_rule_4_4_1_1 }}
-rhel8cis_rule_4_4_1_2: {{ rhel8cis_rule_4_4_1_2 }}
-
-# authselect
-rhel8cis_rule_4_4_2_1: {{ rhel8cis_rule_4_4_2_1 }}
-rhel8cis_rule_4_4_2_2: {{ rhel8cis_rule_4_4_2_2 }}
-rhel8cis_rule_4_4_2_3: {{ rhel8cis_rule_4_4_2_3 }}
-rhel8cis_rule_4_4_2_4: {{ rhel8cis_rule_4_4_2_4 }}
-rhel8cis_rule_4_4_2_5: {{ rhel8cis_rule_4_4_2_5 }}
-
-# pam faillock
-rhel8cis_rule_4_4_3_1_1: {{ rhel8cis_rule_4_4_3_1_1 }}
-rhel8cis_rule_4_4_3_1_2: {{ rhel8cis_rule_4_4_3_1_2 }}
-rhel8cis_rule_4_4_3_1_3: {{ rhel8cis_rule_4_4_3_1_3 }}
-
-# pam pwquality
-rhel8cis_rule_4_4_3_2_1: {{ rhel8cis_rule_4_4_3_2_1 }}
-rhel8cis_rule_4_4_3_2_2: {{ rhel8cis_rule_4_4_3_2_2 }}
-rhel8cis_rule_4_4_3_2_3: {{ rhel8cis_rule_4_4_3_2_3 }}
-rhel8cis_rule_4_4_3_2_4: {{ rhel8cis_rule_4_4_3_2_4 }}
-rhel8cis_rule_4_4_3_2_5: {{ rhel8cis_rule_4_4_3_2_5 }}
-rhel8cis_rule_4_4_3_2_6: {{ rhel8cis_rule_4_4_3_2_6 }}
-rhel8cis_rule_4_4_3_2_7: {{ rhel8cis_rule_4_4_3_2_7 }}
-
-# pam pwhistory
-rhel8cis_rule_4_4_3_3_1: {{ rhel8cis_rule_4_4_3_3_1 }}
-rhel8cis_rule_4_4_3_3_2: {{ rhel8cis_rule_4_4_3_3_2 }}
-rhel8cis_rule_4_4_3_3_3: {{ rhel8cis_rule_4_4_3_3_3 }}
-
-# pam pam_unix
-rhel8cis_rule_4_4_3_4_1: {{ rhel8cis_rule_4_4_3_4_1 }}
-rhel8cis_rule_4_4_3_4_2: {{ rhel8cis_rule_4_4_3_4_2 }}
-rhel8cis_rule_4_4_3_4_3: {{ rhel8cis_rule_4_4_3_4_3 }}
-rhel8cis_rule_4_4_3_4_4: {{ rhel8cis_rule_4_4_3_4_4 }}
-
-# Shadow user settings
-rhel8cis_rule_4_5_1_1: {{ rhel8cis_rule_4_5_1_1 }}
-rhel8cis_rule_4_5_1_2: {{ rhel8cis_rule_4_5_1_2 }}
-rhel8cis_rule_4_5_1_3: {{ rhel8cis_rule_4_5_1_3 }}
-rhel8cis_rule_4_5_1_4: {{ rhel8cis_rule_4_5_1_4 }}
-rhel8cis_rule_4_5_1_5: {{ rhel8cis_rule_4_5_1_5 }}
-
-# root and sys accts and env
-rhel8cis_rule_4_5_2_1: {{ rhel8cis_rule_4_5_2_1 }}
-rhel8cis_rule_4_5_2_2: {{ rhel8cis_rule_4_5_2_2 }}
-rhel8cis_rule_4_5_2_3: {{ rhel8cis_rule_4_5_2_3 }}
-rhel8cis_rule_4_5_2_4: {{ rhel8cis_rule_4_5_2_4 }}
-rhel8cis_rule_4_5_2_5: {{ rhel8cis_rule_4_5_2_5 }}
-
-# User environment
-rhel8cis_rule_4_5_3_1: {{ rhel8cis_rule_4_5_3_1 }}
-rhel8cis_rule_4_5_3_2: {{ rhel8cis_rule_4_5_3_2 }}
-rhel8cis_rule_4_5_3_3: {{ rhel8cis_rule_4_5_3_3 }}
 
 ##
 ## Section 5 rules
 ##
-
-# Rsyslog
-rhel8cis_rule_5_1_1_1: {{ rhel8cis_rule_5_1_1_1 }}
-rhel8cis_rule_5_1_1_2: {{ rhel8cis_rule_5_1_1_2 }}
-rhel8cis_rule_5_1_1_3: {{ rhel8cis_rule_5_1_1_3 }}
-rhel8cis_rule_5_1_1_4: {{ rhel8cis_rule_5_1_1_4 }}
-rhel8cis_rule_5_1_1_5: {{ rhel8cis_rule_5_1_1_5 }}
-rhel8cis_rule_5_1_1_6: {{ rhel8cis_rule_5_1_1_6 }}
-rhel8cis_rule_5_1_1_7: {{ rhel8cis_rule_5_1_1_7 }}
-
-# Journald
-rhel8cis_rule_5_1_2_1_1: {{ rhel8cis_rule_5_1_2_1_1 }}
-rhel8cis_rule_5_1_2_1_2: {{ rhel8cis_rule_5_1_2_1_2 }}
-rhel8cis_rule_5_1_2_1_3: {{ rhel8cis_rule_5_1_2_1_3 }}
-rhel8cis_rule_5_1_2_1_4: {{ rhel8cis_rule_5_1_2_1_4 }}
-rhel8cis_rule_5_1_2_2: {{ rhel8cis_rule_5_1_2_2 }}
-rhel8cis_rule_5_1_2_3: {{ rhel8cis_rule_5_1_2_3 }}
-rhel8cis_rule_5_1_2_4: {{ rhel8cis_rule_5_1_2_4 }}
-rhel8cis_rule_5_1_2_5: {{ rhel8cis_rule_5_1_2_5 }}
-rhel8cis_rule_5_1_2_6: {{ rhel8cis_rule_5_1_2_6 }}
+# sshd
+rhel8cis_rule_5_1_1: {{ rhel8cis_rule_5_1_1 }}
+rhel8cis_rule_5_1_2: {{ rhel8cis_rule_5_1_2 }}
 rhel8cis_rule_5_1_3: {{ rhel8cis_rule_5_1_3 }}
 rhel8cis_rule_5_1_4: {{ rhel8cis_rule_5_1_4 }}
+rhel8cis_rule_5_1_5: {{ rhel8cis_rule_5_1_5 }}
+rhel8cis_rule_5_1_6: {{ rhel8cis_rule_5_1_6 }}
+rhel8cis_rule_5_1_7: {{ rhel8cis_rule_5_1_7 }}
+rhel8cis_rule_5_1_8: {{ rhel8cis_rule_5_1_8 }}
+rhel8cis_rule_5_1_9: {{ rhel8cis_rule_5_1_9 }}
+rhel8cis_rule_5_1_10: {{ rhel8cis_rule_5_1_10 }}
+rhel8cis_rule_5_1_12: {{ rhel8cis_rule_5_1_12 }}
+rhel8cis_rule_5_1_11: {{ rhel8cis_rule_5_1_11 }}
+rhel8cis_rule_5_1_13: {{ rhel8cis_rule_5_1_13 }}
+rhel8cis_rule_5_1_14: {{ rhel8cis_rule_5_1_14 }}
+rhel8cis_rule_5_1_15: {{ rhel8cis_rule_5_1_15 }}
+rhel8cis_rule_5_1_16: {{ rhel8cis_rule_5_1_16 }}
+rhel8cis_rule_5_1_17: {{ rhel8cis_rule_5_1_17 }}
+rhel8cis_rule_5_1_18: {{ rhel8cis_rule_5_1_18 }}
+rhel8cis_rule_5_1_19: {{ rhel8cis_rule_5_1_19 }}
+rhel8cis_rule_5_1_20: {{ rhel8cis_rule_5_1_20 }}
+rhel8cis_rule_5_1_21: {{ rhel8cis_rule_5_1_21 }}
+rhel8cis_rule_5_1_22: {{ rhel8cis_rule_5_1_22 }}
+rhel8cis_rule_5_1_23: {{ rhel8cis_rule_5_1_23 }}
+rhel8cis_rule_5_1_24: {{ rhel8cis_rule_5_1_24 }}
 
-# Auditd
-rhel8cis_rule_5_2_1_1: {{ rhel8cis_rule_5_2_1_1 }}
-rhel8cis_rule_5_2_1_2: {{ rhel8cis_rule_5_2_1_2 }}
-rhel8cis_rule_5_2_1_3: {{ rhel8cis_rule_5_2_1_3 }}
-rhel8cis_rule_5_2_1_4: {{ rhel8cis_rule_5_2_1_4 }}
-rhel8cis_rule_5_2_2_1: {{ rhel8cis_rule_5_2_2_1 }}
-rhel8cis_rule_5_2_2_2: {{ rhel8cis_rule_5_2_2_2 }}
-rhel8cis_rule_5_2_2_3: {{ rhel8cis_rule_5_2_2_3 }}
-rhel8cis_rule_5_2_2_4: {{ rhel8cis_rule_5_2_2_4 }}
+# sudo
+rhel8cis_rule_5_2_1: {{ rhel8cis_rule_5_2_1 }}
+rhel8cis_rule_5_2_2: {{ rhel8cis_rule_5_2_2 }}
+rhel8cis_rule_5_2_3: {{ rhel8cis_rule_5_2_3 }}
+rhel8cis_rule_5_2_4: {{ rhel8cis_rule_5_2_4 }}
+rhel8cis_rule_5_2_5: {{ rhel8cis_rule_5_2_5 }}
+rhel8cis_rule_5_2_6: {{ rhel8cis_rule_5_2_6 }}
+rhel8cis_rule_5_2_7: {{ rhel8cis_rule_5_2_7 }}
 
-# auditd rules
-rhel8cis_rule_5_2_3_1: {{ rhel8cis_rule_5_2_3_1 }}
-rhel8cis_rule_5_2_3_2: {{ rhel8cis_rule_5_2_3_2 }}
-rhel8cis_rule_5_2_3_3: {{ rhel8cis_rule_5_2_3_3 }}
-rhel8cis_rule_5_2_3_4: {{ rhel8cis_rule_5_2_3_4 }}
-rhel8cis_rule_5_2_3_5: {{ rhel8cis_rule_5_2_3_5 }}
-rhel8cis_rule_5_2_3_6: {{ rhel8cis_rule_5_2_3_6 }}
-rhel8cis_rule_5_2_3_7: {{ rhel8cis_rule_5_2_3_7 }}
-rhel8cis_rule_5_2_3_8: {{ rhel8cis_rule_5_2_3_8 }}
-rhel8cis_rule_5_2_3_9: {{ rhel8cis_rule_5_2_3_9 }}
-rhel8cis_rule_5_2_3_10: {{ rhel8cis_rule_5_2_3_10 }}
-rhel8cis_rule_5_2_3_11: {{ rhel8cis_rule_5_2_3_11 }}
-rhel8cis_rule_5_2_3_12: {{ rhel8cis_rule_5_2_3_12 }}
-rhel8cis_rule_5_2_3_13: {{ rhel8cis_rule_5_2_3_13 }}
-rhel8cis_rule_5_2_3_14: {{ rhel8cis_rule_5_2_3_14 }}
-rhel8cis_rule_5_2_3_15: {{ rhel8cis_rule_5_2_3_15 }}
-rhel8cis_rule_5_2_3_16: {{ rhel8cis_rule_5_2_3_16 }}
-rhel8cis_rule_5_2_3_17: {{ rhel8cis_rule_5_2_3_17 }}
-rhel8cis_rule_5_2_3_18: {{ rhel8cis_rule_5_2_3_18 }}
-rhel8cis_rule_5_2_3_19: {{ rhel8cis_rule_5_2_3_19 }}
-rhel8cis_rule_5_2_3_20: {{ rhel8cis_rule_5_2_3_20 }}
-rhel8cis_rule_5_2_3_21: {{ rhel8cis_rule_5_2_3_21 }}
+# Pam software pkgs
+rhel8cis_rule_5_3_1_1: {{ rhel8cis_rule_5_3_1_1 }}
+rhel8cis_rule_5_3_1_2: {{ rhel8cis_rule_5_3_1_2 }}
 
-# auditd log perms
-rhel8cis_rule_5_2_4_1: {{ rhel8cis_rule_5_2_4_1 }}
-rhel8cis_rule_5_2_4_2: {{ rhel8cis_rule_5_2_4_2 }}
-rhel8cis_rule_5_2_4_3: {{ rhel8cis_rule_5_2_4_3 }}
-rhel8cis_rule_5_2_4_4: {{ rhel8cis_rule_5_2_4_4 }}
-rhel8cis_rule_5_2_4_5: {{ rhel8cis_rule_5_2_4_5 }}
-rhel8cis_rule_5_2_4_6: {{ rhel8cis_rule_5_2_4_6 }}
-rhel8cis_rule_5_2_4_7: {{ rhel8cis_rule_5_2_4_7 }}
-rhel8cis_rule_5_2_4_8: {{ rhel8cis_rule_5_2_4_8 }}
-rhel8cis_rule_5_2_4_9: {{ rhel8cis_rule_5_2_4_9 }}
-rhel8cis_rule_5_2_4_10: {{ rhel8cis_rule_5_2_4_10 }}
+# authselect
+rhel8cis_rule_5_3_2_1: {{ rhel8cis_rule_5_3_2_1 }}
+rhel8cis_rule_5_3_2_2: {{ rhel8cis_rule_5_3_2_2 }}
+rhel8cis_rule_5_3_2_3: {{ rhel8cis_rule_5_3_2_3 }}
+rhel8cis_rule_5_3_2_4: {{ rhel8cis_rule_5_3_2_4 }}
+rhel8cis_rule_5_3_2_5: {{ rhel8cis_rule_5_3_2_5 }}
 
-# AIDE
+# pam faillock
+rhel8cis_rule_5_3_3_1_1: {{ rhel8cis_rule_5_3_3_1_1 }}
+rhel8cis_rule_5_3_3_1_2: {{ rhel8cis_rule_5_3_3_1_2 }}
+rhel8cis_rule_5_3_3_1_3: {{ rhel8cis_rule_5_3_3_1_3 }}
 
-rhel8cis_rule_5_3_1: {{ rhel8cis_rule_5_3_1 }}
-rhel8cis_rule_5_3_2: {{ rhel8cis_rule_5_3_2 }}
-rhel8cis_rule_5_3_3: {{ rhel8cis_rule_5_3_3 }}
+# pam pwquality
+rhel8cis_rule_5_3_3_2_1: {{ rhel8cis_rule_5_3_3_2_1 }}
+rhel8cis_rule_5_3_3_2_2: {{ rhel8cis_rule_5_3_3_2_2 }}
+rhel8cis_rule_5_3_3_2_3: {{ rhel8cis_rule_5_3_3_2_3 }}
+rhel8cis_rule_5_3_3_2_4: {{ rhel8cis_rule_5_3_3_2_4 }}
+rhel8cis_rule_5_3_3_2_5: {{ rhel8cis_rule_5_3_3_2_5 }}
+rhel8cis_rule_5_3_3_2_6: {{ rhel8cis_rule_5_3_3_2_6 }}
+rhel8cis_rule_5_3_3_2_7: {{ rhel8cis_rule_5_3_3_2_7 }}
+
+# pam pwhistory
+rhel8cis_rule_5_3_3_3_1: {{ rhel8cis_rule_5_3_3_3_1 }}
+rhel8cis_rule_5_3_3_3_2: {{ rhel8cis_rule_5_3_3_3_2 }}
+rhel8cis_rule_5_3_3_3_3: {{ rhel8cis_rule_5_3_3_3_3 }}
+
+# pam pam_unix
+rhel8cis_rule_5_3_3_4_1: {{ rhel8cis_rule_5_3_3_4_1 }}
+rhel8cis_rule_5_3_3_4_2: {{ rhel8cis_rule_5_3_3_4_2 }}
+rhel8cis_rule_5_3_3_4_3: {{ rhel8cis_rule_5_3_3_4_3 }}
+rhel8cis_rule_5_3_3_4_4: {{ rhel8cis_rule_5_3_3_4_4 }}
+
+# Shadow user settings
+rhel8cis_rule_5_4_1_1: {{ rhel8cis_rule_5_4_1_1 }}
+rhel8cis_rule_5_4_1_2: {{ rhel8cis_rule_5_4_1_2 }}
+rhel8cis_rule_5_4_1_3: {{ rhel8cis_rule_5_4_1_3 }}
+rhel8cis_rule_5_4_1_4: {{ rhel8cis_rule_5_4_1_4 }}
+rhel8cis_rule_5_4_1_5: {{ rhel8cis_rule_5_4_1_5 }}
+rhel8cis_rule_5_4_1_6: {{ rhel8cis_rule_5_4_1_6 }}
+
+# root and sys accts and env
+rhel8cis_rule_5_4_2_1: {{ rhel8cis_rule_5_4_2_1 }}
+rhel8cis_rule_5_4_2_2: {{ rhel8cis_rule_5_4_2_2 }}
+rhel8cis_rule_5_4_2_3: {{ rhel8cis_rule_5_4_2_3 }}
+rhel8cis_rule_5_4_2_4: {{ rhel8cis_rule_5_4_2_4 }}
+rhel8cis_rule_5_4_2_5: {{ rhel8cis_rule_5_4_2_5 }}
+rhel8cis_rule_5_4_2_6: {{ rhel8cis_rule_5_4_2_6 }}
+rhel8cis_rule_5_4_2_7: {{ rhel8cis_rule_5_4_2_7 }}
+rhel8cis_rule_5_4_2_8: {{ rhel8cis_rule_5_4_2_8 }}
+
+# User environment
+rhel8cis_rule_5_4_3_1: {{ rhel8cis_rule_5_4_3_1 }}
+rhel8cis_rule_5_4_3_2: {{ rhel8cis_rule_5_4_3_2 }}
+rhel8cis_rule_5_4_3_3: {{ rhel8cis_rule_5_4_3_3 }}
 
 ##
 ## Section 6 rules
 ##
 
-# System file perms
+# AIDE
+
 rhel8cis_rule_6_1_1: {{ rhel8cis_rule_6_1_1 }}
 rhel8cis_rule_6_1_2: {{ rhel8cis_rule_6_1_2 }}
 rhel8cis_rule_6_1_3: {{ rhel8cis_rule_6_1_3 }}
-rhel8cis_rule_6_1_4: {{ rhel8cis_rule_6_1_4 }}
-rhel8cis_rule_6_1_5: {{ rhel8cis_rule_6_1_5 }}
-rhel8cis_rule_6_1_6: {{ rhel8cis_rule_6_1_6 }}
-rhel8cis_rule_6_1_7: {{ rhel8cis_rule_6_1_7 }}
-rhel8cis_rule_6_1_8: {{ rhel8cis_rule_6_1_8 }}
-rhel8cis_rule_6_1_9: {{ rhel8cis_rule_6_1_9 }}
-rhel8cis_rule_6_1_10: {{ rhel8cis_rule_6_1_10 }}
-rhel8cis_rule_6_1_11: {{ rhel8cis_rule_6_1_11 }}
-rhel8cis_rule_6_1_12: {{ rhel8cis_rule_6_1_12 }}
-rhel8cis_rule_6_1_13: {{ rhel8cis_rule_6_1_13 }}
-rhel8cis_rule_6_1_14: {{ rhel8cis_rule_6_1_14 }}
+
+# Journald
+rhel8cis_rule_6_2_1_1_1: {{ rhel8cis_rule_6_2_1_1_1 }}
+rhel8cis_rule_6_2_1_1_2: {{ rhel8cis_rule_6_2_1_1_2 }}
+rhel8cis_rule_6_2_1_1_3: {{ rhel8cis_rule_6_2_1_1_3 }}
+rhel8cis_rule_6_2_1_1_4: {{ rhel8cis_rule_6_2_1_1_4 }}
+rhel8cis_rule_6_2_1_1_5: {{ rhel8cis_rule_6_2_1_1_5 }}
+rhel8cis_rule_6_2_1_1_6: {{ rhel8cis_rule_6_2_1_1_6 }}
+
+# Journald- Remote
+rhel8cis_rule_6_2_1_2_1: {{ rhel8cis_rule_6_2_1_2_1 }}
+rhel8cis_rule_6_2_1_2_2: {{ rhel8cis_rule_6_2_1_2_2 }}
+rhel8cis_rule_6_2_1_2_3: {{ rhel8cis_rule_6_2_1_2_3 }}
+rhel8cis_rule_6_2_1_2_4: {{ rhel8cis_rule_6_2_1_2_4 }}
+
+# Rsyslog
+rhel8cis_rule_6_2_2_1: {{ rhel8cis_rule_6_2_2_1 }}
+rhel8cis_rule_6_2_2_2: {{ rhel8cis_rule_6_2_2_2 }}
+rhel8cis_rule_6_2_2_3: {{ rhel8cis_rule_6_2_2_3 }}
+rhel8cis_rule_6_2_2_4: {{ rhel8cis_rule_6_2_2_4 }}
+rhel8cis_rule_6_2_2_5: {{ rhel8cis_rule_6_2_2_5 }}
+rhel8cis_rule_6_2_2_6: {{ rhel8cis_rule_6_2_2_6 }}
+rhel8cis_rule_6_2_2_7: {{ rhel8cis_rule_6_2_2_7 }}
+rhel8cis_rule_6_2_2_8: {{ rhel8cis_rule_6_2_2_8 }}
+
+# Logfiles
+rhel8cis_rule_6_2_3_1: {{ rhel8cis_rule_6_2_3_1 }}
+
+# Auditd
+rhel8cis_rule_6_3_1_1: {{ rhel8cis_rule_6_3_1_1 }}
+rhel8cis_rule_6_3_1_2: {{ rhel8cis_rule_6_3_1_2 }}
+rhel8cis_rule_6_3_1_3: {{ rhel8cis_rule_6_3_1_3 }}
+rhel8cis_rule_6_3_1_4: {{ rhel8cis_rule_6_3_1_4 }}
+rhel8cis_rule_6_3_2_1: {{ rhel8cis_rule_6_3_2_1 }}
+rhel8cis_rule_6_3_2_2: {{ rhel8cis_rule_6_3_2_2 }}
+rhel8cis_rule_6_3_2_3: {{ rhel8cis_rule_6_3_2_3 }}
+rhel8cis_rule_6_3_2_4: {{ rhel8cis_rule_6_3_2_4 }}
+
+# auditd rules
+rhel8cis_rule_6_3_3_1: {{ rhel8cis_rule_6_3_3_1 }}
+rhel8cis_rule_6_3_3_2: {{ rhel8cis_rule_6_3_3_2 }}
+rhel8cis_rule_6_3_3_3: {{ rhel8cis_rule_6_3_3_3 }}
+rhel8cis_rule_6_3_3_4: {{ rhel8cis_rule_6_3_3_4 }}
+rhel8cis_rule_6_3_3_5: {{ rhel8cis_rule_6_3_3_5 }}
+rhel8cis_rule_6_3_3_6: {{ rhel8cis_rule_6_3_3_6 }}
+rhel8cis_rule_6_3_3_7: {{ rhel8cis_rule_6_3_3_7 }}
+rhel8cis_rule_6_3_3_8: {{ rhel8cis_rule_6_3_3_8 }}
+rhel8cis_rule_6_3_3_9: {{ rhel8cis_rule_6_3_3_9 }}
+rhel8cis_rule_6_3_3_10: {{ rhel8cis_rule_6_3_3_10 }}
+rhel8cis_rule_6_3_3_11: {{ rhel8cis_rule_6_3_3_11 }}
+rhel8cis_rule_6_3_3_12: {{ rhel8cis_rule_6_3_3_12 }}
+rhel8cis_rule_6_3_3_13: {{ rhel8cis_rule_6_3_3_13 }}
+rhel8cis_rule_6_3_3_14: {{ rhel8cis_rule_6_3_3_14 }}
+rhel8cis_rule_6_3_3_15: {{ rhel8cis_rule_6_3_3_15 }}
+rhel8cis_rule_6_3_3_16: {{ rhel8cis_rule_6_3_3_16 }}
+rhel8cis_rule_6_3_3_17: {{ rhel8cis_rule_6_3_3_17 }}
+rhel8cis_rule_6_3_3_18: {{ rhel8cis_rule_6_3_3_18 }}
+rhel8cis_rule_6_3_3_19: {{ rhel8cis_rule_6_3_3_19 }}
+rhel8cis_rule_6_3_3_20: {{ rhel8cis_rule_6_3_3_20 }}
+rhel8cis_rule_6_3_3_21: {{ rhel8cis_rule_6_3_3_21 }}
+rhel8cis_rule_6_3_3_22: {{ rhel8cis_rule_6_3_3_22 }}
+
+# auditd log perms
+rhel8cis_rule_6_3_4_1: {{ rhel8cis_rule_6_3_4_1 }}
+rhel8cis_rule_6_3_4_2: {{ rhel8cis_rule_6_3_4_2 }}
+rhel8cis_rule_6_3_4_3: {{ rhel8cis_rule_6_3_4_3 }}
+rhel8cis_rule_6_3_4_4: {{ rhel8cis_rule_6_3_4_4 }}
+rhel8cis_rule_6_3_4_5: {{ rhel8cis_rule_6_3_4_5 }}
+rhel8cis_rule_6_3_4_6: {{ rhel8cis_rule_6_3_4_6 }}
+rhel8cis_rule_6_3_4_7: {{ rhel8cis_rule_6_3_4_7 }}
+rhel8cis_rule_6_3_4_8: {{ rhel8cis_rule_6_3_4_8 }}
+rhel8cis_rule_6_3_4_9: {{ rhel8cis_rule_6_3_4_9 }}
+rhel8cis_rule_6_3_4_10: {{ rhel8cis_rule_6_3_4_10 }}
+
+##
+## Section 7 rules
+##
+
+# System file perms
+rhel8cis_rule_7_1_1: {{ rhel8cis_rule_7_1_1 }}
+rhel8cis_rule_7_1_2: {{ rhel8cis_rule_7_1_2 }}
+rhel8cis_rule_7_1_3: {{ rhel8cis_rule_7_1_3 }}
+rhel8cis_rule_7_1_4: {{ rhel8cis_rule_7_1_4 }}
+rhel8cis_rule_7_1_5: {{ rhel8cis_rule_7_1_5 }}
+rhel8cis_rule_7_1_6: {{ rhel8cis_rule_7_1_6 }}
+rhel8cis_rule_7_1_7: {{ rhel8cis_rule_7_1_7 }}
+rhel8cis_rule_7_1_8: {{ rhel8cis_rule_7_1_8 }}
+rhel8cis_rule_7_1_9: {{ rhel8cis_rule_7_1_9 }}
+rhel8cis_rule_7_1_10: {{ rhel8cis_rule_7_1_10 }}
+rhel8cis_rule_7_1_11: {{ rhel8cis_rule_7_1_11 }}
+rhel8cis_rule_7_1_12: {{ rhel8cis_rule_7_1_12 }}
+rhel8cis_rule_7_1_13: {{ rhel8cis_rule_7_1_13 }}
 
 # local and usergroup
-rhel8cis_rule_6_2_1: {{ rhel8cis_rule_6_2_1 }}
-rhel8cis_rule_6_2_2: {{ rhel8cis_rule_6_2_2 }}
-rhel8cis_rule_6_2_3: {{ rhel8cis_rule_6_2_3 }}
-rhel8cis_rule_6_2_4: {{ rhel8cis_rule_6_2_4 }}
-rhel8cis_rule_6_2_5: {{ rhel8cis_rule_6_2_5 }}
-rhel8cis_rule_6_2_6: {{ rhel8cis_rule_6_2_6 }}
-rhel8cis_rule_6_2_7: {{ rhel8cis_rule_6_2_7 }}
-rhel8cis_rule_6_2_8: {{ rhel8cis_rule_6_2_8 }}
-rhel8cis_rule_6_2_9: {{ rhel8cis_rule_6_2_9 }}
-rhel8cis_rule_6_2_10: {{ rhel8cis_rule_6_2_10 }}
-rhel8cis_rule_6_2_11: {{ rhel8cis_rule_6_2_11 }}
+rhel8cis_rule_7_2_1: {{ rhel8cis_rule_7_2_1 }}
+rhel8cis_rule_7_2_2: {{ rhel8cis_rule_7_2_2 }}
+rhel8cis_rule_7_2_3: {{ rhel8cis_rule_7_2_3 }}
+rhel8cis_rule_7_2_4: {{ rhel8cis_rule_7_2_4 }}
+rhel8cis_rule_7_2_5: {{ rhel8cis_rule_7_2_5 }}
+rhel8cis_rule_7_2_6: {{ rhel8cis_rule_7_2_6 }}
+rhel8cis_rule_7_2_7: {{ rhel8cis_rule_7_2_7 }}
+rhel8cis_rule_7_2_8: {{ rhel8cis_rule_7_2_8 }}
+rhel8cis_rule_7_2_9: {{ rhel8cis_rule_7_2_9 }}
 
 ##
 ## Section 1 vars
@@ -457,8 +501,8 @@ rhel8cis_warning_banner: {{ rhel8cis_warning_banner }}
 
 # 1.8 Gnome Desktop
 # Whether or not to run tasks related to auditing/patching the desktop environment
-rhel8cis_gui: {{ rhel8cis_gui }}
-rhel8cis_dconf_db_name: {{ rhel8cis_dconf_db_name }}
+rhel8cis_gui: {{ rhel8cis_desktop_required }}
+
 rhel8cis_screensaver_idle_delay: {{ rhel8cis_screensaver_idle_delay }}  # Set max value for idle-delay in seconds (between 1 and 900)
 rhel8cis_screensaver_lock_delay: {{ rhel8cis_screensaver_lock_delay }}  # Set max value for lock-delay in seconds (between 0 and 5)
 ##
@@ -486,6 +530,8 @@ rhel8cis_autofs_services: {{ rhel8cis_autofs_services }}
 rhel8cis_autofs_mask: {{ rhel8cis_autofs_mask }}
 rhel8cis_avahi_server: {{ rhel8cis_avahi_server }}
 rhel8cis_avahi_mask: {{ rhel8cis_avahi_mask }}
+rhel8cis_cockpit_server: {{ rhel8cis_cockpit_server }}
+rhel8cis_cockpit_mask: {{ rhel8cis_cockpit_mask }}
 rhel8cis_dhcp_server: {{ rhel8cis_dhcp_server }}
 rhel8cis_dhcp_mask: {{ rhel8cis_dhcp_mask }}
 rhel8cis_dns_server: {{ rhel8cis_dns_server }}
@@ -508,8 +554,8 @@ rhel8cis_rpc_server: {{ rhel8cis_rpc_server }}
 rhel8cis_rpc_mask: {{ rhel8cis_rpc_mask }}
 rhel8cis_rsync_server: {{ rhel8cis_rsync_server }}
 rhel8cis_rsync_mask: {{ rhel8cis_rsync_mask }}
-rhel8cis_net_snmp_server: {{ rhel8cis_net_snmp_server }}
-rhel8cis_net_snmp_mask: {{ rhel8cis_net_snmp_mask }}
+rhel8cis_snmp_server: {{ rhel8cis_net_snmp_server }}
+rhel8cis_snmp_mask: {{ rhel8cis_net_snmp_mask }}
 rhel8cis_telnet_server: {{ rhel8cis_telnet_server }}
 rhel8cis_telnet_mask: {{ rhel8cis_telnet_mask }}
 rhel8cis_tftp_server: {{ rhel8cis_tftp_server }}
@@ -532,52 +578,38 @@ rhel8cis_ypbind_required: {{ rhel8cis_ypbind_required }}  # Same package as NIS 
 rhel8cis_telnet_required: {{ rhel8cis_telnet_required }}
 rhel8cis_tftp_client: {{ rhel8cis_tftp_client }}
 
-##
 ## Section 3 vars
-##
-
+## Sysctl
+# Service configuration
+# Options are
+# Service
+# - false - removes package
+# - true - leaves package installed
+# Mask
+# - false - leaves service in current status
+# - true - sets service name to masked
+#
+# Setting both Service and Mask to false will remove the package if exists
+#
 rhel8cis_bluetooth_service: {{ rhel8cis_bluetooth_service }}
 rhel8cis_bluetooth_mask: {{ rhel8cis_bluetooth_mask }}
 
-# System network parameters (host only OR host and router)
-rhel8cis_is_router: {{ rhel8cis_is_router }}
-
-# IPv6 required
+## 3.1 IPv6 requirement toggle
+# This variable governs whether ipv6 is enabled or disabled.
 rhel8cis_ipv6_required: {{ rhel8cis_ipv6_required }}
 
-rhel8cis_ipv6_sysctl_force: {{ rhel8cis_ipv6_sysctl_force }}
+# 3.3 System network parameters (host only OR host and router)
+# This variable governs whether specific CIS rules
+# concerned with acceptance and routing of packages are skipped.
+rhel8cis_is_router: {{ rhel8cis_is_router }}
 
-##  Optional - Understand the impact of making the following two control to true
-# By default, we do not disable IPv6 on localhost, as it's important for multiple
-# components.  If you want to disable it anyway, change the following
-# value to true refer https://access.redhat.com/solutions/8709
-# this changes sysctl and /etc/hosts
-# requires reboot
-rhel8cis_ipv6_disable_localhost: {{ rhel8cis_ipv6_disable_localhost }}
-# disable ipv6 for sshd
-rhel8cis_ipv6_sshd_disable: {{ rhel8cis_ipv6_sshd_disable }}
-# disable chrony on ipv6
-rhel8cis_ipv6_chrony_disable: {{ rhel8cis_ipv6_chrony_disable }}
+## Section 4 vars
 
-# Set to 'true' if X Windows is needed in your environment
-rhel8cis_xwindows_required: {{ rhel8cis_xwindows_required }}
-
-## Section3 vars
-
-# default location for the sysctl overrides.
-rhel8cis_sysctl_file: {{ rhel8cis_sysctl_file }}
-
-# Firewall Service - either firewalld or nftables
+### Firewall Service to install and configure - Options are:
+# firewalld anything else this will skip
 rhel8cis_firewall: {{ rhel8cis_firewall }}
 
-rhel8cis_default_zone: {{ rhel8cis_default_zone }}
-
-rhel8cis_nft_tables_autonewtable: {{ rhel8cis_nft_tables_autonewtable }}
-rhel8cis_nft_tables_tablename: {{ rhel8cis_nft_tables_tablename }}
-
-# 3.4.2.6 Set nftables new chain create
-rhel8cis_nft_tables_autochaincreate: {{ rhel8cis_nft_tables_autochaincreate }}
-
+rhel8cis_active_firewall_zone: {{ rhel8cis_active_firewall_zone }}
 #######
 ## Section4 vars
 ######
@@ -594,21 +626,30 @@ rhel8cis_sshd:
     maxstartups: '{{ rhel8cis_sshd_maxstartups }}'
     ciphers: '{{ rhel8cis_sshd_ciphers }}'
     kex: '{{ rhel8cis_sshd_kex }}'
-{% if rhel8cis_sshd_limited %}
-    # WARNING: make sure you understand the precedence when working with these values!!
-    {% if rhel8cis_sshd_allowusers is defined %}
-    # allowusers: '{{ rhel8cis_sshd_allowusers }}'
-    {% endif %}
-    {% if rhel8cis_sshd_allowgroups is defined %}
-    # allowgroups: '{{ rhel8cis_sshd_allowgroups }}'
-    {% endif %}
-    {% if rhel8cis_sshd_denyusers is defined %}
-    # denyusers: '{{ rhel8cis_sshd.denyusers }}'
-    {% endif %}
-    {% if rhel8cis_sshd_denygroups is defined %}
-    # denygroups: '{{ rhel8cis_sshd_denygroups }}'
-    {% endif %}
-{% endif %}
+
+# Controls:
+## - 5.1.7  - Ensure SSH access is limited
+# This variable, if specified, configures a list of USER name patterns, separated by spaces, to allow SSH
+# access for users whose user name matches one of the patterns. This is done
+# by setting the value of `AllowUsers` option in `/etc/ssh/sshd_config` file.
+# If an USER@HOST format will be used, the specified user will be allowed only on that particular host.
+rhel8cis_sshd_allowusers: "{% if ansible_facts.user_id != 'root' %}{{ ansible_facts.user_id }}{% elif ansible_env.SUDO_USER is defined %}{{ ansible_env.SUDO_USER }}{% endif %} {{ rhel8cis_sshd_allowusers }}"
+
+# (String) This variable, if specified, configures a list of GROUP name patterns, separated by spaces, to allow SSH access
+# for users whose primary group or supplementary group list matches one of the patterns. This is done
+# by setting the value of `AllowGroups` option in `/etc/ssh/sshd_config` file.
+rhel8cis_sshd_allowgroups: {{ rhel8cis_sshd_allowgroups }}
+
+# This variable, if specified, configures a list of USER name patterns, separated by spaces, to prevent SSH access
+# for users whose user name matches one of the patterns. This is done
+# by setting the value of `DenyUsers` option in `/etc/ssh/sshd_config` file.
+# If an USER@HOST format will be used, the specified user will be restricted only on that particular host.
+rhel8cis_sshd_denyusers: {{ rhel8cis_sshd_denyusers }}
+
+# This variable, if specified, configures a list of GROUP name patterns, separated by spaces,
+# to prevent SSH access for users whose primary group or supplementary group list matches one of the patterns. This is done
+# by setting the value of `DenyGroups` option in `/etc/ssh/sshd_config` file.
+rhel8cis_sshd_denygroups: {{ rhel8cis_sshd_denygroups }}
 
 # 4.3. sudo
 rhel8cis_sudolog_location: "{{ rhel8cis_sudolog_location }}"
@@ -641,10 +682,10 @@ rhel8cis_pam_pwhistory:
 rhel8cis_pam_pwhash: {{ rhel8cis_pam_pwhash }}
 
 rhel8cis_pass:
-    inactive: {{ rhel8cis_pam_pass_inactive }}
-    max_days: {{ rhel8cis_pam_pass_max_days }}
-    min_days: {{ rhel8cis_pam_pass_min_days }}
-    warn_age: {{ rhel8cis_pam_pass_warn_age }}
+    inactive: {{ rhel8cis_inactive_lock_days }}
+    max_days: {{ rhel8cis_pass_max_days }}
+    min_days: {{ rhel8cis_pass_min_days }}
+    warn_age: {{ rhel8cis_pass_warn_age }}
 
 rhel8cis_root_umask: {{ rhel8cis_root_umask }}  # 0027 or more restrictive
 
@@ -658,8 +699,6 @@ rhel8cis_sugroup: {{ rhel8cis_sugroup }}
 # wheel users list
 rhel8cis_sugroup_users: "{{ rhel8cis_sugroup_users }}"
 
-rhel8cis_inactivelock:
-    lock_days: {{ rhel8cis_inactivelock.lock_days }}
 
 # 5.6.1.5 Allow ansible to expire password for account with a last changed date in the future. False will just display users in violation, true will expire those users passwords
 rhel8cis_futurepwchgdate_autofix: {{ rhel8cis_futurepwchgdate_autofix }}
@@ -730,3 +769,7 @@ rhel8cis_aide_cron:
     aide_weekday: '{{ rhel8cis_aide_cron_weekday }}'
 
 ## Section6 vars
+
+
+# Control 7.1.12
+rhel8cis_exclude_unowned_search_path: '{{ rhel8cis_exclude_unowned_search_path }}'

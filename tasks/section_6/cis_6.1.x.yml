@@ -1,420 +1,139 @@
 ---
 
-- name: "6.1.1 | PATCH | Ensure permissions on /etc/passwd are configured"
-  when: rhel8cis_rule_6_1_1
+- name: "6.1.1 | PATCH | Ensure AIDE is installed"
+  when:
+    - rhel8cis_config_aide
+    - rhel8cis_rule_6_1_1
   tags:
     - level1-server
     - level1-workstation
-    - automated
+    - aide
     - patch
-    - NIST800-53R5_AC-3
-    - NIST800-53R5_MP-2
-    - permissions
     - rule_6.1.1
-  ansible.builtin.file:
-    path: /etc/passwd
-    owner: root
-    group: root
-    mode: 'u-x,go-wx'
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_SI-6
+  block:
+    - name: "6.1.1 | PATCH | Ensure AIDE is installed"
+      ansible.builtin.package:
+        name: "{{ aide_packages }}"
+        state: present
+        update_cache: true
+      register: discovered_aide_pkg_added
 
-- name: "6.1.2 | PATCH | Ensure permissions on /etc/passwd- are configured"
-  when: rhel8cis_rule_6_1_2
+    - name: "6.1.1 | PATCH | Ensure AIDE is installed | Recapture packages"
+      when: discovered_aide_pkg_added.skipped is not defined
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: "6.1.1 | AUDIT | Ensure AIDE is installed | Check file exists"
+      ansible.builtin.stat:
+        path: "{{ rhel8cis_aide_db_file }}"
+      register: discovered_aide_db_file
+
+    - name: "6.1.1 | AUDIT | Ensure AIDE is installed | Check current db file age"
+      when: discovered_aide_db_file.stat.exists
+      ansible.builtin.find:
+        path: "{{ rhel8cis_aide_db_file | dirname }}"
+        pattern: "{{ rhel8cis_aide_db_file | basename }}"
+        age: "{{ rhel8cis_aide_db_file_age }}"
+      register: discovered_aide_db_age
+
+    - name: "6.1.1 | PATCH | Ensure AIDE is installed | Configure AIDE"
+      when:
+        - not ansible_check_mode
+        - not discovered_aide_db_file.stat.exists or
+          (discovered_aide_db_age.files | length > 0) or
+          rhel8cis_aide_db_recreate
+      block:
+        - name: "6.1.1 | PATCH | Ensure AIDE is installed | Build AIDE DB"
+          ansible.builtin.command: "{{ aide_initiate_command }}"
+          changed_when: true
+          args:
+            creates: /var/lib/aide/aide.db.new.gz
+          async: "{{ rhel8cis_aide_init_async }}"
+          poll: "{{ rhel8cis_aide_init_poll }}"
+
+        - name: "6.1.1 | PATCH | Ensure AIDE is installed | Build AIDE DB | copy AIDE DB"
+          ansible.builtin.copy:
+            src: /var/lib/aide/aide.db.new.gz
+            dest: "{{ rhel8cis_aide_db_file }}"
+            remote_src: true
+            mode: 'u-x,g-wx,o-rwx'
+          register: discovered_aide_db_cp
+          failed_when:
+            - not ansible_check_mode
+            - discovered_aide_db_cp.failed
+
+- name: "6.1.2 | PATCH | Ensure filesystem integrity is regularly checked"
+  when:
+    - rhel8cis_config_aide
+    - rhel8cis_rule_6_1_2
   tags:
     - level1-server
     - level1-workstation
-    - automated
     - patch
-    - NIST800-53R5_AC-3
-    - NIST800-53R5_MP-2
-    - permissions
     - rule_6.1.2
-  ansible.builtin.file:
-    path: /etc/passwd-
-    owner: root
-    group: root
-    mode: 'u-x,go-wx'
+    - NIST800-53R5_AU-2
+    - cron
+    - aide
+  block:
+    - name: "6.1.2 | PATCH | Ensure filesystem integrity is regularly checked | cron"
+      when: rhel8cis_aide_scan == 'cron'
+      ansible.builtin.cron:
+        name: Run AIDE integrity check
+        cron_file: "{{ rhel8cis_aide_cron_file }}"
+        user: "{{ rhel8cis_aide_cron_user }}"
+        minute: "{{ rhel8cis_aide_cron_minute | default('0') }}"
+        hour: "{{ rhel8cis_aide_cron_hour | default('5') }}"
+        day: "{{ rhel8cis_aide_cron_day | default('*') }}"
+        month: "{{ rhel8cis_aide_cron_month | default('*') }}"
+        weekday: "{{ rhel8cis_aide_cron_weekday | default('*') }}"
+        job: "{{ rhel8cis_aide_cron_job }}"
 
-- name: "6.1.3 | PATCH | Ensure permissions on /etc/security/opasswd are configured"
+    - name: "6.1.2 | PATCH | Ensure filesystem integrity is regularly checked | timer template"
+      when: rhel8cis_aide_scan == 'timer'
+      ansible.builtin.template:
+        src: "{{ item }}.j2"
+        dest: "/{{ item }}"
+        owner: root
+        group: root
+        mode: 'go-r'
+      loop:
+        - etc/systemd/system/aidecheck.service
+        - etc/systemd/system/aidecheck.timer
+
+    - name: "6.1.2 | PATCH | Ensure filesystem integrity is regularly checked | timer service"
+      when: rhel8cis_aide_scan == 'timer'
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+        daemon_reload: true
+      loop:
+        - aidecheck.service
+        - aidecheck.timer
+
+- name: "6.1.3 | Ensure cryptographic mechanisms are used to protect the integrity of audit tools"
   when: rhel8cis_rule_6_1_3
   tags:
     - level1-server
     - level1-workstation
-    - automated
+    - aide
+    - file_integrity
     - patch
-    - NIST800-53R5_AC-3
-    - NIST800-53R5_MP-2
-    - permissions
     - rule_6.1.3
-  ansible.builtin.file:
-    path: /etc/security/opasswd
-    owner: root
-    group: root
-    mode: 'u-x,go-rwx'
-
-- name: "6.1.4 | PATCH |  Ensure permissions on /etc/group are configured"
-  when: rhel8cis_rule_6_1_4
-  tags:
-    - level1-server
-    - level1-workstation
-    - automated
-    - patch
-    - NIST800-53R5_AC-3
-    - NIST800-53R5_MP-2
-    - permissions
-    - rule_6.1.4
-  ansible.builtin.file:
-    path: /etc/group
-    owner: root
-    group: root
-    mode: 'u-x,go-wx'
-
-- name: "6.1.5 | PATCH | Ensure permissions on /etc/group- are configured"
-  when: rhel8cis_rule_6_1_5
-  tags:
-    - level1-server
-    - level1-workstation
-    - automated
-    - patch
-    - NIST800-53R5_AC-3
-    - NIST800-53R5_MP-2
-    - permissions
-    - rule_6.1.5
-  ansible.builtin.file:
-    path: /etc/group-
-    owner: root
-    group: root
-    mode: 'u-x,go-wx'
-
-- name: "6.1.6 | PATCH | Ensure permissions on /etc/shadow are configured"
-  when: rhel8cis_rule_6_1_6
-  tags:
-    - level1-server
-    - level1-workstation
-    - automated
-    - patch
-    - NIST800-53R5_AC-3
-    - NIST800-53R5_MP-2
-    - permissions
-    - rule_6.1.6
-  ansible.builtin.file:
-    path: /etc/shadow
-    owner: root
-    group: root
-    mode: 'ugo-rwx'
-
-- name: "6.1.7 | PATCH | Ensure permissions on /etc/shadow- are configured"
-  when: rhel8cis_rule_6_1_7
-  tags:
-    - level1-server
-    - level1-workstation
-    - automated
-    - patch
-    - NIST800-53R5_AC-3
-    - NIST800-53R5_MP-2
-    - permissions
-    - rule_6.1.7
-  ansible.builtin.file:
-    path: /etc/shadow-
-    owner: root
-    group: root
-    mode: 'ugo-rwx'
-
-- name: "6.1.8 | PATCH | Ensure permissions on /etc/gshadow are configured"
-  when: rhel8cis_rule_6_1_8
-  tags:
-    - level1-server
-    - level1-workstation
-    - automated
-    - patch
-    - NIST800-53R5_AC-3
-    - NIST800-53R5_MP-2
-    - permissions
-    - rule_6.1.8
-  ansible.builtin.file:
-    path: /etc/gshadow
-    owner: root
-    group: root
-    mode: 'ugo-rwx'
-
-- name: "6.1.9 | PATCH | Ensure permissions on /etc/gshadow- are configured"
-  when: rhel8cis_rule_6_1_9
-  tags:
-    - level1-server
-    - level1-workstation
-    - automated
-    - patch
-    - NIST800-53R5_AC-3
-    - NIST800-53R5_MP-2
-    - permissions
-    - rule_6.1.9
-  ansible.builtin.file:
-    path: /etc/gshadow-
-    owner: root
-    group: root
-    mode: 'ugo-rwx'
-
-- name: "6.1.10 | PATCH | Ensure permissions on /etc/shells are configured"
-  when: rhel8cis_rule_6_1_10
-  tags:
-    - level1-server
-    - level1-workstation
-    - automated
-    - patch
-    - NIST800-53R5_AC-3
-    - NIST800-53R5_MP-2
-    - permissions
-    - rule_6.1.10
-  ansible.builtin.file:
-    path: /etc/shells
-    owner: root
-    group: root
-    mode: 'u-x,go-wx'
-
-- name: "6.1.11 | PATCH | Ensure world writable files and directories are secured"
-  when:
-    - rhel8cis_rule_6_1_11
-    - rhel8cis_disruption_high
-  tags:
-    - level1-server
-    - level1-workstation
-    - automated
-    - patch
-    - files
-    - NIST800-53R5_AC-3
-    - NIST800-53R5_MP-2
-    - permissions
-    - rule_6.1.11
-  vars:
-    warn_control_id: '6.1.11'
-  block:
-    - name: "6.1.11 | AUDIT | Ensure world writable files and directories are secured | Get list of world-writable files"
-      ansible.builtin.shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -0002
-      changed_when: false
-      failed_when: false
-      check_mode: false
-      register: discovered_perms_results
-
-    - name: "6.1.11 | PATCH | Adjust world-writable files if they exist (Configurable)"
-      when:
-        - discovered_perms_results.stdout_lines is defined
-        - rhel8cis_no_world_write_adjust
-      ansible.builtin.file:
-        path: '{{ item }}'
-        mode: 'o-w'
-        state: touch
-      with_items: "{{ discovered_perms_results.stdout_lines }}"
-
-    - name: "6.1.11 | PATCH | Ensure world writable files and directories are secured | sticky bit set on world-writable directories"
-      ansible.builtin.shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d -perm -0002 2>/dev/null | xargs chmod a+t
-      changed_when: false
-      failed_when: false
-
-    - name: "6.1.11 | AUDIT | Ensure world writable files and directories are secured | Warning"
-      when:
-        - discovered_perms_results.stdout_lines is defined
-        - not rhel8cis_no_world_write_adjust
-      ansible.builtin.debug:
-        msg: "Warning!! - WorldWritable files have been found"
-
-    - name: "6.1.11 | AUDIT | Ensure world writable files and directories are secured | Warn Count"
-      when:
-        - discovered_perms_results.stdout_lines is defined
-        - not rhel8cis_no_world_write_adjust
-      ansible.builtin.import_tasks:
-        file: warning_facts.yml
-
-- name: "6.1.12 | PATCH | Ensure no ungrouped files or directories exist"
-  when:
-    - rhel8cis_rule_6_1_12
-    - rhel8cis_disruption_high
-  tags:
-    - level1-server
-    - level1-workstation
-    - automated
-    - patch
-    - NIST800-53R5_AC-3
-    - NIST800-53R5_MP-2
-    - rule_6.1.12
-    - permissions
-  vars:
-    warn_control_id: '6.1.12'
-  block:
-    - name: "6.1.12 | AUDIT | Ensure no ungrouped files or directories exist | Get ungrouped files or directories"
-      ansible.builtin.command: find {{ item.mount }} -xdev -nogroup -not -fstype nfs
-      changed_when: false
-      failed_when: false
-      check_mode: false
-      register: discovered_ungrouped_items
-      with_items:
-        - "{{ ansible_facts.mounts }}"
-      loop_control:
-        label: "{{ item.mount }}"
-
-    - name: "6.1.12 | AUDIT | Ensure no ungrouped files or directories exist | Flatten ungrouped_items results for easier use"
-      ansible.builtin.set_fact:
-        discovered_ungrouped_items_flatten: "{{ discovered_ungrouped_items.results | map(attribute='stdout_lines') | flatten }}"
-
-    - name: "6.1.12 | AUDIT | Ensure no ungrouped files or directories exist | Alert on ungrouped files and directories"
-      when:
-        - not rhel8cis_ungrouped_adjust
-        - discovered_ungrouped_items_flatten | length > 0
-      ansible.builtin.debug:
-        msg:
-          - "Warning!! You have ungrouped files/directories and are configured to not auto-remediate for this task"
-          - "Please review the files/directories below and assign a group"
-          - "{{ discovered_ungrouped_items_flatten }}"
-
-    - name: "6.1.12 | PATCH | Ensure no ungrouped files or directories exist | Set ungrouped files/directories to configured group"
-      when:
-        - rhel8cis_ungrouped_adjust
-        - discovered_ungrouped_items_flatten | length > 0
-      ansible.builtin.file:
-        path: "{{ item }}"
-        group: "{{ rhel8cis_ungrouped_group }}"
-      loop:
-        - "{{ discovered_ungrouped_items_flatten }}"
-
-    - name: "6.1.12 | AUDIT | Ensure no ungrouped files or directories exist | Warn Count"
-      when:
-        - rhel8cis_ungrouped_adjust
-        - discovered_ungrouped_items_flatten | length > 0
-      ansible.builtin.import_tasks:
-        file: warning_facts.yml
-
-- name: "6.1.13 | AUDIT | Ensure SUID and SGID files are reviewed"
-  when:
-    - rhel8cis_rule_6_1_13
-    - rhel8cis_disruption_high
-  tags:
-    - level1-server
-    - level1-workstation
-    - manual
-    - audit
-    - rule_6.1.13
-    - permissions
-  vars:
-    warn_control_id: '6.1.13'
-  block:
-    - name: "6.1.13 | AUDIT | Ensure SUID and SGID files are reviewed | Find SUID executables"
-      ansible.builtin.command: find {{ item.mount }} -xdev -type f -perm -4000 -not -fstype nfs
-      changed_when: false
-      failed_when: false
-      check_mode: false
-      register: discovered_suid_executables
-      loop: "{{ ansible_facts.mounts }}"
-      loop_control:
-        label: "{{ item.mount }}"
-
-    - name: "6.1.13 | AUDIT | Ensure SUID and SGID files are reviewed | Find all SGID executables"
-      ansible.builtin.command: find {{ item.mount }} -xdev -type f -perm -2000 -not -fstype nfs
-      changed_when: false
-      failed_when: false
-      check_mode: false
-      register: discovered_sgid_executables
-      loop: "{{ ansible_facts.mounts }}"
-      loop_control:
-        label: "{{ item.mount }}"
-
-    - name: "6.1.13 | AUDIT | Ensure SUID and SGID files are reviewed | Flatten suid_executables results for easier use"
-      ansible.builtin.set_fact:
-        discovered_suid_executables_flatten: "{{ discovered_suid_executables.results | map(attribute='stdout_lines') | flatten }}"
-
-    - name: "6.1.13 | AUDIT | Ensure SUID and SGID files are reviewed | Set fact SGID executables"
-      ansible.builtin.set_fact:
-        discovered_sgid_executables_flatten: "{{ discovered_sgid_executables.results | map(attribute='stdout_lines') | flatten }}"
-
-    - name: "6.1.13 | PATCH | Ensure SUID and SGID files are reviewed | Remove SUID bit"
-      when:
-        - rhel8cis_suid_adjust
-        - discovered_suid_executables_flatten | length > 0
-      ansible.builtin.file:
-        path: "{{ item }}"
-        mode: 'u-s'
-      loop:
-        - "{{ discovered_suid_executables_flatten }}"
-
-    - name: "6.1.13 | PATCH | Audit SGID executables | Remove SGID bit"
-      ansible.builtin.file:
-        path: "{{ item }}"
-        mode: 'g-s'
-      loop:
-        - "{{ discovered_sgid_executables_flatten }}"
-      when:
-        - rhel8cis_sgid_adjust
-        - discovered_sgid_executables_flatten | length > 0
-
-    - name: "6.1.13 | WARNING | Ensure SUID and SGID files are reviewed | Alert SUID executables exist"
-      when:
-        - discovered_suid_executables_flatten | length > 0
-        - not rhel8cis_suid_adjust
-      ansible.builtin.debug:
-        msg:
-          - "Warning!! You have SUID executables"
-          - "The files are listed below, please confirm the integrity of these binaries"
-          - "{{ discovered_suid_executables_flatten }}"
-
-    - name: "6.1.13 | WARNING | Ensure SUID and SGID files are reviewed |  Alert SGID executables exist"
-      when:
-        - discovered_sgid_executables_flatten | length > 0
-        - not rhel8cis_sgid_adjust
-      ansible.builtin.debug:
-        msg:
-          - "Warning!! You have SGID executables"
-          - "The files are listed below, please review the integrity of these binaries"
-          - "{{ discovered_sgid_executables_flatten }}"
-
-    - name: "6.1.13 | WARNING | Ensure SUID and SGID files are reviewed | Warn Count"
-      when:
-        - (discovered_suid_executables_flatten | length > 0 and not rhel8cis_suid_adjust) or
-          (discovered_sgid_executables_flatten | length > 0 and not rhel8cis_sgid_adjust)
-      ansible.builtin.import_tasks:
-        file: warning_facts.yml
-
-- name: "6.1.14 | AUDIT | Audit system file permissions"
-  when:
-    - rhel8cis_rule_6_1_14
-    - rhel8cis_disruption_high
-  tags:
-    - level2-server
-    - level2-workstation
-    - manual
-    - audit
-    - NIST800-53R5_AC-3
-    - NIST800-53R5_CM-1
-    - NIST800-53R5_CM-2
-    - NIST800-53R5_CM-6
-    - NIST800-53R5_CM-7
-    - NIST800-53R5_IA-5
-    - NIST800-53R5_MP-2
-    - permissions
-    - rule_6.1.14
-  vars:
-    warn_control_id: '6.1.14'
-  block:
-    - name: "6.1.14 | AUDIT | Audit system file permissions | Audit the packages"
-      ansible.builtin.command: rpm -Va --nomtime --nosize --nomd5 --nolinkto  # noqa command-instead-of-module
-      changed_when: false
-      failed_when: false
-      register: discovered_packages_rpm
-
-    - name: "6.1.14 | AUDIT | Audit system file permissions | Create list and warning"
-      block:
-        - name: "6.1.14 | AUDIT | Audit system file permissions | Add file discrepancy list to system"
-          ansible.builtin.copy:
-            dest: "{{ rhel8cis_rpm_audit_file }}"  # noqa template-instead-of-copy
-            content: "{{ discovered_packages_rpm.stdout }}"
-            owner: root
-            group: root
-            mode: 'go-wx'
-
-        - name: "6.1.14 | AUDIT | Audit system file permissions | Message out alert for package discrepancies"
-          when: discovered_packages_rpm.stdout | length > 0
-          ansible.builtin.debug:
-            msg: |
-              "Warning!! We have discovered package discrepancies.
-              The file list can be found in {{ rhel8cis_rpm_audit_file }}"
-
-        - name: "6.1.14 | AUDIT | Audit system file permissions | Warn Count"
-          when: discovered_packages_rpm.stdout | length > 0
-          ansible.builtin.import_tasks:
-            file: warning_facts.yml
+  ansible.builtin.blockinfile:
+    path: /etc/aide.conf
+    marker: "# {mark} Audit tools - CIS benchmark - Ansible-lockdown"
+    block: |
+      /sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512
+      /sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512
+      /sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512
+      /sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512
+      /sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512
+      /sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512
+    validate: aide -D --config %s
+  register: discovered_aide_file_integrity_check
+  failed_when:
+    - not ansible_check_mode
+    - discovered_aide_file_integrity_check.failed

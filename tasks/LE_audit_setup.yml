@@ -25,7 +25,7 @@
 - name: Pre Audit Setup | Copy audit binary
   when: get_audit_binary_method == 'copy'
   ansible.builtin.copy:
-    src: "{{ audit_bin_copy_location }}/goss-linux-{{ audit_pkg_arch_name }}"
+    src: "{{ audit_bin_copy_location }}"
     dest: "{{ audit_bin }}"
     owner: root
     group: root

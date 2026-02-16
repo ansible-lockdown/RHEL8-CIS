@@ -8,14 +8,10 @@
   ansible.builtin.import_tasks:
     file: cis_3.2.x.yml
 
-- name: "SECTION | 3.3.x | Network kernel Parameters"
+- name: "SECTION | 3.3.1.x | Network kernel Parameters IPv4"
   ansible.builtin.import_tasks:
-    file: cis_3.3.x.yml
+    file: cis_3.3.1.x.yml
 
-- name: "SECTION | 3.4.1.x | Configure firewall utility"
+- name: "SECTION | 3.3.2.x | Network kernel Parameters IPv6"
   ansible.builtin.import_tasks:
-    file: cis_3.4.1.x.yml
-
-- name: "SECTION | 3.4.2.x | Configure firewall rules"
-  ansible.builtin.import_tasks:
-    file: cis_3.4.2.x.yml
+    file: cis_3.3.2.x.yml

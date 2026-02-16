@@ -1,0 +1,9 @@
+{{ file_managed_by_ansible }}
+### YOUR CHANGES WILL BE LOST!
+
+# This file contains users whose actions are not logged by auditd
+{% if rhel8cis_allow_auditd_uid_user_exclusions %}
+{% for user in rhel8cis_auditd_uid_exclude %}
+-a never,user -F uid!={{ user }} -F auid!={{ user }}
+{% endfor %}
+{% endif %}

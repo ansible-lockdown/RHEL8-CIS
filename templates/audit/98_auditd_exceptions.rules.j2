@@ -1,6 +1,4 @@
-## Ansible controlled file
-# Added as part of ansible-lockdown CIS baseline
-# provided by Mindpoint Group - A Tyto Athene Company
+{{ file_managed_by_ansible }}
 
 # This file contains users whose actions are not logged by auditd
 {% if allow_auditd_uid_user_exclusions %}

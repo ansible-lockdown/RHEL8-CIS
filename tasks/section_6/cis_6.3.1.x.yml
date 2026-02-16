@@ -1,0 +1,86 @@
+---
+
+- name: "6.3.1.1 | PATCH | Ensure auditd packages are installed"
+  when: rhel8cis_rule_6_3_1_1
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-3
+    - NIST800-53R5_AU-12
+    - NIST800-53R5_SI-5
+    - auditd
+    - rule_6.3.1.1
+  ansible.builtin.package:
+    name: [ audit, audit-libs ]
+    state: present
+
+- name: "6.3.1.2 | PATCH | Ensure auditing for processes that start prior to auditd is enabled"
+  when: rhel8cis_rule_6_3_1_2
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-12
+    - auditd
+    - grub
+    - rule_6.3.1.2
+  notify: Rebuild grub
+  block:
+    - name: "6.3.1.2 | AUDIT | Ensure auditing for processes that start prior to auditd is enabled | Get GRUB_CMDLINE_LINUX"
+      ansible.builtin.shell: grubby --info=ALL | grep -Po '\baudit=0\b'
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_auditd_grub_cmdline_linux
+
+    - name: "6.3.1.2 | PATCH | Ensure auditing for processes that start prior to auditd is enabled | Replace existing setting"
+      when: discovered_auditd_grub_cmdline_linux.stdout | length == 0
+      ansible.builtin.command: grubby --update-kernel ALL --args 'audit=1'
+      changed_when: true
+
+- name: "6.3.1.3 | PATCH | Ensure audit_backlog_limit is sufficient"
+  when: rhel8cis_rule_6_3_1_3
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - auditd
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-12
+    - NIST800-53R5_SI-5
+    - grub
+    - rule_6.3.1.3
+  notify: Rebuild grub
+  block:
+    - name: "6.3.1.3 | AUDIT | Ensure audit_backlog_limit is sufficient | Get GRUB_CMDLINE_LINUX"
+      ansible.builtin.shell: grubby --info=ALL | grep -Po "\baudit_backlog_limit={{ rhel8cis_auditd_back_log_limit }}\b"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_backlog_grub_cmdline_linux
+
+    - name: "6.3.1.3 | PATCH | Ensure audit_backlog_limit is sufficient"
+      when: discovered_backlog_grub_cmdline_linux.stdout | length == 0
+      ansible.builtin.command: "grubby --update-kernel ALL --args audit_backlog_limit={{ rhel8cis_auditd_back_log_limit }}"
+      changed_when: true
+      check_mode: false
+
+- name: "6.3.1.4 | PATCH | Ensure auditd service is enabled and active"
+  when: rhel8cis_rule_6_3_1_4
+  tags:
+    - level2-server
+    - level2-workstation
+    - automated
+    - patch
+    - NIST800-53R5_AU-12
+    - auditd
+    - rule_6.3.1.4
+  ansible.builtin.service:
+    name: auditd
+    state: started
+    enabled: true

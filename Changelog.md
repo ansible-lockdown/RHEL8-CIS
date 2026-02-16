@@ -1,7 +1,39 @@
 # Changes to rhel8CIS
 
+## Benchmark 4.0.0
+
+### 2026 February QA Updates
+
+- Spelling fixes
+  - vars/is_container.yml: "dependant" -> "dependent", "enviroment" -> "environment"
+  - defaults/main.yml: "thier" -> "their"
+  - tasks/section_2/cis_2.1.x.yml: "ngnix.service" -> "nginx.service"
+- Grammar fixes
+  - tasks/prelim.yml: "is not exist" -> "does not exist" in SSH Config task names
+  - tasks/prelim.yml: Capitalized "Set" in task names for consistency
+  - defaults/main.yml: "need to access to" -> "need access to"
+  - defaults/main.yml: Added missing spaces before parentheses in comments
+- Task name corrections
+  - tasks/section_1/cis_1.1.1.x.yml: Fixed incorrect "Disable usb" to "Disable udf" (1.1.1.8)
+  - tasks/section_1/cis_1.1.1.x.yml: Fixed incorrect "Disable usb" to "Disable firewire-core" (1.1.1.9)
+  - tasks/section_2/cis_2.4.1.x.yml: Removed double spaces in cron task names (2.4.1.6, 2.4.1.7)
+- Control 3.1.1
+  - Added better sysctl logic to disable IPv6
+  - Added option to disable IPv6 via sysctl (original method) or via the kernel
+- Complete rewrite
+- Many controls moved sections and renumbered
+- new services added to be removed/updated
+- handlers renamed
+- audit improved
+- workflow updates
+- Ability to create use your own hashed password
+- company name update
+
 ## Benchmark v3.0.0
 
+- Control 3.1.1
+  - Added better sysctl logic to disable IPv6
+  - Added option to disable IPv6 via sysctl (original method) or via the
 
 ## Oct 25
 - workflow updates
@@ -65,7 +97,7 @@ thanks to @msachikanta, @fgierlinger, @bantify, @txdavec, @csabapatyi @dirkvdpla
 now able to run audit on ARM64 although not officially supported by CIS feedback needed
 audit binary update to 0.4.8
 
-## 2.0 based on CIS 3.0.0
+## 3.0.0 based on CIS 3.0.0
 
 ### This is not an upgrade for CIS v2.0.0 due to the number of changes treat as a new baseline
 
@@ -197,7 +229,7 @@ thanks to @bbaassssiiee
 
 ## 1.5.6
 
-- updates to yamllint to increase galaxy score - doesnt honour local files or exclusions
+- updates to yamllint to increase galaxy score - doesn't honour local files or exclusions
 - removed blank lines from all
 
 ## 1.5.5
@@ -261,7 +293,7 @@ Issues.
 - workflow improvements
 - auditd alignment
   - tftp client
-  - default locatoin moved from /var/tmp to /opt
+  - default location moved from /var/tmp to /opt
 - linting
   - new .ansiblelint
   - boolean standards
@@ -383,7 +415,7 @@ Improvements
 
 ## 1.3
 
-- extentions to LE audit capability
+- extensions to LE audit capability
 - more lint and layout changes
 - sugroup assertion added 5.7
 - added extra logic variable to authselect/config section 5.3 related

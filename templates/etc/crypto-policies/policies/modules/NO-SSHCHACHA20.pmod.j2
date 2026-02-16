@@ -1,0 +1,7 @@
+{{ file_managed_by_ansible }}
+# This is a subpolicy to disable Encrypt then MAC
+# for the SSH protocol (libssh and OpenSSH)
+# Carried out as part of CIS Benchmark rule 1.6.7
+
+
+cipher@SSH = -CHACHA20-POLY1305
