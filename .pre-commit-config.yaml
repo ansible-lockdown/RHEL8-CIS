@@ -49,7 +49,7 @@ repos:
     name: gitleaks
 
 - repo: https://github.com/ansible-community/ansible-lint
-  rev: v26.1.1
+  rev: v26.2.0
   hooks:
   - id: ansible-lint
     name: Ansible-lint
