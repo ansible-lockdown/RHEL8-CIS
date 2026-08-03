@@ -4,8 +4,7 @@
 
 ### July 2026 QA Updates
 
-- meta/main.yml: updated min_ansible_version 2.11.1 -> 2.16.1; added Tyto Athene company suffix
-- vars/main.yml: updated min_ansible_version 2.11.1 -> 2.16.1
+- updated min_ansible_version 2.11.1 -> 2.16.1; added Tyto Athene company suffix
 - LICENSE: fixed company casing Mindpoint -> MindPoint
 - README.md: rebranded Twitter badge to X (x.com/AnsibleLockdown)
 - CONTRIBUTING.rst: corrected header to "Contributing to Ansible-Lockdown Projects"
@@ -17,8 +16,8 @@
 - tasks/section_5/cis_5.1.x.yml: converted single-item when: list to inline format
 - tasks/section_5/cis_5.3.2.x.yml: converted single-item when: list to inline format
 - .gitignore: added secret key patterns and QA artifact patterns
-- .github/workflows: removed export_badges_public.yml and update_galaxy.yml (public-only)
-- .github/workflows: updated actions/checkout from @v4 to @v6.0.2
+- .github/workflows: removed export_badges_ task not required and update_galaxy.yml (public-only)
+- .github/workflows: updated actions/checkout from @v4 to @v7
 - RHEL8-CIS-Audit/vars/CIS.yml: benchmark_version '4.0.0' -> 'v4.0.0'; rhel8cis_legacy_boot true -> false; rhel8cis_set_boot_pass true -> false
 - RHEL8-CIS-Audit/run_audit.sh: BENCHMARK_VER 4.0.0 -> v4.0.0
 - 1.1.2.x.1 updates to AUDIT
