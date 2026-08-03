@@ -1,6 +1,6 @@
 ---
 
-- name: "1.1.2.2.1 | PATCH | Ensure /dev/shm is a separate partition"
+- name: "1.1.2.2.1 | AUDIT | Ensure /dev/shm is a separate partition"
   when:
     - rhel8cis_rule_1_1_2_2_1
     - required_mount not in prelim_mount_names

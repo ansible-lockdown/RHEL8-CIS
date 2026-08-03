@@ -1,6 +1,6 @@
 ---
 
-- name: "1.1.2.1.1 | PATCH | Ensure /tmp is tmpfs or a separate partition"
+- name: "1.1.2.1.1 | AUDIT | Ensure /tmp is tmpfs or a separate partition"
   when: rhel8cis_rule_1_1_2_1_1
   tags:
     - level1-server
@@ -21,12 +21,12 @@
       failed_when: discovered_tmp_mount.rc not in [ 0, 1 ]
       register: discovered_tmp_mount
 
-    - name: "1.1.2.1.1 | PATCH | Ensure /tmp is tmpfs or a separate partition | Absent"
+    - name: "1.1.2.1.1 | AUDIT | Ensure /tmp is tmpfs or a separate partition | Absent"
       when: discovered_tmp_mount is undefined
       ansible.builtin.debug:
         msg: "Warning!! {{ mount_point }} is not a separate partition"
 
-    - name: "1.1.2.1.1 | PATCH | Ensure /tmp is a separate partition | Present"
+    - name: "1.1.2.1.1 | AUDIT | Ensure /tmp is a separate partition | Present"
       when: discovered_tmp_mount is undefined or 'tmpfs' not in discovered_tmp_mount.stdout
       ansible.builtin.import_tasks:
         file: warning_facts.yml

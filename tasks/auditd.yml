@@ -5,7 +5,11 @@
 # This task passed the syscalls table to the auditd template and updates the auditd rules
 
 - name: "POST | AUDITD | Set supported_syscalls variable"
-  ansible.builtin.shell: ausyscall --dump |  awk  '{print $2}'
+  ansible.builtin.shell: |
+    set -o pipefail
+    ausyscall --dump |  awk  '{print $2}'
+  args:
+    executable: "{{ rhel8cis_shell_executable }}"
   changed_when: false
   check_mode: false
   failed_when: discovered_auditd_syscalls.rc not in [ 0, 1 ]
@@ -47,7 +51,7 @@
   notify: Restart auditd
 
 - name: POST | Auditd warning
-  vars:
-    warn_control_id: 'Auditd template updated, validate as expected'
   ansible.builtin.import_tasks:
     file: warning_facts.yml
+  vars:
+    warn_control_id: 'Auditd template updated, validate as expected'

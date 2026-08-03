@@ -92,7 +92,7 @@
     - level1-workstation
     - patch
     - journald
-    - rule_6.2.2.1.4
+    - rule_6.2.1.2.4
     - NIST800-53R5_AU-2
     - NIST800-53R5_AU-7
     - NIST800-53R5_AU-12

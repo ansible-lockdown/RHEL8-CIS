@@ -26,7 +26,11 @@
   notify: Rebuild grub
   block:
     - name: "1.3.1.2 | AUDIT | Ensure SELinux is not disabled in bootloader configuration | current state"
-      ansible.builtin.shell: grubby --info=ALL | grep -Po '(selinux|enforcing)=0\b'
+      ansible.builtin.shell: |
+        set -o pipefail
+        grubby --info=ALL | grep -Po '(selinux|enforcing)=0\b'
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       failed_when: discovered_selinux_bootloader_cfg.rc not in [ 0, 1 ]
       changed_when: false
       register: discovered_selinux_bootloader_cfg
@@ -105,7 +109,11 @@
     warn_control_id: '1.3.1.6'
   block:
     - name: "1.3.1.6 | AUDIT | Ensure no unconfined services exist | Find the unconfined services"
-      ansible.builtin.shell: ps -eZ | grep unconfined_service_t | grep -Evw "tr|ps|egrep|bash|awk" | tr ':' ' ' | awk '{ print $NF }'
+      ansible.builtin.shell: |
+        set -o pipefail
+        ps -eZ | grep unconfined_service_t | grep -Evw "tr|ps|egrep|bash|awk" | tr ':' ' ' | awk '{ print $NF }'
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       register: discovered_unconf_services
       failed_when: false
       changed_when: false

@@ -14,7 +14,11 @@
     - rule_6.2.3.1
   block:
     - name: "6.2.3.1 | AUDIT | Ensure access to all logfiles has been configured | find log files"
-      ansible.builtin.shell: find -L /var/log -type f \( -perm /0137 -o ! -user root -o ! -group root \) -exec ls -l {} \;
+      ansible.builtin.shell: |
+        set -o pipefail
+        find -L /var/log -type f \( -perm /0137 -o ! -user root -o ! -group root \) -exec ls -l {} \;
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: false
       check_mode: false
@@ -27,9 +31,9 @@
       ansible.builtin.file:
         path: "{{ item }}"
         mode: 'ug-x,o-rwx'
-      failed_when: discovered_logfile_list.state not in '[ file, absent ]'
+      failed_when: discovered_logfile_sssd_list.state not in '[ file, absent ]'
       check_mode: false
-      register: discovered_logfile_list
+      register: discovered_logfile_sssd_list
       loop: "{{ discovered_logfiles.stdout_lines }}"
 
     - name: "6.2.3.1 | PATCH | Ensure access to all logfiles has been configured | change permissions tmp min 664"
@@ -39,9 +43,9 @@
       ansible.builtin.file:
         path: "{{ item }}"
         mode: 'ug-x,o-wx'
-      failed_when: discovered_logfile_list.state not in '[ file, absent ]'
+      failed_when: discovered_logfile_tmp_list.state not in '[ file, absent ]'
       check_mode: false
-      register: discovered_logfile_list
+      register: discovered_logfile_tmp_list
       loop: "{{ discovered_logfiles.stdout_lines }}"
 
     - name: "6.2.3.1 | PATCH | Ensure access to all logfiles has been configured | change permissions else all 640"
@@ -51,7 +55,7 @@
       ansible.builtin.file:
         path: "{{ item }}"
         mode: 'u-x,g-wx,o-rwx'
-      failed_when: discovered_logfile_list.state not in '[ file, absent ]'
+      failed_when: discovered_logfile_not_tmp_list.state not in '[ file, absent ]'
       check_mode: false
-      register: discovered_logfile_list
+      register: discovered_logfile_not_tmp_list
       loop: "{{ discovered_logfiles.stdout_lines }}"

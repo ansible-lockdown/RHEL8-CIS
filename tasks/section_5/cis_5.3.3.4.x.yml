@@ -12,7 +12,11 @@
     - rule_5.3.3.4.1
   block:
     - name: "5.3.3.4.1 | PATCH | Ensure pam_unix does not include nullok | capture state"
-      ansible.builtin.shell: grep -P -- '^\h*(auth|account|password|session)\h+(requisite|required|sufficient)\h+pam_unix\.so\b' /etc/pam.d/{password,system}-auth | grep -P -- '\bnullok\b'
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -P -- '^\h*(auth|account|password|session)\h+(requisite|required|sufficient)\h+pam_unix\.so\b' /etc/pam.d/{password,system}-auth | grep -P -- '\bnullok\b'
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: discovered_pam_nullok.rc not in [ 0, 1 ]
       check_mode: false
@@ -52,7 +56,11 @@
     - rule_5.3.3.4.2
   block:
     - name: "5.3.3.4.2 | AUDIT | Ensure pam_unix does not include remember | capture state"
-      ansible.builtin.shell: grep -Pi '^\h*password\h+([^#\n\r]+\h+)?pam_unix\.so\b' /etc/pam.d/{password,system}-auth | grep -P '\bremember=\d\b'
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -Pi '^\h*password\h+([^#\n\r]+\h+)?pam_unix\.so\b' /etc/pam.d/{password,system}-auth | grep -P '\bremember=\d\b'
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: discovered_pam_remember.rc not in [ 0, 1 ]
       check_mode: false
@@ -99,7 +107,10 @@
   block:
     - name: "5.3.3.4.3 | AUDIT | Ensure pam_unix includes a strong password hashing algorithm | capture state"
       ansible.builtin.shell: |
+        set -o pipefail
         grep -P -- '^\h*password\h+([^#\n\r]+)\h+pam_unix\.so\h+([^#\n\r]+\h+)?(sha512|yescrypt)\b' /etc/pam.d/{password,system}-auth | grep -v {{ rhel8cis_pam_pwhash }}
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: discovered_hash_state.rc not in [ 0, 1 ]
       check_mode: false
@@ -145,7 +156,11 @@
     - rule_5.3.3.4.4
   block:
     - name: "5.3.3.4.4 | PATCH | Ensure pam_unix includes use_authtok | capture state"
-      ansible.builtin.shell: grep -P -- '^\h*password\h+([^#\n\r]+)\h+pam_unix\.so\h+([^#\n\r]+\h+)?use_authtok\b' /etc/pam.d/{password,system}-auth | grep -v use_authtok
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -P -- '^\h*password\h+([^#\n\r]+)\h+pam_unix\.so\h+([^#\n\r]+\h+)?use_authtok\b' /etc/pam.d/{password,system}-auth | grep -v use_authtok
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: discovered_pam_authtok.rc not in [ 0, 1 ]
       check_mode: false

@@ -44,7 +44,7 @@
 - name: "3.1.2 | PATCH | Ensure wireless interfaces are not available"
   when:
     - rhel8cis_rule_3_1_2
-    - discover_wireless_adapters.rc == 0
+    - not system_is_container
   tags:
     - level1-server
     - patch
@@ -54,31 +54,54 @@
   vars:
     warn_control_id: "3.1.2"
   block:
-    - name: "3.1.2 | PATCH | Ensure wireless interfaces are not available | Check for NetworkManager cli tool"
-      when: "'NetworkManager' in ansible_facts.packages"
-      ansible.builtin.command: nmcli radio wifi
+    - name: "3.1.2 | AUDIT | Discover is wireless adapter on system"
+      ansible.builtin.shell: |
+        set -o pipefail
+        find /sys/class/net/*/ -type d -name wireless
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
+      register: discovered_wireless_adapters
       changed_when: false
-      failed_when: false
       check_mode: false
-      register: discovered_wifi_status
+      failed_when: discovered_wireless_adapters.rc not in [ 0, 1 ]
 
-    - name: "3.1.2 | PATCH | Ensure wireless interfaces are not available | Disable wireless if NetworkManager installed"
-      when:
-        - "'NetworkManager' in ansible_facts.packages"
-        - "'enabled' in discovered_wifi_status.stdout"
-      ansible.builtin.command: nmcli radio all off
-      changed_when: discovered_nmcli_radio_off.rc == 0
-      register: discovered_nmcli_radio_off
+    - name: "3.1.2 | PATCH | Carry out changes if Wireless adapter are present"
+      when: discovered_wireless_adapters.rc == 0
+      block:
+        - name: "3.1.2| PATCH | Install Network-Manager | if wireless adapter present"
+          when:
+            - "'NetworkManager' not in ansible_facts['packages']"
+            - rhel8cis_install_networkmanager
+          ansible.builtin.package:
+            name: NetworkManager
+            state: present
+          register: discovered_networkmanager_installed
 
-    - name: "3.1.2 | PATCH | Ensure wireless interfaces are not available | Warn about wireless if NetworkManager not installed"
-      when: "'NetworkManager' not in ansible_facts.packages"
-      ansible.builtin.debug:
-        msg: "Warning!! You need to disable wireless interfaces manually since NetworkManager is not installed"
+        - name: "3.1.2 | PATCH | Ensure wireless interfaces are not available | Check for NetworkManager cli tool"
+          when: "'NetworkManager' in ansible_facts['packages'] or discovered_networkmanager_installed is defined"
+          ansible.builtin.command: nmcli radio wifi
+          changed_when: false
+          failed_when: false
+          check_mode: false
+          register: discovered_wifi_status
 
-    - name: "3.1.2 | PATCH | Ensure wireless interfaces are not available | Set warning count"
-      when: "'NetworkManager' not in ansible_facts.packages"
-      ansible.builtin.import_tasks:
-        file: warning_facts.yml
+        - name: "3.1.2 | PATCH | Ensure wireless interfaces are not available | Disable wireless if NetworkManager installed"
+          when:
+            - "'NetworkManager' in ansible_facts['packages'] or discovered_networkmanager_installed is defined"
+            - "'enabled' in discovered_wifi_status.stdout"
+          ansible.builtin.command: nmcli radio all off
+          changed_when: discovered_nmcli_radio_off.rc == 0
+          register: discovered_nmcli_radio_off
+
+        - name: "3.1.2 | PATCH | Ensure wireless interfaces are not available | Warn about wireless if NetworkManager not installed"
+          when: "'NetworkManager' not in ansible_facts['packages']"
+          ansible.builtin.debug:
+            msg: "Warning!! You need to disable wireless interfaces manually since NetworkManager is not installed"
+
+        - name: "3.1.2 | PATCH | Ensure wireless interfaces are not available | Set warning count"
+          when: "'NetworkManager' not in ansible_facts['packages']"
+          ansible.builtin.import_tasks:
+            file: warning_facts.yml
 
 - name: "3.1.3 | PATCH | Ensure bluetooth services are not in use"
   when: rhel8cis_rule_3_1_3
@@ -102,7 +125,7 @@
       when:
         - not rhel8cis_bluetooth_service
         - rhel8cis_bluetooth_mask
-      notify: Systemd_daemon_reload
+      notify: Systemd daemon reload
       ansible.builtin.systemd:
         name: bluetooth.service
         enabled: false

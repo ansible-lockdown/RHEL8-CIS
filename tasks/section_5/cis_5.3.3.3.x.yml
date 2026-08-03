@@ -89,7 +89,10 @@
 
     - name: "5.3.3.3.3 | AUDIT | Ensure pam_pwhistory includes use_authtok | Get current state"
       ansible.builtin.shell: |
+        set -o pipefail
         grep -P -- '^\h*password\h+([^#\n\r]+)\h+pam_pwhistory\.so\h+([^#\n\r]+\h+)?use_authtok\ b' /etc/pam.d/{password,system}-auth
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: discovered_pwhistory_authtok.rc not in [ 0, 1 ]
       register: discovered_pwhistory_authtok

@@ -32,9 +32,7 @@
     - "{{ post_audit_outfile }}"
 
 - name: "POST | FETCH | Fetch files and copy to controller | Warning if issues with fetch_audit_files"
-  when:
-    - (audit_output_collection_method == "fetch" and not discovered_audit_fetch_state.changed) or
-      (audit_output_collection_method == "copy" and not discovered_audit_copy_state.changed)
+  when: (audit_output_collection_method == "fetch" and not discovered_audit_fetch_state.changed) or (audit_output_collection_method == "copy" and not discovered_audit_copy_state.changed)
   block:
     - name: "POST | FETCH | Fetch files and copy to controller | Warning if issues with fetch_audit_files"
       ansible.builtin.debug:

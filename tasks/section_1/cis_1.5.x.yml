@@ -303,7 +303,7 @@
       notify: Sysctl update required
 
 - name: "1.5.8 | PATCH | Ensure kernel.randomize_va_space is configured"
-  when: rhel8cis_rule_1_5_1
+  when: rhel8cis_rule_1_5_8
   tags:
     - level1-server
     - level1-workstation
@@ -374,8 +374,8 @@
         path: /usr/lib/systemd/coredump.conf
         regexp: ProcessSizeMax\s*=\s*\d*
         replace: ""
-      failed_when: discovered_usr_lib_coredump.rc not in [ 0, 257 ]
-      register: discovered_usr_lib_coredump
+      failed_when: discovered_procsize_coredump.rc not in [ 0, 257 ]
+      register: discovered_procsize_coredump
 
     - name: "1.5.9 | PATCH | Ensure systemd-coredump ProcessSizeMax is configured | replace incorrect entries"
       when:
@@ -425,8 +425,8 @@
         path: /usr/lib/systemd/coredump.conf
         regexp: Storage\s*=\s*\d*
         replace: ""
-      failed_when: discovered_usr_lib_coredump.rc not in [ 0, 257 ]
-      register: discovered_usr_lib_coredump
+      failed_when: discovered_coredump_storage.rc not in [ 0, 257 ]
+      register: discovered_coredump_storage
 
     - name: "1.5.10 | AUDIT | Ensure systemd-coredump Storage is configured | replace incorrect entries"
       when:

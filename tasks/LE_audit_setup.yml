@@ -3,12 +3,12 @@
 - name: Pre Audit Setup | Set audit package name
   block:
     - name: Pre Audit Setup | Set audit package name | 64bit
-      when: ansible_facts.machine == "x86_64"
+      when: ansible_facts['machine'] == "x86_64"
       ansible.builtin.set_fact:
         audit_pkg_arch_name: AMD64
 
     - name: Pre Audit Setup | Set audit package name | ARM64
-      when: (ansible_facts.machine == "arm64" or ansible_facts.machine == "aarch64")
+      when: (ansible_facts['machine'] == "arm64" or ansible_facts['machine'] == "aarch64")
       ansible.builtin.set_fact:
         audit_pkg_arch_name: ARM64
 
@@ -21,6 +21,10 @@
     group: root
     checksum: "{{ audit_bin_version[audit_pkg_arch_name + '_checksum'] }}"
     mode: 'u+x,go-w'
+    validate_certs: "{{ audit_bin_validate_certs }}"
+    url_username: "{{ audit_bin_url_username | default(omit) }}"
+    url_password: "{{ audit_bin_url_password | default(omit) }}"
+  no_log: true
 
 - name: Pre Audit Setup | Copy audit binary
   when: get_audit_binary_method == 'copy'
