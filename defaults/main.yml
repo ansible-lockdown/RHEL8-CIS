@@ -38,67 +38,39 @@ benchmark_version: v4.0.0
 # Whether to skip the reboot
 skip_reboot: true
 
-# default value will change to true but wont reboot if not enabled but will error
-change_requires_reboot: false
-
 # Modify behavior of changed_when if reboot is pending and skipped to allow idempotency to succeed
 reboot_warning_changed_when: true
 
-###
-### Settings for associated Audit role using Goss
-###
+# A location that can be used as a temporary location to execute scripts
+# note the drive with need exec permissions used by 1.1.1.11
+rhel8cis_temp_exec_location: /var
+
+## Root user used
+# Root by default is not used unless setup by user
+# The role will only run certain commands if set to true
+# This allows the ability to skip tasks that may cause an issue
+rhel8cis_uses_root: false
 
 ###########################################
 ### Goss is required on the remote host ###
 ### vars/auditd.yml for other settings  ###
+
+# If the any of the following are set the variables used by them are loaded in vars/audit.yml these can be overridden by your
+# preferred method of variable management (e.g., vault, group_vars, host_vars, inventory etc.)
 
 # Allow audit to setup the requirements including installing git (if option chosen and downloading and adding goss binary to system)
 setup_audit: false
 
 # enable audits to run - this runs the audit and get the latest content
 run_audit: false
-# Run heavy tests - some tests can have more impact on a system enabling these can have greater impact on a system
-audit_run_heavy_tests: true
-# Ability to limit the number of concurrent processes used by goss (default 50)
-audit_max_concurrent: 50
 
 ## Only run Audit do not remediate
 audit_only: false
 
-### As part of audit_only ###
-# Path to copy the files to will create dir structure in audit_only mode
-audit_capture_files_dir: /some/location to copy to on control node
-#############################
+# Run heavy tests - some tests can have more impact on a system enabling these can have greater impact on a system
+audit_run_heavy_tests: true
 
-# How to retrieve audit binary
-# Options are copy or download - detailed settings at the bottom of this file
-# you will need access to either github or the file already downloaded
-get_audit_binary_method: download
-
-## if get_audit_binary_method - copy the following needs to be updated for your environment
-## it is expected that it will be copied from somewhere accessible to the control node
-## e.g copy from ansible control node to remote host
-audit_bin_copy_location: /some/accessible/path
-
-# how to get audit files onto host options
-# options are git/copy/archive/get_url other e.g. if you wish to run from already downloaded conf
-audit_content: git
-
-# If using either archive, copy, get_url:
-## Note will work with .tar files - zip will require extra configuration
-### If using get_url this is expecting github url in tar.gz format e.g.
-### https://github.com/ansible-lockdown/RHEL8-CIS-Audit/archive/refs/heads/benchmark-v1.0.0.tar.gz
-audit_conf_source: "some path or url to copy from"
-
-# Destination for the audit content to be placed on managed node
-# note may not need full path e.g. /opt with the directory being the {{ benchmark }}-Audit directory
-audit_conf_dest: "/opt"
-
-# Where the audit logs are stored
-audit_log_dir: '/opt'
-
-## Ability to collect and take audit files moving to a centralized location
-# This enables the collection of the files from the host
+# Fetch audit output files back to the controller
 fetch_audit_output: false
 
 # Method of getting,uploading the summary files
@@ -108,8 +80,13 @@ fetch_audit_output: false
 # copy - copies file to a location available to the managed node
 audit_output_collection_method: fetch
 
+# Where the audit logs are stored
+audit_log_dir: '/opt'
+
 # Location to put the audit files
-audit_output_destination: /opt/audit_summaries/
+audit_output_destination: "{{ audit_log_dir }}/audit_summaries/"
+
+#############################
 
 ### Goss Settings ##
 ####### END ########
@@ -118,7 +95,10 @@ audit_output_destination: /opt/audit_summaries/
 # the CIS benchmark documents.
 # PLEASE NOTE: These work in coordination with the section # group variables and tags.
 # You must enable an entire section in order for the variables below to take effect.
-# Section 1 rules
+##
+## Section 1 rules
+##
+# Filesystem
 rhel8cis_rule_1_1_1_1: true
 rhel8cis_rule_1_1_1_2: true
 rhel8cis_rule_1_1_1_3: true
@@ -231,7 +211,9 @@ rhel8cis_rule_1_8_5: true
 rhel8cis_rule_1_8_6: true
 rhel8cis_rule_1_8_7: true
 
-# Section 2 rules
+##
+## Section 2 rules
+##
 # Server services
 rhel8cis_rule_2_1_1: true
 rhel8cis_rule_2_1_2: true
@@ -265,7 +247,7 @@ rhel8cis_rule_2_2_3: true
 rhel8cis_rule_2_2_4: true
 rhel8cis_rule_2_2_5: true
 
-# Time services
+# Time synchronization
 rhel8cis_rule_2_3_1: true
 rhel8cis_rule_2_3_2: true
 rhel8cis_rule_2_3_3: true
@@ -284,8 +266,10 @@ rhel8cis_rule_2_4_1_9: true
 # Job Scheduler | at
 rhel8cis_rule_2_4_2_1: true
 
-## Section 3 Fixes
-# Section 3 rules are used for securely configuring the network configuration (kernel params, ACL, Firewall settings)
+##
+## Section 3 rules
+##
+# Section 3 rules are used for securely configuring the network configuration
 # Network Devices
 rhel8cis_rule_3_1_1: true
 rhel8cis_rule_3_1_2: true
@@ -327,9 +311,7 @@ rhel8cis_rule_3_3_2_7: true
 rhel8cis_rule_3_3_2_8: true
 
 ## Section 4 Fixes
-# Section 4 rules are Logging and Auditing (Configure System Accounting (auditd),
-# Configure Data Retention, and Configure Logging)
-# Firewall utility
+# Host based Firewall
 rhel8cis_rule_4_1_1: true
 rhel8cis_rule_4_1_2: true
 rhel8cis_rule_4_1_3: true
@@ -557,6 +539,11 @@ rhel8cis_rule_7_2_9: true
 # these then build the variable and options that is passed to the handler to set the mount point for the controls in section1.
 rhel8cis_debug_mount_data: false
 
+## Control 1.1.1.11 - Ensure unused filesystems kernel modules are not available
+# This variable governs whether the discovery script is removed.
+# By setting to true this can affect the audit of the rule.
+rhel8cis_remove_kernel_discovery_script: false
+
 ## Control 1.1.2
 # If set to `true`, rule will be implemented using the `tmp.mount` systemd-service,
 # otherwise fstab configuration will be used.
@@ -640,7 +627,7 @@ rhel8cis_yama_ptrace_scope_value: 1
 ## Control 1.6
 # This variable contains the value to be set as the system-wide crypto policy. Current rule enforces NOT USING
 # 'LEGACY' value(as it is less secure, it just ensures compatibility with legacy systems), therefore
-# possible values for this variable are, as explained by RedHat docs:
+# possible values are, as explained by RedHat docs:
 #  -'DEFAULT': reasonable default policy for today's standards (balances usability and security)
 #  -'FUTURE': conservative security level that is believed to withstand any near-term future attacks
 #  -'FIPS': A level that conforms to the FIPS140-2 requirements
@@ -708,8 +695,8 @@ rhel8cis_rpc_server: true
 rhel8cis_rpc_mask: true
 rhel8cis_rsync_server: false
 rhel8cis_rsync_mask: false
-rhel8cis_net_snmp_server: false
-rhel8cis_net_snmp_mask: false
+rhel8cis_snmp_server: false
+rhel8cis_snmp_mask: false
 rhel8cis_telnet_server: false
 rhel8cis_telnet_mask: false
 rhel8cis_tftp_server: false
@@ -753,6 +740,9 @@ rhel8cis_ntp_server_options: "iburst"
 ##
 ## Section 3 vars
 ##
+
+# Enabled NetworkManager to be installed if missing
+rhel8cis_install_networkmanager: false
 
 rhel8cis_bluetooth_service: false
 rhel8cis_bluetooth_mask: false
@@ -804,11 +794,9 @@ rhel8cis_sshd_clientalivecountmax: 3
 rhel8cis_sshd_clientaliveinterval: 15
 rhel8cis_sshd_logingracetime: 60
 rhel8cis_sshd_loglevel: INFO
-rhel8cis_sshd_macs: '-hmac-md5,hmac-md5-96,hmac-ripemd160,hmac-sha1-96,umac-64@openssh.com,hmac-md5-etm@openssh.com,hmac-md5-96-etm@openssh.com,hmac-ripemd160-etm@openssh.com,hmac-sha1-96-etm@openssh.com,umac-64-etm@openssh.com,umac-128-etm@openssh.com'
 rhel8cis_sshd_maxauthtries: 4
 rhel8cis_sshd_maxsessions: 10
 rhel8cis_sshd_maxstartups: "10:30:60"
-rhel8cis_sshd_ciphers: '-3des-cbc,aes128-cbc,aes192-cbc,aes256-cbc,chacha20-poly1305@openssh.com'
 rhel8cis_sshd_kex: '-diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1'
 
 ## Control 5.1.6 - Ensure sshd access is configured
@@ -853,7 +841,7 @@ rhel8cis_authselect_pkg_update: false  # NOTE the risks if system is using SSSD 
 ## Controls:
 #  - 5.3.2.x - Ensure custom authselect profile is used
 # Settings in place now will fail, they are placeholders from the control example. Due to the way many multiple
-# options and ways to configure this control needs to be enabled and settings adjusted to minimize risk.
+# options and ways to configure this control needs to be enabled and settings adjusted to minimise risk.
 
 # This variable configures the name of the custom profile to be created and selected.
 # To be changed from default - cis_example_profile
@@ -862,9 +850,7 @@ rhel8cis_authselect_custom_profile_name: cis_example_profile
 # ```authselect list``` on the host to be configured
 rhel8cis_authselect_default_profile_to_copy: "sssd --symlink-meta"
 
-rhel8cis_pam_faillock_attempts: 5
 rhel8cis_pam_faillock_deny: 5
-rhel8cis_pam_faillock_interval: 900
 rhel8cis_pam_faillock_unlock_time: 900
 rhel8cis_pam_faillock_root_unlock_time: 60
 # Choose options below for root options
@@ -875,11 +861,24 @@ rhel8cis_pam_pwquality_difok: 2
 rhel8cis_pam_pwquality_maxrepeat: 3
 rhel8cis_pam_pwquality_maxseq: 3
 rhel8cis_pam_pwquality_minlen: 14
+
+# Choose between minclass and credits how to configure password complexity
+# it wil add one or the other
+rhel8cis_passwd_complex_option: minclass
+# Min class value if option is chosen - not less than 4
 rhel8cis_pam_pwquality_minclass: 4
+# Credit values if credits option is chosen - not 0 or greater
+rhel8cis_password_dcredit: -1
+rhel8cis_password_lcredit: -1
+rhel8cis_password_ocredit: -1
+rhel8cis_password_ucredit: -1
 
 rhel8cis_pam_pwhistory_remember: 24
 
 rhel8cis_pam_pwhash: sha512
+
+# If set to true sets pwquality enforcement for root user
+rhel8cis_enforce_for_root: true
 
 ## Control 5.4.2 - Ensure system accounts are secured | Set nologin
 # The system users on this list are allowed to have a shell (e.g. applications
@@ -908,7 +907,7 @@ rhel8cis_pass_max_days: 365
 # The following variable allows the forcing of setting user_max_days for logins.
 # This can break current connecting user access
 rhel8cis_force_user_maxdays: false
-## Control 5.4.1.2 - Ensure minimum days between password changes is 7 or more
+## Control 5.4.1.2 - Ensure minimum days between password changes are 7 or more
 # This variable specifies the minimum number of days allowed between changing
 # passwords. CIS requires a value of at least 1.
 rhel8cis_pass_min_days: 7
@@ -973,8 +972,7 @@ rhel8cis_aide_scan: cron
 # the cron job on the target system.
 # Cron is a time-based job scheduling program in Unix OS, which allows tasks to be scheduled
 # and executed automatically at a certain point in time.
-# This variable represents the user account under which the cron job for AIDE will run.
-rhel8cis_aide_cron_user: root
+
 # This variable represents the path to the AIDE crontab file.
 rhel8cis_aide_cron_file: /etc/cron.d/aide_cron
 # This variable represents the actual command or script that the cron job
@@ -997,6 +995,9 @@ rhel8cis_aide_cron_day: '*'
 # can be given in the range `1-12`; several months can be concatenated with commas.
 # The specified month(s) can must be in the range  `1-12`.
 rhel8cis_aide_cron_month: '*'
+
+# User who will run the cron job
+rhel8cis_aide_cron_user: root
 # This variable governs the weekdays, when the AIDE cronjob is run.
 # `*` signifies that the job is run on all weekdays; furthermore, specific weekdays
 # can be given in the range `0-7` (both `0` and `7` represent Sunday); several weekdays
@@ -1008,6 +1009,7 @@ rhel8cis_aide_cron_weekday: '*'
 rhel8cis_syslog: rsyslog
 
 # Journald
+rhel8cis_journal_remote_upload_config_file: remote_auth.conf
 # rhel8cis_journal_upload_url is the ip address to upload the journal entries to
 rhel8cis_journal_upload_url: 192.168.50.42
 # The paths below have the default paths/files, but allow user to create custom paths/filenames
@@ -1054,7 +1056,6 @@ rhel8cis_auditd_max_log_file_size: 10
 
 rhel8cis_auditd_disk_error_action: halt
 rhel8cis_auditd_disk_full_action: halt
-rhel8cis_auditd_action_mail_acct: root
 rhel8cis_auditd_space_left_action: email
 rhel8cis_auditd_admin_space_left_action: single
 rhel8cis_auditd_max_log_file_action: keep_logs
@@ -1124,3 +1125,6 @@ rhel8cis_no_world_write_adjust: true
 rhel8cis_exclude_unowned_search_path: (! -path "/run/user/*" -a ! -path "/proc/*" -a ! -path "*/containerd/*" -a ! -path "*/kubelet/pods/*" -a ! -path "*/kubelet/plugins/*" -a ! -path "/sys/fs/cgroup/memory/*" -a ! -path "/var/*/private/*")
 # The value of this variable specifies the owner that will be set for unowned files and directories.
 rhel8cis_unowned_owner: root
+
+# The value of this variable specifies the group that will be set for ungrouped files and directories.
+rhel8cis_unowned_group: root

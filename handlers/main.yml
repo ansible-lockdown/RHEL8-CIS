@@ -151,7 +151,7 @@
 - name: Selinux relabel
   when:
     - rhel8cis_enable_selinux_relabel
-    - ansible_facts.selinux.status == 'disabled'
+    - ansible_facts['selinux']['status'] == 'disabled'
   ansible.builtin.file:
     path: /.autorelabel
   notify: Set reboot required
@@ -185,7 +185,7 @@
   notify: Set Crypto Policy
 
 - name: Set Crypto Policy
-  when: prelim_system_wide_crypto_policy.stdout != rhel8cis_full_crypto_policy
+  when: discovered_system_wide_crypto_policys.stdout != rhel8cis_full_crypto_policy
   ansible.builtin.command: update-crypto-policies --set "{{ rhel8cis_full_crypto_policy }}"
   changed_when: true
   notify:
@@ -225,11 +225,20 @@
     name: systemd-journal-upload
     state: restarted
 
+- name: Discover grub path stats
+  ansible.builtin.stat:
+    path: "{{ grub2_path }}"
+  changed_when: false
+  check_mode: false
+  register: discovered_grub_cfg
+  listen: Rebuild grub
+
 - name: Rebuild grub
-  ansible.builtin.command: "grub2-mkconfig -o {{ prelim_grub_cfg.stat.lnk_source }}"
+  ansible.builtin.command: "grub2-mkconfig -o {{ discovered_grub_cfg.stat.lnk_source }}"
   changed_when: true
   ignore_errors: true  # noqa ignore-errors
   notify: Set reboot required
+  listen: Rebuild grub
 
 - name: Restart rsyslog
   ansible.builtin.service:
