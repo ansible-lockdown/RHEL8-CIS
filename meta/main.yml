@@ -1,13 +1,12 @@
 ---
-
 galaxy_info:
-  author: "MindPoint Group"
-  description: "Apply the DISA RHEL 8 CIS"
-  company: "MindPoint Group"
+  author: "Ansible-Lockdown Team"
+  description: "Apply the RHEL 8 CIS benchmark"
+  company: "MindPoint Group - A Tyto Athene Company"
   license: MIT
   namespace: mindpointgroup
   role_name: rhel8_cis
-  min_ansible_version: 2.11.1
+  min_ansible_version: 2.16.1
   platforms:
     - name: EL
       versions:
