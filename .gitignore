@@ -46,3 +46,17 @@ benchparse/
 
 # ansible-lint cache
 .ansible/
+
+# Secrets/keys
+*.vault
+*vault_pass*
+.vault_pass
+*.key
+*.pem
+
+# QA/temp artifacts
+qa_report.md
+*qa_report*
+prompt.md
+plan.md
+test_inv
