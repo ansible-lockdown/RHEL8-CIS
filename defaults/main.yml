@@ -864,7 +864,7 @@ rhel8cis_pam_pwquality_minlen: 14
 
 # Choose between minclass and credits how to configure password complexity
 # it wil add one or the other
-rhel8cis_passwd_complex_option: minclass
+rhel8cis_passwd_complex_option: minclass  # pragma: allowlist secret
 # Min class value if option is chosen - not less than 4
 rhel8cis_pam_pwquality_minclass: 4
 # Credit values if credits option is chosen - not 0 or greater
