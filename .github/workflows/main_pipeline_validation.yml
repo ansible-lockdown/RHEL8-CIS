@@ -32,7 +32,7 @@ jobs:
       ENABLE_DEBUG: ${{ vars.ENABLE_DEBUG }}
       # Imported as a variable by terraform
       TF_VAR_repository: ${{ github.event.repository.name }}
-      AWS_REGION : "us-east-1"
+      AWS_REGION: "us-east-1"
       ANSIBLE_VERSION: ${{ vars.ANSIBLE_RUNNER_VERSION }}
     defaults:
       run:
