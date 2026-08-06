@@ -63,7 +63,11 @@
       notify: Reload firewalld
 
     - name: "4.1.4 | AUDIT | Ensure firewalld active zone target is configured | get active zone settings"
-      ansible.builtin.shell: firewall-cmd --list-all-zones | grep -A1 active
+      ansible.builtin.shell: |
+        set -o pipefail
+        firewall-cmd --list-all-zones | grep -A1 active
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       register: discovered_active_firewall_zone_settings
 
@@ -111,7 +115,11 @@
     - NIST800-53R5_NA
   block:
     - name: "4.1.5 | AUDIT | Ensure firewalld loopback traffic is configured | get loopback zone"
-      ansible.builtin.shell: firewall-cmd --list-all --zone="$(firewall-cmd --get-zone-of-interface=lo | xargs)" | grep -Psi -- '^\h*target:\h+\H+'
+      ansible.builtin.shell: |
+        set -o pipefail
+        firewall-cmd --list-all --zone="$(firewall-cmd --get-zone-of-interface=lo | xargs)" | grep -Psi -- '^\h*target:\h+\H+'
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       register: discovered_loopback_zone
 
@@ -166,8 +174,11 @@
     warn_control_id: "4.1.7"
   block:
     - name: "4.1.7 | AUDIT | Ensure firewalld services and ports are configured | Get list of services and ports"
-      ansible.builtin.shell: "firewall-cmd --get-active-zones | awk '!/:/ {print $1}' | while read ZN; do firewall-cmd --list-all --zone=$ZN;
-        done"
+      ansible.builtin.shell: |
+        set -o pipefail
+        firewall-cmd --get-active-zones | awk '!/:/ {print $1}' | while read ZN; do firewall-cmd --list-all --zone=$ZN;
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: false
       check_mode: false

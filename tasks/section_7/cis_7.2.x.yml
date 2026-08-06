@@ -13,7 +13,11 @@
     warn_control_id: "7.2.1"
   block:
     - name: "7.2.1 | AUDIT | Ensure accounts in /etc/passwd use shadowed passwords | Get users not using shadowed passwords"
-      ansible.builtin.shell: awk -F':' '($2 != "x" ) { print $1}' /etc/passwd
+      ansible.builtin.shell: |
+        set -o pipefail
+        awk -F':' '($2 != "x" ) { print $1}' /etc/passwd
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: false
       register: discovered_nonshadowed_users
@@ -42,7 +46,11 @@
     - NIST800-53R5_CM-6
   block:
     - name: "7.2.2 | AUDIT | Ensure /etc/shadow password fields are not empty | Find users with no password"
-      ansible.builtin.shell: awk -F":" '($2 == "" ) { print $1 }' /etc/shadow
+      ansible.builtin.shell: |
+        set -o pipefail
+        awk -F":" '($2 == "" ) { print $1 }' /etc/shadow
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       check_mode: false
       register: discovered_empty_password_acct
@@ -72,7 +80,11 @@
     warn_control_id: "7.2.3"
   block:
     - name: "7.2.3 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Check /etc/passwd entries"
-      ansible.builtin.shell: pwck -r | grep 'no group' | awk '{ gsub("[:\47]",""); print $2}'
+      ansible.builtin.shell: |
+        set -o pipefail
+        pwck -r | grep 'no group' | awk '{ gsub("[:\47]",""); print $2}'
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: false
       check_mode: false
@@ -101,7 +113,11 @@
     warn_control_id: "7.2.4"
   block:
     - name: "7.2.4 | AUDIT | Ensure no duplicate UIDs exist | Check for duplicate UIDs"
-      ansible.builtin.shell: "pwck -r | awk -F: '{if ($3 in uid) print $1 ; else uid[$3]}' /etc/passwd"
+      ansible.builtin.shell: |
+        set -o pipefail
+        pwck -r | awk -F: '{if ($3 in uid) print $1 ; else uid[$3]}' /etc/passwd
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: false
       check_mode: false
@@ -134,7 +150,11 @@
     warn_control_id: "7.2.5"
   block:
     - name: "7.2.5 | AUDIT | Ensure no duplicate GIDs exist | Check for duplicate GIDs"
-      ansible.builtin.shell: "pwck -r | awk -F: '{if ($3 in users) print $1 ; else users[$3]}' /etc/group"
+      ansible.builtin.shell: |
+        set -o pipefail
+        pwck -r | awk -F: '{if ($3 in users) print $1 ; else users[$3]}' /etc/group
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: false
       check_mode: false
@@ -167,7 +187,11 @@
     warn_control_id: "7.2.6"
   block:
     - name: "7.2.6 | AUDIT | Ensure no duplicate user names exist | Check for duplicate User Names"
-      ansible.builtin.shell: "pwck -r | awk -F: '{if ($1 in users) print $1 ; else users[$1]}' /etc/passwd"
+      ansible.builtin.shell: |
+        set -o pipefail
+        pwck -r | awk -F: '{if ($1 in users) print $1 ; else users[$1]}' /etc/passwd
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: false
       check_mode: false
@@ -200,7 +224,11 @@
     warn_control_id: "7.2.7"
   block:
     - name: "7.2.7 | AUDIT | Ensure no duplicate group names exist | Check for duplicate group names"
-      ansible.builtin.shell: "getent passwd | cut -d: -f1 | sort -n | uniq -d"
+      ansible.builtin.shell: |
+        set -o pipefail
+        getent passwd | cut -d: -f1 | sort -n | uniq -d
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: false
       check_mode: false
@@ -276,7 +304,11 @@
     warn_control_id: '7.2.9'
   block:
     - name: "7.2.9 | AUDIT | Ensure local interactive user dot files access is configured"
-      ansible.builtin.shell: find {{ prelim_interactive_users_home.stdout_lines | list | join(' ') }} -name "\.*" -type f
+      ansible.builtin.shell: |
+        set -o pipefail
+        find {{ prelim_interactive_users_home.stdout_lines | list | join(' ') }} -name "\.*" -type f
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: discovered_homedir_hidden_files.rc not in [ 0, 1 ]
       check_mode: false
@@ -317,8 +349,8 @@
           ansible.builtin.file:
             path: '{{ item }}'
             mode: 'u-x,go-wx'
-          failed_when: discovered_dot_bash_history_to_change.state not in '[ file, absent ]'
-          register: discovered_dot_bash_history_to_change
+          failed_when: discovered_dot_bash_history_mode.state not in '[ file, absent ]'
+          register: discovered_dot_bash_history_mode
           loop: "{{ discovered_homedir_hidden_files.stdout_lines }}"
 
         - name: "7.2.9 | AUDIT | Ensure local interactive user dot files access is configured | Changes files ownerships"
@@ -326,8 +358,8 @@
             path: "{{ item }}"
             owner: "{{ prelim_captured_passwd_data | selectattr('dir', 'in', prelim_interactive_users_home.stdout_lines) | selectattr('dir', 'in', item) | map(attribute='uid') | last }}"
             group: "{{ prelim_captured_passwd_data | selectattr('dir', 'in', prelim_interactive_users_home.stdout_lines) | selectattr('dir', 'in', item) | map(attribute='gid') | last }}"
-          failed_when: discovered_dot_bash_history_to_change.state not in '[ file, absent ]'
-          register: discovered_dot_bash_history_to_change
+          failed_when: discovered_dot_bash_history_owner.state not in '[ file, absent ]'
+          register: discovered_dot_bash_history_owner
           loop: "{{ discovered_homedir_hidden_files.stdout_lines }}"
 
         - name: "7.2.9 | PATCH | Ensure local interactive user dot files access is configured | Changes files if configured"

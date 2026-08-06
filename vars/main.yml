@@ -1,7 +1,7 @@
 ---
 # vars file for RHEL8-CIS
 
-min_ansible_version: 2.11.1
+min_ansible_version: 2.16.1
 rhel8cis_allowed_crypto_policies:
   - 'DEFAULT'
   - 'FUTURE'
@@ -27,6 +27,11 @@ rhel8cis_allowed_crypto_policies_modules:
   - 'NO-SSHWEAKMAC'
   - 'NO-WEAKMAC'
 
+# Ability to change the default shell
+# Note this can change how some of the ansible.builtin.shell tasks work and may require adjustments to args.executable for those tasks
+# Used mainly for overriding to use a more POSIX compliant shell such as dash or ash when running in a container environment
+rhel8cis_shell_executable: /bin/bash
+
 # Setting default value
 rhel8cis_sysctl_update: false
 
@@ -44,7 +49,7 @@ auditd_binaries:
   - /sbin/augenrules
 # default setting, this should not be changed
 # and is overridden if a task that changed sets the value if required.
-change_requires_reboot: false
+reboot_required: false
 
 rhel8cis_legacy_boot: false
 

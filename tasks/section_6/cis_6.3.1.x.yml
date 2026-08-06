@@ -31,7 +31,11 @@
   notify: Rebuild grub
   block:
     - name: "6.3.1.2 | AUDIT | Ensure auditing for processes that start prior to auditd is enabled | Get GRUB_CMDLINE_LINUX"
-      ansible.builtin.shell: grubby --info=ALL | grep -Po '\baudit=0\b'
+      ansible.builtin.shell: |
+        set -o pipefail
+        grubby --info=ALL | grep -Po '\baudit=0\b'
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: false
       check_mode: false
@@ -58,7 +62,11 @@
   notify: Rebuild grub
   block:
     - name: "6.3.1.3 | AUDIT | Ensure audit_backlog_limit is sufficient | Get GRUB_CMDLINE_LINUX"
-      ansible.builtin.shell: grubby --info=ALL | grep -Po "\baudit_backlog_limit={{ rhel8cis_auditd_back_log_limit }}\b"
+      ansible.builtin.shell: |
+        set -o pipefail
+        grubby --info=ALL | grep -Po "\baudit_backlog_limit={{ rhel8cis_auditd_back_log_limit }}\b"
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: false
       check_mode: false

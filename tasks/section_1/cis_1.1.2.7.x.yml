@@ -1,9 +1,7 @@
 ---
 
-- name: "1.1.2.7.1 | PATCH | Ensure /var/log/audit is a separate partition"
-  when:
-    - rhel8cis_rule_1_1_2_7_1
-    - required_mount not in prelim_mount_names
+- name: "1.1.2.7.1 | AUDIT | Ensure /var/log/audit is a separate partition"
+  when: rhel8cis_rule_1_1_2_7_1
   tags:
     - level2-server
     - level2-workstation

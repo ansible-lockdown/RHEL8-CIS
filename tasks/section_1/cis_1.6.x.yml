@@ -1,5 +1,38 @@
 ---
 
+- name: "1.6.x | PATCH | Setup crypto-policy"
+  when: rhel8cis_rule_1_6_1 or rhel8cis_rule_1_6_2 or rhel8cis_rule_1_6_3 or rhel8cis_rule_1_6_4
+  tags:
+    - level1-server
+    - level1-workstation
+    - rule_1.6.1
+    - rule_1.6.2
+    - rule_1.6.3
+    - rule_1.6.4
+    - crypto
+  block:
+    - name: "1.6.x | PATCH | Install crypto-policies | pkgs present"
+      ansible.builtin.package:
+        name:
+          - crypto-policies
+          - crypto-policies-scripts
+        state: present
+
+    - name: "1.6.x | AUDIT | Gather system-wide crypto-policy"
+      ansible.builtin.command: update-crypto-policies --show
+      changed_when: false
+      check_mode: false
+      register: discovered_system_wide_crypto_policys
+
+    - name: "1.6.x | AUDIT | Gather system-wide crypto-policy | set fact system policy"
+      ansible.builtin.set_fact:
+        current_crypto_policy: "{{ discovered_system_wide_crypto_policys.stdout.split(':')[0] }}"
+
+    - name: "1.6.x  AUDIT | Gather system-wide crypto-policy module | set fact system policy submodule"
+      when: "':' in discovered_system_wide_crypto_policys.stdout"
+      ansible.builtin.set_fact:
+        current_crypto_module: "{{ discovered_system_wide_crypto_policys.stdout.split(':')[1] }}"
+
 - name: "1.6.1 | PATCH | Ensure system-wide crypto policy is not legacy"
   when: rhel8cis_rule_1_6_1
   tags:

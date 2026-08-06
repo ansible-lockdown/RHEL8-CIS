@@ -21,10 +21,7 @@
   notify: Rebuild grub
 
 - name: "1.4.2 | PATCH | Ensure access to bootloader config is configured"
-  when:
-    - rhel8cis_rule_1_4_2
-    - prelim_grub_cfg.stat.exists
-    - prelim_grub_cfg.stat.islnk
+  when: rhel8cis_rule_1_4_2
   tags:
     - level1-server
     - level1-workstation
@@ -34,7 +31,9 @@
     - NIST800-53R5_CM-6
     - rule_1.4.2
   block:
+
     - name: "1.4.2 | PATCH | Ensure access to bootloader config is configured | BIOS"
+      when: rhel8cis_legacy_boot
       ansible.builtin.file:
         path: "{{ rhel8cis_boot_path }}"
         owner: root
@@ -43,10 +42,9 @@
         recurse: true
 
     - name: "1.4.2 | PATCH | Ensure access to bootloader config is configured | EFI"
-      when: rhel8cis_legacy_boot
+      when: not rhel8cis_legacy_boot
       block:
         - name: "1.4.2 | PATCH | Ensure access to bootloader config is configured | EFI"
-          when: not rhel8cis_legacy_boot
           ansible.builtin.file:
             path: "{{ rhel8cis_boot_path }}"
             owner: root
@@ -55,9 +53,7 @@
             recurse: true
 
         - name: "1.4.2 | PATCH | Ensure access to bootloader config is configured | EFI mount opts"
-          when:
-            - not rhel8cis_legacy_boot
-            - item.mount == "/boot/efi"
+          when: item.mount == "/boot/efi"
           notify: Set reboot required
           ansible.posix.mount:
             name: /boot/efi
@@ -66,6 +62,6 @@
             state: present
             opts: defaults,umask=0027,fmask=0077,uid=0,gid=0
             passno: '0'
-          loop: "{{ ansible_facts.mounts }}"
+          loop: "{{ ansible_facts['mounts'] }}"
           loop_control:
             label: "{{ item.mount }}"

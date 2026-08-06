@@ -55,12 +55,25 @@
     - NIST800-53R5_AC-6
     - sudo
     - rule_5.2.4
-  ansible.builtin.replace:
-    path: "{{ item }}"
-    regexp: '^([^#|{% if system_is_ec2 %}ec2-user{% endif %}].*)NOPASSWD(.*)'
-    replace: '\1PASSWD\2'
-    validate: '/usr/sbin/visudo -cf %s'
-  loop: "{{ prelim_sudoers_files.stdout_lines }}"
+  block:
+    - name: "5.2.4 | AUDIT | Ensure users must provide password for escalation"
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -is 'nopasswd' /etc/sudoers /etc/sudoers.d/* | cut -d":" -f1 | uniq | sort
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_escalation_files
+
+    - name: "5.2.4 | PATCH | Ensure users must provide password for escalation"
+      ansible.builtin.replace:
+        path: "{{ item }}"
+        regexp: '^([^#|{% if system_is_ec2 %}ec2-user{% endif %}].*)NOPASSWD(.*)'
+        replace: '\1PASSWD\2'
+        validate: '/usr/sbin/visudo -cf %s'
+      loop: "{{ discovered_escalation_files.stdout_lines }}"
 
 - name: "5.2.5 | PATCH | Ensure re-authentication for privilege escalation is not disabled globally"
   when: rhel8cis_rule_5_2_5
@@ -72,12 +85,25 @@
     - NIST800-53R5_AC-6
     - sudo
     - rule_5.2.5
-  ansible.builtin.replace:
-    path: "{{ item }}"
-    regexp: '^([^#].*)!authenticate(.*)'
-    replace: '\1authenticate\2'
-    validate: '/usr/sbin/visudo -cf %s'
-  loop: "{{ prelim_sudoers_files.stdout_lines }}"
+  block:
+    - name: "5.2.5 | PATCH | Ensure re-authentication for privilege escalation is not disabled globally"
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -is 'authenticate' /etc/sudoers /etc/sudoers.d/* | cut -d":" -f1 | uniq | sort
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_authenticate_files
+
+    - name: "5.2.5 | PATCH | Ensure re-authentication for privilege escalation is not disabled globally"
+      ansible.builtin.replace:
+        path: "{{ item }}"
+        regexp: '^([^#].*)!authenticate(.*)'
+        replace: '\1authenticate\2'
+        validate: '/usr/sbin/visudo -cf %s'
+      loop: "{{ discovered_authenticate_files.stdout_lines }}"
 
 - name: "5.2.6 | PATCH | Ensure sudo timestamp_timeout is configured"
   when: rhel8cis_rule_5_2_6
@@ -91,7 +117,11 @@
     - rule_5.2.6
   block:
     - name: "5.2.6 | AUDIT | Ensure sudo timestamp_timeout is configured | Get files with timeout set"
-      ansible.builtin.shell: grep -is 'timestamp_timeout' /etc/sudoers /etc/sudoers.d/* | cut -d":" -f1 | uniq | sort
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -is 'timestamp_timeout' /etc/sudoers /etc/sudoers.d/* | cut -d":" -f1 | uniq | sort
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: false
       register: discovered_timeout_files

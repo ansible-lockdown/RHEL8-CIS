@@ -29,8 +29,7 @@
         mode: 'go-rwx'
 
     - name: "1.1.1.1 | PATCH | Ensure cramfs kernel module is not available | Disable cramfs"
-      when:
-        - not system_is_container
+      when: not system_is_container
       community.general.modprobe:
         name: cramfs
         state: absent
@@ -356,13 +355,13 @@
     - name: "1.1.1.11 | PATCH | Ensure unused filesystems kernel modules are not available | Add discovery script"
       ansible.builtin.copy:
         src: fs_with_cves.sh
-        dest: /var/fs_with_cves.sh
+        dest: "{{ rhel8cis_temp_exec_location }}/fs_with_cves.sh"
         owner: root
         group: root
         mode: 'u+x,go-wx'
 
     - name: "1.1.1.11 | AUDIT | Ensure unused filesystems kernel modules are not available | Run discovery script"
-      ansible.builtin.command: /var/fs_with_cves.sh
+      ansible.builtin.command: "{{ rhel8cis_temp_exec_location }}/fs_with_cves.sh"
       changed_when: false
       failed_when: discovered_fs_modules_loaded.rc not in [ 0, 99 ]
       register: discovered_fs_modules_loaded
@@ -376,3 +375,9 @@
       when: discovered_fs_modules_loaded.stdout | length > 0
       ansible.builtin.import_tasks:
         file: warning_facts.yml
+
+    - name: "1.1.1.11 | AUDIT | Ensure unused filesystems kernel modules are not available | Capture Warning"
+      when: rhel8cis_remove_kernel_discovery_script
+      ansible.builtin.file:
+        path: "{{ rhel8cis_temp_exec_location }}/fs_with_cves.sh"
+        state: absent

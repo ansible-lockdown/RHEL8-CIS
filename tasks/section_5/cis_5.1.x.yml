@@ -1,6 +1,6 @@
 ---
 
-- name: "5.1.1 | Ensure sshd crypto_policy is not set"
+- name: "5.1.1 | PATCH | Ensure sshd crypto_policy is not set"
   when: rhel8cis_rule_5_1_1
   tags:
     - level1-server
@@ -17,7 +17,7 @@
     regexp: ^(\s*CRYPTO_POLICY\s*=.*)
     line: '#\1'
 
-- name: "5.1.2 | Ensure access to /etc/ssh/sshd_config is configured"
+- name: "5.1.2 | PATCH | Ensure access to /etc/ssh/sshd_config is configured"
   when: rhel8cis_rule_5_1_2
   tags:
     - level1-server
@@ -30,22 +30,28 @@
     - NIST800-53R5_MP-2
     - rule_5.1.2
   block:
-    - name: "5.1.2 | Ensure access to /etc/ssh/sshd_config is configured"
+    - name: "SSHD | AUDIT | Find sshd config files"
+      ansible.builtin.find:
+        path: /etc/ssh/sshd_config.d
+        patterns: '*.conf'
+      register: discovered_sshd_configs
+
+    - name: "5.1.2 | PATCH | Ensure access to /etc/ssh/sshd_config is configured"
       ansible.builtin.file:
         path: "{{ item.path }}"
         owner: root
         group: root
         mode: 'u-x,go-rwx'
-      loop: "{{ prelim_sshd_configs.files }}"
+      loop: "{{ discovered_sshd_configs.files }}"
 
-    - name: "5.1.2 | Ensure access to /etc/ssh/sshd_config is configured"
+    - name: "5.1.2 | PATCH | Ensure access to /etc/ssh/sshd_config is configured"
       ansible.builtin.file:
         path: "{{ rhel8cis_sshd_config_file }}"
         owner: root
         group: root
         mode: 'go-rwx'
 
-- name: "5.1.3 | Ensure access to /etc/sysconfig/sshd is configured"
+- name: "5.1.3 | PATCH | Ensure access to /etc/sysconfig/sshd is configured"
   when: rhel8cis_rule_5_1_3
   tags:
     - level1-server
@@ -348,8 +354,7 @@
   notify: Restart sshd
 
 - name: "5.1.14 | PATCH | Ensure sshd KexAlgorithms is configured"
-  when:
-    - rhel8cis_rule_5_1_14
+  when: rhel8cis_rule_5_1_14
   tags:
     - level1-server
     - level1-workstation
@@ -444,7 +449,7 @@
     - patch
     - sshd
     - NIST800-53R5_AU-3
-    - rule_5.1.15
+    - rule_5.1.18
   ansible.builtin.lineinfile:
     path: "{{ rhel8cis_sshd_config_file }}"
     regexp: '^(#)?MaxAuthTries \d'
