@@ -273,4 +273,3 @@
     line: "{{ item }} = {{ rhel8cis_auditd_extra_conf[item] }}"
   notify: Restart auditd
   loop: "{{ rhel8cis_auditd_extra_conf.keys() }}"
-  
