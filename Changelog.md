@@ -41,7 +41,7 @@
 ### 2026 February QA Updates
 
 - Spelling fixes
-  - vars/is_container.yml: typo fix
+  - vars/is_container.yml: "dependant" -> "dependent", "enviroment" -> "environment"
   - defaults/main.yml: "thier" -> "their"
   - tasks/section_2/cis_2.1.x.yml: "ngnix.service" -> "nginx.service"
 - Grammar fixes
@@ -68,6 +68,21 @@
 ## Benchmark v3.0.0
 
 ### 3.2.1 Updates
+- Control 3.1.1
+  - Added better sysctl logic to disable IPv6
+  - Added option to disable IPv6 via sysctl (original method) or via the
+
+## Oct 25
+- workflow updates
+- #499 thanks to @polski-g
+- #501 thanks to @vfroes
+- audit template using benchmark_version variable
+- audit rules not work through validation for ARM64 vs AMD64
+- 1.4.2. titles changed
+- Change_require_reboot notify changes to Set_reboot_required
+- lint and typo updates
+
+### 2.2 Updates
 
 August 2025
 - Addresses #496 - Tyto fix on handler Remount_tmp
