@@ -1,8 +1,9 @@
 ---
 # OS Specific Settings
 
-rpm_gpg_key: /etc/pki/rpm-gpg/RPM-GPG-KEY-rockyofficial
-rpm_packager: "infrastructure@rockylinux.org"
-
+rpm_gpg_key: gpg-pubkey-6d745a60-60287f36
+rpm_packager:
+  - "gpg(Release Engineering <infrastructure@rockylinux.org>)"
 # found on https://rockylinux.org/keys/ note lower case
-rpm_key: "15af5dac6d745a60"  # pragma: allowlist secret
+rpm_key:
+  - "6d745a60"  # pragma: allowlist secret

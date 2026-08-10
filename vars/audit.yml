@@ -5,8 +5,42 @@
 # Timeout for those cmds that take longer to run where timeout set
 audit_cmd_timeout: 120000
 
+# How to retrieve audit binary
+# Options are copy or download - detailed settings at the bottom of this file
+# you will need to access to either github or the file already downloaded
+get_audit_binary_method: download
+
+## if get_audit_binary_method - copy the following needs to be updated for your environment
+## it is expected that it will be copied from somewhere accessible to the control node
+## e.g copy from ansible control node to remote host
+audit_bin_copy_location: /some/accessible/path
+
+# Ability to limit the number of concurrent processes used by goss (default 50)
+audit_max_concurrent: 50
+
+# how to get audit files onto host options
+# options are git/copy/archive/get_url other e.g. if you wish to run from already downloaded conf
+audit_content: git
+
+# Depending on the method of getting the audit content you may need to validate certs if using git or get_url
+# note is self hosted you may not have the cert chain installed so may need to set to false - this is not recommended but may be required in some environments
+audit_bin_validate_certs: true
+
+# If using either archive, copy, get_url:
+## Note will work with .tar files - zip will require extra configuration
+### If using get_url this is expecting github url in tar.gz format e.g.
+### https://github.com/ansible-lockdown/SUSE16-CIS-Audit/archive/refs/heads/benchmark-v1.0.0.tar.gz
+audit_conf_source: "some path or url to copy from"
+
+# Destination for the audit content to be placed on managed node
+# note may not need full path e.g. /opt with the directory being the {{ benchmark }}-Audit directory
+audit_conf_dest: "/opt"
+
+### options below this line don't often need changing but can be if your environment requires it
+# - e.g. timeout for long running cmds, location of goss binary if using copy method, url for goss binary if using download method etc. ###
+
 # if get_audit_binary_method == download change accordingly
-audit_bin_url: "https://github.com/goss-org/goss/releases/download/{{ audit_bin_version.release }}/goss-linux-"
+audit_bin_url: "https://github.com/krameff/goss/releases/download/{{ audit_bin_version.release }}/goss-linux-"
 
 ### Goss Audit Benchmark file ###
 ## managed by the control audit_content
@@ -19,23 +53,23 @@ audit_git_version: "benchmark_{{ benchmark_version }}"
 audit_conf_dir: "{{ audit_conf_dest | default('/opt') }}/{{ benchmark }}-Audit"
 
 # If changed these can affect other products
-pre_audit_outfile: "{{ audit_log_dir }}/{{ ansible_facts.hostname }}-{{ benchmark }}-{{ benchmark_version }}_pre_scan_{{ ansible_facts.date_time.epoch }}.{{ audit_format }}"
-post_audit_outfile: "{{ audit_log_dir }}/{{ ansible_facts.hostname }}-{{ benchmark }}-{{ benchmark_version }}_post_scan_{{ ansible_facts.date_time.epoch }}.{{ audit_format }}"
+pre_audit_outfile: "{{ audit_log_dir }}/{{ ansible_facts['hostname'] }}-{{ benchmark }}-{{ benchmark_version }}_pre_scan_{{ ansible_facts['date_time']['epoch'] }}.{{ audit_format }}"
+post_audit_outfile: "{{ audit_log_dir }}/{{ ansible_facts['hostname'] }}-{{ benchmark }}-{{ benchmark_version }}_post_scan_{{ ansible_facts['date_time']['epoch'] }}.{{ audit_format }}"
 
 ## The following should not need changing
 
 ### Audit binary settings ###
 audit_bin_version:
-  release: v0.4.8
-  AMD64_checksum: 'sha256:85d00b7bba5f175bec95de7dfe1f71f8f25204914aad4c6f03c8457868eb6e2f'
-  ARM64_checksum: 'sha256:bca8c898bfd35b94c51455ece6193c95e2cd7b2b183ac2047b2d76291e73e47d'
+  release: v0.5.0
+  AMD64_checksum: 'sha256:1371df12806586e4c6b122a22e1dbc2b9008160099eaf2816d139cc825ffc40a'
+  ARM64_checksum: 'sha256:d34fae1b2e33bbe2f461418891c88dd636f212a0a2d4bb0601111a8dfa09efa2'
 audit_bin_path: /usr/local/bin/
 audit_bin: "{{ audit_bin_path }}goss"
 audit_format: json
 
-audit_vars_path: "{{ audit_conf_dir }}/vars/{{ ansible_facts.hostname }}.yml"
+audit_vars_path: "{{ audit_conf_dir }}/vars/{{ ansible_facts['hostname'] }}.yml"
 audit_results: |
-    The{% if not audit_only %} pre remediation{% endif %} audit results are: {{ pre_audit_results }}
-    {% if not audit_only %}The post remediation audit results are: {{ post_audit_results }}{% endif %}
+  The{% if not audit_only %} pre remediation{% endif %} audit results are: {{ pre_audit_results }}
+  {% if not audit_only %}The post remediation audit results are: {{ post_audit_results }}{% endif %}
 
-    Full breakdown can be found in {{ audit_log_dir }}
+  Full breakdown can be found in {{ audit_log_dir }}

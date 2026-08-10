@@ -32,7 +32,7 @@ jobs:
       ENABLE_DEBUG: ${{ vars.ENABLE_DEBUG }}
       # Imported as a variable by terraform
       TF_VAR_repository: ${{ github.event.repository.name }}
-      AWS_REGION : "us-east-1"
+      AWS_REGION: "us-east-1"
       ANSIBLE_VERSION: ${{ vars.ANSIBLE_RUNNER_VERSION }}
     defaults:
       run:
@@ -43,7 +43,7 @@ jobs:
     steps:
 
       - name: Git clone the lockdown repository to test
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
@@ -59,7 +59,7 @@ jobs:
 
       # Pull in terraform code for linux servers
       - name: Clone GitHub IaC plan
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: ansible-lockdown/github_linux_IaC
           path: .github/workflows/github_linux_IaC

@@ -472,7 +472,7 @@ rhel8cis_rule_7_2_9: {{ rhel8cis_rule_7_2_9 }}
 # 1.1.2.4
 # These settings go into the /etc/fstab file for the /tmp mount settings
 # The value must contain nosuid,nodev,noexec to conform to CIS standards
-# rhel8cis_tmp_tmpfs_settings: "defaults,rw,nosuid,nodev,noexec,relatime 0 0"
+# rhel8cis_tmp_tmpfs_settings: "defaults,rw,nosuid,nodev,noexec,relatime"
 # If set true uses the tmp.mount service else using fstab configuration
 rhel8cis_tmp_svc: {{ rhel8cis_tmp_svc }}
 
@@ -486,9 +486,6 @@ rhel8cis_bootloader_password: {{ rhel8cis_bootloader_password }}
 rhel8cis_set_boot_pass: {{ rhel8cis_set_boot_pass }}
 rhel8cis_boot_path: {{ rhel8cis_boot_path }}
 
-# 1.5 SELinux policy
-rhel8cis_selinux_pol: {{ rhel8cis_selinux_policy }}
-
 # 1.6 Set crypto policy (LEGACY, DEFAULT, FUTURE, FIPS)
 rhel8cis_crypto_policy: {{ rhel8cis_crypto_policy }}
 # Added module to be allowed as default setting (Allowed options in vars/main.yml)
@@ -496,12 +493,13 @@ rhel8cis_crypto_policy_module: {{ rhel8cis_crypto_policy_module }}
 
 # 1.7
 # Warning Banner Content (issue, issue.net, motd)
-rhel8cis_warning_banner: {{ rhel8cis_warning_banner }}
+rhel8cis_warning_banner: |
+{{ rhel8cis_warning_banner | indent(2, first=True) }}
 # End Banner
 
 # 1.8 Gnome Desktop
 # Whether or not to run tasks related to auditing/patching the desktop environment
-rhel8cis_gui: {{ rhel8cis_desktop_required }}
+rhel8cis_desktop_required: {{ rhel8cis_desktop_required }}
 
 rhel8cis_screensaver_idle_delay: {{ rhel8cis_screensaver_idle_delay }}  # Set max value for idle-delay in seconds (between 1 and 900)
 rhel8cis_screensaver_lock_delay: {{ rhel8cis_screensaver_lock_delay }}  # Set max value for lock-delay in seconds (between 0 and 5)
@@ -554,8 +552,8 @@ rhel8cis_rpc_server: {{ rhel8cis_rpc_server }}
 rhel8cis_rpc_mask: {{ rhel8cis_rpc_mask }}
 rhel8cis_rsync_server: {{ rhel8cis_rsync_server }}
 rhel8cis_rsync_mask: {{ rhel8cis_rsync_mask }}
-rhel8cis_snmp_server: {{ rhel8cis_net_snmp_server }}
-rhel8cis_snmp_mask: {{ rhel8cis_net_snmp_mask }}
+rhel8cis_snmp_server: {{ rhel8cis_snmp_server }}
+rhel8cis_snmp_mask: {{ rhel8cis_snmp_mask }}
 rhel8cis_telnet_server: {{ rhel8cis_telnet_server }}
 rhel8cis_telnet_mask: {{ rhel8cis_telnet_mask }}
 rhel8cis_tftp_server: {{ rhel8cis_tftp_server }}
@@ -615,17 +613,6 @@ rhel8cis_active_firewall_zone: {{ rhel8cis_active_firewall_zone }}
 ######
 ## If using the allow/deny user groups options
 rhel8cis_sshd_limited: {{ rhel8cis_sshd_limited }}
-rhel8cis_sshd:
-    clientalivecountmax: {{ rhel8cis_sshd_clientalivecountmax }}
-    clientaliveinterval: {{ rhel8cis_sshd_clientaliveinterval }}
-    logingracetime: {{ rhel8cis_sshd_logingracetime }}
-    loglevel: {{ rhel8cis_sshd_loglevel }}
-    macs: '{{ rhel8cis_sshd_macs }}'
-    maxauthtries: {{ rhel8cis_sshd_maxauthtries }}
-    maxsessions: {{ rhel8cis_sshd_maxsessions }}
-    maxstartups: '{{ rhel8cis_sshd_maxstartups }}'
-    ciphers: '{{ rhel8cis_sshd_ciphers }}'
-    kex: '{{ rhel8cis_sshd_kex }}'
 
 # Controls:
 ## - 5.1.7  - Ensure SSH access is limited
@@ -633,7 +620,7 @@ rhel8cis_sshd:
 # access for users whose user name matches one of the patterns. This is done
 # by setting the value of `AllowUsers` option in `/etc/ssh/sshd_config` file.
 # If an USER@HOST format will be used, the specified user will be allowed only on that particular host.
-rhel8cis_sshd_allowusers: "{% if ansible_facts.user_id != 'root' %}{{ ansible_facts.user_id }}{% elif ansible_env.SUDO_USER is defined %}{{ ansible_env.SUDO_USER }}{% endif %} {{ rhel8cis_sshd_allowusers }}"
+rhel8cis_sshd_allowusers: "{% if ansible_facts['user_id'] != 'root' %}{{ ansible_facts['user_id'] }}{% elif ansible_env.SUDO_USER is defined %}{{ ansible_env.SUDO_USER }}{% endif %} {{ rhel8cis_sshd_allowusers }}"
 
 # (String) This variable, if specified, configures a list of GROUP name patterns, separated by spaces, to allow SSH access
 # for users whose primary group or supplementary group list matches one of the patterns. This is done
@@ -660,38 +647,25 @@ rhel8cis_sudo_timestamp_timeout: {{ rhel8cis_sudo_timestamp_timeout }}
 rhel8cis_allow_authselect_updates: {{ rhel8cis_allow_authselect_updates }}
 rhel8cis_authselect_custom_profile_name: '{{ rhel8cis_authselect_custom_profile_name }}'
 
-rhel8cis_pam_faillock:
-    attempts: {{ rhel8cis_pam_faillock_attempts }}
-    deny: {{ rhel8cis_pam_faillock_deny }}
-    interval: {{ rhel8cis_pam_faillock_interval }}
-    unlock_time: {{ rhel8cis_pam_faillock_unlock_time }}
-    root_unlock_time: {{ rhel8cis_pam_faillock_root_unlock_time }}
-    # Choose options below for root options
-    root_option: {{ rhel8cis_pam_faillock_root_option }}
 
-rhel8cis_pam_pwquality:
-    difok: {{ rhel8cis_pam_pwquality_difok }}
-    maxrepeat: {{ rhel8cis_pam_pwquality_maxrepeat }}
-    maxseq: {{ rhel8cis_pam_pwquality_maxseq }}
-    minlen: {{ rhel8cis_pam_pwquality_minlen }}
-    minclass: {{ rhel8cis_pam_pwquality_minclass }}
+rhel8cis_pam_faillock_deny: {{ rhel8cis_pam_faillock_deny }}
+rhel8cis_pam_faillock_unlock_time: {{ rhel8cis_pam_faillock_unlock_time }}
+rhel8cis_pam_faillock_root_unlock_time: {{ rhel8cis_pam_faillock_root_unlock_time }}
 
-rhel8cis_pam_pwhistory:
-    remember: {{ rhel8cis_pam_pwhistory_remember }}
+rhel8cis_pam_pwquality_difok: {{ rhel8cis_pam_pwquality_difok }}
+rhel8cis_pam_pwquality_maxrepeat: {{ rhel8cis_pam_pwquality_maxrepeat }}
+rhel8cis_pam_pwquality_maxseq: {{ rhel8cis_pam_pwquality_maxseq }}
+rhel8cis_pam_pwquality_minlen: {{ rhel8cis_pam_pwquality_minlen }}
+
+rhel8cis_pam_pwhistory_remember: {{ rhel8cis_pam_pwhistory_remember }}
 
 rhel8cis_pam_pwhash: {{ rhel8cis_pam_pwhash }}
 
-rhel8cis_pass:
-    inactive: {{ rhel8cis_inactive_lock_days }}
-    max_days: {{ rhel8cis_pass_max_days }}
-    min_days: {{ rhel8cis_pass_min_days }}
-    warn_age: {{ rhel8cis_pass_warn_age }}
+rhel8cis_pass_max_days: {{ rhel8cis_pass_max_days }}
+rhel8cis_pass_min_days: {{ rhel8cis_pass_min_days }}
+rhel8cis_pass_warn_age: {{ rhel8cis_pass_warn_age }}
 
 rhel8cis_root_umask: {{ rhel8cis_root_umask }}  # 0027 or more restrictive
-
-rhel8cis_shell_session_timeout:
-    file: {{ rhel8cis_shell_session_file }}
-    timeout: {{ rhel8cis_shell_session_timeout }}
 
 # 5.3.7
 rhel8cis_sugroup: {{ rhel8cis_sugroup }}
@@ -720,16 +694,6 @@ rhel8cis_remote_log_protocol: {{ rhel8cis_remote_log_protocol }}
 rhel8cis_remote_log_retrycount: {{ rhel8cis_remote_log_retrycount }}
 rhel8cis_remote_log_queuesize: {{ rhel8cis_remote_log_queuesize }}
 
-update_audit_template: {{ rhel8cis_update_audit_template }}
-
-rhel8cis_auditd:
-    disk_error_action: {{ rhel8cis_auditd_disk_error_action }}
-    disk_full_action: {{ rhel8cis_auditd_disk_full_action }}
-    action_mail_acct: {{ rhel8cis_auditd_action_mail_acct }}
-    space_left_action: {{ rhel8cis_auditd_space_left_action }}
-    admin_space_left_action: {{ rhel8cis_auditd_admin_space_left_action }}
-    max_log_file_action: {{ rhel8cis_auditd_max_log_file_action }}
-
 rhel8cis_logrotate: {{ rhel8cis_logrotate }}
 
 ## Journald
@@ -754,21 +718,9 @@ rhel8cis_journald_maxfilesec: {{ rhel8cis_journald_maxfilesec }}
 # change to true if you wish to change logrotate.d conf files
 rhel8cis_allow_logrotate_conf_umask_updates: {{ rhel8cis_allow_logrotate_conf_umask_updates }}
 
+## Section6 vars
 ## AIDE
 rhel8cis_aide_scan: {{ rhel8cis_aide_scan }}
-rhel8cis_config_aide: {{ rhel8cis_config_aide }}
-# AIDE cron settings
-rhel8cis_aide_cron:
-    cron_user: '{{ rhel8cis_aide_cron_user }}'
-    cron_file: '{{ rhel8cis_aide_cron_file }}'
-    aide_job: '{{ rhel8cis_aide_cron_job }}'
-    aide_minute: '{{ rhel8cis_aide_cron_minute }}'
-    aide_hour: '{{ rhel8cis_aide_cron_hour }}'
-    aide_day: '{{ rhel8cis_aide_cron_day }}'
-    aide_month: '{{ rhel8cis_aide_cron_month }}'
-    aide_weekday: '{{ rhel8cis_aide_cron_weekday }}'
-
-## Section6 vars
 
 
 # Control 7.1.12

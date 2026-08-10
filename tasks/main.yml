@@ -6,8 +6,8 @@
   tags: always
   ansible.builtin.assert:
     that: (ansible_distribution != 'CentOS' and ansible_os_family == 'RedHat' or ansible_os_family == "Rocky") and ansible_distribution_major_version is version_compare('8', '==')
-    fail_msg: "This role can only be run against Supported OSs. {{ ansible_facts.distribution }} {{ ansible_facts.distribution_major_version }} is not supported."
-    success_msg: "This role is running against a supported OS {{ ansible_facts.distribution }} {{ ansible_distribution_major_version }}"
+    fail_msg: "This role can only be run against Supported OSs. {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_major_version'] }} is not supported."
+    success_msg: "This role is running against a supported OS {{ ansible_facts['distribution'] }} {{ ansible_distribution_major_version }}"
 
 - name: Check ansible version
   tags: always
@@ -58,7 +58,7 @@
     manager: auto
 
 - name: Setup rules if container
-  when: ansible_connection == 'docker' or ansible_facts.virtualization_type in ["docker", "lxc", "openvz", "podman", "container"]
+  when: ansible_connection == 'docker' or ansible_facts['virtualization_type'] in ["docker", "lxc", "openvz", "podman", "container"]
   tags:
     - container_discovery
     - always
@@ -84,7 +84,11 @@
     - rhel8cis_rule_5_2_4
   block:
     - name: Capture current password state of connecting user"
-      ansible.builtin.shell: "grep {{ ansible_env.SUDO_USER }} /etc/shadow | awk -F: '{print $2}'"
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep {{ ansible_env.SUDO_USER }} /etc/shadow | awk -F: '{print $2}'
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: false
       check_mode: false
@@ -108,9 +112,13 @@
         fail_msg: "You still have the default name for your authselect profile"
 
     - name: "PRELIM | AUDIT | Check authselect profile is selected"
-      ansible.builtin.shell: authselect current | head -1 | awk '{print $NF}'
+      ansible.builtin.shell: |
+        set -o pipefail
+        authselect current | head -1 | awk '{print $NF}'
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
-      failed_when: prelim_authselect_current_profile.rc not in [ 0, 1 ]
+      failed_when: prelim_authselect_current_profile.rc not in [ 0, 1, 2 ]
       register: prelim_authselect_current_profile
 
     - name: "PRELIM | AUDIT | Check authselect profile is selected"
@@ -187,7 +195,7 @@
 
 - name: Run post_remediation audit
   when: run_audit
-  tags: always
+  tags: run_audit
   ansible.builtin.import_tasks:
     file: post_remediation_audit.yml
 
@@ -196,9 +204,7 @@
     - create_benchmark_facts
     - (post_audit_summary is defined) or
       (ansible_local['compliance_facts']['lockdown_audit_details']['audit_summary'] is undefined and post_audit_summary is undefined)
-  tags:
-    - always
-    - benchmark
+  tags: benchmark
   block:
     - name: Create ansible facts directory
       ansible.builtin.file:
@@ -220,13 +226,13 @@
   when:
     - fetch_audit_output
     - run_audit
-  tags: always
+  tags: run_audit
   ansible.builtin.import_tasks:
     file: fetch_audit_output.yml
 
 - name: Show Audit Summary
   when: run_audit
-  tags: always
+  tags: run_audit
   ansible.builtin.debug:
     msg: "{{ audit_results.split('\n') }}"
 

@@ -2,6 +2,42 @@
 
 ## Benchmark 4.0.0
 
+### July 2026 QA Updates
+
+- updated min_ansible_version 2.11.1 -> 2.16.1; added Tyto Athene company suffix
+- LICENSE: fixed company casing Mindpoint -> MindPoint
+- README.md: rebranded Twitter badge to X (x.com/AnsibleLockdown)
+- CONTRIBUTING.rst: corrected header to "Contributing to Ansible-Lockdown Projects"
+- templates/etc/systemd/system/tmp.mount.j2: fixed typo "YOUR CHANGED" -> "YOUR CHANGES"
+- tasks/section_3/cis_3.1.x.yml: fixed notify "Systemd_daemon_reload" -> "Systemd daemon reload"
+- tasks/prelim.yml: converted 4 single-item when: lists to inline format; renamed discover_wireless_adapters -> discovered_wireless_adapters
+- tasks/fetch_audit_output.yml: converted single-item when: list to inline format
+- tasks/section_1/cis_1.1.1.x.yml: converted single-item when: list to inline format
+- tasks/section_5/cis_5.1.x.yml: converted single-item when: list to inline format
+- tasks/section_5/cis_5.3.2.x.yml: converted single-item when: list to inline format
+- .gitignore: added secret key patterns and QA artifact patterns
+- .github/workflows: removed export_badges_ task not required and update_galaxy.yml (public-only)
+- .github/workflows: updated actions/checkout from @v4 to @v7
+- RHEL8-CIS-Audit/vars/CIS.yml: benchmark_version '4.0.0' -> 'v4.0.0'; rhel8cis_legacy_boot true -> false; rhel8cis_set_boot_pass true -> false
+- RHEL8-CIS-Audit/run_audit.sh: BENCHMARK_VER 4.0.0 -> v4.0.0
+- 1.1.2.x.1 updates to AUDIT
+- pipefail added and fixed legacy
+- wireless prelim moved to task
+- new var rhel8cis_temp_exec_location: /var for 1.1.1.11
+- audit template renamed lockdown_audit.yml.j2
+- ansible_facts dot notation changed to ansible_facts['packages']
+- Changed location of goss binary download to krameff to adopt newer features and remove outstanding known issues
+- bumped actions/checkout version
+- tasks/section_1/cis_1.5.x.yml: fixed 1.5.8 toggle gate referencing rhel8cis_rule_1_5_1 instead of rhel8cis_rule_1_5_8
+- tasks/section_6/main.yml: added missing import_tasks for cis_6.2.3.x.yml (6.2.3.1 logfile permissions was never running)
+- tag typo fixes
+- fixed variable naming and audit aligned
+- unique vars
+- unnecessary files removed
+- audit and remediate vars aligned no more sub vars
+- Logic for mask and stopped for 2.1.x controls
+- 1.2.1.1 updated gpg key logic
+
 ### 2026 February QA Updates
 
 - Spelling fixes
@@ -31,6 +67,7 @@
 
 ## Benchmark v3.0.0
 
+### 3.2.1 Updates
 - Control 3.1.1
   - Added better sysctl logic to disable IPv6
   - Added option to disable IPv6 via sysctl (original method) or via the
@@ -48,17 +85,19 @@
 ### 2.2 Updates
 
 August 2025
-- Addresses #496 - Fix for var, thank you @ajjamieson
+- Addresses #496 - Tyto fix on handler Remount_tmp
 - Addresses #492 - Update find logic on 5.1.4
 - Addresses #485 - Update logic on prelim and task 6.2.9 when logic
 - Addresses #488 - Update command vs shell modules
 - Addresses #451 - Update tasks/1.6.x with handler, prelim and vars logic
 
+### 3.2.0 Updates
+
 Update to audit_only to allow fetching results
 resolved false warning for fetch audit
 
-June 2025 QA Fixes
-- Addresses #440 - tasks/prelim and defaults/main var standardization
+July 2025 QA Fixes
+- Addresses #451 - Update tasks/1.6.x with handler and vars logic
 
 May 2025 QA Fixes
 Thank you @tgoetheyn
@@ -88,7 +127,7 @@ https://github.com/ansible-lockdown/RHEL8-CIS/pull/429
 https://github.com/ansible-lockdown/RHEL8-CIS/issues/433
 https://github.com/ansible-lockdown/RHEL8-CIS/issues/434
 
-### 2.1 updates August 2024
+### 3.1.2 updates August 2024
 
 new workflow
 audit updates
@@ -364,7 +403,7 @@ Improvements
 ## 1.3.5
 
 - Update to V2.0.0
-  - many changes inline with new benchamrk requirements please refer to official docs
+  - many changes inline with new benchmark requirements please refer to official docs
 
 ## 1.3.4
 

@@ -1,7 +1,7 @@
 ---
 
 - name: "SECTION | 5.1 | Configure SSH Server"
-  when: "'openssh-server' in ansible_facts.packages"
+  when: "'openssh-server' in ansible_facts['packages']"
   ansible.builtin.import_tasks:
     file: cis_5.1.x.yml
 

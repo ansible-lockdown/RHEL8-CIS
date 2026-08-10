@@ -14,9 +14,7 @@
     - rule_5.3.2.1
   block:
     - name: "5.3.2.1 | PATCH | Ensure active authselect profile includes pam modules | Create custom profiles"
-      when:
-        - rhel8cis_authselect_custom_profile_name not in prelim_authselect_current_profile.stdout or
-          prelim_authselect_current_profile.stdout is not defined
+      when: rhel8cis_authselect_custom_profile_name not in prelim_authselect_current_profile.stdout or prelim_authselect_current_profile.stdout is not defined
       ansible.builtin.command: "/usr/bin/authselect create-profile {{ rhel8cis_authselect_custom_profile_name }} -b {{ rhel8cis_authselect_default_profile_to_copy }}"
       changed_when: true
       args:
@@ -58,7 +56,11 @@
   notify: Update authselect
   block:
     - name: "5.3.2.2 | AUDIT | Ensure pam_faillock module is enabled | Get current config"
-      ansible.builtin.shell: authselect current | grep faillock
+      ansible.builtin.shell: |
+        set -o pipefail
+        authselect current | grep faillock
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: discovered_authselect_current_faillock.rc not in [ 0, 1 ]
       check_mode: false
@@ -84,7 +86,11 @@
     - rule_5.3.2.3
   block:
     - name: "5.3.2.3 | AUDIT | Ensure pam_pwquality module is enabled | Get current config"
-      ansible.builtin.shell: authselect current | grep quality
+      ansible.builtin.shell: |
+        set -o pipefail
+        authselect current | grep quality
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: discovered_authselect_current_quality.rc not in [ 0, 1 ]
       check_mode: false
@@ -112,7 +118,11 @@
     - rule_5.3.2.4
   block:
     - name: "5.3.2.4 | AUDIT | Ensure pam_pwhistory module is enabled | Get current config"
-      ansible.builtin.shell: authselect current | grep pwhistory
+      ansible.builtin.shell: |
+        set -o pipefail
+        authselect current | grep pwhistory
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: discovered_authselect_current_history.rc not in [ 0, 1 ]
       check_mode: false
@@ -141,7 +151,10 @@
   block:
     - name: "5.3.2.5 | AUDIT | Ensure pam_unix module is enabled"
       ansible.builtin.shell: |
+        set -o pipefail
         grep -P -- '\b(pam_unix\.so)\b' /etc/authselect/"$(head -1 /etc/authselect/authselect.conf)"/{system,password}-auth
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: discovered_authselect_pam_unix.rc not in [ 0, 1 ]
       check_mode: false

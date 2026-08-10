@@ -1,5 +1,42 @@
 ---
 
+- name: "6.3.4.x | AUDIT | Discover audit logfile"
+  when: rhel8cis_rule_6_3_4_1 or rhel8cis_rule_6_3_4_2 or rhel8cis_rule_6_3_4_3 or rhel8cis_rule_6_3_4_4
+  tags:
+    - level2-server
+    - level2-workstation
+    - patch
+    - auditd
+    - rule_6.3.4.1
+    - rule_6.3.4.2
+    - rule_6.3.4.3
+    - rule_6.3.4.4
+  ansible.builtin.shell: |
+    set -o pipefail
+    grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'
+  args:
+    executable: "{{ rhel8cis_shell_executable }}"
+  changed_when: false
+  check_mode: false
+  register: discovered_auditd_logfile
+
+- name: "6.3.4.x | AUDIT | 6.3.4.5/6/7 | Audit conf and rules files | list files"
+  when: rhel8cis_rule_6_3_4_5 or rhel8cis_rule_6_3_4_6 or rhel8cis_rule_6_3_4_7
+  tags:
+    - level2-server
+    - level2-workstation
+    - patch
+    - auditd
+    - rule_6.3.4.5
+    - rule_6.3.4.6
+    - rule_6.3.4.7
+  ansible.builtin.find:
+    path: /etc/audit
+    file_type: file
+    recurse: true
+    patterns: '*.conf,*.rules'
+  register: discovered_auditd_conf_files
+
 - name: "6.3.4.1 | PATCH | Ensure the audit log file directory mode is configured"
   when: rhel8cis_rule_6_3_4_1
   tags:
@@ -10,7 +47,7 @@
     - rule_6.3.4.1
     - NIST800-53R5_AU-3
   ansible.builtin.file:
-    path: "{{ prelim_auditd_logfile.stdout | dirname }}"
+    path: "{{ discovered_auditd_logfile.stdout | dirname }}"
     state: directory
     mode: 'g-w,o-rwx'
 
@@ -30,7 +67,7 @@
     - NIST800-53R5_AU-3
     - NIST800-53R5_CM-7
   ansible.builtin.file:
-    path: "{{ prelim_auditd_logfile.stdout }}"
+    path: "{{ discovered_auditd_logfile.stdout }}"
     mode: 'o-x,g-wx,o-rwx'
     owner: root
     group: root
@@ -49,7 +86,7 @@
     mode: 'u-x,g-wx,o-rwx'
   failed_when: discovered_audit_conf_file_list.state not in '[ file, absent ]'
   register: discovered_audit_conf_file_list
-  loop: "{{ prelim_auditd_conf_files.files }}"
+  loop: "{{ discovered_auditd_conf_files.files }}"
   loop_control:
     label: "{{ item.path }}"
 
@@ -66,7 +103,7 @@
     owner: root
   failed_when: discovered_audit_conf_file_list.state not in '[ file, absent ]'
   register: discovered_audit_conf_file_list
-  loop: "{{ prelim_auditd_conf_files.files | default([]) }}"
+  loop: "{{ discovered_auditd_conf_files.files | default([]) }}"
   loop_control:
     label: "{{ item.path }}"
 
@@ -83,7 +120,7 @@
     group: root
   failed_when: discovered_audit_conf_file_list.state not in '[ file, absent ]'
   register: discovered_audit_conf_file_list
-  loop: "{{ prelim_auditd_conf_files.files | default([]) }}"
+  loop: "{{ discovered_auditd_conf_files.files | default([]) }}"
   loop_control:
     label: "{{ item.path }}"
 
