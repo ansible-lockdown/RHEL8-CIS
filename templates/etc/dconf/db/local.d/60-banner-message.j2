@@ -1,0 +1,5 @@
+{{ file_managed_by_ansible }}
+
+[org/gnome/login-screen]
+banner-message-enable=true
+banner-message-text='{{ rhel8cis_warning_banner | trim | replace("\n", "\\n") }}'
