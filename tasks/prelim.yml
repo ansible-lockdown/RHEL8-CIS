@@ -87,14 +87,6 @@
   ansible.builtin.package_facts:
     manager: auto
 
-- name: PRELIM | Include audit specific variables
-  when: run_audit or audit_only or setup_audit
-  tags:
-    - setup_audit
-    - run_audit
-  ansible.builtin.include_vars:
-    file: audit.yml
-
 - name: PRELIM | Include pre-remediation audit tasks
   when: run_audit or audit_only or setup_audit
   tags: run_audit
@@ -203,8 +195,8 @@
   block:
     - name: "PRELIM | AUDIT | Check SSH Config drop in is supported for distribution version"
       ansible.builtin.assert:
-        that: ansible_distribution_version is version_compare('8.6', '>=')
-        fail_msg: "{{ ansible_distribution }} {{ ansible_distribution_version }} does not support SSH Config drop in"
+        that: ansible_facts['distribution_version'] is version_compare('8.6', '>=')
+        fail_msg: "{{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }} does not support SSH Config drop in"
 
     - name: "PRELIM | PATCH | SSH Config drop in directory does not exist"
       ansible.builtin.file:

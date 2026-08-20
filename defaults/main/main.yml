@@ -53,40 +53,8 @@ rhel8cis_uses_root: false
 
 ###########################################
 ### Goss is required on the remote host ###
-### vars/auditd.yml for other settings  ###
 
-# If the any of the following are set the variables used by them are loaded in vars/audit.yml these can be overridden by your
-# preferred method of variable management (e.g., vault, group_vars, host_vars, inventory etc.)
-
-# Allow audit to setup the requirements including installing git (if option chosen and downloading and adding goss binary to system)
-setup_audit: false
-
-# enable audits to run - this runs the audit and get the latest content
-run_audit: false
-
-## Only run Audit do not remediate
-audit_only: false
-
-# Run heavy tests - some tests can have more impact on a system enabling these can have greater impact on a system
-audit_run_heavy_tests: true
-
-# Fetch audit output files back to the controller
-fetch_audit_output: false
-
-# Method of getting,uploading the summary files
-## Ensure access and permissions are available for these to occur.
-## options are
-# fetch - fetches from server and moves to location on the ansible controller (could be a mount point available to controller)
-# copy - copies file to a location available to the managed node
-audit_output_collection_method: fetch
-
-# Where the audit logs are stored
-audit_log_dir: '/opt'
-
-# Location to put the audit files
-audit_output_destination: "{{ audit_log_dir }}/audit_summaries/"
-
-#############################
+# Moved to defaults/main/audit.yml
 
 ### Goss Settings ##
 ####### END ########
