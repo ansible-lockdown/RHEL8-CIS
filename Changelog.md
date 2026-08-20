@@ -2,6 +2,15 @@
 
 ## Benchmark 4.0.0
 
+### Aug 2026 Updates
+
+- audit layout improvements for easier override defaults/main/audit.yml
+- section_1/main.yml titles updates
+- cis_1.5.x.yml regex fixes
+- cis_1.3.1.yml conditionals updates
+- templates and references desktop dconf and journald
+- dot notation updates for ansible_facts
+
 ### July 2026 QA Updates
 
 - updated min_ansible_version 2.11.1 -> 2.16.1; added Tyto Athene company suffix
