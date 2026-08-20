@@ -10,6 +10,26 @@
 - cis_1.3.1.yml conditionals updates
 - templates and references desktop dconf and journald
 - dot notation updates for ansible_facts
+- 5.2.4 password assert in tasks/main.yml now carries level2 tags - it was untagged so it
+  was excluded from every tagged run, including the level2 run it belongs in
+  - RHEL10-CIS #105 (@mindrb)
+- crypto policy now applied when only rhel8cis_crypto_policy changes - 1.6.1 is a debug
+  task so it never reported changed and never notified its handlers
+  - RHEL10-CIS #111 (@priteau)
+- cis_1.5.x.yml no longer edits vendor or redundant system files
+  - coredump tasks moved off /usr/lib/systemd/coredump.conf (RPM owned, reverted on package
+    update) to /etc/systemd/coredump.conf - the vendor path does not exist on AlmaLinux 8 so
+    those tasks were a silent no-op
+  - removed the /etc/security/limits.conf edit - tested on alma8_bios, limits.d overrides
+    limits.conf so the drop-in already wins and the edit was redundant
+  - the /etc/sysctl.conf edits are KEPT - tested, sysctl.conf overrides sysctl.d so removing
+    them would let a pre-existing entry silently defeat the CIS value - but they now comment
+    the line out rather than delete it, preserving the admin's content
+  - RHEL10-CIS #108 (@mindrb)
+- sysctl cleanup tasks now notify Reload sysctl directly - neutralising a conflicting entry
+  changed the file but never re-applied it, so the running kernel kept the wrong value until
+  reboot. Sysctl update required alone was not enough: it sets a fact consumed by
+  POST | Update sysctl, which has already run by the time handlers flush
 
 ### July 2026 QA Updates
 
