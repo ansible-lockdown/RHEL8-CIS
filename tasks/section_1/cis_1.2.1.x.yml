@@ -20,10 +20,10 @@
 - name: "1.2.1.1 | AUDIT | Ensure GPG keys are configured"  # noqa inline-env-var
   when:
     - rhel8cis_rule_1_2_1_1
-    - ansible_distribution == "RedHat" or
-      ansible_distribution == "Rocky" or
-      ansible_distribution == "AlmaLinux" or
-      ansible_distribution == "Oracle Linux"
+    - ansible_facts['distribution'] == "RedHat" or
+      ansible_facts['distribution'] == "Rocky" or
+      ansible_facts['distribution'] == "AlmaLinux" or
+      ansible_facts['distribution'] == "Oracle Linux"
   tags:
     - level1-server
     - level1-workstation
