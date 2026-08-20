@@ -372,8 +372,8 @@
     - name: "1.5.9 | PATCH | Ensure systemd-coredump ProcessSizeMax is configured | replace incorrect entries"
       ansible.builtin.replace:
         path: /usr/lib/systemd/coredump.conf
-        regexp: ProcessSizeMax\s*=\s*\d*
-        replace: ""
+        regexp: (?i)^(\s*ProcessSizeMax\s*=.*)$
+        replace: '#\1'
       failed_when: discovered_procsize_coredump.rc not in [ 0, 257 ]
       register: discovered_procsize_coredump
 
@@ -383,8 +383,8 @@
         - item.path != '/etc/systemd/coredump.conf.d/60-coredump.conf'
       ansible.builtin.replace:
         path: "{{ item.path }}"
-        regexp: ProcessSizeMax\s*=\s*\d*
-        replace: ""
+        regexp: (?i)^(\s*ProcessSizeMax\s*=.*)$
+        replace: '#\1'
       loop: "{{ discovered_process_sizemax.files }}"
 
     - name: "1.5.9 | PATCH | Ensure systemd-coredump ProcessSizeMax is configured"
@@ -423,8 +423,8 @@
     - name: "1.5.10 | AUDIT | Ensure systemd-coredump Storage is configured | replace incorrect entries"
       ansible.builtin.replace:
         path: /usr/lib/systemd/coredump.conf
-        regexp: Storage\s*=\s*\d*
-        replace: ""
+        regexp: (?i)^(\s*Storage\s*=.*)$
+        replace: '#\1'
       failed_when: discovered_coredump_storage.rc not in [ 0, 257 ]
       register: discovered_coredump_storage
 
@@ -434,8 +434,8 @@
         - item.path != '/etc/systemd/coredump.conf.d/60-coredump.conf'
       ansible.builtin.replace:
         path: "{{ item.path }}"
-        regexp: Storage\s*=\s*\d*
-        replace: ""
+        regexp: (?i)^(\s*Storage\s*=.*)$
+        replace: '#\1'
       loop: "{{ discovered_storage.files }}"
 
     - name: "1.5.10 | PATCH | Ensure systemd-coredump Storage is configured"
