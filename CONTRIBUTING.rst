@@ -1,5 +1,5 @@
-Contributing to Ansible Lockdown Projects
-========================================
+Contributing to Ansible-Lockdown Projects
+=========================================
 
 Rules
 -----

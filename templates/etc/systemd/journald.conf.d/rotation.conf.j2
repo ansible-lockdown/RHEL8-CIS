@@ -1,0 +1,9 @@
+{{ file_managed_by_ansible }}
+
+[Journal]
+# CIS Control 6.2.1.1.3 - journald log file rotation
+SystemMaxUse={{ rhel8cis_journald_systemmaxuse }}
+SystemKeepFree={{ rhel8cis_journald_systemkeepfree }}
+RuntimeMaxUse={{ rhel8cis_journald_runtimemaxuse }}
+RuntimeKeepFree={{ rhel8cis_journald_runtimekeepfree }}
+MaxFileSec={{ rhel8cis_journald_maxfilesec }}

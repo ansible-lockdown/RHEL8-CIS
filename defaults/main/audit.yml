@@ -10,6 +10,34 @@ audit_cmd_timeout: 120000
 # you will need to access to either github or the file already downloaded
 get_audit_binary_method: download
 
+# Allow audit to setup the requirements including installing git (if option chosen and downloading and adding goss binary to system)
+setup_audit: false
+
+# enable audits to run - this runs the audit and get the latest content
+run_audit: false
+
+## Only run Audit do not remediate
+audit_only: false
+
+# Run heavy tests - some tests can have more impact on a system enabling these can have greater impact on a system
+audit_run_heavy_tests: true
+
+# Fetch audit output files back to the controller
+fetch_audit_output: false
+
+# Method of getting,uploading the summary files
+## Ensure access and permissions are available for these to occur.
+## options are
+# fetch - fetches from server and moves to location on the ansible controller (could be a mount point available to controller)
+# copy - copies file to a location available to the managed node
+audit_output_collection_method: fetch
+
+# Where the audit logs are stored
+audit_log_dir: '/opt'
+
+# Location to put the audit files
+audit_output_destination: "{{ audit_log_dir }}/audit_summaries/"
+
 ## if get_audit_binary_method - copy the following needs to be updated for your environment
 ## it is expected that it will be copied from somewhere accessible to the control node
 ## e.g copy from ansible control node to remote host

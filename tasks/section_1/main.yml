@@ -44,12 +44,11 @@
   ansible.builtin.import_tasks:
     file: cis_1.3.1.x.yml
 
-- name: "SECTION | 1.4 | sysctl kernel"
+- name: "SECTION | 1.4 | Configure Bootloader"
   ansible.builtin.import_tasks:
     file: cis_1.4.x.yml
 
-- name: "SECTION | 1.5 | SELinux"
-  when: not rhel8cis_selinux_disable
+- name: "SECTION | 1.5 | Additional Process Hardening"
   ansible.builtin.import_tasks:
     file: cis_1.5.x.yml
 

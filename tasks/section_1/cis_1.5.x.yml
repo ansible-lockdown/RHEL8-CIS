@@ -18,12 +18,6 @@
       register: discovered_security_limits
 
     - name: "1.5.1 | PATCH | Ensure core file size is configured | Replace existing hard core limits"
-      ansible.builtin.replace:
-        path: /etc/security/limits.conf
-        regexp: hard\s*core\s*[1-9]\d*
-        replace: hard core 0
-
-    - name: "1.5.1 | PATCH | Ensure core file size is configured | Replace existing hard core limits"
       when:
         - discovered_security_limits.files is defined
         - item.path != '/etc/security/limits.d/60-limits.conf'
@@ -40,7 +34,9 @@
         owner: root
         group: root
         mode: 'u-x,go-wx'
-      notify: Sysctl update required
+      notify:
+        - Sysctl update required
+        - Reload sysctl
 
 - name: "1.5.2 | PATCH | Ensure fs.protected_hardlinks is configured"
   when: rhel8cis_rule_1_5_2
@@ -64,8 +60,11 @@
     - name: "1.5.2 | PATCH | Ensure fs.protected_hardlinks is configured | replace incorrect entries"
       ansible.builtin.replace:
         path: /etc/sysctl.conf
-        regexp: fs.protected_hardlinks\s*=\s*\d*
-        replace: ""
+        regexp: '^(\s*fs.protected_hardlinks\s*=.*)$'
+        replace: '#\1'
+      notify:
+        - Sysctl update required
+        - Reload sysctl
 
     - name: "1.5.2 | PATCH | Ensure fs.protected_hardlinks is configured | replace incorrect entries"
       when:
@@ -76,6 +75,9 @@
         regexp: fs.protected_hardlinks\s*=\s*\d*
         replace: ""
       loop: "{{ discovered_fs_protected_hardlinks.files }}"
+      notify:
+        - Sysctl update required
+        - Reload sysctl
 
     - name: "1.5.2 | PATCH | Ensure fs.protected_hardlinks is configured | Add core limits file"
       ansible.builtin.template:
@@ -84,7 +86,9 @@
         owner: root
         group: root
         mode: 'u-x,go-wx'
-      notify: Sysctl update required
+      notify:
+        - Sysctl update required
+        - Reload sysctl
 
 - name: "1.5.3 | PATCH | Ensure fs.protected_symlinks is configured"
   when: rhel8cis_rule_1_5_3
@@ -108,8 +112,11 @@
     - name: "1.5.3 | PATCH | Ensure fs.protected_symlinks is configured | replace incorrect entries"
       ansible.builtin.replace:
         path: /etc/sysctl.conf
-        regexp: fs.protected_symlinks\s*=\s*\d*
-        replace: ""
+        regexp: '^(\s*fs.protected_symlinks\s*=.*)$'
+        replace: '#\1'
+      notify:
+        - Sysctl update required
+        - Reload sysctl
 
     - name: "1.5.3 | PATCH | Ensure fs.protected_symlinks is configured | replace incorrect entries"
       when:
@@ -120,6 +127,9 @@
         regexp: fs.protected_symlinks\s*=\s*\d*
         replace: ""
       loop: "{{ discovered_fs_protected_symlinks.files }}"
+      notify:
+        - Sysctl update required
+        - Reload sysctl
 
     - name: "1.5.3 | PATCH | Ensure fs.protected_symlinks is configured"
       ansible.builtin.template:
@@ -128,7 +138,9 @@
         owner: root
         group: root
         mode: 'u-x,go-wx'
-      notify: Sysctl update required
+      notify:
+        - Sysctl update required
+        - Reload sysctl
 
 - name: "1.5.4 | PATCH | Ensure fs.suid_dumpable is configured"
   when: rhel8cis_rule_1_5_4
@@ -152,8 +164,11 @@
     - name: "1.5.4 | PATCH | Ensure fs.suid_dumpable is configured | replace incorrect entries"
       ansible.builtin.replace:
         path: /etc/sysctl.conf
-        regexp: fs.suid_dumpable\s*=\s*\d*
-        replace: ""
+        regexp: '^(\s*fs.suid_dumpable\s*=.*)$'
+        replace: '#\1'
+      notify:
+        - Sysctl update required
+        - Reload sysctl
 
     - name: "1.5.4 | PATCH | Ensure fs.suid_dumpable is configured | replace incorrect entries"
       when:
@@ -164,6 +179,9 @@
         regexp: fs.suid_dumpable\s*=\s*\d*
         replace: ""
       loop: "{{ discovered_fs_suid_dumpable.files }}"
+      notify:
+        - Sysctl update required
+        - Reload sysctl
 
     - name: "1.5.4 | PATCH | Ensure fs.suid_dumpable is configured"
       ansible.builtin.template:
@@ -172,7 +190,9 @@
         owner: root
         group: root
         mode: 'u-x,go-wx'
-      notify: Sysctl update required
+      notify:
+        - Sysctl update required
+        - Reload sysctl
 
 - name: "1.5.5 | PATCH | Ensure kernel.dmesg_restrict is configured"
   when: rhel8cis_rule_1_5_5
@@ -196,8 +216,11 @@
     - name: "1.5.5 | PATCH | Ensure kernel.dmesg_restrict is configured | replace incorrect entries"
       ansible.builtin.replace:
         path: /etc/sysctl.conf
-        regexp: kernel.dmesg_restrict\s*=\s*\d*
-        replace: ""
+        regexp: '^(\s*kernel.dmesg_restrict\s*=.*)$'
+        replace: '#\1'
+      notify:
+        - Sysctl update required
+        - Reload sysctl
 
     - name: "1.5.5 | PATCH | Ensure kernel.dmesg_restrict is configured | replace incorrect entries"
       when:
@@ -208,6 +231,9 @@
         regexp: kernel.dmesg_restrict\s*=\s*\d*
         replace: ""
       loop: "{{ discovered_kernel_dmesg_restrict.files }}"
+      notify:
+        - Sysctl update required
+        - Reload sysctl
 
     - name: "1.5.5 | PATCH | Ensure kernel.dmesg_restrict is configured"
       ansible.builtin.template:
@@ -216,7 +242,9 @@
         owner: root
         group: root
         mode: 'u-x,go-wx'
-      notify: Sysctl update required
+      notify:
+        - Sysctl update required
+        - Reload sysctl
 
 - name: "1.5.6 | PATCH | Ensure kernel.kptr_restrict is configured"
   when: rhel8cis_rule_1_5_6
@@ -238,8 +266,11 @@
     - name: "1.5.6 | PATCH | Ensure kernel.kptr_restrict is configured | replace incorrect entries"
       ansible.builtin.replace:
         path: /etc/sysctl.conf
-        regexp: kernel.kptr_restrict\s*=\s*\d*
-        replace: ""
+        regexp: '^(\s*kernel.kptr_restrict\s*=.*)$'
+        replace: '#\1'
+      notify:
+        - Sysctl update required
+        - Reload sysctl
 
     - name: "1.5.6 | PATCH | Ensure kernel.kptr_restrict is configured | replace incorrect entries"
       when:
@@ -250,6 +281,9 @@
         regexp: kernel.kptr_restrict\s*=\s*\d*
         replace: ""
       loop: "{{ discovered_kernel_kptr_restrict.files }}"
+      notify:
+        - Sysctl update required
+        - Reload sysctl
 
     - name: "1.5.6 | PATCH | Ensure kernel.dmesg_restrict is configured"
       ansible.builtin.template:
@@ -258,7 +292,9 @@
         owner: root
         group: root
         mode: 'u-x,go-wx'
-      notify: Sysctl update required
+      notify:
+        - Sysctl update required
+        - Reload sysctl
 
 - name: "1.5.7 | PATCH | Ensure kernel.yama.ptrace_scope is configured"
   when: rhel8cis_rule_1_5_7
@@ -280,8 +316,11 @@
     - name: "1.5.7 | PATCH | Ensure kernel.yama.ptrace_scope is configured | replace incorrect entries"
       ansible.builtin.replace:
         path: /etc/sysctl.conf
-        regexp: kernel.yama.ptrace_scope\s*=\s*\d*
-        replace: ""
+        regexp: '^(\s*kernel.yama.ptrace_scope\s*=.*)$'
+        replace: '#\1'
+      notify:
+        - Sysctl update required
+        - Reload sysctl
 
     - name: "1.5.7 | PATCH | Ensure kernel.yama.ptrace_scope is configured | replace incorrect entries"
       when:
@@ -292,6 +331,9 @@
         regexp: kernel.yama.ptrace_scope\s*=\s*\d*
         replace: ""
       loop: "{{ discovered_kernel_yama_ptrace_scope.files }}"
+      notify:
+        - Sysctl update required
+        - Reload sysctl
 
     - name: "1.5.7 | PATCH | Ensure kernel.dmesg_restrict is configured"
       ansible.builtin.template:
@@ -300,7 +342,9 @@
         owner: root
         group: root
         mode: 'u-x,go-wx'
-      notify: Sysctl update required
+      notify:
+        - Sysctl update required
+        - Reload sysctl
 
 - name: "1.5.8 | PATCH | Ensure kernel.randomize_va_space is configured"
   when: rhel8cis_rule_1_5_8
@@ -322,8 +366,11 @@
     - name: "1.5.8 | PATCH | Ensure kernel.randomize_va_space is configured | replace incorrect entries"
       ansible.builtin.replace:
         path: /etc/sysctl.conf
-        regexp: kernel.randomize_va_space\s*=\s*\d*
-        replace: ""
+        regexp: '^(\s*kernel.randomize_va_space\s*=.*)$'
+        replace: '#\1'
+      notify:
+        - Sysctl update required
+        - Reload sysctl
 
     - name: "1.5.8 | PATCH | Ensure kernel.randomize_va_space is configured | replace incorrect entries"
       when:
@@ -334,6 +381,9 @@
         regexp: kernel.randomize_va_space\s*=\s*\d*
         replace: ""
       loop: "{{ discovered_kernel_randomize.files }}"
+      notify:
+        - Sysctl update required
+        - Reload sysctl
 
     - name: "1.5.8 | PATCH | Ensure kernel.randomize_va_space is configured"
       ansible.builtin.template:
@@ -342,7 +392,9 @@
         owner: root
         group: root
         mode: 'u-x,go-wx'
-      notify: Sysctl update required
+      notify:
+        - Sysctl update required
+        - Reload sysctl
 
 - name: "1.5.9 | PATCH | Ensure systemd-coredump ProcessSizeMax is configured"
   when: rhel8cis_rule_1_5_9
@@ -371,9 +423,9 @@
 
     - name: "1.5.9 | PATCH | Ensure systemd-coredump ProcessSizeMax is configured | replace incorrect entries"
       ansible.builtin.replace:
-        path: /usr/lib/systemd/coredump.conf
-        regexp: ProcessSizeMax\s*=\s*\d*
-        replace: ""
+        path: /etc/systemd/coredump.conf
+        regexp: (?i)^(\s*ProcessSizeMax\s*=.*)$
+        replace: '#\1'
       failed_when: discovered_procsize_coredump.rc not in [ 0, 257 ]
       register: discovered_procsize_coredump
 
@@ -383,8 +435,8 @@
         - item.path != '/etc/systemd/coredump.conf.d/60-coredump.conf'
       ansible.builtin.replace:
         path: "{{ item.path }}"
-        regexp: ProcessSizeMax\s*=\s*\d*
-        replace: ""
+        regexp: (?i)^(\s*ProcessSizeMax\s*=.*)$
+        replace: '#\1'
       loop: "{{ discovered_process_sizemax.files }}"
 
     - name: "1.5.9 | PATCH | Ensure systemd-coredump ProcessSizeMax is configured"
@@ -422,9 +474,9 @@
 
     - name: "1.5.10 | AUDIT | Ensure systemd-coredump Storage is configured | replace incorrect entries"
       ansible.builtin.replace:
-        path: /usr/lib/systemd/coredump.conf
-        regexp: Storage\s*=\s*\d*
-        replace: ""
+        path: /etc/systemd/coredump.conf
+        regexp: (?i)^(\s*Storage\s*=.*)$
+        replace: '#\1'
       failed_when: discovered_coredump_storage.rc not in [ 0, 257 ]
       register: discovered_coredump_storage
 
@@ -434,8 +486,8 @@
         - item.path != '/etc/systemd/coredump.conf.d/60-coredump.conf'
       ansible.builtin.replace:
         path: "{{ item.path }}"
-        regexp: Storage\s*=\s*\d*
-        replace: ""
+        regexp: (?i)^(\s*Storage\s*=.*)$
+        replace: '#\1'
       loop: "{{ discovered_storage.files }}"
 
     - name: "1.5.10 | PATCH | Ensure systemd-coredump Storage is configured"
