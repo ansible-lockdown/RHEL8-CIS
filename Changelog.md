@@ -30,6 +30,7 @@
   changed the file but never re-applied it, so the running kernel kept the wrong value until
   reboot. Sysctl update required alone was not enough: it sets a fact consumed by
   POST | Update sysctl, which has already run by the time handlers flush
+- README updates and updated contributing and contributors
 
 ### July 2026 QA Updates
 
