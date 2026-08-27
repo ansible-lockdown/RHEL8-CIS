@@ -45,6 +45,11 @@
     - rule_1.6.1
   ansible.builtin.debug:
     msg: "Captured in prelim to ensure not LEGACY. Runs handler to update"
+  # A debug task is always 'ok', so without this the handlers below were never
+  # notified and a change to rhel8cis_crypto_policy was silently ignored whenever
+  # the 1.6.2-1.6.5 policy modules were already in place. Comparing the base
+  # policy keeps the task idempotent once it matches.
+  changed_when: discovered_system_wide_crypto_policys.stdout.split(':')[0] != rhel8cis_crypto_policy
   notify:
     - Update Crypto Policy
     - Set Crypto Policy

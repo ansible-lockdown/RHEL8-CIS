@@ -208,7 +208,7 @@
 
 - name: Update auditd rules
   ansible.builtin.template:
-    src: audit/99_auditd.rules.j2
+    src: etc/audit/rules.d/99_auditd.rules.j2
     dest: /etc/audit/rules.d/99_auditd.rules
     owner: root
     group: root

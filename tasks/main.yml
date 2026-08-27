@@ -5,9 +5,9 @@
   when: os_check
   tags: always
   ansible.builtin.assert:
-    that: (ansible_distribution != 'CentOS' and ansible_os_family == 'RedHat' or ansible_os_family == "Rocky") and ansible_distribution_major_version is version_compare('8', '==')
+    that: (ansible_facts['distribution'] != 'CentOS' and ansible_facts['os_family'] == 'RedHat' or ansible_facts['os_family'] == "Rocky") and ansible_facts['distribution_major_version'] is version_compare('8', '==')
     fail_msg: "This role can only be run against Supported OSs. {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_major_version'] }} is not supported."
-    success_msg: "This role is running against a supported OS {{ ansible_facts['distribution'] }} {{ ansible_distribution_major_version }}"
+    success_msg: "This role is running against a supported OS {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_major_version'] }}"
 
 - name: Check ansible version
   tags: always
@@ -82,6 +82,10 @@
     - not system_is_ec2
     - not audit_only
     - rhel8cis_rule_5_2_4
+  tags:
+    - level2-server
+    - level2-workstation
+    - rule_5.2.4
   block:
     - name: Capture current password state of connecting user"
       ansible.builtin.shell: |
@@ -139,7 +143,7 @@
 - name: Include OS specific variables
   tags: always
   ansible.builtin.include_vars:
-    file: "{{ ansible_distribution }}.yml"
+    file: "{{ ansible_facts['distribution'] }}.yml"
 
 - name: Capture /etc/password variables
   when: rhel8cis_section5 or rhel8cis_section6

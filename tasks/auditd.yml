@@ -16,7 +16,7 @@
   register: discovered_auditd_syscalls
 
 - name: POST | Apply auditd template for section 6.3.3.x
-  when: item != '98_auditd_exception.rules.j2'
+  when: item | basename != '98-auditd_exception.rules.j2'
   vars:
     supported_syscalls: "{{ discovered_auditd_syscalls.stdout_lines }}"
   ansible.builtin.template:
@@ -42,7 +42,7 @@
     - rhel8cis_allow_auditd_uid_user_exclusions
     - rhel8cis_auditd_uid_exclude | length > 0
   ansible.builtin.template:
-    src: etc/audit/rule.d/98_auditd_exception.rules.j2
+    src: etc/audit/rules.d/98-auditd_exception.rules.j2
     dest: /etc/audit/rules.d/98_auditd_exceptions.rules
     owner: root
     group: root
