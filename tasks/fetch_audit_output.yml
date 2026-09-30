@@ -1,7 +1,5 @@
 ---
 
-# Stage to copy audit output to a centralised location
-
 - name: "POST | FETCH | Fetch files and copy to controller"
   when: audit_output_collection_method == "fetch"
   ansible.builtin.fetch:
@@ -16,8 +14,6 @@
     - "{{ post_audit_outfile }}"
   become: false
 
-# Added this option for continuity but could be changed by adjusting the variable audit_conf_dest
-# Allowing backup to one location
 - name: "POST | FETCH | Copy files to location available to managed node"
   when: audit_output_collection_method == "copy"
   ansible.builtin.copy:

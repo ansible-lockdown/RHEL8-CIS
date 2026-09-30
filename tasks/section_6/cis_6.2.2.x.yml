@@ -177,10 +177,10 @@
       # target can be IP or FQDN
       *.* action(type="omfwd" target="{{ rhel8cis_remote_log_host }}" port="{{ rhel8cis_remote_log_port }}" protocol="{{ rhel8cis_remote_log_protocol }}" action.resumeRetryCount="{{ rhel8cis_remote_log_retrycount }}" queue.type="LinkedList" queue.size="{{ rhel8cis_remote_log_queuesize }}")
     insertafter: EOF
-  register: set_remote_syslog
   failed_when:
-    - set_remote_syslog is failed
-    - set_remote_syslog.rc != 257
+    - discovered_remote_syslog is failed
+    - discovered_remote_syslog.rc != 257
+  register: discovered_remote_syslog
 
 - name: "6.2.2.7 | PATCH | Ensure rsyslog is not configured to receive logs from a remote client"
   when:

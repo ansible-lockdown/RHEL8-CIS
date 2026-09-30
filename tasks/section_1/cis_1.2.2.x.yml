@@ -7,7 +7,7 @@
   tags:
     - level1-server
     - level1-workstation
-    - automated
+    - manual
     - patch
     - kernel_limit
     - rule_1.2.2.1

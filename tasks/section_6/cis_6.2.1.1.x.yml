@@ -6,6 +6,7 @@
     - level1-server
     - level1-workstation
     - audit
+    - patch
     - journald
     - rule_6.2.1.1.1
     - CCI-001665
@@ -21,6 +22,7 @@
     - level1-server
     - level1-workstation
     - audit
+    - patch
     - journald
     - rule_6.2.1.1.2
     - NIST800-53R5_AC-3
@@ -43,12 +45,12 @@
       when: discovered_tmpfile_override.stat.exists
       ansible.builtin.shell: |
         set -o pipefail
-        grep -E 'z /var/log/journal/%m/system.journal \d*' /usr/lib/tmpfiles.d/systemd.conf
+        grep -E 'z /var/log/journal/%m/system.journal [0-9]*' /etc/tmpfiles.d/systemd.conf
       args:
         executable: "{{ rhel8cis_shell_executable }}"
-      register: discovered_journald_fileperms_override
       changed_when: false
       failed_when: discovered_journald_fileperms_override.rc not in [ 0, 1 ]
+      register: discovered_journald_fileperms_override
 
     - name: "6.2.1.1.2 | AUDIT | Ensure journald log file access is configured | Warning if override found"
       when:
@@ -89,16 +91,18 @@
 
     - name: "6.2.1.1.3 | PATCH | Ensure journald log file rotation is configured | comment out current entries"
       ansible.builtin.lineinfile:
-        path: /etc/systemd/journal.conf
+        path: /etc/systemd/journald.conf
         regexp: "{{ item }}"
         line: "#\\1"
         backrefs: true
-      failed_when: discovered_journald_conf.rc not in [ 0, 257 ]
+      failed_when:
+        - discovered_journald_conf is failed
+        - (discovered_journald_conf.rc | default(0)) != 257
       register: discovered_journald_conf
       loop:
         - "^(\\s*SystemMaxUse\\s*=.*)"
         - "^(\\s*SystemKeepFree\\s*=.*)"
-        - "^(\\s*RuntimeMaxUse\\s*=)"
+        - "^(\\s*RuntimeMaxUse\\s*=.*)"
         - "^(\\s*RuntimeKeepFree\\s*=.*)"
         - "^(\\s*MaxFileSec\\s*=.*)"
 
@@ -183,27 +187,3 @@
         regexp: (?i)^(\s*compress=)
         replace: "#\\1"
       loop: "{{ prelim_journald_conf_files.files }}"
-
-- name: "6.2.1.1.4 | PATCH | Ensure only one logging system is in use"
-  when: rhel8cis_rule_6_2_1_1_4
-  tags:
-    - level1-server
-    - level1-workstation
-    - patch
-    - journald
-    - syslog
-    - rule_6.2.1.1.4
-  block:
-    - name: "6.2.1.1.4 | PATCH | Ensure only one logging system is in use | when rsyslog"
-      when: rhel8cis_syslog == "rsyslog"
-      ansible.builtin.systemd:
-        name: systemd-journald
-        state: stopped
-        enabled: false
-
-    - name: "6.2.1.1.4 | PATCH | Ensure only one logging system is in use | when journald"
-      when: rhel8cis_syslog == "journald"
-      ansible.builtin.systemd:
-        name: rsyslog
-        state: stopped
-        enabled: false

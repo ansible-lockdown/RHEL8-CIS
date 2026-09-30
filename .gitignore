@@ -60,3 +60,14 @@ qa_report.md
 prompt.md
 plan.md
 test_inv
+
+# Extra secrets and QA artefacts
+*.p12
+*.pfx
+*.keystore
+*.jks
+*.credentials
+history.md
+*history.md
+*plan.md
+*.pdf

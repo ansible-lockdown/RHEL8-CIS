@@ -360,7 +360,7 @@
     - name: "1.5.8 | AUDIT | Ensure kernel.randomize_va_space is configured | find existing config"
       ansible.builtin.find:
         path: /etc/sysctl.d
-        contains: kernel.yama.ptrace_scope\s*=\s*(?!2)\d*
+        contains: kernel.randomize_va_space\s*=\s*(?!2)\d*
       register: discovered_kernel_randomize
 
     - name: "1.5.8 | PATCH | Ensure kernel.randomize_va_space is configured | replace incorrect entries"
@@ -426,7 +426,9 @@
         path: /etc/systemd/coredump.conf
         regexp: (?i)^(\s*ProcessSizeMax\s*=.*)$
         replace: '#\1'
-      failed_when: discovered_procsize_coredump.rc not in [ 0, 257 ]
+      failed_when:
+        - discovered_procsize_coredump is failed
+        - (discovered_procsize_coredump.rc | default(0)) != 257
       register: discovered_procsize_coredump
 
     - name: "1.5.9 | PATCH | Ensure systemd-coredump ProcessSizeMax is configured | replace incorrect entries"
@@ -477,7 +479,9 @@
         path: /etc/systemd/coredump.conf
         regexp: (?i)^(\s*Storage\s*=.*)$
         replace: '#\1'
-      failed_when: discovered_coredump_storage.rc not in [ 0, 257 ]
+      failed_when:
+        - discovered_coredump_storage is failed
+        - (discovered_coredump_storage.rc | default(0)) != 257
       register: discovered_coredump_storage
 
     - name: "1.5.10 | AUDIT | Ensure systemd-coredump Storage is configured | replace incorrect entries"

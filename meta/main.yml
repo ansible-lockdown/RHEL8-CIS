@@ -2,7 +2,7 @@
 galaxy_info:
   author: "Ansible-Lockdown Team"
   description: "Apply the RHEL 8 CIS benchmark"
-  company: "MindPoint Group - A Tyto Athene Company"
+  company: "MindPoint Group - A Quantum Sky Company"
   license: MIT
   namespace: mindpointgroup
   role_name: rhel8_cis
@@ -25,6 +25,5 @@ galaxy_info:
     - complianceascode
 collections:
   - community.general
-  - community.crypto
   - ansible.posix
 dependencies: []

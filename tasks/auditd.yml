@@ -1,9 +1,5 @@
 ---
 
-# Since auditd rules are dependent on syscalls and syscall tables are architecture specific,
-# we need to update the auditd rules depending on the architecture of the system.
-# This task passed the syscalls table to the auditd template and updates the auditd rules
-
 - name: "POST | AUDITD | Set supported_syscalls variable"
   ansible.builtin.shell: |
     set -o pipefail
@@ -46,7 +42,7 @@
     dest: /etc/audit/rules.d/98_auditd_exceptions.rules
     owner: root
     group: root
-    mode: '0640'
+    mode: 'u-x,g-wx,o-rwx'
   diff: "{{ discovered_auditd_exception_file.stat.exists }}"
   notify: Restart auditd
 

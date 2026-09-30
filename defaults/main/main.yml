@@ -128,7 +128,7 @@ rhel8cis_rule_1_2_1_5: true
 
 rhel8cis_rule_1_2_2_1: true
 
-# bootloader grub
+# SELinux
 rhel8cis_rule_1_3_1_1: true
 rhel8cis_rule_1_3_1_2: true
 rhel8cis_rule_1_3_1_3: true
@@ -138,11 +138,11 @@ rhel8cis_rule_1_3_1_6: true
 rhel8cis_rule_1_3_1_7: true
 rhel8cis_rule_1_3_1_8: true
 
-# kernel sysctl and coredumps
+# bootloader grub
 rhel8cis_rule_1_4_1: true
 rhel8cis_rule_1_4_2: true
 
-# SElinux
+# additional process hardening
 rhel8cis_rule_1_5_1: true
 rhel8cis_rule_1_5_2: true
 rhel8cis_rule_1_5_3: true
@@ -302,8 +302,8 @@ rhel8cis_rule_5_1_7: true
 rhel8cis_rule_5_1_8: true
 rhel8cis_rule_5_1_9: true
 rhel8cis_rule_5_1_10: true
-rhel8cis_rule_5_1_12: true
 rhel8cis_rule_5_1_11: true
+rhel8cis_rule_5_1_12: true
 rhel8cis_rule_5_1_13: true
 rhel8cis_rule_5_1_14: true
 rhel8cis_rule_5_1_15: true
@@ -1090,7 +1090,7 @@ rhel8cis_no_world_write_adjust: true
 ## Control 7.1.12 - Ensure no files or directories without an owner and a group exist
 # This variable holds the part of the command that helps detect which files and
 # directories do not have an owner and an affiliated group.
-rhel8cis_exclude_unowned_search_path: (! -path "/run/user/*" -a ! -path "/proc/*" -a ! -path "*/containerd/*" -a ! -path "*/kubelet/pods/*" -a ! -path "*/kubelet/plugins/*" -a ! -path "/sys/fs/cgroup/memory/*" -a ! -path "/var/*/private/*")
+rhel8cis_exclude_unowned_search_path: \( ! -path "/run/user/*" -a ! -path "/proc/*" -a ! -path "*/containerd/*" -a ! -path "*/kubelet/pods/*" -a ! -path "*/kubelet/plugins/*" -a ! -path "/sys/fs/cgroup/memory/*" -a ! -path "/var/*/private/*" \)
 # The value of this variable specifies the owner that will be set for unowned files and directories.
 rhel8cis_unowned_owner: root
 
