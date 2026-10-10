@@ -31,7 +31,6 @@
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
-# via fstab
 - name: "1.1.2.1.2 | PATCH | Ensure nodev option set on /tmp partition"
   when:
     - prelim_mount_point_fs_and_options[mount_point] is defined
@@ -101,7 +100,6 @@
     <<: *mount_option_set_fact
   changed_when: *mount_option_changed_when
 
-# via systemd
 - name: |
     "1.1.2.1.1 | PATCH | Ensure /tmp is configured
     1.1.2.1.2 | PATCH | Ensure nodev option set on /tmp partition

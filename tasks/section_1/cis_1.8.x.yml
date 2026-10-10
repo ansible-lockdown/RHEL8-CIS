@@ -51,7 +51,7 @@
     - name: "1.8.2 | PATCH | Ensure GDM login banner is configured | gdm profile"
       ansible.builtin.template:
         src: etc/dconf/db/local.d/60-banner-message.j2
-        dest: /etc/dconf/db/local.d/060-banner-message
+        dest: /etc/dconf/db/local.d/60-banner-message
         owner: root
         group: root
         mode: 'u-x,go-wx'
@@ -214,7 +214,7 @@
     - rhel8cis_desktop_required
   tags:
     - level1-server
-    - level2-workstation
+    - level1-workstation
     - patch
     - gui
     - rule_1.8.5
@@ -273,7 +273,7 @@
     regexp: (?i)Enabled\s*=\s*true
     state: absent
 
-- name: "1.8.7 | PATCH | Ensure XDMCP is not enabled"
+- name: "1.8.7 | PATCH | Ensure Xwayland is configured"
   when:
     - rhel8cis_rule_1_8_7
     - rhel8cis_desktop_required
@@ -285,10 +285,6 @@
     - rule_1.8.7
   ansible.builtin.lineinfile:
     path: /etc/gdm/custom.conf
-    regexp: "{{ item.regexp }}"
-    line: "{{ item.line | default(omit) }}"
-    insertafter: "{{ item.insertafter | default(omit) }}"
-    state: "{{ item.state | default('present') }}"
-  loop:
-    - { regexp: 'Enable=true', state: 'absent' }
-    - { regexp: 'WaylandEnable\s*=\s*', line: 'WaylandEnable\s*=\s*false', insertafter: '[daemon]' }
+    regexp: '^\s*#?\s*WaylandEnable\s*='
+    line: WaylandEnable=false
+    insertafter: '^\[daemon\]'

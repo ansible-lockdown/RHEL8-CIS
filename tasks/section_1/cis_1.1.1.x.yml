@@ -275,8 +275,8 @@
 - name: "1.1.1.9 | PATCH | Ensure firewire-core kernel module is not available"
   when: rhel8cis_rule_1_1_1_9
   tags:
-    - level2-server
-    - level2-workstation
+    - level1-server
+    - level1-workstation
     - automated
     - patch
     - rule_1.1.1.9

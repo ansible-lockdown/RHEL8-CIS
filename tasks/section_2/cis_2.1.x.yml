@@ -291,17 +291,18 @@
         state: "{{ ('nfs-utils' in ansible_facts['packages']) | ternary('stopped', omit) }}"
         masked: true
 
-- name: "2.1.10 | PATCH | Ensure print server services are not in use"
+- name: "2.1.10 | PATCH | Ensure nis server services are not in use"
   when: rhel8cis_rule_2_1_10
   tags:
     - level1-server
+    - level1-workstation
     - automated
     - patch
-    - cups
+    - nis
     - NIST800-53R5_CM-7
     - rule_2.1.10
   block:
-    - name: "2.1.10 | PATCH | Ensure print server services are not in use | Remove package"
+    - name: "2.1.10 | PATCH | Ensure nis server services are not in use | Remove package"
       when:
         - not rhel8cis_nis_server
         - not rhel8cis_nis_mask
@@ -309,7 +310,7 @@
         name: ypserv
         state: absent
 
-    - name: "2.1.10 | PATCH | Ensure print server services are not in use | Mask service"
+    - name: "2.1.10 | PATCH | Ensure nis server services are not in use | Mask service"
       when:
         - not rhel8cis_nis_server
         - rhel8cis_nis_mask
@@ -686,7 +687,7 @@
     - name: "2.1.21 | PATCH | Ensure GNOME Display Manager is removed | Complete group removal"
       when:
         - rhel8cis_gui_group_removal
-        - rhel8_disruption_high
+        - rhel8cis_disruption_high
       block:
         - name: "2.1.21 | PATCH | Ensure GNOME Display Manager is removed | Complete removal | Ensure minimal setup"
           ansible.builtin.package:
@@ -716,7 +717,7 @@
     - patch
     - xwindow
     - NIST800-53R5_CM-11
-    - rule_2.2.22
+    - rule_2.1.22
   ansible.builtin.package:
     name: xorg-x11-server-common
     state: absent

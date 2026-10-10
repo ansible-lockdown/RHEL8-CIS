@@ -1,5 +1,4 @@
 ---
-# Preliminary tasks that should always be run
 
 - name: "PRELIM | PATCH | Ensure libselinux is installed"
   when: "'libselinux' not in ansible_facts['packages']"
@@ -17,6 +16,11 @@
   changed_when: false
   check_mode: false
   register: prelim_interactive_users_raw
+
+- name: "PRELIM | AUDIT | Interactive Users (initialise)"
+  tags: always
+  ansible.builtin.set_fact:
+    prelim_interactive_users: []
 
 - name: "PRELIM | AUDIT | Interactive Users (reformat)"
   tags: always
@@ -92,8 +96,6 @@
   tags: run_audit
   ansible.builtin.import_tasks:
     file: pre_remediation_audit.yml
-
-##### Section requirements #####
 
 - name: PRELIM | AUDIT | Section 1.1 | Create list of mount points
   tags: always
@@ -178,15 +180,13 @@
 - name: "PRELIM | PATCH | Section 6.3 | Configure System Accounting (auditd)"
   when:
     - rhel8cis_level_2
+    - rhel8cis_rule_6_3_1_1
     - "'audit' not in ansible_facts['packages']"
   tags: always
   ansible.builtin.package:
     name: audit
     state: present
 
-#### Optional #####
-
-# Added to ensure ssh drop in file exists if not default /etc/ssh/sshd_config
 - name: "PRELIM | PATCH | SSH Config file does not exist"
   when:
     - rhel8cis_sshd_config_file != '/etc/ssh/sshd_config'
@@ -218,7 +218,12 @@
   when:
     - rhel8cis_ipv6_sshd_disable
     - not rhel8cis_ipv6_required
-  tags: always
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - ipv6
+    - rule_3.1.1
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: ^AddressFamily
@@ -229,7 +234,12 @@
   when:
     - rhel8cis_ipv6_chrony_disable
     - not rhel8cis_ipv6_required
-  tags: always
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - ipv6
+    - rule_3.1.1
   notify: Restart chronyd
   block:
     - name: "PRELIM | Optional | If IPv6 disable to stop chronyd listening | Check existence"
@@ -251,14 +261,15 @@
         line: OPTIONS="\1 -4"
         backrefs: true
 
-# Optional extra keys to extend auditd not part of CIS but can influence a system
-# e.g. admin_space_left: '10%'
-
 - name: PRELIM | Optional | Configure other keys for auditd.conf
   when:
     - rhel8cis_auditd_extra_conf.keys() | length > 0
     - rhel8cis_level_2
-  tags: always
+  tags:
+    - level2-server
+    - level2-workstation
+    - patch
+    - auditd
   ansible.builtin.lineinfile:
     path: /etc/audit/auditd.conf
     regexp: "^{{ item }}( |=)"
