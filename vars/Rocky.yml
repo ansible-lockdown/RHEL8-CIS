@@ -1,7 +1,6 @@
 ---
 # OS Specific Settings
 
-rpm_gpg_key: gpg-pubkey-6d745a60-60287f36
 rpm_packager:
   - "gpg(Release Engineering <infrastructure@rockylinux.org>)"
 # found on https://rockylinux.org/keys/ note lower case

@@ -1,5 +1,4 @@
 ---
-# handlers file for RHEL8-CIS
 
 - name: Update authselect
   ansible.builtin.command: authselect apply-changes
@@ -185,7 +184,7 @@
   notify: Set Crypto Policy
 
 - name: Set Crypto Policy
-  when: discovered_system_wide_crypto_policys.stdout != rhel8cis_full_crypto_policy
+  when: (discovered_system_wide_crypto_policys.stdout | default('')) != rhel8cis_full_crypto_policy
   ansible.builtin.command: update-crypto-policies --set "{{ rhel8cis_full_crypto_policy }}"
   changed_when: true
   notify:
@@ -248,8 +247,6 @@
 - name: Systemd daemon reload
   ansible.builtin.systemd:
     daemon-reload: true
-
-## Auditd tasks note order for handlers to run
 
 - name: Auditd immutable check
   ansible.builtin.command: grep -c "^-e 2" /etc/audit/rules.d/99_auditd.rules

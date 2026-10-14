@@ -266,7 +266,9 @@
         path: "{{ item }}"
         regexp: ^(net.ipv4.conf.default.rp_filter)
         replace: '#\1'
-      failed_when: discovered_file_exists.rc not in [ 0, 257 ]
+      failed_when:
+        - discovered_file_exists is failed
+        - (discovered_file_exists.rc | default(0)) != 257
       register: discovered_file_exists
       loop:
         - '/lib/sysctl.d/50-default.conf'

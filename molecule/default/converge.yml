@@ -8,6 +8,8 @@
       role_name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
       ansible_user: root
       system_is_container: true
+      setup_audit: true
+      run_audit: true
       rhel8cis_selinux_disable: true
       rhel8cis_rsyslog_ansiblemanaged: false
       rhel8cis_firewall: none

@@ -1,0 +1,12 @@
+{{ file_managed_by_ansible }}
+# CIS rule 6_1_2
+[Unit]
+Description=Aide check on schedule
+
+[Timer]
+OnCalendar=*-*-* {{ rhel8cis_aide_cron_hour }}:{{ rhel8cis_aide_cron_minute }}:00
+Persistent=true
+Unit=aidecheck.service
+
+[Install]
+WantedBy=timers.target

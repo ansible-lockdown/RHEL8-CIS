@@ -1,7 +1,5 @@
 ---
 
-# The CIS Control wants IPv6 disabled if not in use.
-# We are using the rhel8cis_ipv6_required to specify if you have IPv6 in use
 - name: "3.1.1 | PATCH | Ensure IPv6 status is identified"
   when:
     - not rhel8cis_ipv6_required
@@ -60,10 +58,10 @@
         find /sys/class/net/*/ -type d -name wireless
       args:
         executable: "{{ rhel8cis_shell_executable }}"
-      register: discovered_wireless_adapters
       changed_when: false
       check_mode: false
       failed_when: discovered_wireless_adapters.rc not in [ 0, 1 ]
+      register: discovered_wireless_adapters
 
     - name: "3.1.2 | PATCH | Carry out changes if Wireless adapter are present"
       when: discovered_wireless_adapters.rc == 0

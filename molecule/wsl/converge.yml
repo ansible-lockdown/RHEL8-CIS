@@ -8,6 +8,8 @@
   vars:
       ansible_user: "{{ lookup('env', 'USER') }}"
       system_is_container: true
+      setup_audit: true
+      run_audit: true
       rhel8cis_selinux_disable: true
       role_name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
       rhel8cis_firewall: none

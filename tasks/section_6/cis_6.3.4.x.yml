@@ -84,7 +84,7 @@
   ansible.builtin.file:
     path: "{{ item.path }}"
     mode: 'u-x,g-wx,o-rwx'
-  failed_when: discovered_audit_conf_file_list.state not in '[ file, absent ]'
+  failed_when: discovered_audit_conf_file_list.state not in [ 'file', 'absent' ]
   register: discovered_audit_conf_file_list
   loop: "{{ discovered_auditd_conf_files.files }}"
   loop_control:
@@ -101,7 +101,7 @@
   ansible.builtin.file:
     path: "{{ item.path }}"
     owner: root
-  failed_when: discovered_audit_conf_file_list.state not in '[ file, absent ]'
+  failed_when: discovered_audit_conf_file_list.state not in [ 'file', 'absent' ]
   register: discovered_audit_conf_file_list
   loop: "{{ discovered_auditd_conf_files.files | default([]) }}"
   loop_control:
@@ -118,7 +118,7 @@
   ansible.builtin.file:
     path: "{{ item.path }}"
     group: root
-  failed_when: discovered_audit_conf_file_list.state not in '[ file, absent ]'
+  failed_when: discovered_audit_conf_file_list.state not in [ 'file', 'absent' ]
   register: discovered_audit_conf_file_list
   loop: "{{ discovered_auditd_conf_files.files | default([]) }}"
   loop_control:

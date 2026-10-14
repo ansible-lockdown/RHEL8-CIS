@@ -6,7 +6,7 @@
     - rhel8cis_ipv6_required
     - rhel8cis_rule_3_3_2_1
   tags:
-    - level2-server
+    - level1-server
     - level1-workstation
     - sysctl
     - ipv6
@@ -30,7 +30,7 @@
     - rhel8cis_ipv6_required
     - rhel8cis_rule_3_3_2_2
   tags:
-    - level2-server
+    - level1-server
     - level1-workstation
     - sysctl
     - ipv6

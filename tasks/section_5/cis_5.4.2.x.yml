@@ -139,7 +139,7 @@
     - name: "5.4.2.5 | AUDIT | Ensure root PATH Integrity | Get root paths"
       ansible.builtin.shell: |
         set -o pipefail
-        sudo -Hiu root env | grep '^PATH' | cut -d= -f2
+        { sudo -Hiu root env 2>/dev/null || env -i HOME=/root USER=root LOGNAME=root SHELL=/bin/bash bash -lc env; } | grep '^PATH' | cut -d= -f2
       args:
         executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
@@ -149,7 +149,7 @@
       when: discovered_root_paths is defined
       ansible.builtin.shell: |
         set -o pipefail
-        sudo -Hiu root env | grep '^PATH' | cut -d= -f2 | tr ":" "\n"
+        { sudo -Hiu root env 2>/dev/null || env -i HOME=/root USER=root LOGNAME=root SHELL=/bin/bash bash -lc env; } | grep '^PATH' | cut -d= -f2 | tr ":" "\n"
       args:
         executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false

@@ -1,7 +1,7 @@
 ---
 
 - name: Run RHEL8 CIS hardening
-  hosts: all
+  hosts: "{{ hosts | default('all') }}"
   become: true
   roles:
     - role: "{{ playbook_dir }}"

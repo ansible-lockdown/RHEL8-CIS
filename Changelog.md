@@ -2,6 +2,60 @@
 
 ## Benchmark 4.0.0
 
+### Oct 2026 Updates
+
+- 2.1.10 title and tags corrected to nis server
+- 1.8.7 title corrected to Xwayland
+- 1.8.7 WaylandEnable line and [daemon] insertafter fixed
+- 2.1.22 rule tag corrected
+- level tags aligned to v4.0.0 for 1.1.1.9, 1.2.1.5, 1.8.5, 3.2.2, 3.2.3, 3.2.5, 3.3.2.1, 3.3.2.2, 5.1.11, 6.3.3.15
+- 2.1.21 disruption_high variable prefix fixed
+- 1.2.1.5 install_weak_deps regexp fixed
+- 6.2.1.1.1, 6.2.1.1.2 patch tag added
+- container discovery guarded for undefined virtualization_type
+- bare ansible_env, ansible_local, ansible_interfaces moved to ansible_facts
+- parse_etc_password and 6.2.2.6 registers renamed to prelim_/discovered_
+- site.yml hosts variable added
+- README rendered from canonical template
+- 6.3.1.2 audit=1 only applied when missing, stops reboot every run
+- 5.3.2.1 authselect select only when profile or features differ
+- 6.2.1.1.3 journald.conf path fixed
+- 6.2.1.1.4 retired v3 logging-system task removed
+- replace/lineinfile failed_when idiom fixed in 1.5.9, 1.5.10, 3.3.1.13, 6.2.1.1.3
+- 7.1.12 find path and exclude expression order fixed
+- 5.4.1.1 discovery and 5.4.1.2 password_expire_min fixed
+- 6.1.2 aidecheck timer templates added
+- 6.2.1.2.2 notifies journal upload restart
+- crypto policy handler guarded for undefined register
+- vars/is_container.yml regenerated for v4.0.0
+- podman connection added to container discovery
+- 1.2.1.x repo discovery runs if either 1.2.1.2 or 1.2.1.3 is enabled
+- 1.2.1.3 repo_gpgcheck regexp fixed
+- prelim audit package install gated on 6.3.1.1
+- prelim interactive users initialised when none exist
+- 5.4.2.5 root PATH lookup works without sudo
+- company name updated to MindPoint Group - A Quantum Sky Company
+- 5.3.2.1 task key order fixed
+- 7.1.13 SUID/SGID find expression fixed
+- 3.2.x modprobe loops split per line, modules unloaded
+- 1.2.1.x repo discovery tagged patch
+- prelim IPv6 and auditd.conf writes no longer tagged always
+- 6.2.1.1.2 tmpfiles override check fixed
+- 1.5.8 find uses kernel.randomize_va_space
+- failed_when list membership fixed in 6.2.3.x, 6.3.4.x, 7.1.x, 7.2.x
+- dead pwck pipe removed from 7.2.x
+- manual/automated tags aligned to v4.0.0 for 7 controls
+- 5.3.2.2, 5.3.2.3 remediation tasks named PATCH
+- 1.8.2 banner dest renamed 60-banner-message
+- auditd.yml octal mode made symbolic
+- register order fixed in 8 tasks
+- prose comments removed from task and handler files
+- defaults section comments and 5.1.11 toggle order fixed
+- community.crypto removed; rpm_gpg_key removed
+- molecule scenarios run the audit; localhost converge toggle updated
+- checkout pinned to v7.0.0; .gitignore extended
+- 5.3.1.x package facts and 6.3.3.x summary tasks tagged
+
 ### Aug 2026 Updates
 
 - audit layout improvements for easier override defaults/main/audit.yml

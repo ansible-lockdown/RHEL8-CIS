@@ -59,10 +59,10 @@
             dest: "{{ rhel8cis_aide_db_file }}"
             remote_src: true
             mode: 'u-x,g-wx,o-rwx'
-          register: discovered_aide_db_cp
           failed_when:
             - not ansible_check_mode
             - discovered_aide_db_cp.failed
+          register: discovered_aide_db_cp
 
 - name: "6.1.2 | PATCH | Ensure filesystem integrity is regularly checked"
   when:
@@ -101,17 +101,15 @@
       loop:
         - etc/systemd/system/aidecheck.service
         - etc/systemd/system/aidecheck.timer
+      register: discovered_aidecheck_units
 
     - name: "6.1.2 | PATCH | Ensure filesystem integrity is regularly checked | timer service"
       when: rhel8cis_aide_scan == 'timer'
       ansible.builtin.systemd:
-        name: "{{ item }}"
+        name: aidecheck.timer
+        daemon_reload: "{{ discovered_aidecheck_units is changed }}"
         state: started
         enabled: true
-        daemon_reload: true
-      loop:
-        - aidecheck.service
-        - aidecheck.timer
 
 - name: "6.1.3 | Ensure cryptographic mechanisms are used to protect the integrity of audit tools"
   when: rhel8cis_rule_6_1_3
@@ -133,7 +131,7 @@
       /sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512
       /sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512
     validate: aide -D --config %s
-  register: discovered_aide_file_integrity_check
   failed_when:
     - not ansible_check_mode
     - discovered_aide_file_integrity_check.failed
+  register: discovered_aide_file_integrity_check

@@ -291,7 +291,7 @@
 - name: "5.1.11 | PATCH | Ensure sshd GSSAPIAuthentication is disabled"
   when: rhel8cis_rule_5_1_11
   tags:
-    - level1-server
+    - level2-server
     - level1-workstation
     - patch
     - sshd

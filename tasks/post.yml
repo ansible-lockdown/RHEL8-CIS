@@ -1,5 +1,4 @@
 ---
-# Post tasks
 
 - name: POST | Perform DNF package cleanup
   ansible.builtin.dnf:

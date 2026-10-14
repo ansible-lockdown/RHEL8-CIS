@@ -30,5 +30,12 @@
 
 - name: "5.3.1.1 and 5.3.1.2 | Update package facts"
   when: rhel8cis_rule_5_3_1_1 or rhel8cis_rule_5_3_1_2
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - pam
+    - rule_5.3.1.1
+    - rule_5.3.1.2
   ansible.builtin.package_facts:
     manager: auto

@@ -202,7 +202,7 @@
   when: rhel8cis_rule_6_3_3_15
   tags:
     - level2-server
-    - level2- workstation
+    - level2-workstation
     - automated
     - patch
     - NIST800-53R5_AU-12
@@ -309,6 +309,9 @@
 
 - name: Auditd | 6.3.3.x | Auditd controls updated
   when: rhel8cis_update_audit_template
+  tags:
+    - patch
+    - auditd
   ansible.builtin.debug:
     msg: "Auditd Controls handled in POST using template - updating /etc/auditd/rules.d/99_auditd.rules"
   changed_when: false

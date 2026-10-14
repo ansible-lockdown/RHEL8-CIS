@@ -64,7 +64,7 @@
         owner: root
         group: root
         mode: 'u-x,g-wx,o-rwx'
-      notify: Restart journald
+      notify: Restart systemd journal upload
 
 - name: "6.2.1.2.3 | PATCH | Ensure systemd-journal-upload is enabled and active"
   when:

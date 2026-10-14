@@ -1,5 +1,4 @@
 ---
-# tasks file for RHEL8-CIS
 
 - name: Check OS version and family
   when: os_check
@@ -58,7 +57,10 @@
     manager: auto
 
 - name: Setup rules if container
-  when: ansible_connection == 'docker' or ansible_facts['virtualization_type'] in ["docker", "lxc", "openvz", "podman", "container"]
+  when:
+    - ansible_connection in ['docker', 'community.docker.docker', 'podman', 'containers.podman.podman'] or
+      (ansible_facts['virtualization_type'] is defined and
+      ansible_facts['virtualization_type'] in ["docker", "lxc", "openvz", "podman", "container"])
   tags:
     - container_discovery
     - always
@@ -78,7 +80,7 @@
 
 - name: "Check password set for {{ ansible_user }}"
   when:
-    - ansible_env.SUDO_USER is defined
+    - ansible_facts['env']['SUDO_USER'] is defined
     - not system_is_ec2
     - not audit_only
     - rhel8cis_rule_5_2_4
@@ -90,7 +92,7 @@
     - name: Capture current password state of connecting user"
       ansible.builtin.shell: |
         set -o pipefail
-        grep {{ ansible_env.SUDO_USER }} /etc/shadow | awk -F: '{print $2}'
+        grep {{ ansible_facts['env']['SUDO_USER'] }} /etc/shadow | awk -F: '{print $2}'
       args:
         executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
@@ -98,11 +100,11 @@
       check_mode: false
       register: discovered_ansible_user_password_set
 
-    - name: "Assert that password set for {{ ansible_env.SUDO_USER }} and account not locked"  # noqa name[template]
+    - name: "Assert that password set for {{ ansible_facts['env']['SUDO_USER'] }} and account not locked"  # noqa name[template]
       ansible.builtin.assert:
         that: discovered_ansible_user_password_set.stdout | length != 0 and discovered_ansible_user_password_set.stdout != "!!"
-        fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_env.SUDO_USER }} has no password set - It can break access"
-        success_msg: "You have a password set for the {{ ansible_env.SUDO_USER }} user"
+        fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_facts['env']['SUDO_USER'] }} has no password set - It can break access"
+        success_msg: "You have a password set for the {{ ansible_facts['env']['SUDO_USER'] }} user"
       vars:
         sudo_password_rule: rhel8cis_rule_5_2_4  # pragma: allowlist secret
 
@@ -207,7 +209,7 @@
   when:
     - create_benchmark_facts
     - (post_audit_summary is defined) or
-      (ansible_local['compliance_facts']['lockdown_audit_details']['audit_summary'] is undefined and post_audit_summary is undefined)
+      (ansible_facts['local']['compliance_facts']['lockdown_audit_details']['audit_summary'] is undefined and post_audit_summary is undefined)
   tags: benchmark
   block:
     - name: Create ansible facts directory

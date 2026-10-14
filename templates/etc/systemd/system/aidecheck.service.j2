@@ -1,0 +1,8 @@
+{{ file_managed_by_ansible }}
+# CIS rule 6_1_2
+[Unit]
+Description=Aide Check
+
+[Service]
+Type=oneshot
+ExecStart={{ rhel8cis_aide_cron_job }}
