@@ -7,7 +7,7 @@
 
   vars:
       ansible_user: "{{ lookup('env', 'USER') }}"
-      role_name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+      molecule_role_name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
       setup_audit: true
       run_audit: true
       rhel8cis_rule_5_2_4: false
@@ -16,4 +16,4 @@
   tasks:
       - name: "Include tasks"
         ansible.builtin.include_role:
-            name: "{{ role_name }}"
+            name: "{{ molecule_role_name }}"

@@ -77,6 +77,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - cron
     - NIST800-53R5_AC-3
@@ -125,7 +126,7 @@
     group: root
     mode: 'go-rwx'
 
-- name: "2.4.1.8 | PATCH | Ensure permissions on /etc/cron.d are configured"
+- name: "2.4.1.8 | PATCH | Ensure access to /etc/cron.d is configured"
   when: rhel8cis_rule_2_4_1_8
   tags:
     - level1-server

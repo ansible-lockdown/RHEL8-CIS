@@ -24,10 +24,32 @@
     - NIST800-53R5_AC-6
     - sudo
     - rule_5.2.2
-  ansible.builtin.lineinfile:
-    path: /etc/sudoers
-    line: "Defaults    use_pty"
-    validate: '/usr/sbin/visudo -cf %s'
+  block:
+    - name: "5.2.2 | PATCH | Ensure sudo commands use pty | Set use_pty"
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers
+        line: "Defaults    use_pty"
+        validate: '/usr/sbin/visudo -cf %s'
+
+    - name: "5.2.2 | AUDIT | Ensure sudo commands use pty | Find files disabling use_pty"
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -rlPi -- '^\h*Defaults\h+([^#\n\r]+,\h*)?!use_pty\b' /etc/sudoers /etc/sudoers.d/
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
+      changed_when: false
+      check_mode: false
+      failed_when: discovered_sudo_no_use_pty.rc not in [ 0, 1 ]
+      register: discovered_sudo_no_use_pty
+
+    - name: "5.2.2 | PATCH | Ensure sudo commands use pty | Remove !use_pty"
+      when: discovered_sudo_no_use_pty.stdout | length > 0
+      ansible.builtin.replace:
+        path: "{{ item }}"
+        regexp: '^(\s*Defaults\s+(?:[^#\n]+,\s*)?)!use_pty\b'
+        replace: '\1use_pty'
+        validate: '/usr/sbin/visudo -cf %s'
+      loop: "{{ discovered_sudo_no_use_pty.stdout_lines }}"
 
 - name: "5.2.3 | PATCH | Ensure sudo log file exists"
   when: rhel8cis_rule_5_2_3
@@ -70,7 +92,7 @@
     - name: "5.2.4 | PATCH | Ensure users must provide password for escalation"
       ansible.builtin.replace:
         path: "{{ item }}"
-        regexp: '^([^#|{% if system_is_ec2 %}ec2-user{% endif %}].*)NOPASSWD(.*)'
+        regexp: '^((?!\s*(?:#{% for nopasswd_user in rhel8cis_sudoers_exclude_nopasswd_list %}|{{ nopasswd_user | regex_escape }}\s{% endfor %})).*)NOPASSWD(.*)'
         replace: '\1PASSWD\2'
         validate: '/usr/sbin/visudo -cf %s'
       loop: "{{ discovered_escalation_files.stdout_lines }}"
@@ -119,11 +141,12 @@
     - name: "5.2.6 | AUDIT | Ensure sudo timestamp_timeout is configured | Get files with timeout set"
       ansible.builtin.shell: |
         set -o pipefail
-        grep -is 'timestamp_timeout' /etc/sudoers /etc/sudoers.d/* | cut -d":" -f1 | uniq | sort
+        grep -isE '^\s*Defaults.*timestamp_timeout' /etc/sudoers /etc/sudoers.d/* | cut -d":" -f1 | sort -u
       args:
         executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: false
+      check_mode: false
       register: discovered_timeout_files
 
     - name: "5.2.6 | PATCH | Ensure sudo timestamp_timeout is configured | Set value if no results"
@@ -138,7 +161,7 @@
       when: discovered_timeout_files.stdout | length > 0
       ansible.builtin.replace:
         path: "{{ item }}"
-        regexp: 'timestamp_timeout=(\d+)'
+        regexp: 'timestamp_timeout\s*=\s*-?\d+'
         replace: "timestamp_timeout={{ rhel8cis_sudo_timestamp_timeout }}"
         validate: '/usr/sbin/visudo -cf %s'
       loop: "{{ discovered_timeout_files.stdout_lines }}"

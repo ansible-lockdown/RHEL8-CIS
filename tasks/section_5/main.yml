@@ -20,6 +20,22 @@
   ansible.builtin.import_tasks:
     file: cis_5.3.2.x.yml
 
+- name: "SECTION | 5.3.3 | Check the custom authselect profile exists"
+  when:
+    - rhel8cis_disruption_high
+    - rhel8cis_allow_authselect_updates
+  ansible.builtin.stat:
+    path: "/etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}"
+  register: discovered_authselect_custom_profile_dir
+
+- name: "SECTION | 5.3.3 | Warn when the custom authselect profile is missing"
+  when:
+    - rhel8cis_disruption_high
+    - rhel8cis_allow_authselect_updates
+    - not discovered_authselect_custom_profile_dir.stat.exists | default(false)
+  ansible.builtin.debug:
+    msg: "Warning!! /etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }} does not exist (rule 5.3.2.1 creates it), authselect profile PAM edits in 5.3.3.x are skipped"
+
 - name: "SECTION | 5.3.3.1.x | Configure module pam_faillock"
   when: rhel8cis_disruption_high
   ansible.builtin.import_tasks:
@@ -39,6 +55,9 @@
   when: rhel8cis_disruption_high
   ansible.builtin.import_tasks:
     file: cis_5.3.3.4.x.yml
+
+- name: "SECTION | 5.3.x | Apply the authselect profile before later sections run"
+  ansible.builtin.meta: flush_handlers
 
 - name: "SECTION | 5.4.1.x | Shadow suite"
   ansible.builtin.import_tasks:

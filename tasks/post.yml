@@ -20,10 +20,43 @@
     - 60-disable_ipv6.conf
     - 60-netipv4_sysctl.conf
     - 60-netipv6_sysctl.conf
-  notify: Reload sysctl
+  notify:
+    - Reload sysctl
+    - Sysctl flush ipv4 route table
+    - Sysctl flush ipv6 route table
 
 - name: POST | flush handlers
   ansible.builtin.meta: flush_handlers
+
+- name: POST | Rebuild initrd when its sysctl settings differ from the system
+  when:
+    - rhel8cis_disruption_high
+    - not system_is_container
+  tags:
+    - patch
+    - sysctl
+  block:
+    - name: POST | Rebuild initrd when its sysctl settings differ from the system | Compare sysctl files
+      ansible.builtin.shell: |
+        set -o pipefail
+        img="/boot/initramfs-$(uname -r).img"
+        [ -f "$img" ] || exit 0
+        listing="$(lsinitrd "$img" 2>/dev/null)"
+        grep -qE ' etc/sysctl(\.conf|\.d/)' <<< "$listing" || exit 0
+        for f in /etc/sysctl.conf /etc/sysctl.d/*.conf; do
+          [ -f "$f" ] && [ ! -L "$f" ] || continue
+          lsinitrd -f "${f#/}" "$img" 2>/dev/null | cmp -s - "$f" || echo "$f"
+        done
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
+      changed_when: false
+      check_mode: false
+      register: discovered_initrd_sysctl_drift
+
+    - name: POST | Rebuild initrd when its sysctl settings differ from the system | Rebuild
+      when: discovered_initrd_sysctl_drift.stdout | length > 0
+      ansible.builtin.command: dracut --force --regenerate-all
+      changed_when: true
 
 - name: POST | reboot system if changes require it and not skipped
   when: reboot_required

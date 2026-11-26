@@ -6,6 +6,15 @@
   ansible.builtin.include_tasks:
     file: LE_audit_setup.yml
 
+- name: Pre Audit Setup | Remove the previous audit content before it is copied or extracted again
+  when:
+    - audit_content in ['copy', 'archive', 'get_url']
+    - audit_conf_dir is search('/[^/]+-Audit/?$')
+    - not ((audit_log_dir | regex_replace('/+$', '')) ~ '/').startswith((audit_conf_dir | regex_replace('/+$', '')) ~ '/')
+  ansible.builtin.file:
+    path: "{{ audit_conf_dir }}"
+    state: absent
+
 - name: Pre Audit Setup | Ensure existence of {{ audit_conf_dir }}  # noqa name[template]
   ansible.builtin.file:
     path: "{{ audit_conf_dir }}"
@@ -74,7 +83,7 @@
   ansible.builtin.shell: |
     set -o pipefail
     umask 0022
-    {{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -f {{ audit_format }} -m {{ audit_max_concurrent }} -o {{ pre_audit_outfile }} -g "{{ group_names }}"  # noqa yaml[line-length]
+    {{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -f {{ audit_format }} -m {{ audit_max_concurrent }} -o {{ pre_audit_outfile }} -g "{{ group_names }}" {{ (audit_system_type | default('Server') | lower == 'workstation') | ternary('-w', '') }}  # noqa yaml[line-length]
   changed_when: true
   args:
     executable: "{{ rhel8cis_shell_executable }}"
@@ -83,8 +92,15 @@
     AUDIT_CONTENT_LOCATION: "{{ audit_conf_dest | default('/opt') }}"
     AUDIT_FILE: goss.yml
 
+- name: Pre Audit | Audit not run in check mode
+  when: ansible_check_mode
+  ansible.builtin.set_fact:
+    pre_audit_results: "not run in check mode"
+
 - name: Pre Audit | Capture audit data if json format
-  when: audit_format == "json"
+  when:
+    - audit_format == "json"
+    - not ansible_check_mode
   block:
     - name: Pre Audit | Capture audit data if json format
       ansible.builtin.shell: |
@@ -100,7 +116,9 @@
         pre_audit_results: "{{ pre_audit_summary_json.stdout }}"
 
 - name: Pre Audit | Capture audit data if documentation format
-  when: audit_format == "documentation"
+  when:
+    - audit_format == "documentation"
+    - not ansible_check_mode
   block:
     - name: Pre Audit | Capture audit data if documentation format
       ansible.builtin.shell: |

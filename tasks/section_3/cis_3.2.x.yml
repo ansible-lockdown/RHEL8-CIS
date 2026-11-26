@@ -5,6 +5,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - rule_3.2.1
     - atm
@@ -41,6 +42,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - rule_3.2.2
     - can
@@ -77,6 +79,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - rule_3.2.3
     - dccp
@@ -113,6 +116,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - rule_3.2.4
     - rds
@@ -149,6 +153,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - rule_3.2.5
     - sctp
@@ -185,6 +190,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - rule_3.2.6
     - tipc

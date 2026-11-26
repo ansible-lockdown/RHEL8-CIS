@@ -1,12 +1,13 @@
 ---
 
-- name: "1.1.2.2.1 | AUDIT | Ensure /dev/shm is a separate partition"
+- name: "1.1.2.2.1 | AUDIT | Ensure /dev/shm is tmpfs"
   when:
     - rhel8cis_rule_1_1_2_2_1
     - required_mount not in prelim_mount_names
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - audit
     - mounts
     - rule_1.1.2.2.1
@@ -15,19 +16,20 @@
     warn_control_id: "1.1.2.2.1"
     required_mount: "/dev/shm"
   block:
-    - name: "1.1.2.2.1 | AUDIT | Ensure /dev/shm is a separate partition | check for mount"
+    - name: "1.1.2.2.1 | AUDIT | Ensure /dev/shm is tmpfs | check for mount"
       ansible.builtin.command: findmnt -kn "{{ required_mount }}"
       changed_when: false
+      check_mode: false
       failed_when: discovered_dev_shm_mount.rc not in [ 0, 1 ]
       register: discovered_dev_shm_mount
 
-    - name: "1.1.2.2.1 | AUDIT | Ensure /dev/shm is a separate partition | Absent"
-      when: discovered_dev_shm_mount is undefined
+    - name: "1.1.2.2.1 | AUDIT | Ensure /dev/shm is tmpfs | Absent"
+      when: discovered_dev_shm_mount.rc == 1
       ansible.builtin.debug:
         msg: "Warning!! {{ required_mount }} is not mounted on a separate partition"
 
-    - name: "1.1.2.2.1 | AUDIT | Ensure /dev/shm is a separate partition | Present"
-      when: discovered_dev_shm_mount is undefined
+    - name: "1.1.2.2.1 | AUDIT | Ensure /dev/shm is tmpfs | Present"
+      when: discovered_dev_shm_mount.rc == 1
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
@@ -38,19 +40,20 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - mounts
     - rule_1.1.2.2.2
     - NIST800-53R5_CM-7
     - CCI-001764
-  vars:
-    mount_point: "/dev/shm"
-    required_option: nodev
   notify: &mount_option_notify
     - "Remount {{ mount_point }}"
   ansible.builtin.set_fact: &mount_option_set_fact
     prelim_mount_point_fs_and_options: |
       {{ prelim_mount_point_fs_and_options | combine({mount_point: {'options': (prelim_mount_point_fs_and_options[mount_point]['options'] + [required_option])}}, recursive=True) }}
+  vars:
+    mount_point: "/dev/shm"
+    required_option: nodev
   changed_when: &mount_option_changed_when
     - required_option not in prelim_mount_point_fs_and_options[mount_point]['original_options']
 
@@ -61,17 +64,18 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - mounts
     - rule_1.1.2.2.3
     - NIST800-53R5_CM-7
     - CCI-001764
-  vars:
-    mount_point: "/dev/shm"
-    required_option: nosuid
   notify: *mount_option_notify
   ansible.builtin.set_fact:
     <<: *mount_option_set_fact
+  vars:
+    mount_point: "/dev/shm"
+    required_option: nosuid
   changed_when: *mount_option_changed_when
 
 - name: "1.1.2.2.4 | PATCH | Ensure noexec option set on /dev/shm partition"
@@ -81,15 +85,16 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - mounts
     - rule_1.1.2.2.4
     - NIST800-53R5_CM-7
     - CCI-001764
-  vars:
-    mount_point: "/dev/shm"
-    required_option: noexec
   notify: *mount_option_notify
   ansible.builtin.set_fact:
     <<: *mount_option_set_fact
+  vars:
+    mount_point: "/dev/shm"
+    required_option: noexec
   changed_when: *mount_option_changed_when

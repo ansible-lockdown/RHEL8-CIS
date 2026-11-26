@@ -1,5 +1,103 @@
 # Changes to rhel8CIS
 
+## CIS Benchmark 4.0.0
+
+### November 2026 - QA fixes
+
+- playbook user lock check matches the exact username
+- lock and password asserts skipped for users in rhel8cis_sudoers_exclude_nopasswd_list
+- crypto policy module assert checks rhel8cis_additional_crypto_policy_module
+- allowed crypto policy module names match the module templates
+- interactive users exclude /usr/bin/false and match whole account names
+- compliance facts directory mode relative symbolic
+- Rebuild grub handler failures no longer hidden
+- auditd immutable rules change requests a reboot
+- Restart auditd handler skipped in containers
+- 98-auditd_exception.rules excludes only the listed users
+- route flush handlers added, sysctl -w command
+- initrd rebuilt when its sysctl files differ, with rhel8cis_disruption_high
+- /tmp handlers moved to remount_tmp.yml, tmp.mount enabled and unmasked
+- /tmp remount fails on errors other than busy; busy warning sets reboot required
+- tmp.mount template Options line fixed
+- check_mode false on read-only discovery tasks
+- automated and manual tags on all controls
+- 1.1.1.11: discovery script runs in check mode
+- 1.1.2.x.1: missing separate partition warnings fire
+- 1.4.1: no_log on bootloader password
+- 1.4.2: /boot/grub2 files set root:root 0600 (https://github.com/ansible-lockdown/RHEL9-CIS/issues/479) - Thank you @rajsshah86
+- 1.5.1: hard core lines in limits.conf and limits.d commented out
+- 1.6.x, 5.1.8, 5.1.17: crypto policy applied when the module is missing from the current policy
+- 2.1.7, 2.1.15, 2.1.18: automated tag spelling
+- 2.1.19: nginx-plus removed with nginx (as RHEL9-CIS https://github.com/ansible-lockdown/RHEL9-CIS/issues/483) - Thank you @JoannaSeen
+- 2.3.3: chronyd -u root removed
+- 3.1.1: grubby runs when any boot entry lacks ipv6.disable=1
+- 3.1.2: wireless adapter check uses find output
+- 4.1.4: target read from rhel8cis_active_firewall_zone only, ssh allowed before the target changes
+- 4.1.4: no-op permanent zone task removed
+- 5.2.2: !use_pty removed from sudoers files
+- 5.2.4: NOPASSWD exclusion matches whole names from rhel8cis_sudoers_exclude_nopasswd_list
+- 5.2.6: timestamp_timeout matched with spaces and negative values
+- 5.3.2.1: authselect select keeps features enabled on the current profile
+- 5.3.2.2 - 5.3.2.4: features added with authselect enable-feature
+- 5.3.2.5: missing pam_unix entries reported as a warning
+- 5.3.x: authselect handlers flushed after the PAM controls
+- 5.3.3.1.x, 5.3.3.2.x, 5.3.3.3.x: PAM option removal keeps the control field and line tail
+- 5.3.3.1.3: even_deny_root and root_unlock_time removed in one run
+- 5.3.3.3.3: use_authtok added to pam_pwhistory
+- 5.3.3.4.x: pam_unix nullok, remember, hash and use_authtok edits ported from RHEL10-CIS
+- 5.4.1.x, 5.4.2.7, 5.4.2.8, 7.2.2: user module never creates a home directory
+- 5.4.1.5: INACTIVE default matched exactly
+- 5.4.2.1: UID 0 accounts other than root locked
+- 5.4.2.2: GID 0 account names matched exactly, removed accounts dropped from user lists
+- 5.4.2.3: GID 0 group names matched exactly
+- 5.4.2.5: root PATH checks read the PATH value, warn on empty, trailing or current directory
+- 5.4.2.6: /root/.bashrc umask set
+- 5.4.2.7: system accounts selected by UID below UID_MIN or 65534, playbook user skipped
+- 5.4.2.7: accounts set to nologin dropped from the interactive user list
+- 5.4.3.1: nologin lines in /etc/shells commented out
+- 5.4.3.3: weak umask values tightened, login.defs UMASK set by lineinfile
+- 6.2.3.1: log file discovery returns paths, symlinked logs accepted
+- 6.2.3.1: lastlog, wtmp, btmp file classes match the benchmark list
+- 7.1.5 - 7.1.8: shadow and gshadow files mode 0000
+- 7.1.11: sticky bit set per directory, world writable files no longer touched
+- 7.1.13: SGID removed with SUID
+- 7.2.2: empty password accounts locked per user
+- 7.2.7: duplicate group names read from the group database
+- 7.2.8: home directories created for interactive users only
+- 7.2.8: excess permissions removed, ACLs skip homes that do not exist
+- 7.2.9: dot file owner matched by exact home path
+- workflow actions pinned to release tags, actions.lock and dependabot for github-actions
+- audit content directory removed before copy, archive or get_url
+- audit_system_type Workstation passes -w to run_audit.sh
+- pre and post audit summaries not captured in check mode
+- audit_conf_source example URL names RHEL8-CIS-Audit
+- audit vars bridge: disruption_high, force_user_*, sudoers_exclude_nopasswd_list, system_users_shell, dotperm_ansiblemanaged
+- audit vars bridge: rhel8cis_playbook_user from the connecting user
+- audit vars bridge: rule toggle section end marker
+- 4.1.5, 4.1.6 loopback zone set by rhel8cis_loopback_firewall_zone; 4.1.6 rich rules added to the loopback zone
+- 5.4.3.3 umask set in /etc/profile.d/60_default_umask.sh
+- rhel8cis_user_skip_list default made a list
+- 5.3.3.x: authselect profile edits skipped with a warning when the custom profile is missing
+- 5.3.2.3, 5.3.2.4: enable-feature not run in check mode
+- 1.6.x, 5.1.8, 5.1.17: crypto policy change check works when 1.6.x discovery is skipped
+- 6.1.1: AIDE database rebuilt when older than rhel8cis_aide_db_file_age
+- 3.1.1: IPv6 sysctl file lists interfaces in sorted order
+- 1.5.2 - 1.5.8: only non-compliant sysctl lines commented out, in sysctl.conf and sysctl.d
+- 1.5.x: template task names match their control
+- 5.1.x: sshd_config regexps match active lines only
+- 5.1.x: sshd_config settings inserted before Include and Match
+- 5.1.6: title aligned to the benchmark
+- 5.1.7: Banner added when absent, validated
+- 5.1.10: DisableForwarding set once and restarts sshd
+- 6.2.1.2.3: skipped when systemd-journal-remote is not installed
+- 6.2.1.2.4: units stopped only when systemd-journal-remote is installed
+- 6.3.4.2: audit log file mode removes user execute
+- task titles aligned to the benchmark
+- 6.3.4.5 - 6.3.4.7: one register per control
+- 1.4.2, 1.5.9, 1.5.10, 1.8.x: relative symbolic modes
+- task vars placed after the module
+- molecule: role_name renamed to molecule_role_name (read-only variable)
+
 ## Benchmark 4.0.0
 
 ### Oct 2026 Updates

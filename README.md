@@ -46,8 +46,8 @@ Remediation role for RHEL 8 and compatible EL8 distributions (AlmaLinux, Rocky L
 ![Release Branch](https://img.shields.io/badge/Release%20Branch-Main-brightgreen)
 ![Release Tag](https://img.shields.io/github/v/tag/ansible-lockdown/RHEL8-CIS?label=Release%20Tag&&color=success)
 ![Main Release Date](https://img.shields.io/github/release-date/ansible-lockdown/RHEL8-CIS?label=Release%20Date)
-![Benchmark Version Main](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/RHEL8-CIS/benchmark-version-main.json)
-![Benchmark Version Devel](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/RHEL8-CIS/benchmark-version-devel.json)
+![Benchmark Version Main](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/ansible-lockdown/RHEL8-CIS/main/defaults/main/main.yml&query=$.benchmark_version&label=Benchmark%20Version%20Main)
+![Benchmark Version Devel](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/ansible-lockdown/RHEL8-CIS/devel/defaults/main/main.yml&query=$.benchmark_version&label=Benchmark%20Version%20Devel)
 
 [![Main Pipeline Status](https://github.com/ansible-lockdown/RHEL8-CIS/actions/workflows/main_pipeline_validation.yml/badge.svg?)](https://github.com/ansible-lockdown/RHEL8-CIS/actions/workflows/main_pipeline_validation.yml)
 [![Devel Pipeline Status](https://github.com/ansible-lockdown/RHEL8-CIS/actions/workflows/devel_pipeline_validation.yml/badge.svg?)](https://github.com/ansible-lockdown/RHEL8-CIS/actions/workflows/devel_pipeline_validation.yml)
@@ -149,6 +149,9 @@ It is possible to only run level 1 or level 2 controls for CIS. This is managed 
 - level1-workstation
 - level2-server
 - level2-workstation
+
+Select a level with `--tags`, for example `--tags level1-server`. Do not use `--skip-tags level2-server,level2-workstation`
+to leave out Level 2: a control that is Level 1 Server and Level 2 Workstation carries both tags and would be skipped too.
 
 The level variables in `defaults/main/main.yml` also need to reflect this, as they control the testing that takes place if
 you are using the audit component.

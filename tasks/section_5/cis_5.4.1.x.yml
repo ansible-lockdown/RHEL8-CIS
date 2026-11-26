@@ -5,6 +5,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - password
     - rule_5.4.1.1
@@ -27,7 +28,9 @@
       args:
         executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
+      check_mode: false
       failed_when: false
+      no_log: true
       register: discovered_max_days
 
     - name: "5.4.1.1 | PATCH | Ensure password expiration is configured | Set existing users PASS_MAX_DAYS"
@@ -39,6 +42,7 @@
       ansible.builtin.user:
         name: "{{ item }}"
         password_expire_max: "{{ rhel8cis_pass_max_days }}"
+        create_home: false
       loop: "{{ discovered_max_days.stdout_lines }}"
 
 - name: "5.4.1.2 | PATCH | Ensure minimum password days is configured"
@@ -46,6 +50,7 @@
   tags:
     - level2-server
     - level2-workstation
+    - manual
     - patch
     - password
     - rule_5.4.1.2
@@ -64,7 +69,9 @@
       args:
         executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
+      check_mode: false
       failed_when: false
+      no_log: true
       register: discovered_min_days
 
     - name: "5.4.1.2 | PATCH | Ensure minimum password days is configured | Set existing users PASS_MIN_DAYS"
@@ -75,6 +82,7 @@
       ansible.builtin.user:
         name: "{{ item }}"
         password_expire_min: "{{ rhel8cis_pass_min_days }}"
+        create_home: false
       loop: "{{ discovered_min_days.stdout_lines }}"
 
 - name: "5.4.1.3 | PATCH | Ensure password expiration warning days is configured"
@@ -82,6 +90,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - password
     - rule_5.4.1.3
@@ -100,7 +109,9 @@
       args:
         executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
+      check_mode: false
       failed_when: false
+      no_log: true
       register: discovered_warn_days
 
     - name: "5.4.1.3 | PATCH | Ensure password expiration warning days is configured | Set existing users WARN_DAYS"
@@ -117,6 +128,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - rule_5.4.1.4
     - pam
@@ -131,6 +143,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - password
     - rule_5.4.1.5
@@ -139,7 +152,7 @@
     - name: "5.4.1.5 | AUDIT | Ensure inactive password lock is configured | Check current settings"
       ansible.builtin.shell: |
         set -o pipefail
-        useradd -D | grep INACTIVE={{ rhel8cis_inactive_lock_days }} | cut -f2 -d=
+        useradd -D | grep -E '^INACTIVE={{ rhel8cis_inactive_lock_days }}$' | cut -f2 -d=
       args:
         executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
@@ -160,6 +173,7 @@
         executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       check_mode: false
+      no_log: true
       register: discovered_passwdlck_user_list
 
     - name: "5.4.1.5 | PATCH | Ensure inactive password lock is configured | Apply Inactive setting to existing accounts"
@@ -173,6 +187,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - rule_5.4.1.6
   vars:
@@ -198,6 +213,7 @@
       changed_when: false
       failed_when: false
       check_mode: false
+      no_log: true
       register: discovered_passwdlck_user_future
 
     - name: "5.4.1.6 | AUDIT | Ensure all users last password change date is in the past | Alert on accounts with pw change in the future"

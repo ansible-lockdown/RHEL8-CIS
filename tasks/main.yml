@@ -21,14 +21,6 @@
   ansible.builtin.assert:
     that: rhel8cis_crypto_policy in rhel8cis_allowed_crypto_policies
 
-- name: Check crypto-policy module input
-  when:
-    - rhel8cis_rule_1_6_1
-    - rhel8cis_crypto_policy_module | length > 0
-  tags: rule_1.6.1
-  ansible.builtin.assert:
-    that: rhel8cis_crypto_policy_module in rhel8cis_allowed_crypto_policies_modules
-
 - name: Check rhel8cis_bootloader_password_hash variable has been changed
   when:
     - rhel8cis_set_boot_pass
@@ -41,7 +33,7 @@
 - name: "Check crypto-policy module input"
   when:
     - rhel8cis_rule_1_6_1
-    - rhel8cis_crypto_policy_module | length > 0
+    - rhel8cis_additional_crypto_policy_module | length > 0
   tags:
     - rule_1.6.1
     - crypto
@@ -88,25 +80,44 @@
     - level2-server
     - level2-workstation
     - rule_5.2.4
+  vars:
+    sudo_password_rule: rhel8cis_rule_5_2_4  # pragma: allowlist secret
   block:
-    - name: Capture current password state of connecting user"
+    - name: "Capture current password state of connecting user"
       ansible.builtin.shell: |
         set -o pipefail
-        grep {{ ansible_facts['env']['SUDO_USER'] }} /etc/shadow | awk -F: '{print $2}'
+        awk -F: -v u='{{ ansible_facts['env']['SUDO_USER'] }}' '$1 == u {print $2; f=1} END {if (!f) print "not found"}' /etc/shadow
       args:
         executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
       failed_when: false
       check_mode: false
+      no_log: true
       register: discovered_ansible_user_password_set
 
-    - name: "Assert that password set for {{ ansible_facts['env']['SUDO_USER'] }} and account not locked"  # noqa name[template]
-      ansible.builtin.assert:
-        that: discovered_ansible_user_password_set.stdout | length != 0 and discovered_ansible_user_password_set.stdout != "!!"
-        fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_facts['env']['SUDO_USER'] }} has no password set - It can break access"
-        success_msg: "You have a password set for the {{ ansible_facts['env']['SUDO_USER'] }} user"
-      vars:
-        sudo_password_rule: rhel8cis_rule_5_2_4  # pragma: allowlist secret
+    - name: "Check for local account {{ ansible_facts['env']['SUDO_USER'] }}"  # noqa name[template]
+      when: discovered_ansible_user_password_set.stdout == "not found"
+      ansible.builtin.debug:
+        msg: "No local account found for {{ ansible_facts['env']['SUDO_USER'] }} user. Skipping local account checks."
+
+    - name: "Check local account"
+      when:
+        - discovered_ansible_user_password_set.stdout != "not found"
+        - ansible_facts['env']['SUDO_USER'] not in rhel8cis_sudoers_exclude_nopasswd_list
+      block:
+        - name: "Assert that password set for {{ ansible_facts['env']['SUDO_USER'] }}"  # noqa name[template]
+          ansible.builtin.assert:
+            that:
+              - discovered_ansible_user_password_set.stdout | length != 0
+              - discovered_ansible_user_password_set.stdout != "!!"
+            fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_facts['env']['SUDO_USER'] }} has no password set - It can break access"
+            success_msg: "You have a password set for the {{ ansible_facts['env']['SUDO_USER'] }} user"
+
+        - name: "Assert that account not locked for {{ ansible_facts['env']['SUDO_USER'] }}"  # noqa name[template]
+          ansible.builtin.assert:
+            that: not discovered_ansible_user_password_set.stdout.startswith("!")
+            fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_facts['env']['SUDO_USER'] }} is locked - It can break access"
+            success_msg: "The local account is not locked for {{ ansible_facts['env']['SUDO_USER'] }} user"
 
 - name: "PRELIM | AUDIT | Check authselect profile is selected"
   when: rhel8cis_allow_authselect_updates
@@ -124,6 +135,7 @@
       args:
         executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
+      check_mode: false
       failed_when: prelim_authselect_current_profile.rc not in [ 0, 1, 2 ]
       register: prelim_authselect_current_profile
 
@@ -218,7 +230,7 @@
         state: directory
         owner: root
         group: root
-        mode: 'u=rwx,go=rx'
+        mode: 'u+rwx,go-w'
 
     - name: Create ansible facts file
       ansible.builtin.template:

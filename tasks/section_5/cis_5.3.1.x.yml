@@ -33,6 +33,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - pam
     - rule_5.3.1.1

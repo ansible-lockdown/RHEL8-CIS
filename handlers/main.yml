@@ -4,33 +4,9 @@
   ansible.builtin.command: authselect apply-changes
   changed_when: true
 
-- name: "Adding options for /tmp"
-  when: not rhel8cis_tmp_svc
-  vars:
-    mount_point: '/tmp'
-  ansible.posix.mount:
-    path: "{{ mount_point }}"
-    src: "{{ prelim_mount_point_fs_and_options[mount_point]['src'] }}"
-    state: present
-    fstype: "{{ prelim_mount_point_fs_and_options[mount_point]['fs_type'] }}"
-    opts: "{{ prelim_mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
-  listen: "Remount /tmp"
-
-- name: "Remounting /tmp"
-  vars:
-    mount_point: '/tmp'
-  ansible.posix.mount:
-    path: "{{ mount_point }}"
-    state: remounted
-  listen: "Remount /tmp"
-
-- name: "Remounting /tmp systemd"
-  vars:
-    mount_point: '/tmp'
-  ansible.builtin.systemd:
-    name: tmp.mount
-    state: restarted
-    daemon_reload: true
+- name: "Remount tmp filesystem"
+  ansible.builtin.import_tasks:
+    file: remount_tmp.yml
   listen: "Remount /tmp"
 
 - name: "Adding options for /dev/shm"
@@ -163,6 +139,21 @@
   ansible.builtin.command: sysctl --system
   changed_when: true
 
+- name: Sysctl flush ipv4 route table
+  when:
+    - rhel8cis_flush_ipv4_route
+    - not system_is_container
+  ansible.builtin.command: sysctl -w net.ipv4.route.flush=1
+  changed_when: true
+
+- name: Sysctl flush ipv6 route table
+  when:
+    - rhel8cis_flush_ipv6_route
+    - not system_is_container
+    - (ansible_facts['cmdline'] | default({})).get('ipv6.disable', '0') | string != '1'
+  ansible.builtin.command: sysctl -w net.ipv6.route.flush=1
+  changed_when: true
+
 - name: Coredump Reload
   ansible.builtin.systemd:
     name: systemd-coredump.socket
@@ -235,7 +226,6 @@
 - name: Rebuild grub
   ansible.builtin.command: "grub2-mkconfig -o {{ discovered_grub_cfg.stat.lnk_source }}"
   changed_when: true
-  ignore_errors: true  # noqa ignore-errors
   notify: Set reboot required
   listen: Rebuild grub
 
@@ -251,15 +241,18 @@
 - name: Auditd immutable check
   ansible.builtin.command: grep -c "^-e 2" /etc/audit/rules.d/99_auditd.rules
   changed_when: false
+  failed_when: discovered_auditd_immutable_check.rc not in [ 0, 1 ]
   register: discovered_auditd_immutable_check
 
 - name: Audit immutable fact
   when: discovered_auditd_immutable_check.stdout == '1'
   ansible.builtin.debug:
     msg: "Reboot required for auditd to apply new rules as immutable set"
+  changed_when: true
   notify: Set reboot required
 
 - name: Restart auditd
+  when: not system_is_container
   ansible.builtin.command: /sbin/service auditd restart  # noqa command-instead-of-module
   changed_when: true
 

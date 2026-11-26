@@ -347,6 +347,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - manual
     - patch
     - rule_1.1.1.11
   vars:
@@ -359,20 +360,23 @@
         owner: root
         group: root
         mode: 'u+x,go-wx'
+      register: discovered_fs_cves_script
 
     - name: "1.1.1.11 | AUDIT | Ensure unused filesystems kernel modules are not available | Run discovery script"
+      when: not (ansible_check_mode and discovered_fs_cves_script is changed)
       ansible.builtin.command: "{{ rhel8cis_temp_exec_location }}/fs_with_cves.sh"
       changed_when: false
+      check_mode: false
       failed_when: discovered_fs_modules_loaded.rc not in [ 0, 99 ]
       register: discovered_fs_modules_loaded
 
     - name: "1.1.1.11 | AUDIT | Ensure unused filesystems kernel modules are not available | Output Warning"
-      when: discovered_fs_modules_loaded.stdout | length > 0
+      when: discovered_fs_modules_loaded.stdout | default('') | length > 0
       ansible.builtin.debug:
         msg: "{{ ['Warning!! Discovered loaded Filesystem modules that need attention. This is a manual task'] + discovered_fs_modules_loaded.stdout_lines }}"
 
     - name: "1.1.1.11 | AUDIT | Ensure unused filesystems kernel modules are not available | Capture Warning"
-      when: discovered_fs_modules_loaded.stdout | length > 0
+      when: discovered_fs_modules_loaded.stdout | default('') | length > 0
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 

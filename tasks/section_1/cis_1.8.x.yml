@@ -7,6 +7,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - gui
     - gdm
@@ -38,7 +39,7 @@
       ansible.builtin.file:
         path: /etc/dconf/db/local.d/locks
         state: directory
-        mode: 'go=rx'
+        mode: 'go+rx,go-w'
 
     - name: "1.8.1 | PATCH | Ensure GDM login banner is configured | create lock file"
       ansible.builtin.template:
@@ -48,7 +49,7 @@
         group: root
         mode: 'go-wx'
 
-    - name: "1.8.2 | PATCH | Ensure GDM login banner is configured | gdm profile"
+    - name: "1.8.2 | PATCH | Ensure GDM disable-user-list is configured | gdm profile"
       ansible.builtin.template:
         src: etc/dconf/db/local.d/60-banner-message.j2
         dest: /etc/dconf/db/local.d/60-banner-message
@@ -57,20 +58,21 @@
         mode: 'u-x,go-wx'
       notify: Reload dconf
 
-- name: "1.8.2 | PATCH | Ensure GDM disable-user-list option is enabled"
+- name: "1.8.2 | PATCH | Ensure GDM disable-user-list is configured"
   when:
     - rhel8cis_rule_1_8_2
     - rhel8cis_desktop_required
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - gui
     - rule_1.8.2
     - NIST800-53R5_CM-6
     - CCI-000366
   block:
-    - name: "1.8.2 | PATCH | Ensure GDM disable-user-list option is enabled | gdm profile"
+    - name: "1.8.2 | PATCH | Ensure GDM disable-user-list is configured | gdm profile"
       ansible.builtin.lineinfile:
         path: /etc/dconf/profile/user
         regexp: "{{ item.regexp }}"
@@ -84,13 +86,13 @@
         - { regexp: "user-db", line: "user-db:user" }
         - { regexp: "system-db", line: "system-db:local" }
 
-    - name: "1.8.2 | PATCH | Ensure GDM disable-user-list option is enabled | Locks directory exists"
+    - name: "1.8.2 | PATCH | Ensure GDM disable-user-list is configured | Locks directory exists"
       ansible.builtin.file:
         path: /etc/dconf/db/local.d/locks
         state: directory
-        mode: 'go=rx'
+        mode: 'go+rx,go-w'
 
-    - name: "1.8.2 | PATCH | Ensure GDM login banner is configured | create lock file"
+    - name: "1.8.2 | PATCH | Ensure GDM disable-user-list is configured | create lock file"
       ansible.builtin.template:
         src: etc/dconf/db/local.d/locks/60-login-screen.j2
         dest: /etc/dconf/db/local.d/locks/60-login-screen
@@ -98,7 +100,7 @@
         group: root
         mode: 'go-wx'
 
-    - name: "1.8.2 | PATCH | Ensure GDM login banner is configured | gdm profile"
+    - name: "1.8.2 | PATCH | Ensure GDM disable-user-list is configured | gdm profile"
       ansible.builtin.template:
         src: etc/dconf/db/local.d/60-login-screen.j2
         dest: /etc/dconf/db/local.d/60-login-screen
@@ -114,13 +116,14 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - gui
     - rule_1.8.3
     - NIST800-53R5_AC-11
     - CCI-000057
   block:
-    - name: "1.8.3 | PATCH | Ensure GDM screen locks when the user is idle | User profile"
+    - name: "1.8.3 | PATCH | Ensure GDM screen lock is configured | User profile"
       ansible.builtin.lineinfile:
         path: /etc/dconf/profile/user
         regexp: "{{ item.regexp }}"
@@ -134,13 +137,13 @@
         - { regexp: "user-db", line: "user-db:user" }
         - { regexp: "system-db", line: "system-db:local" }
 
-    - name: "1.8.3 | PATCH | Ensure GDM screen locks when the user is idle | Locks directory exists"
+    - name: "1.8.3 | PATCH | Ensure GDM screen lock is configured | Locks directory exists"
       ansible.builtin.file:
         path: /etc/dconf/db/local.d/locks
         state: directory
-        mode: 'go=rx'
+        mode: 'go+rx,go-w'
 
-    - name: "1.8.3 | PATCH | Ensure GDM screen locks when the user is idle | create lock file"
+    - name: "1.8.3 | PATCH | Ensure GDM screen lock is configured | create lock file"
       ansible.builtin.template:
         src: etc/dconf/db/local.d/locks/60-screensaver.j2
         dest: /etc/dconf/db/local.d/locks/60-screensaver
@@ -148,7 +151,7 @@
         group: root
         mode: 'go-wx'
 
-    - name: "1.8.3 | PATCH | Ensure GDM screen locks when the user is idle | gdm profile"
+    - name: "1.8.3 | PATCH | Ensure GDM screen lock is configured | gdm profile"
       ansible.builtin.template:
         src: etc/dconf/db/local.d/60-screensaver.j2
         dest: /etc/dconf/db/local.d/60-screensaver
@@ -164,6 +167,7 @@
   tags:
     - level1-server
     - level2-workstation
+    - automated
     - patch
     - gui
     - rule_1.8.4
@@ -189,7 +193,7 @@
       ansible.builtin.file:
         path: /etc/dconf/db/local.d/locks
         state: directory
-        mode: 'go=rx'
+        mode: 'go+rx,go-w'
 
     - name: "1.8.4 | PATCH | Ensure GDM automount is configured | create lock file"
       ansible.builtin.template:
@@ -215,6 +219,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - gui
     - rule_1.8.5
@@ -239,7 +244,7 @@
       ansible.builtin.file:
         path: /etc/dconf/db/local.d/locks
         state: directory
-        mode: 'go=rx'
+        mode: 'go+rx,go-w'
 
     - name: "1.8.5 | PATCH | Ensure GDM autorun-never is configured | create lock file"
       ansible.builtin.template:
@@ -265,6 +270,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - gui
     - rule_1.8.6
@@ -280,6 +286,7 @@
   tags:
     - level2-server
     - level2-workstation
+    - automated
     - patch
     - gui
     - rule_1.8.7

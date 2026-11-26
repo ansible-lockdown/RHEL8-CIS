@@ -19,12 +19,13 @@ rhel8cis_allowed_crypto_policies_modules:
   - 'OSPP'
   - 'AD-SUPPORT'
   - 'AD-SUPPORT-LEGACY'
-  # The following are already included in 1.6.x controls
+  # The following are already included in 1.6.x or 5.1 controls
   - 'NO-SHA1'
   - 'NO-SSHCBC'
+  - 'NO-SSHCHACHA20'
   - 'NO-SSHETM'
-  - 'NO-SSHWEAKCIPHER'
-  - 'NO-SSHWEAKMAC'
+  - 'NO-SSHWEAKCIPHERS'
+  - 'NO-SSHWEAKMACS'
   - 'NO-WEAKMAC'
 
 # Ability to change the default shell
@@ -34,6 +35,8 @@ rhel8cis_shell_executable: /bin/bash
 
 # Setting default value
 rhel8cis_sysctl_update: false
+rhel8cis_flush_ipv4_route: false
+rhel8cis_flush_ipv6_route: false
 
 aide_packages:
   - aide

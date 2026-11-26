@@ -13,14 +13,14 @@
 
 - name: POST | Apply auditd template for section 6.3.3.x
   when: item | basename != '98-auditd_exception.rules.j2'
-  vars:
-    supported_syscalls: "{{ discovered_auditd_syscalls.stdout_lines }}"
   ansible.builtin.template:
     src: "{{ item }}"
     dest: "/etc/audit/rules.d/{{ ((item | basename).split('.') | map('trim'))[:-1] | join('.') }}"
     owner: root
     group: root
     mode: 'u-x,g-wx,o-rwx'
+  vars:
+    supported_syscalls: "{{ discovered_auditd_syscalls.stdout_lines }}"
   with_fileglob: 'templates/etc/audit/rules.d/*.j2'
   notify:
     - Auditd immutable check
