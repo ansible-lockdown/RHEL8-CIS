@@ -18,6 +18,7 @@
     owner: root
     group: root
     mode: 'go-rwx'
+  no_log: true
   notify: Rebuild grub
 
 - name: "1.4.2 | PATCH | Ensure access to bootloader config is configured"
@@ -31,15 +32,19 @@
     - NIST800-53R5_CM-6
     - rule_1.4.2
   block:
+    - name: "1.4.2 | AUDIT | Ensure access to bootloader config is configured | Find grub config files"
+      ansible.builtin.find:
+        paths: /boot/grub2
+        file_type: file
+      register: discovered_grub2_files
 
-    - name: "1.4.2 | PATCH | Ensure access to bootloader config is configured | BIOS"
-      when: rhel8cis_legacy_boot
+    - name: "1.4.2 | PATCH | Ensure access to bootloader config is configured | Set owner and mode"
       ansible.builtin.file:
-        path: "{{ rhel8cis_boot_path }}"
+        path: "{{ item.path }}"
         owner: root
         group: root
         mode: 'u-x,go-rwx'
-        recurse: true
+      loop: "{{ discovered_grub2_files.files }}"
 
     - name: "1.4.2 | PATCH | Ensure access to bootloader config is configured | EFI"
       when: not rhel8cis_legacy_boot
@@ -49,7 +54,7 @@
             path: "{{ rhel8cis_boot_path }}"
             owner: root
             group: root
-            mode: 'u=rwx,go-rwx'
+            mode: 'u+rwx,go-rwx'
             recurse: true
 
         - name: "1.4.2 | PATCH | Ensure access to bootloader config is configured | EFI mount opts"

@@ -5,7 +5,7 @@
   gather_facts: true
 
   vars:
-      role_name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+      molecule_role_name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
       ansible_user: root
       system_is_container: true
       setup_audit: true
@@ -30,4 +30,4 @@
   tasks:
       - name: "Include tasks"
         ansible.builtin.include_role:
-            name: "{{ role_name }}"
+            name: "{{ molecule_role_name }}"

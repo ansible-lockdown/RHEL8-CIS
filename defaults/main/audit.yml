@@ -57,7 +57,7 @@ audit_bin_validate_certs: true
 # If using either archive, copy, get_url:
 ## Note will work with .tar files - zip will require extra configuration
 ### If using get_url this is expecting github url in tar.gz format e.g.
-### https://github.com/ansible-lockdown/SUSE16-CIS-Audit/archive/refs/heads/benchmark-v1.0.0.tar.gz
+### https://github.com/ansible-lockdown/RHEL8-CIS-Audit/archive/refs/heads/benchmark_v4.0.0.tar.gz
 audit_conf_source: "some path or url to copy from"
 
 # Destination for the audit content to be placed on managed node
@@ -94,6 +94,9 @@ audit_bin_version:
 audit_bin_path: /usr/local/bin/
 audit_bin: "{{ audit_bin_path }}goss"
 audit_format: json
+
+# CIS profile the audit scores against: Server (default) or Workstation (run_audit.sh -w)
+audit_system_type: Server
 
 audit_vars_path: "{{ audit_conf_dir }}/vars/{{ ansible_facts['hostname'] }}.yml"
 audit_results: |

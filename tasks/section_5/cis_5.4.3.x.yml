@@ -16,8 +16,8 @@
     - rule_5.4.3.1
   ansible.builtin.replace:
     path: /etc/shells
-    regexp: nologin
-    replace: ""
+    regexp: ^([ \t]*[^#\s].*nologin.*)$
+    replace: '# \1'
 
 - name: "5.4.3.2 | PATCH | Ensure default user shell timeout is configured"
   when: rhel8cis_rule_5_4_3_2
@@ -55,11 +55,35 @@
     - NIST800-53R5_CM-6
     - CCI-000366
     - rule_5.4.3.3
-  ansible.builtin.replace:
-    path: "{{ item.path }}"
-    regexp: (?i)(umask\s+\d\d\d)
-    replace: '{{ item.line }} 027'
-  loop:
-    - { path: '/etc/bashrc', line: 'umask' }
-    - { path: '/etc/profile', line: 'umask' }
-    - { path: '/etc/login.defs', line: 'UMASK' }
+  block:
+    - name: "5.4.3.3 | PATCH | Ensure default user umask is configured | Set UMASK in /etc/login.defs"
+      ansible.builtin.lineinfile:
+        path: /etc/login.defs
+        regexp: '^\s*UMASK\s+'
+        line: "UMASK {{ rhel8cis_bash_umask }}"
+
+    - name: "5.4.3.3 | AUDIT | Ensure default user umask is configured | Find shell initialization files setting umask"
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -lPsi -- '^\h*umask\h+\S' /etc/profile /etc/bashrc /etc/bash.bashrc /etc/profile.d/sh.local /etc/profile.d/*.sh
+      args:
+        executable: "{{ rhel8cis_shell_executable }}"
+      changed_when: false
+      check_mode: false
+      failed_when: discovered_umask_files.rc not in [ 0, 1, 2 ]
+      register: discovered_umask_files
+
+    - name: "5.4.3.3 | PATCH | Ensure default user umask is configured | Tighten weak umask statements"
+      ansible.builtin.replace:
+        path: "{{ item }}"
+        regexp: '(?i)^(\s*umask\s+)(?!(?:0?[0-7][2367]7|u=[rwx]{0,3},g=[rx]{0,2},o=)(?:[\s#;]|$))[^\s#;]+'
+        replace: '\g<1>{{ rhel8cis_bash_umask }}'
+      loop: "{{ discovered_umask_files.stdout_lines }}"
+
+    - name: "5.4.3.3 | PATCH | Ensure default user umask is configured | add profile script"
+      ansible.builtin.template:
+        src: etc/profile.d/60_default_umask.sh.j2
+        dest: /etc/profile.d/60_default_umask.sh
+        owner: root
+        group: root
+        mode: 'go-w'

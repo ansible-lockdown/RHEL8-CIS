@@ -17,14 +17,14 @@
         regexp: '^(#|)\s*remember\s*=\s*\d'
         line: "remember = {{ rhel8cis_pam_pwhistory_remember }}"
 
-    - name: "5.3.3.3.1 | PATCH | Ensure password number of changed characters is configured | authselect_files"
+    - name: "5.3.3.3.1 | PATCH | Ensure password history remember is configured | authselect_files"
       when:
         - rhel8cis_allow_authselect_updates
-        - "'example' not in rhel8cis_authselect_custom_profile_name"
+        - discovered_authselect_custom_profile_dir.stat.exists | default(false)
       ansible.builtin.replace:
         path: "/etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/{{ item }}-auth"
-        regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwhistory\.so)(.*)\s+remember\s*=\s*\S+(.*$)
-        replace: \1\2\3
+        regexp: ^(\s*password\s+(?:requisite|required|sufficient)\s+pam_pwhistory\.so\b.*?)\s+remember\s*=\s*\S+(.*)$
+        replace: \1\2
       loop:
         - password
         - system
@@ -51,8 +51,8 @@
       when: not rhel8cis_allow_authselect_updates
       ansible.builtin.replace:
         path: "/etc/pam.d/{{ item }}-auth"
-        regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwhistory\.so)(.*)\s+enforce_for_root(.*$)
-        replace: \1\2\3
+        regexp: ^(\s*password\s+(?:requisite|required|sufficient)\s+pam_pwhistory\.so\b.*?)\s+enforce_for_root(.*)$
+        replace: \1\2
       loop:
         - password
         - system
@@ -60,11 +60,11 @@
     - name: "5.3.3.3.2 | PATCH | Ensure password history is enforced for the root user | authselect_files"
       when:
         - rhel8cis_allow_authselect_updates
-        - "'example' not in rhel8cis_authselect_custom_profile_name"
+        - discovered_authselect_custom_profile_dir.stat.exists | default(false)
       ansible.builtin.replace:
         path: "/etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/{{ item }}-auth"
-        regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_pwhistory\.so)(.*)\s+enforce_for_root(.*$)
-        replace: \1\2\3
+        regexp: ^(\s*password\s+(?:requisite|required|sufficient)\s+pam_pwhistory\.so\b.*?)\s+enforce_for_root(.*)$
+        replace: \1\2
       loop:
         - password
         - system
@@ -81,31 +81,24 @@
     - pam
     - rule_5.3.3.3.3
   block:
-    - name: "5.3.3.3.3 | PATCH | Ensure pam_pwhistory includes use_authtok | pwhistory.conf"
-      ansible.builtin.lineinfile:
-        path: /etc/security/pwhistory.conf
-        regexp: '^(#|)\s*use_authtok'
-        line: "use_authtok"
-
-    - name: "5.3.3.3.3 | AUDIT | Ensure pam_pwhistory includes use_authtok | Get current state"
-      ansible.builtin.shell: |
-        set -o pipefail
-        grep -P -- '^\h*password\h+([^#\n\r]+)\h+pam_pwhistory\.so\h+([^#\n\r]+\h+)?use_authtok\ b' /etc/pam.d/{password,system}-auth
-      args:
-        executable: "{{ rhel8cis_shell_executable }}"
-      changed_when: false
-      failed_when: discovered_pwhistory_authtok.rc not in [ 0, 1 ]
-      register: discovered_pwhistory_authtok
+    - name: "5.3.3.3.3 | PATCH | Ensure pam_pwhistory includes use_authtok | pam_files"
+      when: not rhel8cis_allow_authselect_updates
+      ansible.builtin.replace:
+        path: "/etc/pam.d/{{ item }}-auth"
+        regexp: ^(\s*password\s+(?:requisite|required|sufficient)\s+pam_pwhistory\.so\b)(?!.*\buse_authtok\b)(.*)$
+        replace: \1 use_authtok\2
+      loop:
+        - password
+        - system
 
     - name: "5.3.3.3.3 | PATCH | Ensure pam_pwhistory includes use_authtok | authselect_files"
       when:
         - rhel8cis_allow_authselect_updates
-        - discovered_pwhistory_authtok.rc != 0
-      ansible.builtin.lineinfile:
+        - discovered_authselect_custom_profile_dir.stat.exists | default(false)
+      ansible.builtin.replace:
         path: "/etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/{{ item }}-auth"
-        regexp: ^(\s*password\s+)(requisite|required|sufficient)(\s+pam_unix.so\s)(.*)use_authtok(.*$)
-        line: \1\2\3\4use_authtok\5
-        backrefs: true
+        regexp: ^(\s*password\s+(?:requisite|required|sufficient)\s+pam_pwhistory\.so\b)(?!.*\buse_authtok\b)(.*)$
+        replace: \1 use_authtok\2
       loop:
         - password
         - system

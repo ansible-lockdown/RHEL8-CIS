@@ -4,7 +4,7 @@
   ansible.builtin.shell: |
     set -o pipefail
     umask 0022
-    {{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -f {{ audit_format }} -m {{ audit_max_concurrent }} -o {{ post_audit_outfile }} -g "{{ group_names }}"  # noqa yaml[line-length]
+    {{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -f {{ audit_format }} -m {{ audit_max_concurrent }} -o {{ post_audit_outfile }} -g "{{ group_names }}" {{ (audit_system_type | default('Server') | lower == 'workstation') | ternary('-w', '') }}  # noqa yaml[line-length]
   changed_when: true
   args:
     executable: "{{ rhel8cis_shell_executable }}"
@@ -13,8 +13,15 @@
     AUDIT_CONTENT_LOCATION: "{{ audit_conf_dest | default('/opt') }}"
     AUDIT_FILE: goss.yml
 
+- name: Post Audit | Audit not run in check mode
+  when: ansible_check_mode
+  ansible.builtin.set_fact:
+    post_audit_results: "not run in check mode"
+
 - name: Post Audit | Capture audit data if json format
-  when: audit_format == "json"
+  when:
+    - audit_format == "json"
+    - not ansible_check_mode
   block:
     - name: Post Audit | Capture audit data if json format
       ansible.builtin.shell: |
@@ -30,7 +37,9 @@
         post_audit_results: "{{ post_audit_summary_json.stdout }}"
 
 - name: Post Audit | Capture audit data if documentation format
-  when: audit_format == "documentation"
+  when:
+    - audit_format == "documentation"
+    - not ansible_check_mode
   block:
     - name: Post Audit | Capture audit data if documentation format
       ansible.builtin.shell: |

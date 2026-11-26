@@ -7,6 +7,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - aide
     - patch
     - rule_6.1.1
@@ -48,8 +49,6 @@
         - name: "6.1.1 | PATCH | Ensure AIDE is installed | Build AIDE DB"
           ansible.builtin.command: "{{ aide_initiate_command }}"
           changed_when: true
-          args:
-            creates: /var/lib/aide/aide.db.new.gz
           async: "{{ rhel8cis_aide_init_async }}"
           poll: "{{ rhel8cis_aide_init_poll }}"
 
@@ -71,6 +70,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - rule_6.1.2
     - NIST800-53R5_AU-2
@@ -116,6 +116,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - aide
     - file_integrity
     - patch

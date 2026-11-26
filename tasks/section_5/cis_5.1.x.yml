@@ -131,7 +131,7 @@
       loop_control:
         label: "{{ item.path }}"
 
-- name: "5.1.6 | PATCH | Ensure SSH access is configured"
+- name: "5.1.6 | PATCH | Ensure sshd access is configured"
   when:
     - rhel8cis_rule_5_1_6
     - rhel8cis_sshd_limited
@@ -145,36 +145,48 @@
     - NIST800-53R5_MP-2
     - rule_5.1.6
   block:
-    - name: "5.1.6 | PATCH | Ensure SSH access is configured | Add line to sshd_config for allowusers"
+    - name: "5.1.6 | PATCH | Ensure sshd access is configured | Add line to sshd_config for allowusers"
       when: "rhel8cis_sshd_allowusers | length > 0"
       ansible.builtin.lineinfile:
         path: "{{ rhel8cis_sshd_config_file }}"
         regexp: "^AllowUsers"
         line: AllowUsers {{ rhel8cis_sshd_allowusers }}
+        insertbefore: '(?i)^\s*(Include|Match)\s'
+        firstmatch: true
+        validate: sshd -t -f %s
       notify: Restart sshd
 
-    - name: "5.1.6 | PATCH | Ensure SSH access is configured | Add line to sshd_config for allowgroups"
+    - name: "5.1.6 | PATCH | Ensure sshd access is configured | Add line to sshd_config for allowgroups"
       when: "rhel8cis_sshd_allowgroups | length > 0"
       ansible.builtin.lineinfile:
         path: "{{ rhel8cis_sshd_config_file }}"
         regexp: "^AllowGroups"
         line: AllowGroups {{ rhel8cis_sshd_allowgroups }}
+        insertbefore: '(?i)^\s*(Include|Match)\s'
+        firstmatch: true
+        validate: sshd -t -f %s
       notify: Restart sshd
 
-    - name: "5.1.6 | PATCH | Ensure SSH access is configured | Add line to sshd_config for denyusers"
+    - name: "5.1.6 | PATCH | Ensure sshd access is configured | Add line to sshd_config for denyusers"
       when: "rhel8cis_sshd_denyusers | length > 0"
       ansible.builtin.lineinfile:
         path: "{{ rhel8cis_sshd_config_file }}"
         regexp: "^DenyUsers"
         line: DenyUsers {{ rhel8cis_sshd_denyusers }}
+        insertbefore: '(?i)^\s*(Include|Match)\s'
+        firstmatch: true
+        validate: sshd -t -f %s
       notify: Restart sshd
 
-    - name: "5.1.6 | PATCH | Ensure SSH access is configured | Add line to sshd_config for denygroups"
+    - name: "5.1.6 | PATCH | Ensure sshd access is configured | Add line to sshd_config for denygroups"
       when: "rhel8cis_sshd_denygroups | length > 0"
       ansible.builtin.lineinfile:
         path: "{{ rhel8cis_sshd_config_file }}"
         regexp: "^DenyGroups"
         line: DenyGroups {{ rhel8cis_sshd_denygroups }}
+        insertbefore: '(?i)^\s*(Include|Match)\s'
+        firstmatch: true
+        validate: sshd -t -f %s
       notify: Restart sshd
 
 - name: "5.1.7 | PATCH | Ensure sshd Banner is configured"
@@ -191,11 +203,14 @@
     - NIST800-53R5_CM-7
     - NIST800-53R5_IA-5
     - rule_5.1.7
-  notify: Restart sshd
-  ansible.builtin.replace:
+  ansible.builtin.lineinfile:
     path: "{{ rhel8cis_sshd_config_file }}"
-    regexp: ^(#?)\s*Banner.*$
-    replace: Banner /etc/issue.net
+    regexp: '(?i)^\s*Banner\s'
+    line: 'Banner /etc/issue.net'
+    insertbefore: '(?i)^\s*(Include|Match)\s'
+    firstmatch: true
+    validate: sshd -t -f %s
+  notify: Restart sshd
 
 - name: "5.1.8 | PATCH | Ensure sshd Ciphers are configured"
   when:
@@ -219,13 +234,17 @@
         owner: root
         group: root
         mode: 'g-wx,o-rwx'
-      notify:
-        - Update Crypto Policy
-        - Set Crypto Policy
+      register: discovered_no_sshweakciphers_template
 
     - name: "5.1.8 | PATCH | Ensure sshd Ciphers are configured | submodule to crypto policy modules"
       ansible.builtin.set_fact:
         rhel8cis_crypto_policy_module: "{{ rhel8cis_crypto_policy_module + ':NO-SSHWEAKCIPHERS' }}"
+      changed_when: >-
+        discovered_no_sshweakciphers_template is changed or
+        (discovered_system_wide_crypto_policys.stdout is defined and not ansible_facts['fips'] | default(false) and 'NO-SSHWEAKCIPHERS' not in discovered_system_wide_crypto_policys.stdout.split(':'))
+      notify:
+        - Update Crypto Policy
+        - Set Crypto Policy
 
 - name: "5.1.9 | PATCH | Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured"
   when: rhel8cis_rule_5_1_9
@@ -248,6 +267,8 @@
         path: "{{ rhel8cis_sshd_config_file }}"
         regexp: '^ClientAliveInterval'
         line: "ClientAliveInterval {{ rhel8cis_sshd_clientaliveinterval }}"
+        insertbefore: '(?i)^\s*(Include|Match)\s'
+        firstmatch: true
         validate: sshd -t -f %s
 
     - name: "5.1.9 | PATCH | Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured | Ensure SSH ClientAliveCountMax set to <= 3"
@@ -255,6 +276,8 @@
         path: "{{ rhel8cis_sshd_config_file }}"
         regexp: '^ClientAliveCountMax'
         line: "ClientAliveCountMax {{ rhel8cis_sshd_clientalivecountmax }}"
+        insertbefore: '(?i)^\s*(Include|Match)\s'
+        firstmatch: true
         validate: sshd -t -f %s
 
 - name: "5.1.10 | PATCH | Ensure sshd DisableForwarding is enabled"
@@ -268,18 +291,15 @@
     - NIST800-53R5_CM-7
     - rule_5.1.10
   block:
-    - name: "5.1.10 | PATCH | Ensure sshd DisableForwarding is enabled"
-      ansible.builtin.replace:
-        path: "{{ rhel8cis_sshd_config_file }}"
-        regexp: (?i)^(#?)\s*DisableForwarding (no|false)
-        replace: 'DisableForwarding yes'
-        validate: sshd -t -f %s
-
-    - name: "5.1.10 | PATCH | Ensure sshd DisableForwarding is enabled"
+    - name: "5.1.10 | PATCH | Ensure sshd DisableForwarding is enabled | config file"
       ansible.builtin.lineinfile:
         path: "{{ rhel8cis_sshd_config_file }}"
+        regexp: '(?i)^\s*DisableForwarding\s'
         line: 'DisableForwarding yes'
+        insertbefore: '(?i)^\s*(Include|Match)\s'
+        firstmatch: true
         validate: sshd -t -f %s
+      notify: Restart sshd
 
     - name: "5.1.10 | PATCH | Ensure sshd DisableForwarding is enabled | ensure x11 disabled"
       ansible.builtin.replace:
@@ -287,12 +307,14 @@
         regexp: (?i)^\s*X11Forwarding\s*(yes|no)
         replace: '# X11Forwarding no'
         validate: sshd -t -f %s
+      notify: Restart sshd
 
 - name: "5.1.11 | PATCH | Ensure sshd GSSAPIAuthentication is disabled"
   when: rhel8cis_rule_5_1_11
   tags:
     - level2-server
     - level1-workstation
+    - automated
     - patch
     - sshd
     - NIST800-53R5_CM-6
@@ -310,8 +332,10 @@
     - name: "5.1.11 | PATCH | Ensure sshd GSSAPIAuthentication is disabled | ssh config"
       ansible.builtin.lineinfile:
         path: "{{ rhel8cis_sshd_config_file }}"
-        regexp: (?i)^(#?)\s*GSSAPIAuthentication
+        regexp: '(?i)^\s*GSSAPIAuthentication\s'
         line: GSSAPIAuthentication no
+        insertbefore: '(?i)^\s*(Include|Match)\s'
+        firstmatch: true
         validate: sshd -t -f %s
       notify: Restart sshd
 
@@ -327,8 +351,10 @@
     - rule_5.1.12
   ansible.builtin.lineinfile:
     path: "{{ rhel8cis_sshd_config_file }}"
-    regexp: ^(#?)HostbasedAuthentication
+    regexp: '(?i)^\s*HostbasedAuthentication\s'
     line: 'HostbasedAuthentication no'
+    insertbefore: '(?i)^\s*(Include|Match)\s'
+    firstmatch: true
     validate: sshd -t -f %s
   notify: Restart sshd
 
@@ -348,8 +374,10 @@
     - rule_5.1.13
   ansible.builtin.lineinfile:
     path: "{{ rhel8cis_sshd_config_file }}"
-    regexp: ^(#?)IgnoreRhosts
+    regexp: '(?i)^\s*IgnoreRhosts\s'
     line: 'IgnoreRhosts yes'
+    insertbefore: '(?i)^\s*(Include|Match)\s'
+    firstmatch: true
     validate: sshd -t -f %s
   notify: Restart sshd
 
@@ -366,8 +394,10 @@
     - rule_5.1.14
   ansible.builtin.lineinfile:
     path: "{{ rhel8cis_sshd_config_file }}"
-    regexp: ^(#?)KexAlgorithms
+    regexp: '(?i)^\s*KexAlgorithms\s'
     line: "KexAlgorithms {{ rhel8cis_sshd_kex }}"
+    insertbefore: '(?i)^\s*(Include|Match)\s'
+    firstmatch: true
     validate: sshd -t -f %s
   notify: Restart sshd
 
@@ -383,8 +413,10 @@
     - rule_5.1.15
   ansible.builtin.lineinfile:
     path: "{{ rhel8cis_sshd_config_file }}"
-    regexp: ^(#?)LoginGraceTime
+    regexp: '(?i)^\s*LoginGraceTime\s'
     line: "LoginGraceTime {{ rhel8cis_sshd_logingracetime }}"
+    insertbefore: '(?i)^\s*(Include|Match)\s'
+    firstmatch: true
     validate: sshd -t -f %s
   notify: Restart sshd
 
@@ -402,8 +434,10 @@
     - rule_5.1.16
   ansible.builtin.lineinfile:
     path: "{{ rhel8cis_sshd_config_file }}"
-    regexp: ^(#?)LogLevel
+    regexp: '(?i)^\s*LogLevel\s'
     line: "LogLevel {{ rhel8cis_sshd_loglevel }}"
+    insertbefore: '(?i)^\s*(Include|Match)\s'
+    firstmatch: true
     validate: sshd -t -f %s
   notify: Restart sshd
 
@@ -432,13 +466,17 @@
         owner: root
         group: root
         mode: 'g-wx,o-rwx'
-      notify:
-        - Update Crypto Policy
-        - Set Crypto Policy
+      register: discovered_no_sshweakmacs_template
 
     - name: "5.1.17 | PATCH | Ensure sshd MACs are configured | submodule to crypto policy modules"
       ansible.builtin.set_fact:
         rhel8cis_crypto_policy_module: "{{ rhel8cis_crypto_policy_module + ':' + 'NO-SSHWEAKMACS' }}"
+      changed_when: >-
+        discovered_no_sshweakmacs_template is changed or
+        (discovered_system_wide_crypto_policys.stdout is defined and not ansible_facts['fips'] | default(false) and 'NO-SSHWEAKMACS' not in discovered_system_wide_crypto_policys.stdout.split(':'))
+      notify:
+        - Update Crypto Policy
+        - Set Crypto Policy
 
 - name: "5.1.18 | PATCH | Ensure sshd MaxAuthTries is configured"
   when: rhel8cis_rule_5_1_18
@@ -452,8 +490,10 @@
     - rule_5.1.18
   ansible.builtin.lineinfile:
     path: "{{ rhel8cis_sshd_config_file }}"
-    regexp: '^(#)?MaxAuthTries \d'
+    regexp: '(?i)^\s*MaxAuthTries\s'
     line: "MaxAuthTries {{ rhel8cis_sshd_maxauthtries }}"
+    insertbefore: '(?i)^\s*(Include|Match)\s'
+    firstmatch: true
     validate: sshd -t -f %s
   notify: Restart sshd
 
@@ -473,8 +513,10 @@
     - rule_5.1.19
   ansible.builtin.lineinfile:
     path: "{{ rhel8cis_sshd_config_file }}"
-    regexp: ^(#?)MaxSessions
+    regexp: '(?i)^\s*MaxSessions\s'
     line: "MaxSessions {{ rhel8cis_sshd_maxsessions }}"
+    insertbefore: '(?i)^\s*(Include|Match)\s'
+    firstmatch: true
     validate: sshd -t -f %s
   notify: Restart sshd
 
@@ -494,8 +536,10 @@
     - rule_5.1.20
   ansible.builtin.lineinfile:
     path: "{{ rhel8cis_sshd_config_file }}"
-    regexp: (?i)MaxStartups
+    regexp: '(?i)^\s*MaxStartups\s'
     line: "MaxStartups {{ rhel8cis_sshd_maxstartups }}"
+    insertbefore: '(?i)^\s*(Include|Match)\s'
+    firstmatch: true
     validate: sshd -t -f %s
   notify: Restart sshd
 
@@ -511,8 +555,10 @@
     - rule_5.1.21
   ansible.builtin.lineinfile:
     path: "{{ rhel8cis_sshd_config_file }}"
-    regexp: ^(#?)PermitEmptyPasswords
+    regexp: '(?i)^\s*PermitEmptyPasswords\s'
     line: 'PermitEmptyPasswords no'
+    insertbefore: '(?i)^\s*(Include|Match)\s'
+    firstmatch: true
     validate: sshd -t -f %s
   notify: Restart sshd
 
@@ -528,8 +574,10 @@
     - rule_5.1.22
   ansible.builtin.lineinfile:
     path: "{{ rhel8cis_sshd_config_file }}"
-    regexp: ^(#?)PermitRootLogin
+    regexp: '(?i)^\s*PermitRootLogin\s'
     line: 'PermitRootLogin no'
+    insertbefore: '(?i)^\s*(Include|Match)\s'
+    firstmatch: true
     validate: sshd -t -f %s
   notify: Restart sshd
 
@@ -549,8 +597,10 @@
     - rule_5.1.23
   ansible.builtin.lineinfile:
     path: "{{ rhel8cis_sshd_config_file }}"
-    regexp: ^(#?)PermitUserEnvironment
+    regexp: '(?i)^\s*PermitUserEnvironment\s'
     line: 'PermitUserEnvironment no'
+    insertbefore: '(?i)^\s*(Include|Match)\s'
+    firstmatch: true
     validate: sshd -t -f %s
   notify: Restart sshd
 
@@ -570,7 +620,9 @@
     - rule_5.1.24
   ansible.builtin.lineinfile:
     path: "{{ rhel8cis_sshd_config_file }}"
-    regexp: ^(#?)UsePAM
+    regexp: '(?i)^\s*UsePAM\s'
     line: 'UsePAM yes'
+    insertbefore: '(?i)^\s*(Include|Match)\s'
+    firstmatch: true
     validate: sshd -t -f %s
   notify: Restart sshd

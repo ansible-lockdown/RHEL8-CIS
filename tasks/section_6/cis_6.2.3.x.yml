@@ -7,6 +7,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - NIST800-53R5_AC-3
     - NIST800-53R5_MP-2
@@ -16,7 +17,7 @@
     - name: "6.2.3.1 | AUDIT | Ensure access to all logfiles has been configured | find log files"
       ansible.builtin.shell: |
         set -o pipefail
-        find -L /var/log -type f \( -perm /0137 -o ! -user root -o ! -group root \) -exec ls -l {} \;
+        find -L /var/log -type f \( -perm /0137 -o ! -user root -o ! -group root \) -print
       args:
         executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
@@ -31,31 +32,29 @@
       ansible.builtin.file:
         path: "{{ item }}"
         mode: 'ug-x,o-rwx'
-      failed_when: discovered_logfile_sssd_list.state not in [ 'file', 'absent' ]
-      check_mode: false
+      failed_when: discovered_logfile_sssd_list.state not in [ 'file', 'link', 'absent' ]
       register: discovered_logfile_sssd_list
       loop: "{{ discovered_logfiles.stdout_lines }}"
 
     - name: "6.2.3.1 | PATCH | Ensure access to all logfiles has been configured | change permissions tmp min 664"
       when:
         - discovered_logfiles.stdout_lines | length > 0
-        - item is match("/var/log/((u|b|w)tmp*|lastlog)")
+        - item | basename is match('(lastlog([.].*)?|(wtmp|btmp)([.-].*)?|README)$')
       ansible.builtin.file:
         path: "{{ item }}"
         mode: 'ug-x,o-wx'
-      failed_when: discovered_logfile_tmp_list.state not in [ 'file', 'absent' ]
-      check_mode: false
+      failed_when: discovered_logfile_tmp_list.state not in [ 'file', 'link', 'absent' ]
       register: discovered_logfile_tmp_list
       loop: "{{ discovered_logfiles.stdout_lines }}"
 
     - name: "6.2.3.1 | PATCH | Ensure access to all logfiles has been configured | change permissions else all 640"
       when:
         - discovered_logfiles.stdout_lines | length > 0
-        - item is not match("/var/log/((u|b|w)tmp*|lastlog|sssd)")
+        - item | basename is not match('(lastlog([.].*)?|(wtmp|btmp)([.-].*)?|README)$')
+        - item is not match("/var/log/(gdm|sssd)")
       ansible.builtin.file:
         path: "{{ item }}"
         mode: 'u-x,g-wx,o-rwx'
-      failed_when: discovered_logfile_not_tmp_list.state not in [ 'file', 'absent' ]
-      check_mode: false
+      failed_when: discovered_logfile_not_tmp_list.state not in [ 'file', 'link', 'absent' ]
       register: discovered_logfile_not_tmp_list
       loop: "{{ discovered_logfiles.stdout_lines }}"

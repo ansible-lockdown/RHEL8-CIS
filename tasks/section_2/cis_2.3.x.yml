@@ -24,6 +24,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - NIST800-53R5_AU-3
     - NIST800-53R5_AU-12
@@ -43,12 +44,13 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - rule_2.3.3
   ansible.builtin.lineinfile:
     path: /etc/sysconfig/chronyd
-    regexp: ^OPTIONS="(?!.* -u chrony.*)(.*)"
-    line: OPTIONS="\1 -u chrony"
+    regexp: '^OPTIONS="(?!.*-u[ \t]*chrony\b)(.*?)(?:[ \t]*-u[ \t]*root\b)?((?:(?!-u[ \t]*root\b).)*)"$'
+    line: OPTIONS="\1\2 -u chrony"
     create: true
     backrefs: true
     mode: 'go-wx'

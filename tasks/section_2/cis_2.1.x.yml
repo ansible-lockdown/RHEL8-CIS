@@ -160,7 +160,7 @@
         state: "{{ ('bind' in ansible_facts['packages']) | ternary('stopped', omit) }}"
         masked: true
 
-- name: "2.1.6 | PATCH | Ensure dnsmasq server services are not in use"
+- name: "2.1.6 | PATCH | Ensure dnsmasq services are not in use"
   when: rhel8cis_rule_2_1_6
   tags:
     - level1-server
@@ -171,7 +171,7 @@
     - NIST800-53R5_CM-7
     - rule_2.1.6
   block:
-    - name: "2.1.6 | PATCH | Ensure dnsmasq server services are not in use | Remove package"
+    - name: "2.1.6 | PATCH | Ensure dnsmasq services are not in use | Remove package"
       when:
         - not rhel8cis_dnsmasq_server
         - not rhel8cis_dnsmasq_mask
@@ -179,7 +179,7 @@
         name: dnsmasq
         state: absent
 
-    - name: "2.1.6 | PATCH | Ensure dnsmasq server services are not in use | Mask service"
+    - name: "2.1.6 | PATCH | Ensure dnsmasq services are not in use | Mask service"
       when:
         - not rhel8cis_dnsmasq_server
         - rhel8cis_dnsmasq_mask
@@ -195,7 +195,7 @@
   tags:
     - level1-server
     - level1-workstation
-    - automation
+    - automated
     - patch
     - ftp
     - NIST800-53R5_CM-6
@@ -461,7 +461,7 @@
   tags:
     - level1-server
     - level1-workstation
-    - automation
+    - automated
     - patch
     - snmp
     - NIST800-53R5_CM-7
@@ -559,7 +559,7 @@
   tags:
     - level1-server
     - level1-workstation
-    - automation
+    - automated
     - patch
     - squid
     - NIST800-53R5_CM-6
@@ -611,7 +611,9 @@
         - not rhel8cis_nginx_server
         - not rhel8cis_nginx_mask
       ansible.builtin.package:
-        name: nginx
+        name:
+          - nginx
+          - nginx-plus
         state: absent
 
     - name: "2.1.19 | PATCH | Ensure web server services are not in use | Mask httpd service"
@@ -629,12 +631,12 @@
       when:
         - not rhel8cis_nginx_server
         - rhel8cis_nginx_mask
-        - "'nginx' in ansible_facts['packages']"
+        - "'nginx' in ansible_facts['packages'] or 'nginx-plus' in ansible_facts['packages']"
       notify: Systemd daemon reload
       ansible.builtin.systemd:
         name: nginx.service
-        enabled: "{{ ('nginx' in ansible_facts['packages']) | ternary(false, omit) }}"
-        state: "{{ ('nginx' in ansible_facts['packages']) | ternary('stopped', omit) }}"
+        enabled: false
+        state: stopped
         masked: true
 
 - name: "2.1.20 | PATCH | Ensure xinetd services are not in use | remove xinetd"

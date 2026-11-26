@@ -17,7 +17,7 @@
         path: /etc/at.deny
         state: absent
 
-    - name: "2.4.2.1 | PATCH | Ensure access to at is configured  | Check if at.allow exists"
+    - name: "2.4.2.1 | PATCH | Ensure access to at is configured | Check if at.allow exists"
       ansible.builtin.stat:
         path: "/etc/at.allow"
       register: discovered_at_allow_state

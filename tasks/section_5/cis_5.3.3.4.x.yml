@@ -7,11 +7,11 @@
     - level1-workstation
     - automated
     - patch
-    - pam
     - NIST800-53R5_CM-6
+    - pam
     - rule_5.3.3.4.1
   block:
-    - name: "5.3.3.4.1 | PATCH | Ensure pam_unix does not include nullok | capture state"
+    - name: "5.3.3.4.1 | AUDIT | Ensure pam_unix does not include nullok | capture state"
       ansible.builtin.shell: |
         set -o pipefail
         grep -P -- '^\h*(auth|account|password|session)\h+(requisite|required|sufficient)\h+pam_unix\.so\b' /etc/pam.d/{password,system}-auth | grep -P -- '\bnullok\b'
@@ -28,20 +28,18 @@
         - not rhel8cis_allow_authselect_updates
       ansible.builtin.replace:
         path: "/etc/pam.d/{{ item }}-auth"
-        regexp: nullok
-        replace: ''
+        regexp: ^(\s*(?:auth|account|password|session)\s+\S+\s+pam_unix\.so\b.*?)\s+nullok\b(.*)$
+        replace: \1\2
       loop:
         - password
         - system
 
     - name: "5.3.3.4.1 | PATCH | Ensure pam_unix does not include nullok | update authselect"
       when:
-        - discovered_pam_nullok is defined
         - discovered_pam_nullok.stdout | length > 0
         - rhel8cis_allow_authselect_updates
       ansible.builtin.command: authselect enable-feature without-nullok
       changed_when: true
-      check_mode: false
       notify: Update authselect
 
 - name: "5.3.3.4.2 | PATCH | Ensure pam_unix does not include remember"
@@ -55,40 +53,24 @@
     - pam
     - rule_5.3.3.4.2
   block:
-    - name: "5.3.3.4.2 | AUDIT | Ensure pam_unix does not include remember | capture state"
-      ansible.builtin.shell: |
-        set -o pipefail
-        grep -Pi '^\h*password\h+([^#\n\r]+\h+)?pam_unix\.so\b' /etc/pam.d/{password,system}-auth | grep -P '\bremember=\d\b'
-      args:
-        executable: "{{ rhel8cis_shell_executable }}"
-      changed_when: false
-      failed_when: discovered_pam_remember.rc not in [ 0, 1 ]
-      check_mode: false
-      register: discovered_pam_remember
-
     - name: "5.3.3.4.2 | PATCH | Ensure pam_unix does not include remember | pam_files"
-      when:
-        - discovered_pam_remember is defined
-        - discovered_pam_remember | length > 0
-        - not rhel8cis_allow_authselect_updates
+      when: not rhel8cis_allow_authselect_updates
       ansible.builtin.replace:
         path: "/etc/pam.d/{{ item }}-auth"
-        regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)remember\s*=\s*\d+(.*$)
-        replace: \1\3\4
+        regexp: ^(\s*password\s+\S+\s+pam_unix\.so\b.*?)\s+remember\s*=\s*\S+(.*)$
+        replace: \1\2
       loop:
         - password
         - system
 
     - name: "5.3.3.4.2 | PATCH | Ensure pam_unix does not include remember | authselect_files"
       when:
-        - discovered_pam_remember is defined
-        - discovered_pam_remember | length > 0
         - rhel8cis_allow_authselect_updates
-        - "'example' not in rhel8cis_authselect_custom_profile_name"
+        - discovered_authselect_custom_profile_dir.stat.exists | default(false)
       ansible.builtin.replace:
         path: "/etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/{{ item }}-auth"
-        regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)remember\s*=\s*\d+(.*$)
-        replace: \1\3\4
+        regexp: ^(\s*password\s+\S+\s+pam_unix\.so\b.*?)\s+remember\s*=\s*\S+(.*)$
+        replace: \1\2
       loop:
         - password
         - system
@@ -104,44 +86,30 @@
     - NIST800-53R5_IA-5
     - pam
     - rule_5.3.3.4.3
+  vars:
+    discovered_pam_unix_hash_edits:
+      - regexp: ^(\s*password\s+(?:requisite|required|sufficient)\s+pam_unix\.so\b.*?\s)(?:md5|bigcrypt|sha256|blowfish|gost_yescrypt|sha512|yescrypt)\b
+        replace: \1{{ rhel8cis_pam_pwhash }}
+      - regexp: ^(\s*password\s+(?:requisite|required|sufficient)\s+pam_unix\.so\b)(?!.*\b(?:md5|bigcrypt|sha256|blowfish|gost_yescrypt|sha512|yescrypt)\b)(.*)$
+        replace: \1 {{ rhel8cis_pam_pwhash }}\2
   block:
-    - name: "5.3.3.4.3 | AUDIT | Ensure pam_unix includes a strong password hashing algorithm | capture state"
-      ansible.builtin.shell: |
-        set -o pipefail
-        grep -P -- '^\h*password\h+([^#\n\r]+)\h+pam_unix\.so\h+([^#\n\r]+\h+)?(sha512|yescrypt)\b' /etc/pam.d/{password,system}-auth | grep -v {{ rhel8cis_pam_pwhash }}
-      args:
-        executable: "{{ rhel8cis_shell_executable }}"
-      changed_when: false
-      failed_when: discovered_hash_state.rc not in [ 0, 1 ]
-      check_mode: false
-      register: discovered_hash_state
-
     - name: "5.3.3.4.3 | PATCH | Ensure pam_unix includes a strong password hashing algorithm | pam_files"
-      when:
-        - not rhel8cis_allow_authselect_updates
-        - discovered_hash_state is defined
-        - discovered_hash_state | length > 0
+      when: not rhel8cis_allow_authselect_updates
       ansible.builtin.replace:
-        path: "/etc/pam.d/{{ item }}-auth"
-        regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)(sha512|yescrypt)(.*$)
-        replace: \1\3\5 {{ rhel8cis_pam_pwhash }}
-      loop:
-        - password
-        - system
+        path: "/etc/pam.d/{{ item.0 }}-auth"
+        regexp: "{{ item.1.regexp }}"
+        replace: "{{ item.1.replace }}"
+      loop: "{{ ['password', 'system'] | product(discovered_pam_unix_hash_edits) | list }}"
 
     - name: "5.3.3.4.3 | PATCH | Ensure pam_unix includes a strong password hashing algorithm | authselect_files"
       when:
-        - discovered_hash_state is defined
-        - discovered_hash_state | length > 0
         - rhel8cis_allow_authselect_updates
-        - "'example' not in rhel8cis_authselect_custom_profile_name"
+        - discovered_authselect_custom_profile_dir.stat.exists | default(false)
       ansible.builtin.replace:
-        path: "/etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/{{ item }}-auth"
-        regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)(sha512|yescrypt)\s*=\s*\d+(.*$)
-        replace: \1\3\5{{ rhel8cis_pam_pwhash }}
-      loop:
-        - password
-        - system
+        path: "/etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/{{ item.0 }}-auth"
+        regexp: "{{ item.1.regexp }}"
+        replace: "{{ item.1.replace }}"
+      loop: "{{ ['password', 'system'] | product(discovered_pam_unix_hash_edits) | list }}"
       notify: Update authselect
 
 - name: "5.3.3.4.4 | PATCH | Ensure pam_unix includes use_authtok"
@@ -155,40 +123,24 @@
     - pam
     - rule_5.3.3.4.4
   block:
-    - name: "5.3.3.4.4 | PATCH | Ensure pam_unix includes use_authtok | capture state"
-      ansible.builtin.shell: |
-        set -o pipefail
-        grep -P -- '^\h*password\h+([^#\n\r]+)\h+pam_unix\.so\h+([^#\n\r]+\h+)?use_authtok\b' /etc/pam.d/{password,system}-auth | grep -v use_authtok
-      args:
-        executable: "{{ rhel8cis_shell_executable }}"
-      changed_when: false
-      failed_when: discovered_pam_authtok.rc not in [ 0, 1 ]
-      check_mode: false
-      register: discovered_pam_authtok
-
     - name: "5.3.3.4.4 | PATCH | Ensure pam_unix includes use_authtok | pam_files"
-      when:
-        - not rhel8cis_allow_authselect_updates
-        - discovered_pam_authtok is defined
-        - discovered_pam_authtok | length > 0
+      when: not rhel8cis_allow_authselect_updates
       ansible.builtin.replace:
         path: "/etc/pam.d/{{ item }}-auth"
-        regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)(\s+use_authtok)\s*=\s*\d+(.*$)
-        replace: \1\3\5 use_authtok
+        regexp: ^(\s*password\s+(?:requisite|required|sufficient)\s+pam_unix\.so\b)(?!.*\buse_authtok\b)(.*)$
+        replace: \1\2 use_authtok
       loop:
         - password
         - system
 
-    - name: "5.3.3.4.4 | PATCH | Ensure password same consecutive characters is configured | authselect_files"
+    - name: "5.3.3.4.4 | PATCH | Ensure pam_unix includes use_authtok | authselect_files"
       when:
-        - discovered_pam_authtok is defined
-        - discovered_pam_authtok | length > 0
         - rhel8cis_allow_authselect_updates
-        - "'example' not in rhel8cis_authselect_custom_profile_name"
+        - discovered_authselect_custom_profile_dir.stat.exists | default(false)
       ansible.builtin.replace:
         path: "/etc/authselect/custom/{{ rhel8cis_authselect_custom_profile_name }}/{{ item }}-auth"
-        regexp: ^(\s*password\s+(requisite|required|sufficient)\s+pam_unix\.so)(.*)(\s+use_authtok)\s*=\s*\d+(.*$)
-        replace: \1\3\5 use_authtok
+        regexp: ^(\s*password\s+(?:requisite|required|sufficient)\s+pam_unix\.so\b)(?!.*\buse_authtok\b)(.*)$
+        replace: \1\2 use_authtok
       loop:
         - password
         - system

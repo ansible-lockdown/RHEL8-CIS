@@ -8,6 +8,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - sysctl
     - ipv6
     - patch
@@ -32,6 +33,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - sysctl
     - ipv6
     - patch
@@ -39,12 +41,12 @@
     - CCI-000366
     - NIST800-53R5_CM-6
   block:
-    - name: "3.3.2.2 | PATCH | Ensure net.ipv6.conf.default.forwarding | Disable IPv6 default forwarding | Set Fact"
+    - name: "3.3.2.2 | PATCH | Ensure net.ipv6.conf.default.forwarding is configured | Disable IPv6 default forwarding | Set Fact"
       ansible.builtin.set_fact:
         rhel8cis_sysctl_update: true
         rhel8cis_flush_ipv6_route: true
 
-    - name: "3.3.2.2 | PATCH | Ensure net.ipv6.conf.default.forwarding | Disable IPv6 default forwarding"
+    - name: "3.3.2.2 | PATCH | Ensure net.ipv6.conf.default.forwarding is configured | Disable IPv6 default forwarding"
       ansible.builtin.debug:
         msg: "Control being set via post action 'Update sysctl' which writes to /etc/sysctl.d/60-netipv6_sysctl.conf"
 
@@ -56,6 +58,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - sysctl
     - ipv6
@@ -80,6 +83,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - sysctl
     - ipv6
@@ -103,6 +107,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - sysctl
     - ipv6
     - patch
@@ -126,6 +131,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - sysctl
     - ipv6
     - patch
@@ -149,6 +155,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - sysctl
     - ipv6
     - patch
@@ -172,6 +179,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - sysctl
     - ipv6
     - patch

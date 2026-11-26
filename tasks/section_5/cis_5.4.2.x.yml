@@ -7,6 +7,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - accounts
     - users
@@ -16,20 +17,18 @@
     - name: "5.4.2.1 | AUDIT | Ensure root is the only UID 0 account"
       ansible.builtin.shell: |
         set -o pipefail
-        cat /etc/passwd | awk -F: '($3 == 0 && $1 != "root") {i++;print $1 } END {exit 1}'
+        awk -F: '($3 == 0 && $1 != "root") { print $1 }' /etc/passwd
       args:
         executable: "{{ rhel8cis_shell_executable }}"
-      failed_when: discovered_uid_zero_accounts_except_root.rc not in [ 0, 1 ]
       changed_when: false
       check_mode: false
       register: discovered_uid_zero_accounts_except_root
 
     - name: "5.4.2.1 | PATCH | Ensure root is the only UID 0 account"
-      when: discovered_uid_zero_accounts_except_root.rc == 0
+      when: discovered_uid_zero_accounts_except_root.stdout | length > 0
       ansible.builtin.command: passwd -l {{ item }}
-      changed_when: false
-      failed_when: false
-      loop: "{{  discovered_uid_zero_accounts_except_root.stdout_lines }}"
+      changed_when: true
+      loop: "{{ discovered_uid_zero_accounts_except_root.stdout_lines }}"
 
 - name: "5.4.2.2 | PATCH | Ensure root is the only GID 0 account"
   when:
@@ -38,6 +37,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - rule_5.4.2.2
     - user
@@ -51,10 +51,11 @@
     - name: "5.4.2.2 | AUDIT | Ensure root is the only GID 0 account | Get members of gid 0"
       ansible.builtin.shell: |
         set -o pipefail
-        awk -F: '($1 !~ /^(sync|shutdown|halt|operator)/ && $4=="0") {print $1}' /etc/passwd | grep -wv 'root'
+        awk -F: '($1 !~ /^(root|sync|shutdown|halt|operator)$/ && $4=="0") {print $1}' /etc/passwd
       args:
         executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
+      check_mode: false
       failed_when: discovered_gid0_members.rc not in [ 0, 1 ]
       register: discovered_gid0_members
 
@@ -68,11 +69,18 @@
         state: absent
       loop: "{{ discovered_gid0_members.stdout_lines }}"
 
+    - name: "5.4.2.2 | PATCH | Ensure root is the only GID 0 account | Drop removed users from the captured user lists"
+      when: discovered_gid0_members.stdout | length > 0
+      ansible.builtin.set_fact:
+        prelim_captured_passwd_data: "{{ prelim_captured_passwd_data | rejectattr('id', 'in', discovered_gid0_members.stdout_lines) | list }}"
+        prelim_interactive_users: "{{ prelim_interactive_users | rejectattr('username', 'in', discovered_gid0_members.stdout_lines) | list }}"
+
 - name: "5.4.2.3 | AUDIT | Ensure group root is the only GID 0 group"
   when: rhel8cis_rule_5_4_2_3
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - rule_5.4.2.3
     - user
@@ -86,10 +94,11 @@
     - name: "5.4.2.3 | AUDIT | Ensure group root is the only GID 0 group | Get groups with gid 0"
       ansible.builtin.shell: |
         set -o pipefail
-        awk -F: '$3=="0"{print $1}' /etc/group | grep -vw 'root'
+        awk -F: '($3=="0" && $1!="root") {print $1}' /etc/group
       args:
         executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
+      check_mode: false
       failed_when: discovered_gid0_groups.rc not in [ 0, 1 ]
       register: discovered_gid0_groups
 
@@ -111,22 +120,24 @@
       vars:
         warn_control_id: "5.4.2.3"
 
-- name: "5.4.2.4 | PATCH | Ensure root account access is controlled "
+- name: "5.4.2.4 | PATCH | Ensure root account access is controlled"
   when: rhel8cis_rule_5_4_2_4
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - shadow_suite
     - rule_5.4.2.4
   ansible.builtin.debug:
     msg: "This is set as an assert in tasks/main"
 
-- name: "5.4.2.5 | PATCH | Ensure root PATH Integrity"
+- name: "5.4.2.5 | PATCH | Ensure root path integrity"
   when: rhel8cis_rule_5_4_2_5
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - paths
     - rule_5.4.2.5
@@ -136,16 +147,17 @@
     - NIST800-53R5_CM-7
     - NIST800-53R5_IA-5
   block:
-    - name: "5.4.2.5 | AUDIT | Ensure root PATH Integrity | Get root paths"
+    - name: "5.4.2.5 | AUDIT | Ensure root path integrity | Get root paths"
       ansible.builtin.shell: |
         set -o pipefail
         { sudo -Hiu root env 2>/dev/null || env -i HOME=/root USER=root LOGNAME=root SHELL=/bin/bash bash -lc env; } | grep '^PATH' | cut -d= -f2
       args:
         executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
+      check_mode: false
       register: discovered_root_paths
 
-    - name: "5.4.2.5 | AUDIT | Ensure root PATH Integrity | Get root paths"
+    - name: "5.4.2.5 | AUDIT | Ensure root path integrity | Get root paths"
       when: discovered_root_paths is defined
       ansible.builtin.shell: |
         set -o pipefail
@@ -153,20 +165,22 @@
       args:
         executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
+      check_mode: false
       register: discovered_root_paths_split
 
-    - name: "5.4.2.5 | AUDIT | Ensure root PATH Integrity | Set fact"
+    - name: "5.4.2.5 | AUDIT | Ensure root path integrity | Set fact"
       when: discovered_root_paths is defined
       ansible.builtin.set_fact:
         root_paths: "{{ discovered_root_paths.stdout }}"
 
-    - name: "5.4.2.5 | AUDIT | Ensure root PATH Integrity | Check for presence of non-dirs"
+    - name: "5.4.2.5 | AUDIT | Ensure root path integrity | Check for presence of non-dirs"
       ansible.builtin.stat:
         path: "{{ item }}"
-      loop: "{{ discovered_root_paths_split.stdout_lines }}"
+      loop: "{{ discovered_root_paths_split.stdout_lines | reject('in', ['', '.']) | list }}"
       register: discovered_paths_stat
 
-    - name: "5.4.2.5 | AUDIT | Ensure root PATH Integrity | Create dirs for some paths that are not dirs"
+    - name: "5.4.2.5 | PATCH | Ensure root path integrity | Create dirs for some paths that are not dirs"
+      when: not item.stat.exists
       ansible.builtin.file:
         path: "{{ item.item }}"
         state: directory
@@ -174,45 +188,46 @@
         group: root
         mode: 'go-w'
       loop: "{{ discovered_paths_stat.results }}"
-      when: not item.stat.exists
 
-    - name: "5.4.2.5 | AUDIT | Ensure root PATH Integrity | Check for empty dirs"
+    - name: "5.4.2.5 | AUDIT | Ensure root path integrity | Check for empty dirs"
       when: discovered_root_paths is defined
       ansible.builtin.shell: |
         set -o pipefail
-        echo {{ root_paths }} | grep -q "::" && echo "roots path contains a empty directory (::)"
+        echo "{{ root_paths }}" | grep -q "::" && echo "roots path contains a empty directory (::)"
       args:
         executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
+      check_mode: false
       failed_when: discovered_root_path_empty_dir.rc not in [ 0, 1 ]
       register: discovered_root_path_empty_dir
 
-    - name: "5.4.2.5 | AUDIT | Ensure root PATH Integrity | Check for trailing ':'"
+    - name: "5.4.2.5 | AUDIT | Ensure root path integrity | Check for trailing ':'"
       when: discovered_root_paths is defined
       ansible.builtin.shell: |
         set -o pipefail
-        {{ root_paths }} | cut -d= -f2 | grep -q ":$" && echo "roots path contains a trailing (:)"
+        echo "{{ root_paths }}" | grep -q ":$" && echo "roots path contains a trailing (:)"
       args:
         executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
+      check_mode: false
       failed_when: discovered_root_path_trailing_colon.rc not in [ 0, 1 ]
       register: discovered_root_path_trailing_colon
 
-    - name: "5.4.2.5 | AUDIT | Ensure root PATH Integrity | Check for owner and permissions"
+    - name: "5.4.2.5 | AUDIT | Ensure root path integrity | Check for owner and permissions"
       when: discovered_root_paths is defined
       block:
-        - name: "5.4.2.5 | AUDIT | Ensure root PATH Integrity | Check for owner and permissions"
+        - name: "5.4.2.5 | AUDIT | Ensure root path integrity | Check for owner and permissions"
           ansible.builtin.stat:
             path: "{{ item }}"
-          loop: "{{ discovered_root_paths_split.stdout_lines }}"
+          loop: "{{ discovered_root_paths_split.stdout_lines | reject('in', ['', '.']) | list }}"
           register: discovered_root_path_perms
 
-        - name: "5.4.2.5 | AUDIT | Ensure root PATH Integrity | Set permissions"
+        - name: "5.4.2.5 | PATCH | Ensure root path integrity | Set permissions"
           when:
             - item.stat.exists
             - item.stat.isdir
             - item.stat.pw_name != 'root' or item.stat.gr_name != 'root' or item.stat.woth or item.stat.wgrp
-            - (item != 'root') and (not rhel8cis_uses_root)
+            - not rhel8cis_uses_root
           ansible.builtin.file:
             path: "{{ item.stat.path }}"
             state: directory
@@ -221,36 +236,61 @@
             mode: 'u+rwx,go-w'
             follow: false
           loop: "{{ discovered_root_path_perms.results }}"
-          loop_control:
-            label: "{{ item }}"
+
+    - name: "5.4.2.5 | AUDIT | Ensure root path integrity | Warn on empty, trailing or current directory entries"
+      when: >-
+        discovered_root_path_empty_dir.stdout | length > 0 or
+        discovered_root_path_trailing_colon.stdout | length > 0 or
+        '.' in discovered_root_paths_split.stdout_lines
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! root's PATH contains an empty (::), trailing (:) or current directory (.) entry - please correct it"
+          - "{{ root_paths }}"
+
+    - name: "5.4.2.5 | AUDIT | Ensure root path integrity | Warn count"
+      when: >-
+        discovered_root_path_empty_dir.stdout | length > 0 or
+        discovered_root_path_trailing_colon.stdout | length > 0 or
+        '.' in discovered_root_paths_split.stdout_lines
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
+      vars:
+        warn_control_id: '5.4.2.5'
 
 - name: "5.4.2.6 | PATCH | Ensure root user umask is configured"
   when: rhel8cis_rule_5_4_2_6
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - shadow_suite
     - rule_5.4.2.6
     - NIST800-53R5_AC-3
     - NIST800-53R5_MP-2
   ansible.builtin.lineinfile:
-    path: /root/.bash_profile
-    regexp: ^\s*umask
+    path: "{{ item }}"
+    regexp: '^\s*umask\s+'
     line: "umask {{ rhel8cis_root_umask }}"
     create: true
     mode: 'g-wx,o-rwx'
+  loop:
+    - /root/.bash_profile
+    - /root/.bashrc
 
 - name: "5.4.2.7 | PATCH | Ensure system accounts do not have a valid login shell"
   when:
     - rhel8cis_rule_5_4_2_7
-    - "item.id not in prelim_interactive_users | map(attribute='username')"
+    - (item.uid | int < prelim_min_int_uid | int) or (item.uid | int == 65534)
+    - item.id not in ['root', 'halt', 'sync', 'shutdown', 'nfsnobody']
     - item.id not in rhel8cis_system_users_shell
-    - "'root' not in item.id"
+    - item.id != ansible_facts['env']['SUDO_USER'] | default(ansible_user | default(''))
+    - item.shell is not search('(nologin|false)$')
     - rhel8cis_disruption_high
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - shadow_suite
     - rule_5.4.2.7
@@ -261,19 +301,37 @@
   ansible.builtin.user:
     name: "{{ item.id }}"
     shell: /usr/sbin/nologin
+    create_home: false
   loop: "{{ prelim_captured_passwd_data }}"
   loop_control:
     label: "{{ item.id }}"
+  register: discovered_system_accounts_set_nologin
+
+- name: "5.4.2.7 | PATCH | Ensure system accounts do not have a valid login shell | Drop accounts set to nologin from the interactive user list"
+  when:
+    - rhel8cis_rule_5_4_2_7
+    - rhel8cis_disruption_high
+    - discovered_system_accounts_set_nologin.results | default([]) | selectattr('changed') | list | length > 0
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - shadow_suite
+    - rule_5.4.2.7
+  ansible.builtin.set_fact:
+    prelim_interactive_users: "{{ prelim_interactive_users | rejectattr('username', 'in', discovered_system_accounts_set_nologin.results | selectattr('changed') | map(attribute='item.id') | list) | list }}"
 
 - name: "5.4.2.8 | PATCH | Ensure accounts without a valid login shell are locked | Lock accounts"
   when:
     - rhel8cis_rule_5_4_2_8
     - rhel8cis_disruption_high
-    - "item.id not in prelim_interactive_users | map(attribute='username')"
-    - "'root' not in item.id"
+    - item.id not in prelim_interactive_users | map(attribute='username') | list
+    - item.id != 'root'
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - shadow_suite
     - rule_5.4.2.8
@@ -284,6 +342,7 @@
   ansible.builtin.user:
     name: "{{ item.id }}"
     password_lock: true
+    create_home: false
   loop: "{{ prelim_captured_passwd_data }}"
   loop_control:
     label: "{{ item.id }}"

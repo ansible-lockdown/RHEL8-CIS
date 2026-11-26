@@ -30,14 +30,15 @@
       ansible.builtin.command: grubby --info=ALL
       changed_when: false
       failed_when: false
+      check_mode: false
       register: discovered_rhel8cis_3_1_1_ipv6_status
 
     - name: "3.1.1 | PATCH | Ensure IPv6 status is identified | Disable IPV6 via Kernel"
       when:
         - "'kernel' in rhel8cis_ipv6_disable_method"
-        - "'ipv6.disable=1' not in discovered_rhel8cis_3_1_1_ipv6_status.stdout"
+        - discovered_rhel8cis_3_1_1_ipv6_status.stdout_lines | select('match', '^args=') | reject('search', '\\bipv6\\.disable=1\\b') | list | length > 0
       ansible.builtin.command: grubby --update-kernel=ALL --args="ipv6.disable=1"
-      changed_when: discovered_rhel8cis_3_1_1_ipv6_status.rc == 0
+      changed_when: true
 
 - name: "3.1.2 | PATCH | Ensure wireless interfaces are not available"
   when:
@@ -45,6 +46,7 @@
     - not system_is_container
   tags:
     - level1-server
+    - automated
     - patch
     - rule_3.1.2
     - wireless
@@ -52,7 +54,7 @@
   vars:
     warn_control_id: "3.1.2"
   block:
-    - name: "3.1.2 | AUDIT | Discover is wireless adapter on system"
+    - name: "3.1.2 | AUDIT | Ensure wireless interfaces are not available | Discover wireless adapters"
       ansible.builtin.shell: |
         set -o pipefail
         find /sys/class/net/*/ -type d -name wireless
@@ -63,10 +65,10 @@
       failed_when: discovered_wireless_adapters.rc not in [ 0, 1 ]
       register: discovered_wireless_adapters
 
-    - name: "3.1.2 | PATCH | Carry out changes if Wireless adapter are present"
-      when: discovered_wireless_adapters.rc == 0
+    - name: "3.1.2 | PATCH | Ensure wireless interfaces are not available | Wireless adapters present"
+      when: discovered_wireless_adapters.stdout | length > 0
       block:
-        - name: "3.1.2| PATCH | Install Network-Manager | if wireless adapter present"
+        - name: "3.1.2 | PATCH | Ensure wireless interfaces are not available | Install NetworkManager if wireless adapter present"
           when:
             - "'NetworkManager' not in ansible_facts['packages']"
             - rhel8cis_install_networkmanager
@@ -106,6 +108,7 @@
   tags:
     - level1-server
     - level2-workstation
+    - automated
     - patch
     - bluetooth
     - rule_3.1.3

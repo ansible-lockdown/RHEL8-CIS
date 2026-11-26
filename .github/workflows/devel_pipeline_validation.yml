@@ -29,7 +29,7 @@ jobs:
       pull-requests: write
 
     steps:
-      - uses: actions/first-interaction@main
+      - uses: actions/first-interaction@v3.1.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           issue_message: |-
@@ -65,7 +65,7 @@ jobs:
     steps:
 
       - name: Git clone the lockdown repository to test
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v7.0.1
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
@@ -81,7 +81,7 @@ jobs:
 
       # Pull in terraform code for linux servers
       - name: Clone GitHub IaC plan
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v7.0.1
         with:
           repository: ansible-lockdown/github_linux_IaC
           path: .github/workflows/github_linux_IaC
@@ -90,7 +90,7 @@ jobs:
       # Uses dedicated restricted role and policy to enable this only for this task
       # No credentials are part of github for AWS auth
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@main
+        uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
           role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
           role-session-name: ${{ secrets.AWS_ROLE_SESSION }}

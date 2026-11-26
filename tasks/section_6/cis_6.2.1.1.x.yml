@@ -5,6 +5,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - audit
     - patch
     - journald
@@ -21,6 +22,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - manual
     - audit
     - patch
     - journald
@@ -49,6 +51,7 @@
       args:
         executable: "{{ rhel8cis_shell_executable }}"
       changed_when: false
+      check_mode: false
       failed_when: discovered_journald_fileperms_override.rc not in [ 0, 1 ]
       register: discovered_journald_fileperms_override
 
@@ -73,6 +76,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - manual
     - patch
     - journald
     - rule_6.2.1.1.3
@@ -111,6 +115,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - journald
     - rule_6.2.1.1.4
@@ -163,6 +168,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
     - journald
     - rule_6.2.1.1.6

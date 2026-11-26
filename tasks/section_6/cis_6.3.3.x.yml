@@ -67,7 +67,7 @@
   ansible.builtin.set_fact:
     rhel8cis_update_audit_template: true
 
-- name: "6.3.3.6 | PATCH | Ensure use of privileged commands is collected"
+- name: "6.3.3.6 | PATCH | Ensure use of privileged commands are collected"
   when: rhel8cis_rule_6_3_3_6
   tags:
     - level2-server
@@ -78,7 +78,7 @@
     - auditd
     - rule_6.3.3.6
   block:
-    - name: "6.3.3.6 | PATCH | Ensure use of privileged commands is collected"
+    - name: "6.3.3.6 | PATCH | Ensure use of privileged commands are collected"
       ansible.builtin.shell: |
         set -o pipefail
         for i in  $(df | grep '^/dev' | awk '{ print $NF }'); do find $i -xdev -type f -perm /6000 2>/dev/null; done
@@ -89,12 +89,12 @@
       check_mode: false
       register: discovered_privilege_procs
 
-    - name: "6.3.3.6 | PATCH | Ensure use of privileged commands is collected"
+    - name: "6.3.3.6 | PATCH | Ensure use of privileged commands are collected"
       ansible.builtin.set_fact:
         rhel8cis_update_audit_template: true
       notify: Update auditd rules
 
-- name: "6.3.3.7 | PATCH | Ensure unsuccessful unauthorized file access attempts are collected"
+- name: "6.3.3.7 | PATCH | Ensure unsuccessful file access attempts are collected"
   when: rhel8cis_rule_6_3_3_7
   tags:
     - level2-server
@@ -177,6 +177,7 @@
   tags:
     - level2-server
     - level2-workstation
+    - automated
     - auditd
     - patch
     - NIST800-53R5_AU-12
@@ -198,7 +199,7 @@
   ansible.builtin.set_fact:
     rhel8cis_update_audit_template: true
 
-- name: "6.3.3.15 | PATCH | Ensure successful and unsuccessful attempts to use the chcon command are recorded"
+- name: "6.3.3.15 | PATCH | Ensure successful and unsuccessful attempts to use the chcon command are collected"
   when: rhel8cis_rule_6_3_3_15
   tags:
     - level2-server
@@ -211,7 +212,7 @@
   ansible.builtin.set_fact:
     rhel8cis_update_audit_template: true
 
-- name: "6.3.3.16 | PATCH | Ensure successful and unsuccessful attempts to use the setfacl command are recorded"
+- name: "6.3.3.16 | PATCH | Ensure successful and unsuccessful attempts to use the setfacl command are collected"
   when: rhel8cis_rule_6_3_3_16
   tags:
     - level2-server
@@ -226,7 +227,7 @@
   ansible.builtin.set_fact:
     rhel8cis_update_audit_template: true
 
-- name: "6.3.3.17 | PATCH | Ensure successful and unsuccessful attempts to use the chacl command are recorded"
+- name: "6.3.3.17 | PATCH | Ensure successful and unsuccessful attempts to use the chacl command are collected"
   when: rhel8cis_rule_6_3_3_17
   tags:
     - level2-server
@@ -241,7 +242,7 @@
   ansible.builtin.set_fact:
     rhel8cis_update_audit_template: true
 
-- name: "6.3.3.18 | PATCH | Ensure successful and unsuccessful attempts to use the usermod command are recorded"
+- name: "6.3.3.18 | PATCH | Ensure successful and unsuccessful attempts to use the usermod command are collected"
   when: rhel8cis_rule_6_3_3_18
   tags:
     - level2-server
@@ -254,7 +255,7 @@
   ansible.builtin.set_fact:
     rhel8cis_update_audit_template: true
 
-- name: "6.3.3.19 | PATCH | Ensure kernel module loading and unloading is collected"
+- name: "6.3.3.19 | PATCH | Ensure kernel module loading unloading and modification is collected"
   when: rhel8cis_rule_6_3_3_19
   tags:
     - level2-server

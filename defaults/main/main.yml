@@ -743,6 +743,10 @@ rhel8cis_firewall: firewalld
 # Rule 4.1.4
 # Name of the new firewall zone that should be live
 rhel8cis_active_firewall_zone: public
+
+# Rules 4.1.5 / 4.1.6
+# Zone the loopback interface (lo) is assigned to
+rhel8cis_loopback_firewall_zone: trusted
 # If set to accept change to one of DROP or DEFAULT
 # DEFAULT - Deny by default, allow by exception including ICMP
 # DROP - Will drop all attempts to connect that are not whitelisted
@@ -792,6 +796,11 @@ rhel8cis_sshd_denygroups: ""
 # 5.2. sudo
 rhel8cis_sudolog_location: "/var/log/sudo.log"
 rhel8cis_sudo_timestamp_timeout: 15
+## Control 5.2.4
+# This will leave NOPASSWD intact for these users
+rhel8cis_sudoers_exclude_nopasswd_list:
+  - ec2-user
+  - vagrant
 
 ## PAM
 ## 5.3.2.x PAM and Authselect
@@ -855,9 +864,12 @@ rhel8cis_system_users_shell: []
 
 ## Add users to be skipped if required
 rhel8cis_user_skip_list:
-  root
+  - root
 
 rhel8cis_root_umask: '0027'  # 0027 or more restrictive
+## Control 5.4.3.3 - Ensure default user umask is configured
+# Default umask written to /etc/login.defs UMASK and to any shell-init umask weaker than 0027
+rhel8cis_bash_umask: '0027'  # 0027 or more restrictive
 
 rhel8cis_shell_session_file: /etc/profile.d/tmout.sh
 rhel8cis_shell_session_timeout: 900
